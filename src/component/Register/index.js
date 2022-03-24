@@ -7,19 +7,6 @@ import { Link } from "react-router-dom";
 import validator from 'validator';
 import logo from '../Login/Logo.png'
 
-const SignUpButton = styled(Button)({
-    margin: '2.5rem 0 0.6rem 0',
-    backgroundColor: '#2B9361',
-    width: '100%',
-    height: '2.75rem',
-    borderRadius: '15px',
-    color: 'white',
-    '&:hover': {
-        backgroundColor: '#2B9361',
-        opacity: 0.6
-    }
-});
-
 const Register = () => {
     
     //=======================STATES===========================
@@ -161,13 +148,13 @@ const Register = () => {
                             </div>
                             }
                     />
-                    <SignUpButton type='button'  
+                    <button className="btnRegister"
+                            type='button'  
                             onClick={register} 
                             variant='contained' 
-                            disabled={!checked}
-                            fullWidth>
+                            disabled={!checked}>
                         Sign Up
-                    </SignUpButton>
+                    </button>
                     <Typography>
                         Already have an account? <Link to={'/login'}>Sign in</Link>
                     </Typography>

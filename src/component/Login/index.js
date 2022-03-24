@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link } from "react-router-dom";
@@ -10,19 +10,10 @@ import validator from 'validator';
 import logo from './Logo.png'
 import { useNavigate } from "react-router-dom";
 
-const SignInButton = styled(Button)({
-    margin: '2.5rem 0 0.6rem 0',
-    backgroundColor: '#2B9361',
-    width: '100%',
-    height: '2.75rem',
-    borderRadius: '15px',
-    color: 'white',
-    '&:hover': {
-        backgroundColor: '#2B9361',
-        opacity: 0.6
-    }
-});const Login = () => {
-    
+
+
+const Login = () => {
+
     //=======================STATES===========================
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -58,14 +49,14 @@ const SignInButton = styled(Button)({
         if (!validator.isEmail(username)) {
             err.email = "*Invalid email!"
         }
-        
+
         setError(err);
 
         return (Object.keys(err).length);
     }
-    
-    let navigate = useNavigate(); 
-    const routeChange = (newPath) =>{
+
+    let navigate = useNavigate();
+    const routeChange = (newPath) => {
         navigate(newPath);
     }
     const login = () => {
@@ -97,13 +88,12 @@ const SignInButton = styled(Button)({
                 throw response.status;
             })
             .then(result => {
-                if (result.statusCode === 200) 
-                {
+                if (result.statusCode === 200) {
                     console.log(result.message)
                     localStorage.setItem("token", result.data.token);
                     localStorage.setItem("userId", result.data.user._id);
                     setIsLogin(true);
-                    
+
                     routeChange('/store-login');
                 }
                 alert(result.message);
@@ -140,7 +130,7 @@ const SignInButton = styled(Button)({
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
                 setIsLogin(true);
-                
+
                 alert(result.message);
             })
             .catch(error => {
@@ -177,7 +167,7 @@ const SignInButton = styled(Button)({
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
                 setIsLogin(true);
-                
+
                 alert(result.message);
             })
             .catch(error => {
@@ -186,7 +176,7 @@ const SignInButton = styled(Button)({
     }
     const onLogoutSuccess = () => {
         setIsLogin(false);
-        window.location.pathname ='/'; 
+        window.location.pathname = '/';
         window.location.reload();
         localStorage.clear();
     }
@@ -194,58 +184,58 @@ const SignInButton = styled(Button)({
 
         <div className="bgImg">
             <div className="page-content">
-            <Grid>
-                <Paper elevation={10} style ={paperStyle}>
-                    <Stack direction="row" spacing={2}>
-                        <Avatar
-                            src={logo}
-                            style={{ height: '70px', width: '70px' }}
-                        />
-                        <Typography component={'span'}><h3>EASY MALL</h3></Typography>
-                    </Stack>
-                    <Grid>
-                    <Typography component={'span'}><h3>Sign in</h3></Typography>
-                    </Grid>
-                    
-                    <TextField name='email' style={{ margin: '0.5rem 0' }} label='Email' placeholder='Enter email' fullWidth required onChange={handleOnchangeUsername} />
-                    <Typography style={errorStyle}>{error.email}</Typography>
-                    
-                    <TextField name='password' label='Password' placeholder='Enter password' type='password' fullWidth required onChange={handleOnchangePassword}/>
-                    <Typography style={errorStyle}>{error.password}</Typography>
-                    
-                    <SignInButton type='button' variant='contained' onClick={login}>Sign In</SignInButton>
-                    <FacebookLogin
-                        appId="842222179779996"
-                        fields="name,picture,email"
-                        autoLoad = {false}
-                        cssClass="btnFacebook"
-                        textButton = "Sign In with Facebook"   
-                        icon="fa-facebook"                                                             
-                        callback={responseFacebook} />
-                    <br></br>
-                    < GoogleLogin
-                        clientId="176406720657-kvkukhtjlamdlv6cnc1vg8qanluodo33.apps.googleusercontent.com"
-                        buttonText="Sign In with Google"
-                        onSuccess={onSuccessGoogle}
-                        isSignedIn={false}
-                        className="btnGoogle"
-                        scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
-                    />
-                    <Typography >
-                        Don't have an account? 
-                        <Link to={'/register'}> Sign up</Link>
-                    </Typography>
-                    <Grid container justifyContent="flex-end">
-                    <Stack direction="row" spacing={2} mt={5}>
-                        <Typography> <Link to={'#'} className="link-footer">Help</Link></Typography>
-                        <div className="line"></div>  
-                        <Typography><Link to={'#'} className="link-footer">Terms</Link></Typography>        
-                    </Stack>
-                    </Grid>
-                   
-                </Paper>
+                <Grid>
+                    <Paper elevation={10} style={paperStyle}>
+                        <Stack direction="row" spacing={2}>
+                            <Avatar
+                                src={logo}
+                                style={{ height: '70px', width: '70px' }}
+                            />
+                            <Typography component={'span'}><h3>EASY MALL</h3></Typography>
+                        </Stack>
+                        <Grid>
+                            <Typography component={'span'}><h3>Sign in</h3></Typography>
+                        </Grid>
 
-            </Grid>
+                        <TextField name='email' style={{ margin: '0.5rem 0' }} label='Email' placeholder='Enter email' fullWidth required onChange={handleOnchangeUsername} />
+                        <Typography style={errorStyle}>{error.email}</Typography>
+
+                        <TextField name='password' label='Password' placeholder='Enter password' type='password' fullWidth required onChange={handleOnchangePassword} />
+                        <Typography style={errorStyle}>{error.password}</Typography>
+
+                        <button className="btnLogin" type='button' variant='contained' onClick={login}>Sign In</button>
+                        <FacebookLogin
+                            appId="842222179779996"
+                            fields="name,picture,email"
+                            autoLoad={false}
+                            cssClass="btnFacebook"
+                            textButton="Sign In with Facebook"
+                            icon="fa-facebook"
+                            callback={responseFacebook} />
+                        <br></br>
+                        < GoogleLogin
+                            clientId="176406720657-kvkukhtjlamdlv6cnc1vg8qanluodo33.apps.googleusercontent.com"
+                            buttonText="Sign In with Google"
+                            onSuccess={onSuccessGoogle}
+                            isSignedIn={false}
+                            className="btnGoogle"
+                            scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
+                        />
+                        <Typography >
+                            Don't have an account?
+                            <Link to={'/register'}> Sign up</Link>
+                        </Typography>
+                        <Grid container justifyContent="flex-end">
+                            <Stack direction="row" spacing={2} mt={5}>
+                                <Typography> <Link to={'#'} className="link-footer">Help</Link></Typography>
+                                <div className="line"></div>
+                                <Typography><Link to={'#'} className="link-footer">Terms</Link></Typography>
+                            </Stack>
+                        </Grid>
+
+                    </Paper>
+
+                </Grid>
             </div>
         </div>
     );

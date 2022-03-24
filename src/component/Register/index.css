@@ -22,6 +22,20 @@
     color: white;
 }
 
+.btnRegister {
+    margin: 0.5rem 0 1rem 0;
+    background-color: #2B9361;
+    width: 100%;
+    height: 2.75rem;
+    border-radius: 15px;
+    color: white;
+    border: none;
+}
+.btnLogin:hover {
+    background-color: '#2B9361';
+    opacity: 0.6;
+}
+
 .label-check-terms{
     margin-top: 0.5rem;
 }
