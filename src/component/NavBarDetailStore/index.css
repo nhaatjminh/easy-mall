@@ -40,3 +40,18 @@
     background-color: gray;
     cursor: pointer;
 }
+.text-extend {
+    font-size: 0.9rem;
+    margin-left: 1.5rem !important;
+}
+.btn-icon {
+    background-color: transparent;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.icon-color-black {
+    color: black;
+}

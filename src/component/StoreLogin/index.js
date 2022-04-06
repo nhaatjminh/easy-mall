@@ -10,19 +10,21 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  changeNameStoreSelected, changeListStore } from "../../actions/detailStore";
+import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
 const StoreLogin = ({nameAccount}) => {
 
     // use redux to manage state
     const dispatch = useDispatch();
-    var nameStoreInStore = useSelector((state) => state.changeNameStoreSelected);
+    var nameStoreInStore = useSelector((state) => state.listStore.selectedName);
     var changeNameStoreSelectedCall = (name) => {
-        dispatch(changeNameStoreSelected(name));
+        dispatch(doSwitchSelectedStore(name));
     }
-    var listStoreInStore = useSelector((state) => state.changeListStore);
+    var listStoreInStore = useSelector((state) => state.listStore.listStore);
     var changeListStoreCall = (list) => {
-        dispatch(changeListStore(list));
+        dispatch(doSwitchListStore(list));
     }
+    
+    console.log(listStoreInStore);
     //use navigate to change url
     let navigate = useNavigate(); 
     const routeChange = (newPath) =>{
@@ -73,8 +75,7 @@ const StoreLogin = ({nameAccount}) => {
     }, [])
     return (
         <div className="bgImg">
-            {
-            console.log(listStoreShow)}
+            
             <div>
                 <Grid>
                     <Paper elevation={10}  className="paper-style">

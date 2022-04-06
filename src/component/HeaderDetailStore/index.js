@@ -8,20 +8,23 @@ import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  changeNameStoreSelected, changeListStore } from "../../actions/detailStore";
+import {  doSwitchListStore, doSwitchSelectedStore} from "../../redux/slice/listStore";
 const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
     //use redux to manage state
     const dispatch = useDispatch();
-    var nameStore = useSelector((state) => state.changeNameStoreSelected);
+    var nameStore = useSelector((state) => state.listStore.selectedName);
     var changeNameStoreSelectedCall = (name) => {
-        dispatch(changeNameStoreSelected(name));
+        dispatch(doSwitchSelectedStore(name));
     }
     nameAccount = "TP";
-    var listStoreInStore = useSelector((state) => state.changeListStore);
+    var listStoreInStore = useSelector((state) => state.listStore.listStore);
     var changeListStoreCall = (list) => {
-        dispatch(changeListStore(list));
+        dispatch(doSwitchListStore(list));
     }
+    console.log(listStoreInStore)
     var listStore = listStoreInStore;
+    
+    console.log(listStore);
     return (
         <>
         
@@ -87,7 +90,7 @@ const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
                                             <Offcanvas.Title id="offcanvasNavbarLabel"></Offcanvas.Title>
                                         </Offcanvas.Header>
                                         <Offcanvas.Body >
-                                            <NavBarDetailStore isDesktop={false}></NavBarDetailStore>
+                                            <NavBarDetailStore key={1} isDesktop={false}></NavBarDetailStore>
                                         </Offcanvas.Body>
                                     </Navbar.Offcanvas>
                                 </Container>

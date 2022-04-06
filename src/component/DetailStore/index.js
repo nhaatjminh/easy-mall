@@ -10,13 +10,15 @@ import HeaderDetailStore from "../HeaderDetailStore";
 
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeKeySelected, changeNameStoreSelected } from "../../actions/detailStore";
+
+import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
+import {  doSwitchSelectedStore } from "../../redux/slice/listStore";
 import { ManageSearchTwoTone } from "@mui/icons-material";
 import ManageStoreProduct from "../ManageStoreProduct";
 const DetailStore = ({liststore, nameAccount}) => {
     
     //use redux to manage state
-    const keySelected = useSelector((state) => state.changeKeySelected);
+    const keySelected = useSelector((state) => state.keySelected.key);
 
     var callPage = () => {
         console.log(keySelected);
@@ -52,7 +54,23 @@ const DetailStore = ({liststore, nameAccount}) => {
             case 7: // Discount
             return <div></div>
 
-            case 8: // Setting
+            case 8: // OnlineStore
+            return <div></div>
+
+            case 81: // Theme
+            return <div></div>
+
+            case 82: // BlogPosts
+            return <div></div>
+
+            case 83: // Pages
+            return <div></div>
+            case 84: // Navigation
+            return <div></div>
+            case 85: // Preferences
+            return <div></div>
+
+            case 9: // Setting
             return <div></div>
 
             default:
