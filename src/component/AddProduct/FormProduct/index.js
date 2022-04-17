@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Stack from '@mui/material/Stack';
-import { Paper, TextField, InputLabel, Box,Chip , Input, FormGroup, FormControlLabel,Popper, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
+import { Paper, TextField, InputLabel, Box,Chip ,Select, MenuItem, Input, FormGroup, FormControlLabel,Popper, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
 import {EditorState} from 'draft-js'
 import { Editor } from "react-draft-wysiwyg";
 import Divider from '@mui/material/Divider';
@@ -56,27 +56,25 @@ const FormProduct = ()=> {
         
     }
     const changeOptionValue = (e, index, idxValue) => {
-        if (e.target.value) {
-            const newObj = [...optionValue];
-            if (!newObj[index].value.includes(e.target.value)) {
-                if (idxValue !== undefined) {
-                    newObj[index].value[idxValue] = e.target.value; 
-                }else {
-                    newObj[index].value.push(e.target.value);
-                }
-                setOptionValue(newObj);
+        const valueChange = e.target.value ? e.target.value : "";
+        const newObj = [...optionValue];
+        if (!newObj[index].value.includes(valueChange)) {
+            if (idxValue !== undefined) {
+                newObj[index].value[idxValue] = valueChange; 
+            }else {
+                newObj[index].value.push(valueChange);
             }
-            else {
-                console.log('error chua lam');
-            }
+            setOptionValue(newObj);
+        }
+        else {
+            console.log('error chua lam');
         }
     }
-    const handleDeleteOption = (index) => {
-        let newOptionValue = optionValue.filter((value, idx) => idx !== index);
-        setOptionValue(newOptionValue);
-        let newOptionTag = optionTag.filter((valiue, idx) => idx !== index);
-        setOptionTag(newOptionTag);
-        if (newOptionTag.length <= 0) setShowOpt(false);
+    const handleDeleteOptionValue = (index, idxValue) => {
+        const newObj = [...optionValue];
+        newObj[index].value = newObj[index]?.value.filter((value, idx) => idx !== idxValue);
+        
+        setOptionValue(newObj);
     }
     const doneOrEditOption = (index) => {
         let tempEdit = optionTag;
@@ -94,15 +92,18 @@ const FormProduct = ()=> {
     function shallowObjectEqual(object1, object2) {
         const keys1 = Object.keys(object1);
         const keys2 = Object.keys(object2);
-      
+
         if (keys1.length !== keys2.length) {
           return false;
         }
       
         for (let key of keys1) {
-          if (object1[key] !== object2[key]) {
-            return false;
-          }
+            if (Array.isArray(object1[key]) && Array.isArray(object2[key])) {
+                if (object1[key].length !== object2[key].length) return false;
+            }
+            else if (object1[key] !== object2[key]) {
+                return false;
+            }
         }
       
         return true;
@@ -191,6 +192,7 @@ const FormProduct = ()=> {
                         variant.option.push(newOpt)
                     } else if (variant.option[idxOptionName]) {
                         variant.option[idxOptionName].option = optionName.option; 
+                        variant.option[idxOptionName].value = []; 
                     }
                 })
             }
@@ -213,18 +215,27 @@ const FormProduct = ()=> {
             setOptionValue(newObj);
         }
     }
+    const handleDeleteOption = (index) => {
+        let newOptionValue = optionValue.filter((value, idx) => idx !== index);
+        setOptionValue(newOptionValue);
+        let newOptionTag = optionTag.filter((value, idx) => idx !== index);
+        setOptionTag(newOptionTag);
+        if (newOptionTag.length <= 0) setShowOpt(false);
+    }
     const columns = [
-        { id: 'title', label: 'Title', minWidth: 170 },
-        { id: 'price', label: 'Price', minWidth: 100 },
+        { id: 'title', label: 'Title', minWidth: 170,align: 'right' },
+        { id: 'price', label: 'Price', minWidth: 100, maxWidth: 200,align: 'right' },
         {
           id: 'quantity',
           label: 'Quantity',
           minWidth: 170,
+          maxWidth: 200,
           align: 'right',
         },
         {
-          label: 'Action',
+          label: '',
           minWidth: 170,
+          maxWidth: 200,
           align: 'right'
         },
       ];
@@ -429,7 +440,7 @@ const FormProduct = ()=> {
                                                             </div>
                                                             <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
                                                                 
-                                                                <i className="fa-trash fa-icon icon-trash" ></i>
+                                                                <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOptionValue(index, idxValue)}></i>
                                                             </div>
                                                         </div>
                                                     )
@@ -493,9 +504,10 @@ const FormProduct = ()=> {
 
                     </Paper> 
                     {
-                        variant
+                        variant.length
                         ?   <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                                {/* <TableVariant columnsOfData={columns}></TableVariant> */}
+                            {console.log(variant)}
+                                <TableVariant data={variant} columnsOfData={columns}></TableVariant>
                             </Paper>
                         : <></>
                     }
@@ -515,7 +527,12 @@ const FormProduct = ()=> {
                     </Paper> 
                 </div>   
                 <div className="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">                      
-                    <Paper elevation={5}>
+                    <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product Status</InputLabel>
+                        <Select fullWidth>
+                            <MenuItem>Draft</MenuItem>
+                            <MenuItem>Active</MenuItem>
+                        </Select>
                     </Paper> 
                 </div>    
             </div>  

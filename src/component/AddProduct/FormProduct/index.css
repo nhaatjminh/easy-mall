@@ -23,4 +23,5 @@
 .icon-trash {
     font-size: 2rem;
     color: #666;
+    cursor: pointer;
 }

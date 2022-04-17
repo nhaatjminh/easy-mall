@@ -32,6 +32,9 @@ body {
 .font-weight-bold {
   font-weight: bold !important;
 }
+.text-center {
+  text-align: center !important;
+}
 .font-weight-normal {
   font-weight: normal !important;
 }

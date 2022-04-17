@@ -2,48 +2,16 @@ import React, {useState} from "react";
 import { Paper, Typography } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
-import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar   } from '@mui/material';
+import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar, TextField   } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount,onRequestSort, headCells } =
+    const { onSelectAllClick, numSelected, rowCount, headCells } =
       props;
-    const createSortHandler = (property) => (event) => {
-      onRequestSort(event, property);
-    };
     return (
       <TableHead>
         <TableRow>
@@ -60,23 +28,12 @@ function EnhancedTableHead(props) {
             </TableCell>
             {headCells.map((headCell) => (
               <TableCell
+                className="text-center"
                 key={headCell.id}
                 align={headCell.numeric ? 'right' : 'left'}
                 padding={headCell.disablePadding ? 'none' : 'normal'}
-                sortDirection={orderBy === headCell.id ? order : false}
               >
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : 'asc'}
-                  onClick={createSortHandler(headCell.id)}
-                >
                   {headCell.label}
-                  {orderBy === headCell.id ? (
-                    <Box component="span" sx={visuallyHidden}>
-                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                    </Box>
-                  ) : null}
-                </TableSortLabel>
               </TableCell>
             ))}
         </TableRow>
@@ -198,6 +155,7 @@ const TableVariant = ({data, columnsOfData}) => {
     const onDeleteSelected = () => {
       setSelected([]);
     }
+    console.log(rows);
     return (
         
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -209,12 +167,9 @@ const TableVariant = ({data, columnsOfData}) => {
               onSelectAllClick={handleSelectAllClick}
               rowCount={rows.length}
               headCells={columns}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
             />
             <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
+                {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row,index) => {
                   console.log(row);
@@ -227,7 +182,8 @@ const TableVariant = ({data, columnsOfData}) => {
                     tabIndex={-1}
                     key={row.title}
                     selected={isItemSelected}>
-                        <TableCell padding="checkbox">
+                        <TableCell padding="checkbox" 
+                        align="left">
                             <Checkbox
                                 color="primary"
                                 checked={isItemSelected}
@@ -241,17 +197,21 @@ const TableVariant = ({data, columnsOfData}) => {
                         id={labelId}
                         scope="row"
                         padding="none"
+                        align="center"
                       >
-                        {row.title}
+                          
+                        {row.option.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                       </TableCell>
-                      <TableCell align="right">
-                        {row.status}</TableCell>
-                      <TableCell align="right">
-                        {row.inventory}</TableCell>
-                      <TableCell align="right">
-                        {row.type}</TableCell>
-                      <TableCell align="right">
-                        {row.vendor}</TableCell>
+                      <TableCell align="center">
+                          <TextField value={row.price}/>
+                        </TableCell>
+                      <TableCell align="center">
+                          <TextField value={row.quantity}/></TableCell>
+                      <TableCell align="center">
+                        <button>Edit</button>
+                        
+                        <button>Delete</button>
+                        </TableCell>
                     
                     </TableRow>
                     );
