@@ -1,0 +1,26 @@
+.icon-plus-before-text {
+    font-size: 1rem;
+}
+.poper-item {
+    border: 1px solid #333 !important;
+}
+.poper-item:hover {
+    background-color: #6666 !important;
+}
+.box-poper {
+    background-color: white;
+}
+.chip-width-auto {
+    width: auto;
+    margin-left: 0.25rem;
+}
+.btn-option {
+    border: 1px solid #333;
+    background-color: transparent;
+    border-radius: 5px;
+    margin-top:0.5rem;
+}
+.icon-trash {
+    font-size: 2rem;
+    color: #666;
+}

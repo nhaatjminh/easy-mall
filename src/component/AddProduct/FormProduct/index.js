@@ -1,24 +1,243 @@
 import React, {useState, useEffect} from "react";
 import Stack from '@mui/material/Stack';
-import { Paper, TextField, InputLabel, MenuItem, Select, Input, FormGroup, FormControlLabel, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
+import { Paper, TextField, InputLabel, Box,Chip , Input, FormGroup, FormControlLabel,Popper, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
 import {EditorState} from 'draft-js'
 import { Editor } from "react-draft-wysiwyg";
 import Divider from '@mui/material/Divider';
 import './index.css';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Link } from "react-router-dom";
-const FormProduct = ( {returnTable })=> {
+import TableVariant from "../TableVariant";
+const FormProduct = ()=> {
     const [editorState, setEditorState] = useState(()=> EditorState.createEmpty());
+    const [showOpt, setShowOpt] = useState(false);
     const [trackQuantity, setTrackQuantity] = useState(false);
+    const [costPerItem, setCostPerItem] = useState(null);
+    const [price, setPrice] = useState(null);
+    const [optionTag, setOptionTag] = useState([]); // state to check length and render option
+    const [optionValue, setOptionValue] = useState([]);
+    
+    const [variant, setVariant] = useState([]);
+    const [form, setForm] = useState([])
+
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+        
+    };
+    
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+    
     const onChangeTrackQuantity = () => {
         setTrackQuantity(!trackQuantity);
     }
+    const addAnotherOption = (index) => {
+        if (optionTag.length === 3) return;
+        for (const optionValueChild of optionValue) {
+            if (!optionValueChild.option || !optionValueChild.value.length) {
+                console.log("Dmm dien vo cai nay di da");
+                return;
+            }
+        }
+        const temp = [...optionTag];
+        temp.push(true);
+        setOptionTag(temp);
+        const newOptionValue =[ 
+            ...optionValue,
+            {
+            option: "",
+            value: []
+            }];
+        setOptionValue(newOptionValue);
+        
+    }
+    const changeOptionValue = (e, index, idxValue) => {
+        if (e.target.value) {
+            const newObj = [...optionValue];
+            if (!newObj[index].value.includes(e.target.value)) {
+                if (idxValue !== undefined) {
+                    newObj[index].value[idxValue] = e.target.value; 
+                }else {
+                    newObj[index].value.push(e.target.value);
+                }
+                setOptionValue(newObj);
+            }
+            else {
+                console.log('error chua lam');
+            }
+        }
+    }
+    const handleDeleteOption = (index) => {
+        let newOptionValue = optionValue.filter((value, idx) => idx !== index);
+        setOptionValue(newOptionValue);
+        let newOptionTag = optionTag.filter((valiue, idx) => idx !== index);
+        setOptionTag(newOptionTag);
+        if (newOptionTag.length <= 0) setShowOpt(false);
+    }
+    const doneOrEditOption = (index) => {
+        let tempEdit = optionTag;
+        tempEdit[index] = !tempEdit[index];
+        setOptionTag([...tempEdit]);
+    }
+    const checkExistsVariantOption = (newOpt, type) => { // type to compare, option (optionName) or value
+        let allVariant = [...variant];
+        return allVariant.some((variant) => {
+            return variant.option.some((option) => {
+                return option.type === newOpt.type
+            });
+        })
+    }
+    function shallowObjectEqual(object1, object2) {
+        const keys1 = Object.keys(object1);
+        const keys2 = Object.keys(object2);
+      
+        if (keys1.length !== keys2.length) {
+          return false;
+        }
+      
+        for (let key of keys1) {
+          if (object1[key] !== object2[key]) {
+            return false;
+          }
+        }
+      
+        return true;
+      }
+    const checkExistsVariant = (newAllVariant, newVariant) => { // type to compare, option (optionName) or value
+        return newAllVariant.some((variant) => {
+            return variant.option.length !== newVariant.option.length
+                || variant.option.every((value, index) => shallowObjectEqual(value,newVariant.option[index]))
+        })
+    }
+    const changeVariantOptionValue = (variantOpt, newOpt, idxOptionName) => {
+        let newVariant = [];
+        variantOpt.map((element, idx) => {
+            let newElement = {...element};
+            if (element.option === newOpt.option || idx === idxOptionName)
+                newVariant.push(newOpt);
+            else newVariant.push(newElement);
+        })
+        return newVariant;
+    }
+    const createVariantUI = () => {
+        let allVariant = [...variant];
+        //handle delete optionField
+        allVariant.map((variant) => {
+            if (variant.option.length > optionValue.length) {
+                // xoa 1 phan tu bat ki de length no bang nhau lai
+                variant.option.pop();
+
+            }
+        });
+        //create new Variant
+        optionValue.map((optionName,idxOptionName) => {
+
+            if (optionName?.value.length)
+                if (!allVariant.length) {
+                    optionName.value?.map((value,idxValue) => {
+                        const newOpt = {
+                            option: optionName.option,
+                            value: value
+                        }
+                        if (!checkExistsVariantOption(newOpt, "value")) {
+                            const newVariant = {
+                                option: [newOpt]
+                            }
+                            allVariant.push(newVariant);
+                        }
+                    })
+                } else {
+                    let newAllVariant = [];
+                    allVariant.map((variant) => {
+                        optionName.value?.map((value,idxValue) => {
+                            const newOpt = {
+                                option: optionName.option,
+                                value: value
+                            }
+                            let newVariant = {};
+                            let flag = false;
+                            if (!checkExistsVariantOption(newOpt, "option")) {
+                                newVariant = {
+                                    option: [
+                                        ...variant.option,
+                                        newOpt
+                                    ]
+                                }
+                                flag = true;
+                            } else {
+                                newVariant = {
+                                    option: changeVariantOptionValue(variant.option, newOpt, idxOptionName)
+                                }
+                                if (!checkExistsVariant(newAllVariant, newVariant)) {    
+                                    flag = true;
+                                }
+                                
+                            }
+                            if(flag) newAllVariant.push(newVariant);
+                        })
+                    })
+                    allVariant = newAllVariant;
+            } else {
+                const newOpt = {
+                    option: optionName.option,
+                    value: []
+                }
+                allVariant.map((variant) => {
+                    if (variant.option?.length < optionValue.length && optionName.option) {
+                        variant.option.push(newOpt)
+                    } else if (variant.option[idxOptionName]) {
+                        variant.option[idxOptionName].option = optionName.option; 
+                    }
+                })
+            }
+        })
+        setVariant(allVariant);
+    }
+    const handleChangeValueOption = (e, index) => {
+        const newTargetValue = e.target.value ? e.target.value : "";
+        const tempCheckIncludes = optionValue.some((element) => element.option === newTargetValue);
+        if(tempCheckIncludes) {
+            console.log(optionValue);
+            //error
+        } else {
+            const newObj = [...optionValue];
+            let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
+            newObj[index] = {
+                option: newTargetValue,
+                value: oldValue
+            };
+            setOptionValue(newObj);
+        }
+    }
+    const columns = [
+        { id: 'title', label: 'Title', minWidth: 170 },
+        { id: 'price', label: 'Price', minWidth: 100 },
+        {
+          id: 'quantity',
+          label: 'Quantity',
+          minWidth: 170,
+          align: 'right',
+        },
+        {
+          label: 'Action',
+          minWidth: 170,
+          align: 'right'
+        },
+      ];
+    useEffect(() => {
+        createVariantUI();
+
+    }, [optionValue])
     return (
         <>
         <FormGroup>
             <div className="row  text-black">  
                 <div className="offset-1 col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">   
-                    <Paper elevation={10} style={{padding: '1rem 2rem'}}>
+                    <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
                         <TextField className="text-field-input" name='title' placeholder='  Enter Title' fullWidth required onChange={() => console.log()()}  />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
@@ -29,18 +248,23 @@ const FormProduct = ( {returnTable })=> {
                             />
                         </div>
                     </Paper> 
-                    <Paper elevation={10} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Media</InputLabel>
                         <Input accept="image/*" id="contained-button-file" className="media-select" multiple type="file" />
                     </Paper> 
                     
-                    <Paper elevation={10} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Pricing</InputLabel>
                         <div className="row">
-
-                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <InputLabel name='title' className="text-normal" style={{margin: 0}}>Price</InputLabel>
+                            <Stack
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="center"
+                                spacing={10}
+                                >
+                                <InputLabel name='title' className="text-normal" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
                                 <TextField className="text-field-input"
+                                    style={{width: 'auto'}}
                                     placeholder="0.00"
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
@@ -48,50 +272,51 @@ const FormProduct = ( {returnTable })=> {
                                     name='title'
                                     fullWidth
                                     required
-                                    onChange={() => console.log()()}  />
-                            </div>
-                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <InputLabel name='title' style={{margin: 0}}>Compare at price</InputLabel>
-                                <TextField className="text-field-input"
-                                    placeholder="0.00"
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
-                                    }}
-                                    name='title'
-                                    fullWidth
-                                    required
-                                    onChange={() => console.log()()}  />
-                            </div>
-                            
+                                    onChange={(e) => setPrice(e.target.value)}  />
+                            </Stack>
                         </div>
                         <FormControlLabel control={<Checkbox onChange={onChangeTrackQuantity}/>} className='font-weight-normal' label="Charge tax on this product" />
                         <Divider className="divider-custom"/>
                         
                         <InputLabel name='title' style={{margin: 0}}>Cost per item</InputLabel>
-                        <TextField className="text-field-input"
-                                    placeholder="0.00"
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
-                                    }}
-                                    inputProps={{
-                                        'aria-label': 'weight',
-                                    }}
-                                    name='title'
-                                    fullWidth
-                                    required
-                                    onChange={() => console.log()()}  />
+                        <Stack
+                            direction="row"
+                            justifyContent="flex-start"
+                            alignItems="center"
+                            spacing={10}
+                            >
+                            
+                            <TextField className="text-field-input"
+                                placeholder="0.00"
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
+                                }}
+                                inputProps={{
+                                    'aria-label': 'weight',
+                                }}
+                                name='title'
+                                fullWidth
+                                required
+                                onChange={(e) => setCostPerItem(e.target.value)}  />
+                            {costPerItem && price ? 
+                            <>
+                                <div>
+                                    <p style={{margin: 0}}>Margin</p>
+                                    <p style={{margin: 0}}>{(price - costPerItem)/price * 100} %</p>
+                                </div>
+                                <div>
+                                    <p style={{margin: 0}}>Profit</p>
+                                    <p style={{margin: 0}}>${price - costPerItem}</p>
+                                </div>
+                            </>: ""}
+                        </Stack>
                         <FormHelperText id="filled-weight-helper-text">Customers won’t see this</FormHelperText>
                     </Paper>
-                    <Paper elevation={10} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
                         <div className="row">
-
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                                 <InputLabel name='title' style={{margin: 0}}>SKU (Stock Keeping Unit)</InputLabel>
-                                <TextField className="text-field-input" name='title' fullWidth required onChange={() => console.log()()}  />
-                            </div>
-                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <InputLabel name='title' style={{margin: 0}}>Barcode (ISBN, UPC, GTIN, etc.)</InputLabel>
                                 <TextField className="text-field-input" name='title' fullWidth required onChange={() => console.log()()}  />
                             </div>
                         </div>
@@ -139,11 +364,142 @@ const FormProduct = ( {returnTable })=> {
                             </Stack>
                         </div>
                     </Paper> 
-                    <Paper elevation={10} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Options</InputLabel>
-                        <FormControlLabel control={<Checkbox onChange={onChangeTrackQuantity}/>} label="This product has options, like size or color" />
+                        <FormControlLabel control={<Checkbox checked={showOpt} onChange={() => {
+                            if (!showOpt) {
+                                addAnotherOption();
+                            }
+                            setShowOpt(!showOpt)
+                            
+                        }}/>} label="This product has options, like size or color" />
+                        {showOpt ?
+                            <>  
+                                <Divider className="divider-custom"/>
+                                {optionTag.map((element,index) => {
+                                    let popoverId = open ? 'pop-over-' + index : undefined;
+                                    return element ?
+                                    (
+                                        <>  
+                                            <InputLabel className="text-normal " name='title'>Option Name</InputLabel>
+                                            <div className="row">
+                                                <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                    <TextField
+                                                        aria-describedby={popoverId} 
+                                                        className="text-field-input"
+                                                        name='title'
+                                                        fullWidth
+                                                        required
+                                                        value={optionValue[index]?.option || ""}
+                                                        onClick={handlePopoverOpen}
+                                                        onBlur={handlePopoverClose}
+                                                        onChange={(e) => handleChangeValueOption(e, index)}
+                                                    />
+                                                </div>
+                                                <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                                    
+                                                    <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOption(index)} ></i>
+                                                </div>
+                                            </div>
+                                            <Popper id={popoverId} open={open} anchorEl={anchorEl}
+                                                onClose={handlePopoverClose}
+                                                placement='bottom-start'
+                                                >
+                                                    <Box className="box-poper">
+                                                        Example: Size, Color, Material, ...
+                                                    </Box>
+                                            </Popper>
+                                            
+                                            <InputLabel className="text-normal " name='title'>Option Value</InputLabel>
+                                            {
+                                                optionValue[index]?.value.map((value, idxValue) => {
+                                                    return (
+                                                        <div className="row">
+                                                            <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                                
+                                                            <TextField
+                                                                    className="text-field-input"
+                                                                    name='title'
+                                                                    fullWidth
+                                                                    required
+                                                                    value={value}
+                                                                    autoFocus={true}
+                                                                    onChange={(e) => changeOptionValue(e, index, idxValue)}
+                                                                    />
+                                                            </div>
+                                                            <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                                                
+                                                                <i className="fa-trash fa-icon icon-trash" ></i>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                            <div className="row">
+                                                <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                                
+                                                    <TextField
+                                                        className="text-field-input"
+                                                        name='title'
+                                                        fullWidth
+                                                        required
+                                                        value=''
+                                                        onChange={(e) => changeOptionValue(e, index)}
+                                                    />
+                                                </div>
+                                                <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                                    <i className="fa-trash fa-icon icon-trash" ></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <button className="btn-option" onClick={() => doneOrEditOption(index)}>
+                                                Done
+                                            </button>
+                                            {index !== 2 ?    
+                                                <Divider className="divider-custom"/>
+                                            : ""
+                                            }
+                                        </>
+                                    ) : (
+                                        <div className="row">
+                                            <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+                                                <h5>{optionValue[index].option}</h5>
+                                                <div className="row">
+                                                    {optionValue[index]?.value?.map((element) => {
+                                                        return <Chip className="chip-width-auto" label={element}/>
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                                                <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
+                                            </div>
+                                            {index !== 2 ?    
+                                                <Divider className="divider-custom"/>
+                                            : ""
+                                            }
+                                        </div>
+                                    )
+                                })}
+                                {optionTag.length <= 2 ?
+                                    <div>
+                                        <i className="fa-plus fa-icon icon-plus-before-text" ></i>
+                                        <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Add another option</Link>
+                                    </div>
+                                : ""
+                                }
+                            </>
+                            : ""
+                        }
+
                     </Paper> 
-                    <Paper elevation={10} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                    {
+                        variant
+                        ?   <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                                {/* <TableVariant columnsOfData={columns}></TableVariant> */}
+                            </Paper>
+                        : <></>
+                    }
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <Stack
                                 direction="row"
                                 justifyContent="space-between"
@@ -159,7 +515,7 @@ const FormProduct = ( {returnTable })=> {
                     </Paper> 
                 </div>   
                 <div className="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">                      
-                    <Paper elevation={10}>
+                    <Paper elevation={5}>
                     </Paper> 
                 </div>    
             </div>  

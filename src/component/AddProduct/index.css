@@ -19,5 +19,5 @@
 }
 
 .text-black p, .text-black label, .text-black span {
-    color: black !important;
+    color: #333 !important;
 }
