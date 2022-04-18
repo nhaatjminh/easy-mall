@@ -124,68 +124,68 @@ const FormProduct = ()=> {
         })
         return newVariant;
     }
-    // function combineArrays( array_of_arrays ){
-    //     if( ! array_of_arrays ){
-    //         return [];
-    //     }
+    function combineArrays( array_of_arrays ){
+        if( ! array_of_arrays ){
+            return [];
+        }
     
-    //     if( ! Array.isArray( array_of_arrays ) ){
-    //         return [];
-    //     }
+        if( ! Array.isArray( array_of_arrays ) ){
+            return [];
+        }
     
-    //     if( array_of_arrays.length == 0 ){
-    //         return [];
-    //     }
+        if( array_of_arrays.length == 0 ){
+            return [];
+        }
     
-    //     for( let i = 0 ; i < array_of_arrays.length; i++ ){
-    //         if( ! Array.isArray(array_of_arrays[i]) || array_of_arrays[i].length == 0 ){
-    //             return [];
-    //         }
-    //     }
-    //     let odometer = new Array( array_of_arrays.length );
-    //     odometer.fill( 0 ); 
+        for( let i = 0 ; i < array_of_arrays.length; i++ ){
+            if( ! Array.isArray(array_of_arrays[i]) || array_of_arrays[i].length == 0 ){
+                return [];
+            }
+        }
+        let odometer = new Array( array_of_arrays.length );
+        odometer.fill( 0 ); 
     
-    //     let output = [];
+        let output = [];
     
-    //     let newCombination = formCombination( odometer, array_of_arrays );
-    //     output.push( newCombination.substr(1) );
+        let newCombination = formCombination( odometer, array_of_arrays );
+        output.push( newCombination.substr(1) );
     
-    //     while ( odometer_increment( odometer, array_of_arrays ) ){
-    //         newCombination = formCombination( odometer, array_of_arrays );
-    //         output.push( newCombination.substr(1) );
-    //     }
+        while ( odometer_increment( odometer, array_of_arrays ) ){
+            newCombination = formCombination( odometer, array_of_arrays );
+            output.push( newCombination.substr(1) );
+        }
     
-    //     return output;
-    // }
+        return output;
+    }
     
-    // function formCombination( odometer, array_of_arrays ){
-    //     return odometer.reduce(
-    //       function(accumulator, odometer_value, odometer_index){
-    //         return "" + accumulator +";" +array_of_arrays[odometer_index][odometer_value];
-    //       },
-    //       ""
-    //     );
-    // }
+    function formCombination( odometer, array_of_arrays ){
+        return odometer.reduce(
+          function(accumulator, odometer_value, odometer_index){
+            return "" + accumulator +";" +array_of_arrays[odometer_index][odometer_value];
+          },
+          ""
+        );
+    }
     
-    // function odometer_increment( odometer, array_of_arrays ){
-    //     for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
-    //         let maxee = array_of_arrays[i_odometer_digit].length - 1;         
-    //         if( odometer[i_odometer_digit] + 1 <= maxee ){
-    //             odometer[i_odometer_digit]++;
-    //             return true;
-    //         }
-    //         else{
-    //             if( i_odometer_digit - 1 < 0 ){
-    //                 return false;
-    //             }
-    //             else{
-    //                 odometer[i_odometer_digit]=0;
-    //                 continue;
-    //             }
-    //         }
-    //     }
+    function odometer_increment( odometer, array_of_arrays ){
+        for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
+            let maxee = array_of_arrays[i_odometer_digit].length - 1;         
+            if( odometer[i_odometer_digit] + 1 <= maxee ){
+                odometer[i_odometer_digit]++;
+                return true;
+            }
+            else{
+                if( i_odometer_digit - 1 < 0 ){
+                    return false;
+                }
+                else{
+                    odometer[i_odometer_digit]=0;
+                    continue;
+                }
+            }
+        }
     
-    // }
+    }
     
     // console.log(combineArrays([ ["A","B"],
     //                 ["1", "2","3"],["C1","C2","C3"],
@@ -194,89 +194,103 @@ const FormProduct = ()=> {
         let allVariant = [...variant];
         const idxOption = [];
         const idxValue = [];
-        // const combine = new Promise((resolve, reject) => {
-        //     optionValue.forEach((optionName) => {
-        //         idxOption.push(optionName.option);
-        //         idxValue.push(optionName.value);
-        //     })
-        //     resolve();
-        // }).then(() => {
-        //     console.log(idxValue);
-        //     let a = combineArrays(idxValue);
-        //     console.log(a);
-        // })
-        //handle delete optionField
-        allVariant.map((variant) => {
-            if (variant.option.length > optionValue.length) {
-                // xoa 1 phan tu bat ki de length no bang nhau lai
-                variant.option.pop();
-
-            }
-        });
-        //create new Variant
-        optionValue.map((optionName,idxOptionName) => {
-
-            if (optionName?.value.length)
-                if (!allVariant.length) {
-                    optionName.value?.map((value,idxValue) => {
-                        const newOpt = {
-                            option: optionName.option,
-                            value: value
-                        }
-                        if (!checkExistsVariantOption(newOpt, "value")) {
-                            const newVariant = {
-                                option: [newOpt]
-                            }
-                            allVariant.push(newVariant);
-                        }
-                    })
-                } else {
-                    let newAllVariant = [];
-                    allVariant.map((variant) => {
-                        optionName.value?.map((value,idxValue) => {
-                            const newOpt = {
-                                option: optionName.option,
-                                value: value
-                            }
-                            let newVariant = {};
-                            let flag = false;
-                            if (!checkExistsVariantOption(newOpt, "option")) {
-                                newVariant = {
-                                    option: [
-                                        ...variant.option,
-                                        newOpt
-                                    ]
-                                }
-                                flag = true;
-                            } else {
-                                newVariant = {
-                                    option: changeVariantOptionValue(variant.option, newOpt, idxOptionName)
-                                }
-                                if (!checkExistsVariant(newAllVariant, newVariant)) {    
-                                    flag = true;
-                                }
-                                
-                            }
-                            if(flag) newAllVariant.push(newVariant);
-                        })
-                    })
-                    allVariant = newAllVariant;
-            } else {
-                const newOpt = {
-                    option: optionName.option,
-                    value: []
-                }
-                allVariant.map((variant) => {
-                    if (variant.option?.length < optionValue.length && optionName.option) {
-                        variant.option.push(newOpt)
-                    } else if (variant.option[idxOptionName]) {
-                        variant.option[idxOptionName].option = optionName.option; 
-                        variant.option[idxOptionName].value = []; 
-                    }
+        const combine = new Promise((resolve, reject) => {
+            optionValue.forEach((optionName) => {
+                idxOption.push(optionName.option);
+                idxValue.push(optionName.value);
+            })
+            resolve();
+        }).then(() => {
+            console.log(idxValue);
+            let test = [];
+            let a = combineArrays(idxValue);
+            a.forEach((variant) => {
+                let b = variant.split(";");
+                const newVariant = []
+                b.forEach((opt, idxOpt) => {
+                   const newOpt = {
+                       option: idxOption[idxOpt],
+                       value: opt
+                   }
+                   newVariant.push(newOpt);
                 })
-            }
+                test.push(newVariant);
+            })
+            console.log(test);
         })
-        setVariant(allVariant);
+
+        //handle delete optionField
+        // allVariant.map((variant) => {
+        //     if (variant.option.length > optionValue.length) {
+        //         // xoa 1 phan tu bat ki de length no bang nhau lai
+        //         variant.option.pop();
+
+        //     }
+        // });
+        // //create new Variant
+        // optionValue.map((optionName,idxOptionName) => {
+
+        //     if (optionName?.value.length)
+        //         if (!allVariant.length) {
+        //             optionName.value?.map((value,idxValue) => {
+        //                 const newOpt = {
+        //                     option: optionName.option,
+        //                     value: value
+        //                 }
+        //                 if (!checkExistsVariantOption(newOpt, "value")) {
+        //                     const newVariant = {
+        //                         option: [newOpt]
+        //                     }
+        //                     allVariant.push(newVariant);
+        //                 }
+        //             })
+        //         } else {
+        //             let newAllVariant = [];
+        //             allVariant.map((variant) => {
+        //                 optionName.value?.map((value,idxValue) => {
+        //                     const newOpt = {
+        //                         option: optionName.option,
+        //                         value: value
+        //                     }
+        //                     let newVariant = {};
+        //                     let flag = false;
+        //                     if (!checkExistsVariantOption(newOpt, "option")) {
+        //                         newVariant = {
+        //                             option: [
+        //                                 ...variant.option,
+        //                                 newOpt
+        //                             ]
+        //                         }
+        //                         flag = true;
+        //                     } else {
+        //                         newVariant = {
+        //                             option: changeVariantOptionValue(variant.option, newOpt, idxOptionName)
+        //                         }
+        //                         if (!checkExistsVariant(newAllVariant, newVariant)) {    
+        //                             flag = true;
+        //                         }
+                                
+        //                     }
+        //                     if(flag) newAllVariant.push(newVariant);
+        //                 })
+        //             })
+        //             allVariant = newAllVariant;
+        //     } else {
+        //         const newOpt = {
+        //             option: optionName.option,
+        //             value: []
+        //         }
+        //         allVariant.map((variant) => {
+        //             if (variant.option?.length < optionValue.length && optionName.option) {
+        //                 variant.option.push(newOpt)
+        //             } else if (variant.option[idxOptionName]) {
+        //                 variant.option[idxOptionName].option = optionName.option; 
+        //                 variant.option[idxOptionName].value = []; 
+        //             }
+        //         })
+        //     }
+        // })
+        // setVariant(allVariant);
     }
     const handleChangeValueOption = (e, index) => {
         const newTargetValue = e.target.value ? e.target.value : "";
