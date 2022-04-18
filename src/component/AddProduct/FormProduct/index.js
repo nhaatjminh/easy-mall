@@ -16,7 +16,7 @@ const FormProduct = ()=> {
     const [price, setPrice] = useState(null);
     const [optionTag, setOptionTag] = useState([]); // state to check length and render option
     const [optionValue, setOptionValue] = useState([]);
-    
+    const [personName, setPersonName] = useState([]);
     const [variant, setVariant] = useState([]);
     const [form, setForm] = useState([])
 
@@ -124,8 +124,87 @@ const FormProduct = ()=> {
         })
         return newVariant;
     }
+    // function combineArrays( array_of_arrays ){
+    //     if( ! array_of_arrays ){
+    //         return [];
+    //     }
+    
+    //     if( ! Array.isArray( array_of_arrays ) ){
+    //         return [];
+    //     }
+    
+    //     if( array_of_arrays.length == 0 ){
+    //         return [];
+    //     }
+    
+    //     for( let i = 0 ; i < array_of_arrays.length; i++ ){
+    //         if( ! Array.isArray(array_of_arrays[i]) || array_of_arrays[i].length == 0 ){
+    //             return [];
+    //         }
+    //     }
+    //     let odometer = new Array( array_of_arrays.length );
+    //     odometer.fill( 0 ); 
+    
+    //     let output = [];
+    
+    //     let newCombination = formCombination( odometer, array_of_arrays );
+    //     output.push( newCombination.substr(1) );
+    
+    //     while ( odometer_increment( odometer, array_of_arrays ) ){
+    //         newCombination = formCombination( odometer, array_of_arrays );
+    //         output.push( newCombination.substr(1) );
+    //     }
+    
+    //     return output;
+    // }
+    
+    // function formCombination( odometer, array_of_arrays ){
+    //     return odometer.reduce(
+    //       function(accumulator, odometer_value, odometer_index){
+    //         return "" + accumulator +";" +array_of_arrays[odometer_index][odometer_value];
+    //       },
+    //       ""
+    //     );
+    // }
+    
+    // function odometer_increment( odometer, array_of_arrays ){
+    //     for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
+    //         let maxee = array_of_arrays[i_odometer_digit].length - 1;         
+    //         if( odometer[i_odometer_digit] + 1 <= maxee ){
+    //             odometer[i_odometer_digit]++;
+    //             return true;
+    //         }
+    //         else{
+    //             if( i_odometer_digit - 1 < 0 ){
+    //                 return false;
+    //             }
+    //             else{
+    //                 odometer[i_odometer_digit]=0;
+    //                 continue;
+    //             }
+    //         }
+    //     }
+    
+    // }
+    
+    // console.log(combineArrays([ ["A","B"],
+    //                 ["1", "2","3"],["C1","C2","C3"],
+    //                 ] ))
     const createVariantUI = () => {
         let allVariant = [...variant];
+        const idxOption = [];
+        const idxValue = [];
+        // const combine = new Promise((resolve, reject) => {
+        //     optionValue.forEach((optionName) => {
+        //         idxOption.push(optionName.option);
+        //         idxValue.push(optionName.value);
+        //     })
+        //     resolve();
+        // }).then(() => {
+        //     console.log(idxValue);
+        //     let a = combineArrays(idxValue);
+        //     console.log(a);
+        // })
         //handle delete optionField
         allVariant.map((variant) => {
             if (variant.option.length > optionValue.length) {
@@ -238,7 +317,16 @@ const FormProduct = ()=> {
           maxWidth: 200,
           align: 'right'
         },
-      ];
+    ];
+    const handleChange = (event) => {
+    const {
+        target: { value },
+    } = event;
+    setPersonName(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value,
+    );
+    };
     useEffect(() => {
         createVariantUI();
 
@@ -529,9 +617,60 @@ const FormProduct = ()=> {
                 <div className="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product Status</InputLabel>
-                        <Select fullWidth>
+                        <Select fullWidth
+                        className="poper-item">
                             <MenuItem>Draft</MenuItem>
                             <MenuItem>Active</MenuItem>
+                        </Select>
+                        <FormHelperText id="filled-weight-helper-text">This product will be hidden from all sales channels.</FormHelperText>
+                        <Divider className="divider-custom"/>
+                        
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Sales channels and apps</InputLabel>
+                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={showOpt}/>} label="Online Store" />
+                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={showOpt}/>}  label="Google" />
+                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={showOpt}/>} label="Facebook" />
+                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={showOpt}/>}  label="Microsoft" />
+                    </Paper> 
+                    <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product organization</InputLabel>
+                        
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Type</InputLabel>
+                        <Select fullWidth 
+                        className="poper-item">
+                            <MenuItem>Draft</MenuItem>
+                            <MenuItem>Active</MenuItem>
+                        </Select>
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium  " name='title'>Collection</InputLabel>
+                        <Select fullWidth multiple
+                        
+                        className="poper-item"
+                        value={personName}
+                        onChange={handleChange}
+                        renderValue={(selected) => (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {selected.map((value) => (
+                                <Chip key={value} label={value} />
+                              ))}
+                            </Box>
+                          )}>
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="active">Active</MenuItem>
+                        </Select>
+                        <Divider className="divider-custom"/>
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium  " name='title'>Tags</InputLabel>
+                        <Select fullWidth multiple
+                        className="poper-item"
+                        value={personName}
+                        onChange={handleChange}
+                        renderValue={(selected) => (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                              {selected.map((value) => (
+                                <Chip key={value} label={value} />
+                              ))}
+                            </Box>
+                          )}>
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="active">Active</MenuItem>
                         </Select>
                     </Paper> 
                 </div>    

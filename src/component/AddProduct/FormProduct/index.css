@@ -2,7 +2,11 @@
     font-size: 1rem;
 }
 .poper-item {
-    border: 1px solid #333 !important;
+    border: 1px solid #333;
+    border-radius: 5px;
+}
+.poper-item::before, .poper-item::after {
+    display: none;
 }
 .poper-item:hover {
     background-color: #6666 !important;
