@@ -81,49 +81,49 @@ const FormProduct = ()=> {
         tempEdit[index] = !tempEdit[index];
         setOptionTag([...tempEdit]);
     }
-    const checkExistsVariantOption = (newOpt, type) => { // type to compare, option (optionName) or value
-        let allVariant = [...variant];
-        return allVariant.some((variant) => {
-            return variant.option.some((option) => {
-                return option.type === newOpt.type
-            });
-        })
-    }
-    function shallowObjectEqual(object1, object2) {
-        const keys1 = Object.keys(object1);
-        const keys2 = Object.keys(object2);
+    // const checkExistsVariantOption = (newOpt, type) => { // type to compare, option (optionName) or value
+    //     let allVariant = [...variant];
+    //     return allVariant.some((variant) => {
+    //         return variant.option.some((option) => {
+    //             return option.type === newOpt.type
+    //         });
+    //     })
+    // }
+    // function shallowObjectEqual(object1, object2) {
+    //     const keys1 = Object.keys(object1);
+    //     const keys2 = Object.keys(object2);
 
-        if (keys1.length !== keys2.length) {
-          return false;
-        }
+    //     if (keys1.length !== keys2.length) {
+    //       return false;
+    //     }
       
-        for (let key of keys1) {
-            if (Array.isArray(object1[key]) && Array.isArray(object2[key])) {
-                if (object1[key].length !== object2[key].length) return false;
-            }
-            else if (object1[key] !== object2[key]) {
-                return false;
-            }
-        }
+    //     for (let key of keys1) {
+    //         if (Array.isArray(object1[key]) && Array.isArray(object2[key])) {
+    //             if (object1[key].length !== object2[key].length) return false;
+    //         }
+    //         else if (object1[key] !== object2[key]) {
+    //             return false;
+    //         }
+    //     }
       
-        return true;
-      }
-    const checkExistsVariant = (newAllVariant, newVariant) => { // type to compare, option (optionName) or value
-        return newAllVariant.some((variant) => {
-            return variant.option.length !== newVariant.option.length
-                || variant.option.every((value, index) => shallowObjectEqual(value,newVariant.option[index]))
-        })
-    }
-    const changeVariantOptionValue = (variantOpt, newOpt, idxOptionName) => {
-        let newVariant = [];
-        variantOpt.map((element, idx) => {
-            let newElement = {...element};
-            if (element.option === newOpt.option || idx === idxOptionName)
-                newVariant.push(newOpt);
-            else newVariant.push(newElement);
-        })
-        return newVariant;
-    }
+    //     return true;
+    //   }
+    // const checkExistsVariant = (newAllVariant, newVariant) => { // type to compare, option (optionName) or value
+    //     return newAllVariant.some((variant) => {
+    //         return variant.option.length !== newVariant.option.length
+    //             || variant.option.every((value, index) => shallowObjectEqual(value,newVariant.option[index]))
+    //     })
+    // }
+    // const changeVariantOptionValue = (variantOpt, newOpt, idxOptionName) => {
+    //     let newVariant = [];
+    //     variantOpt.map((element, idx) => {
+    //         let newElement = {...element};
+    //         if (element.option === newOpt.option || idx === idxOptionName)
+    //             newVariant.push(newOpt);
+    //         else newVariant.push(newElement);
+    //     })
+    //     return newVariant;
+    // }
     function combineArrays( array_of_arrays ){
         if( ! array_of_arrays ){
             return [];
@@ -201,25 +201,30 @@ const FormProduct = ()=> {
             })
             resolve();
         }).then(() => {
-            console.log(idxValue);
-            let test = [];
             let a = combineArrays(idxValue);
+            
+            const allNewVariant = []
             a.forEach((variant) => {
                 let b = variant.split(";");
-                const newVariant = []
+                let newVariant = {};
                 b.forEach((opt, idxOpt) => {
-                   const newOpt = {
-                       option: idxOption[idxOpt],
-                       value: opt
-                   }
-                   newVariant.push(newOpt);
+                    let newOpt = {
+                        option: idxOption[idxOpt],
+                        value: opt
+                    }
+                    if (!newVariant?.option)
+                        newVariant = {
+                            option: [newOpt]
+                        }
+                    else newVariant.option.push(newOpt);
                 })
-                test.push(newVariant);
+
+                allNewVariant.push(newVariant);
             })
-            console.log(test);
+            if (allNewVariant) setVariant(allNewVariant);
         })
 
-        //handle delete optionField
+        // //handle delete optionField
         // allVariant.map((variant) => {
         //     if (variant.option.length > optionValue.length) {
         //         // xoa 1 phan tu bat ki de length no bang nhau lai
@@ -291,6 +296,8 @@ const FormProduct = ()=> {
         //     }
         // })
         // setVariant(allVariant);
+        
+            console.log(allVariant);
     }
     const handleChangeValueOption = (e, index) => {
         const newTargetValue = e.target.value ? e.target.value : "";
