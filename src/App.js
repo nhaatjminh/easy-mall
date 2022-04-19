@@ -1,15 +1,15 @@
 import React from "react";
-import Login from "./component/Login";
+import Login from "./pages/Login";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import Register from "./component/Register";
-import HomePage from "./component/HomePage";
-import SellGuide from "./component/SellGuide";
-import MarketGuide from "./component/MarketGuide";
-import ManageGuide from "./component/ManageGuide";
-import StoreLogin from "./component/StoreLogin";
-import PricingScene from "./component/PricingScene";
-import DetailStore from "./component/DetailStore";
-import ManageStoreProduct from "./component/ManageStoreProduct";
+import Register from "./pages/Register";
+import HomePage from "./pages/HomePage";
+import SellGuide from "./pages/SellGuide";
+import MarketGuide from "./pages/MarketGuide";
+import ManageGuide from "./pages/ManageGuide";
+import StoreLogin from "./pages/StoreLogin";
+import PricingScene from "./pages/PricingScene";
+import DetailStore from "./pages/DetailStore";
+import ManageStoreProduct from "./pages/ManageStoreProduct";
 const App = () => {
   return(
     <div>

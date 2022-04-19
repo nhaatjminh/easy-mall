@@ -5,8 +5,8 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 import { Dropdown } from 'react-bootstrap';
-import NavBarDetailStore from "../NavBarDetailStore";
-import HeaderDetailStore from "../HeaderDetailStore";
+import NavBarDetailStore from "../../component/NavBarDetailStore";
+import HeaderDetailStore from "../../component/HeaderDetailStore";
 
 
 import { useSelector, useDispatch } from "react-redux";

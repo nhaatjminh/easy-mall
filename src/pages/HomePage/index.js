@@ -3,8 +3,8 @@ import './index.css';
 import { Link } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import NavBar from "../NavBar";
-import FooterHomePage from "../FooterHomepage";
+import NavBar from "../../component/NavBar";
+import FooterHomePage from "../../component/FooterHomepage";
 const HomePage = () => {
     
     return (

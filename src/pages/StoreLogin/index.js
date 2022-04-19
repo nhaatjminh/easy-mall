@@ -7,7 +7,7 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 import { Dropdown } from 'react-bootstrap';
-import StoreLoginList from "../StoreLoginList";
+import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
 import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";

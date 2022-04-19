@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
 import Stack from '@mui/material/Stack';
 import './index.css';
-import TableManage from "../TableManage";
+import TableManage from "../../component/TableManage";
 
-import NavBarDetailStore from "../NavBarDetailStore";
-import HeaderDetailStore from "../HeaderDetailStore";
-import AddProduct from "../AddProduct";
+import NavBarDetailStore from "../../component/NavBarDetailStore";
+import HeaderDetailStore from "../../component/HeaderDetailStore";
+import AddProduct from "../../component/AddProduct";
 const ManageStoreProduct = () => {
   
   const [rows, setRows] = useState([]);
