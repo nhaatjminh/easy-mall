@@ -122,7 +122,7 @@ const StoreLogin = ({nameAccount}) => {
                                         {listStoreShow ? listStoreShow.map((store, index) => (
                                         <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
                                             changeNameStoreSelectedCall(store.name);
-                                            routeChange("/store-detail");
+                                            routeChange("/store-detail/home/" + store.id);
                                         }}></StoreLoginList>
                                         )) :
                                         ""

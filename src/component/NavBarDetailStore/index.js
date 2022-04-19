@@ -1,16 +1,20 @@
 import React, {useState} from "react";
 import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
-
 import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
-
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
 import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
 
 const NavBarDetailStore = ({isDesktop}) => {
+
+    let navigate = useNavigate(); 
+    const routeChange = (newPath) =>{
+        navigate(newPath);
+    }
     //use redux to manage state
     const keySelected = useSelector((state) => state.keySelected.key);
     console.log(keySelected);
@@ -68,7 +72,10 @@ const NavBarDetailStore = ({isDesktop}) => {
                         </p>
                     </Typography>
                     <Typography component={'span'} className={keySelected === 3 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(3)}>
+                    onClick={() => {
+                        routeChange('/store-detail/manage-product/1')
+                        changeKeySelectedParent(3)
+                    }}>
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-cube  fa-icon fa-store-detail-nav "></i>
                             Sản phẩm

@@ -9,6 +9,7 @@ import ManageGuide from "./component/ManageGuide";
 import StoreLogin from "./component/StoreLogin";
 import PricingScene from "./component/PricingScene";
 import DetailStore from "./component/DetailStore";
+import ManageStoreProduct from "./component/ManageStoreProduct";
 const App = () => {
   return(
     <div>
@@ -22,7 +23,9 @@ const App = () => {
           
           <Route path='/store-login' element={<StoreLogin/>}/>
           
-          <Route path='/store-detail' element={<DetailStore/>}/>
+          <Route path='/store-detail/home/:storeId' element={<DetailStore/>}/>
+          
+          <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/register' element={<Register/>}/>
         </Routes>

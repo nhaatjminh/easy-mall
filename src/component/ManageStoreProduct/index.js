@@ -3,6 +3,8 @@ import Stack from '@mui/material/Stack';
 import './index.css';
 import TableManage from "../TableManage";
 
+import NavBarDetailStore from "../NavBarDetailStore";
+import HeaderDetailStore from "../HeaderDetailStore";
 import AddProduct from "../AddProduct";
 const ManageStoreProduct = () => {
   
@@ -53,34 +55,49 @@ const ManageStoreProduct = () => {
     getListProducts();
   }, [])
   return (
-        <>
-        {!showAddProduct ?
-        <>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={1}
-          >              
-            <p className="text-btn-login ml-1rem p-0-75rem"> Products </p>
-            <Stack
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-              spacing={1}
-            >
-              <button className="btn  btn-login" > <p className="text-btn-login"> Export </p></button>
-              <button className="btn  btn-login" > <p className="text-btn-login"> Import </p></button>
-              <button className="btn btn-success btn-login" onClick={() => setShowAddProduct(true)} ><p className="text-btn-login font-size-0-85-rem-max500"> Add Product </p></button>
-            </Stack>
-          </Stack>
-          <div className="table">
-            <TableManage data={rows} columnsOfData={columns}></TableManage>
-          </div>
-        </>
-        : <AddProduct returnTable={() => setShowAddProduct(false)}></AddProduct>}
-                
-        </>
+    <>
+      <HeaderDetailStore ></HeaderDetailStore>
+      <div className="row callpage" >
+
+          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
+  
+              <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
+          </div> 
+          <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table">     
+              <div className="row ">
+                  
+              <>
+              {!showAddProduct ?
+              <>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  spacing={1}
+                >              
+                  <p className="text-btn-login ml-1rem p-0-75rem"> Products </p>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <button className="btn  btn-login" > <p className="text-btn-login"> Export </p></button>
+                    <button className="btn  btn-login" > <p className="text-btn-login"> Import </p></button>
+                    <button className="btn btn-success btn-login" onClick={() => setShowAddProduct(true)} ><p className="text-btn-login font-size-0-85-rem-max500"> Add Product </p></button>
+                  </Stack>
+                </Stack>
+                <div className="table">
+                  <TableManage data={rows} columnsOfData={columns}></TableManage>
+                </div>
+              </>
+              : <AddProduct returnTable={() => setShowAddProduct(false)}></AddProduct>}
+                      
+              </>
+              </div>
+          </div> 
+      </div>   
+      </>    
     );
 }
 

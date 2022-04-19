@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback } from "react";
+import { useParams } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import { Paper, TextField, InputLabel, Box,Chip ,Select, MenuItem, Input, FormGroup, FormControlLabel,Popper, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
 import {EditorState} from 'draft-js'
@@ -8,18 +9,23 @@ import './index.css';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Link } from "react-router-dom";
 import TableVariant from "../TableVariant";
+import { debounce } from "lodash";
 const FormProduct = ()=> {
     const [editorState, setEditorState] = useState(()=> EditorState.createEmpty());
     const [showOpt, setShowOpt] = useState(false);
+    const [productName, setProductName] = useState('');
+    const [productPrice, setProductPrice] = useState(null);
+    const [productCostPerItem, setProductCostPerItem] = useState(null);
     const [trackQuantity, setTrackQuantity] = useState(false);
-    const [costPerItem, setCostPerItem] = useState(null);
-    const [price, setPrice] = useState(null);
     const [optionTag, setOptionTag] = useState([]); // state to check length and render option
     const [optionValue, setOptionValue] = useState([]);
-    const [personName, setPersonName] = useState([]);
     const [variant, setVariant] = useState([]);
+    const [status, setStatus] = useState('')
+    const [collection, setCollection] = useState([])
+    const [type, setType] = useState(null);
     const [form, setForm] = useState([])
-
+    const params = useParams();
+    const debounceChange = useCallback(debounce((callbackFunction) => callbackFunction, 1000))
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -38,7 +44,7 @@ const FormProduct = ()=> {
     const addAnotherOption = (index) => {
         if (optionTag.length === 3) return;
         for (const optionValueChild of optionValue) {
-            if (!optionValueChild.option || !optionValueChild.value.length) {
+            if (!optionValueChild.name || !optionValueChild.value.length) {
                 console.log("Dmm dien vo cai nay di da");
                 return;
             }
@@ -49,7 +55,7 @@ const FormProduct = ()=> {
         const newOptionValue =[ 
             ...optionValue,
             {
-            option: "",
+            name: "",
             value: []
             }];
         setOptionValue(newOptionValue);
@@ -81,49 +87,6 @@ const FormProduct = ()=> {
         tempEdit[index] = !tempEdit[index];
         setOptionTag([...tempEdit]);
     }
-    // const checkExistsVariantOption = (newOpt, type) => { // type to compare, option (optionName) or value
-    //     let allVariant = [...variant];
-    //     return allVariant.some((variant) => {
-    //         return variant.option.some((option) => {
-    //             return option.type === newOpt.type
-    //         });
-    //     })
-    // }
-    // function shallowObjectEqual(object1, object2) {
-    //     const keys1 = Object.keys(object1);
-    //     const keys2 = Object.keys(object2);
-
-    //     if (keys1.length !== keys2.length) {
-    //       return false;
-    //     }
-      
-    //     for (let key of keys1) {
-    //         if (Array.isArray(object1[key]) && Array.isArray(object2[key])) {
-    //             if (object1[key].length !== object2[key].length) return false;
-    //         }
-    //         else if (object1[key] !== object2[key]) {
-    //             return false;
-    //         }
-    //     }
-      
-    //     return true;
-    //   }
-    // const checkExistsVariant = (newAllVariant, newVariant) => { // type to compare, option (optionName) or value
-    //     return newAllVariant.some((variant) => {
-    //         return variant.option.length !== newVariant.option.length
-    //             || variant.option.every((value, index) => shallowObjectEqual(value,newVariant.option[index]))
-    //     })
-    // }
-    // const changeVariantOptionValue = (variantOpt, newOpt, idxOptionName) => {
-    //     let newVariant = [];
-    //     variantOpt.map((element, idx) => {
-    //         let newElement = {...element};
-    //         if (element.option === newOpt.option || idx === idxOptionName)
-    //             newVariant.push(newOpt);
-    //         else newVariant.push(newElement);
-    //     })
-    //     return newVariant;
-    // }
     function combineArrays( array_of_arrays ){
         if( ! array_of_arrays ){
             return [];
@@ -161,7 +124,7 @@ const FormProduct = ()=> {
     function formCombination( odometer, array_of_arrays ){
         return odometer.reduce(
           function(accumulator, odometer_value, odometer_index){
-            return "" + accumulator +";" +array_of_arrays[odometer_index][odometer_value];
+            return "" + accumulator +"/" +array_of_arrays[odometer_index][odometer_value];
           },
           ""
         );
@@ -186,34 +149,30 @@ const FormProduct = ()=> {
         }
     
     }
-    
-    // console.log(combineArrays([ ["A","B"],
-    //                 ["1", "2","3"],["C1","C2","C3"],
-    //                 ] ))
     const createVariantUI = () => {
-        let allVariant = [...variant];
         const idxOption = [];
         const idxValue = [];
-        const combine = new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
             optionValue.forEach((optionName) => {
-                idxOption.push(optionName.option);
+                idxOption.push(optionName.name);
                 idxValue.push(optionName.value);
             })
             resolve();
         }).then(() => {
-            let a = combineArrays(idxValue);
+            let listVariant = combineArrays(idxValue);
             
             const allNewVariant = []
-            a.forEach((variant) => {
-                let b = variant.split(";");
+            listVariant.forEach((variant) => {
+                let listOptionOfVariant = variant.split("/");
                 let newVariant = {};
-                b.forEach((opt, idxOpt) => {
+                listOptionOfVariant.forEach((opt, idxOpt) => {
                     let newOpt = {
-                        option: idxOption[idxOpt],
+                        name: idxOption[idxOpt],
                         value: opt
                     }
                     if (!newVariant?.option)
                         newVariant = {
+                            name: variant,
                             option: [newOpt]
                         }
                     else newVariant.option.push(newOpt);
@@ -221,87 +180,14 @@ const FormProduct = ()=> {
 
                 allNewVariant.push(newVariant);
             })
-            if (allNewVariant) setVariant(allNewVariant);
+            if (allNewVariant) {
+                debounceChange(setVariant(allNewVariant))
+            }
         })
-
-        // //handle delete optionField
-        // allVariant.map((variant) => {
-        //     if (variant.option.length > optionValue.length) {
-        //         // xoa 1 phan tu bat ki de length no bang nhau lai
-        //         variant.option.pop();
-
-        //     }
-        // });
-        // //create new Variant
-        // optionValue.map((optionName,idxOptionName) => {
-
-        //     if (optionName?.value.length)
-        //         if (!allVariant.length) {
-        //             optionName.value?.map((value,idxValue) => {
-        //                 const newOpt = {
-        //                     option: optionName.option,
-        //                     value: value
-        //                 }
-        //                 if (!checkExistsVariantOption(newOpt, "value")) {
-        //                     const newVariant = {
-        //                         option: [newOpt]
-        //                     }
-        //                     allVariant.push(newVariant);
-        //                 }
-        //             })
-        //         } else {
-        //             let newAllVariant = [];
-        //             allVariant.map((variant) => {
-        //                 optionName.value?.map((value,idxValue) => {
-        //                     const newOpt = {
-        //                         option: optionName.option,
-        //                         value: value
-        //                     }
-        //                     let newVariant = {};
-        //                     let flag = false;
-        //                     if (!checkExistsVariantOption(newOpt, "option")) {
-        //                         newVariant = {
-        //                             option: [
-        //                                 ...variant.option,
-        //                                 newOpt
-        //                             ]
-        //                         }
-        //                         flag = true;
-        //                     } else {
-        //                         newVariant = {
-        //                             option: changeVariantOptionValue(variant.option, newOpt, idxOptionName)
-        //                         }
-        //                         if (!checkExistsVariant(newAllVariant, newVariant)) {    
-        //                             flag = true;
-        //                         }
-                                
-        //                     }
-        //                     if(flag) newAllVariant.push(newVariant);
-        //                 })
-        //             })
-        //             allVariant = newAllVariant;
-        //     } else {
-        //         const newOpt = {
-        //             option: optionName.option,
-        //             value: []
-        //         }
-        //         allVariant.map((variant) => {
-        //             if (variant.option?.length < optionValue.length && optionName.option) {
-        //                 variant.option.push(newOpt)
-        //             } else if (variant.option[idxOptionName]) {
-        //                 variant.option[idxOptionName].option = optionName.option; 
-        //                 variant.option[idxOptionName].value = []; 
-        //             }
-        //         })
-        //     }
-        // })
-        // setVariant(allVariant);
-        
-            console.log(allVariant);
     }
     const handleChangeValueOption = (e, index) => {
         const newTargetValue = e.target.value ? e.target.value : "";
-        const tempCheckIncludes = optionValue.some((element) => element.option === newTargetValue);
+        const tempCheckIncludes = optionValue.some((element) => element.name === newTargetValue);
         if(tempCheckIncludes) {
             console.log(optionValue);
             //error
@@ -309,7 +195,7 @@ const FormProduct = ()=> {
             const newObj = [...optionValue];
             let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
             newObj[index] = {
-                option: newTargetValue,
+                name: newTargetValue,
                 value: oldValue
             };
             setOptionValue(newObj);
@@ -339,19 +225,48 @@ const FormProduct = ()=> {
           align: 'right'
         },
     ];
-    const handleChange = (event) => {
-    const {
-        target: { value },
-    } = event;
-    setPersonName(
-        // On autofill we get a stringified value.
-        typeof value === 'string' ? value.split(',') : value,
-    );
+    const handleChangeCollection = (event) => {
+        const { target: { value }} = event;
+        setCollection(
+            typeof value === 'string' ? value.split(',') : value,
+        );
     };
+    const handleChangeProductName = (event) => {
+        debounceChange(setProductName(event.target.value));
+    }
+    const handleChangeProductPrice = (event) => {
+        debounceChange( setProductPrice(event));
+    }
+    const handleChangeProductCostPerItem = (event) => {
+        debounceChange(setProductCostPerItem(event));
+    }
+    const handleChangePriceVariant = (index) => {
+
+    }
+    const handleChangeQuantity = (index) => {
+
+    }
     useEffect(() => {
         createVariantUI();
-
     }, [optionValue])
+    useEffect (() => {
+        const newForm = {
+            product: {
+                store_id: params.storeId,
+                title: productName,
+                price: productPrice,
+                cost: productCostPerItem,
+                is_variant: showOpt,
+                status: status,
+                collection: collection,
+                type: type
+            },
+            option: optionValue,
+            variant: variant
+        }
+        console.log(newForm);
+        setForm(newForm);
+    }, [variant, productName, productCostPerItem, productPrice, showOpt, optionValue, type, status, collection])
     return (
         <>
         <FormGroup>
@@ -359,7 +274,7 @@ const FormProduct = ()=> {
                 <div className="offset-1 col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
-                        <TextField className="text-field-input" name='title' placeholder='  Enter Title' fullWidth required onChange={() => console.log()()}  />
+                        <TextField className="text-field-input" name='title' onChange={handleChangeProductName} placeholder='  Enter Title' fullWidth required />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
                         <div style={{ border: "1px solid black", padding: '2px', minHeight: '200px' }}>
                             <Editor
@@ -392,7 +307,7 @@ const FormProduct = ()=> {
                                     name='title'
                                     fullWidth
                                     required
-                                    onChange={(e) => setPrice(e.target.value)}  />
+                                    onChange={(e) => handleChangeProductPrice(e.target.value)}  />
                             </Stack>
                         </div>
                         <FormControlLabel control={<Checkbox onChange={onChangeTrackQuantity}/>} className='font-weight-normal' label="Charge tax on this product" />
@@ -417,16 +332,16 @@ const FormProduct = ()=> {
                                 name='title'
                                 fullWidth
                                 required
-                                onChange={(e) => setCostPerItem(e.target.value)}  />
-                            {costPerItem && price ? 
+                                onChange={(e) => handleChangeProductCostPerItem(e.target.value)}  />
+                            {productCostPerItem && productPrice ? 
                             <>
                                 <div>
                                     <p style={{margin: 0}}>Margin</p>
-                                    <p style={{margin: 0}}>{(price - costPerItem)/price * 100} %</p>
+                                    <p style={{margin: 0}}>{(productPrice - productCostPerItem)/productPrice * 100} %</p>
                                 </div>
                                 <div>
                                     <p style={{margin: 0}}>Profit</p>
-                                    <p style={{margin: 0}}>${price - costPerItem}</p>
+                                    <p style={{margin: 0}}>${productPrice - productCostPerItem}</p>
                                 </div>
                             </>: ""}
                         </Stack>
@@ -510,7 +425,7 @@ const FormProduct = ()=> {
                                                         name='title'
                                                         fullWidth
                                                         required
-                                                        value={optionValue[index]?.option || ""}
+                                                        value={optionValue[index]?.name || ""}
                                                         onClick={handlePopoverOpen}
                                                         onBlur={handlePopoverClose}
                                                         onChange={(e) => handleChangeValueOption(e, index)}
@@ -583,7 +498,7 @@ const FormProduct = ()=> {
                                     ) : (
                                         <div className="row">
                                             <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
-                                                <h5>{optionValue[index].option}</h5>
+                                                <h5>{optionValue[index].name}</h5>
                                                 <div className="row">
                                                     {optionValue[index]?.value?.map((element) => {
                                                         return <Chip className="chip-width-auto" label={element}/>
@@ -639,9 +554,11 @@ const FormProduct = ()=> {
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product Status</InputLabel>
                         <Select fullWidth
-                        className="poper-item">
-                            <MenuItem>Draft</MenuItem>
-                            <MenuItem>Active</MenuItem>
+                        className="poper-item"
+                        onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <MenuItem value="draft">Draft</MenuItem>
+                            <MenuItem value="active">Active</MenuItem>
                         </Select>
                         <FormHelperText id="filled-weight-helper-text">This product will be hidden from all sales channels.</FormHelperText>
                         <Divider className="divider-custom"/>
@@ -657,16 +574,17 @@ const FormProduct = ()=> {
                         
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Type</InputLabel>
                         <Select fullWidth 
-                        className="poper-item">
-                            <MenuItem>Draft</MenuItem>
-                            <MenuItem>Active</MenuItem>
+                        className="poper-item"
+                        onChange={(e) => setType(e.target.value)}>
+                            <MenuItem value="Clothes">Clothes</MenuItem>
+                            <MenuItem value="Book">Book</MenuItem>
+                            <MenuItem value="Bike">Bike</MenuItem>
                         </Select>
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium  " name='title'>Collection</InputLabel>
                         <Select fullWidth multiple
-                        
                         className="poper-item"
-                        value={personName}
-                        onChange={handleChange}
+                        value={collection}
+                        onChange={handleChangeCollection}
                         renderValue={(selected) => (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                               {selected.map((value) => (
@@ -674,24 +592,8 @@ const FormProduct = ()=> {
                               ))}
                             </Box>
                           )}>
-                            <MenuItem value="draft">Draft</MenuItem>
-                            <MenuItem value="active">Active</MenuItem>
-                        </Select>
-                        <Divider className="divider-custom"/>
-                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium  " name='title'>Tags</InputLabel>
-                        <Select fullWidth multiple
-                        className="poper-item"
-                        value={personName}
-                        onChange={handleChange}
-                        renderValue={(selected) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                              {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                              ))}
-                            </Box>
-                          )}>
-                            <MenuItem value="draft">Draft</MenuItem>
-                            <MenuItem value="active">Active</MenuItem>
+                            <MenuItem value="collec1">Collec1</MenuItem>
+                            <MenuItem value="collec2">Collect2</MenuItem>
                         </Select>
                     </Paper> 
                 </div>    
