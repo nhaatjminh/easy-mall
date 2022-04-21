@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import { useParams } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import './index.css';
 import TableManage from "../../component/TableManage";
@@ -10,6 +11,7 @@ const ManageStoreProduct = () => {
   
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const params = useParams();
   const columns = [
     { id: 'title', label: 'Title', minWidth: 170 },
     { id: 'status', label: 'Status', minWidth: 100 },
@@ -41,7 +43,7 @@ const ManageStoreProduct = () => {
         headers: myHeaders
     };
 
-    await fetch(process.env.REACT_APP_API_URL + "products", requestOptions)
+    await fetch(process.env.REACT_APP_API_URL + `stores/${params.storeId}/products`, requestOptions)
     .then(response => response.json())
     .then(result => {
       setRows(result.data);
