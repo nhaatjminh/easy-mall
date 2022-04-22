@@ -9,6 +9,8 @@ import GoogleLogin from 'react-google-login';
 import validator from 'validator';
 import logo from './Logo.png'
 import { useNavigate } from "react-router-dom";
+import { login } from "../../helpers/login";
+import { readCookie } from "../../helpers/cookie";
 
 
 
@@ -17,8 +19,9 @@ const Login = () => {
     //=======================STATES===========================
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(localStorage.getItem("token") != null)
+    const [isLogin, setIsLogin] = useState(readCookie('token') !== null)
     const [error, setError] = useState({});
+    let navigate = useNavigate();
 
     //=======================STYLES===========================
     const paperStyle = {
@@ -31,6 +34,11 @@ const Login = () => {
         color: 'red',
         fontSize: '13px'
     };
+
+    //=======================HOOKs============================
+    useEffect(() => {
+        isLogin && navigate('/store-login', { replace: true })
+    }, [isLogin])
 
     //=======================FUNCTION=========================
     const handleOnchangeUsername = (e) => {
@@ -55,11 +63,10 @@ const Login = () => {
         return (Object.keys(err).length);
     }
 
-    let navigate = useNavigate();
     const routeChange = (newPath) => {
         navigate(newPath);
     }
-    const login = () => {
+    const onLogin = () => {
         var checkValid = validate();
         if (checkValid > 0) return;
 
@@ -89,14 +96,13 @@ const Login = () => {
             })
             .then(result => {
                 if (result.statusCode === 200) {
-                    console.log(result.message)
                     localStorage.setItem("token", result.data.token);
                     localStorage.setItem("userId", result.data.user._id);
-                    setIsLogin(true);
 
-                    routeChange('/store-login');
+                    login(result.data.token);
+                    setIsLogin(true);
+                    // routeChange('/store-login');
                 }
-                alert(result.message);
             })
             .catch(error => {
                 if (error.status === 401) console.log('error', error)
@@ -203,7 +209,7 @@ const Login = () => {
                         <TextField name='password' label='Password' placeholder='Enter password' type='password' fullWidth required onChange={handleOnchangePassword} />
                         <Typography style={errorStyle}>{error.password}</Typography>
 
-                        <button className="btnLogin" type='button' variant='contained' onClick={login}>Sign In</button>
+                        <button className="btnLogin" type='button' variant='contained' onClick={onLogin}>Sign In</button>
                         <FacebookLogin
                             appId="842222179779996"
                             fields="name,picture,email"
