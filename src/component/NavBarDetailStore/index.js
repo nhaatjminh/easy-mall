@@ -143,7 +143,10 @@ const NavBarDetailStore = ({isDesktop}) => {
                         </button>
                     </p>  
                     <Typography component={'span'} className={keySelected === 8 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(81)}>
+                        onClick={() => {
+                            changeKeySelectedParent(81);
+                            navigate(`/store-detail/${params.storeId}/themes`);
+                        }}>
                         <p className="m-0 mb-2 ">
                             <i className="fa-university fa-icon fa-store-detail-nav "></i>
                             Online Store

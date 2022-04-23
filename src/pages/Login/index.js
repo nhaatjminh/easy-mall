@@ -37,7 +37,7 @@ const Login = () => {
 
     //=======================HOOKs============================
     useEffect(() => {
-        // isLogin && navigate('/store-login', { replace: true })
+        isLogin && navigate('/store-login', { replace: true })
     }, [isLogin])
 
     //=======================FUNCTION=========================
