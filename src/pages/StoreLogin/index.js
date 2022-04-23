@@ -10,7 +10,7 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
+import {  doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
 const StoreLogin = ({nameAccount}) => {
 
     // use redux to manage state
@@ -24,36 +24,18 @@ const StoreLogin = ({nameAccount}) => {
         dispatch(doSwitchListStore(list));
     }
     
-    console.log(listStoreInStore);
+    // console.log(listStoreInStore);
     //use navigate to change url
     let navigate = useNavigate(); 
     const routeChange = (newPath) =>{
         navigate(newPath);
     }
-    const [listStore, setListStore] = useState([]);
+    // const [listStore, setListStore] = useState([]);
+    const listStore = useSelector((state) => state.listStore.listStore);
     const [isCreateStore, setIsCreateStore] = useState(false);
-
     const [listStoreShow, setListStoreShow] = useState([]);
-    const getListStore = async () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders
-        };
-
-        await fetch(process.env.REACT_APP_API_URL + "stores", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            setListStore(result.data);
-            setListStoreShow(result.data);
-            changeListStoreCall(result.data);
-        })
-        .catch(error => {
-            console.log('error', error);
-        });
-    }
+    const [newStoreName, setNewStoreName] = useState('');
+    
     nameAccount = "TP";
     
     const emailAccount = "Yooooo@gmail.com";
@@ -62,7 +44,7 @@ const StoreLogin = ({nameAccount}) => {
         const newListSearch = [];
         console.log(listStore)
         listStore.map((store) => {
-            if (store.name.includes(e.target.value) || store.storeLink.includes(e.target.value)) {
+            if (store.name.includes(e.target.value) || store.store_link.includes(e.target.value)) {
                 newListSearch.push(store);
             }
 
@@ -70,9 +52,23 @@ const StoreLogin = ({nameAccount}) => {
         setListStoreShow([...newListSearch]);
 
     }
+
+    const onCreateStore = () => {
+        const storeObj = {
+            name: newStoreName
+        }
+        dispatch(doCreateStore(storeObj))
+        .then((res) => navigate(`/store-detail/home/${res.payload.id}`))
+    }
+
     useEffect(() => {
-        getListStore();
+        dispatch(doGetListStore())
     }, [])
+
+    useEffect(() => {
+        setListStoreShow(listStore)
+    }, [listStore])
+
     return (
         <div className="bgImg">
             
@@ -146,11 +142,17 @@ const StoreLogin = ({nameAccount}) => {
                                     <p className="text-create-store-2">Cửa hàng này được tạo và kết nối bởi {emailAccount}, và được sử dụng miến phí trong vòng 14 ngày</p> 
                                 </div>
                                 <div className="row mt-1">
-                                    <TextField name='create-store' className="find-store"  placeholder='Tên cửa hàng' fullWidth/>
+                                    <TextField 
+                                    name='create-store' 
+                                    className="find-store"  
+                                    placeholder='Tên cửa hàng' 
+                                    value={newStoreName}
+                                    onChange={(e) => setNewStoreName(e.target.value)}
+                                    fullWidth/>
                                 </div>
                                 <div className="row mt-1">
                                     <div className="col-8   div-button-create-store pt-5">
-                                        <button className="btn btn-success btn-create-store" onClick={() => setIsCreateStore(true)}> <p className="text-btn-login"> Tạo cửa hàng </p></button>
+                                        <button className="btn btn-success btn-create-store" onClick={onCreateStore}> <p className="text-btn-login"> Tạo cửa hàng </p></button>
                                     </div>  
                                </div>
                         </div>

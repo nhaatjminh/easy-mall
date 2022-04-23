@@ -10,9 +10,8 @@ import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/lis
 import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
 
 const NavBarDetailStore = ({isDesktop}) => {
-
-    let navigate = useNavigate();
-    let params = useParams();
+    const params = useParams();
+    let navigate = useNavigate(); 
     const routeChange = (newPath) =>{
         navigate(newPath);
     }
@@ -74,7 +73,7 @@ const NavBarDetailStore = ({isDesktop}) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === 3 ? "nav-element nav-element-selected" : "nav-element "}
                     onClick={() => {
-                        routeChange('/store-detail/manage-product/' + params.storeId);
+                        routeChange(`/store-detail/manage-product/${params.storeId}`)
                         changeKeySelectedParent(3)
                     }}>
                         <p className="m-0 mb-2 mt-2 ">
