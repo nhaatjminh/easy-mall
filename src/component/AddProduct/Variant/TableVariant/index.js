@@ -100,7 +100,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({data, columnsOfData}) => {
+const TableVariant = ({data, columnsOfData, handlePrice, handleQuantity}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -158,77 +158,77 @@ const TableVariant = ({data, columnsOfData}) => {
     console.log(rows);
     return (
         
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 440 }}>
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
-            <Table stickyHeader aria-label="sticky table" className="p-0">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              onSelectAllClick={handleSelectAllClick}
-              rowCount={rows.length}
-              headCells={columns}
-            />
-            <TableBody>
-                {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row,index) => {
-                  console.log(row);
-                    const isItemSelected = isSelected(row.title);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                    <TableRow hover onClick={(event) => handleClick(event, row.title)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.title}
-                    selected={isItemSelected}>
-                        <TableCell padding="checkbox" 
-                        align="left">
-                            <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                    'aria-labelledby': labelId,
-                                }}
-                            />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                          
-                        {row.option.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
-                      </TableCell>
-                      <TableCell align="center">
-                          <TextField value={row.price}/>
+        <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+                <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
+                <Table stickyHeader aria-label="sticky table" className="p-0">
+                <EnhancedTableHead
+                numSelected={selected.length}
+                onSelectAllClick={handleSelectAllClick}
+                rowCount={rows.length}
+                headCells={columns}
+                />
+                <TableBody>
+                    {rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row,index) => {
+                        const isItemSelected = isSelected(row.title);
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                        <TableRow hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.title}
+                        selected={isItemSelected}>
+                            <TableCell padding="checkbox" 
+                            align="left">
+                                <Checkbox
+                                    color="primary"
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                        'aria-labelledby': labelId,
+                                    }}
+                                    onClick={(event) => handleClick(event, row.title)}
+                                />
                         </TableCell>
-                      <TableCell align="center">
-                          <TextField value={row.quantity}/></TableCell>
-                      <TableCell align="center">
-                        <button>Edit</button>
+                        <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
+                            align="center"
+                        >
+                            
+                            {row.option.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
+                        </TableCell>
+                        <TableCell align="center">
+                            <TextField value={row.price} onChange={(e) => handlePrice(index, e.target.value)}/>
+                            </TableCell>
+                        <TableCell align="center">
+                            <TextField value={row.quantity} onChange={(e) => handleQuantity(index, e.target.value)}/></TableCell>
+                        <TableCell align="center">
+                            <button>Edit</button>
+                            
+                            <button>Delete</button>
+                            </TableCell>
                         
-                        <button>Delete</button>
-                        </TableCell>
-                    
-                    </TableRow>
-                    );
-                })}
-            </TableBody>
-            </Table>
-        </TableContainer>
-        <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            className=" table-manager-pagination"
-        />
+                        </TableRow>
+                        );
+                    })}
+                </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                className=" table-manager-pagination"
+            />
         </Paper>
     );
 }

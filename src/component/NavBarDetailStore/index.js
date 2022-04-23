@@ -4,14 +4,15 @@ import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
 import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
 
 const NavBarDetailStore = ({isDesktop}) => {
 
-    let navigate = useNavigate(); 
+    let navigate = useNavigate();
+    let params = useParams();
     const routeChange = (newPath) =>{
         navigate(newPath);
     }
@@ -73,7 +74,7 @@ const NavBarDetailStore = ({isDesktop}) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === 3 ? "nav-element nav-element-selected" : "nav-element "}
                     onClick={() => {
-                        routeChange('/store-detail/manage-product/1')
+                        routeChange('/store-detail/manage-product/' + params.storeId);
                         changeKeySelectedParent(3)
                     }}>
                         <p className="m-0 mb-2 mt-2 ">

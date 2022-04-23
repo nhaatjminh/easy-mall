@@ -16,7 +16,7 @@ const AddProduct = ( {returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3">Tạo Cửa Hàng</h5>
             </div>    
         </div>
-        <FormProduct></FormProduct>
+        <FormProduct mode={"ADD"} oldForm={{}}></FormProduct>
         </>
     );
 }
