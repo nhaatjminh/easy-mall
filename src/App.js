@@ -10,6 +10,7 @@ import StoreLogin from "./pages/StoreLogin";
 import PricingScene from "./pages/PricingScene";
 import DetailStore from "./pages/DetailStore";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
+import ManageThems from './pages/OnlineStore/ManageThemes/index';
 const App = () => {
   return(
     <div>
@@ -24,6 +25,7 @@ const App = () => {
           <Route path='/store-login' element={<StoreLogin/>}/>
           
           <Route path='/store-detail/home/:storeId' element={<DetailStore/>}/>
+          <Route path='/store-detail/:storeId/themes' element={<ManageThems/>}/>
           
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/login' element={<Login/>}/>

@@ -160,7 +160,10 @@ const NavBarDetailStore = ({isDesktop}) => {
                                 (keySelected === 84) ||
                                 (keySelected === 85) ? "" : "true"} >         
                         <Typography component={'span'} className={keySelected === 81 ? "nav-element-selected nav-extend" : "nav-extend"}
-                        onClick={() => changeKeySelectedParent(81)}>
+                            onClick={() => {
+                                changeKeySelectedParent(81);
+                                navigate(`/store-detail/${params.storeId}/themes`)
+                            }}>
                             <p className="m-0 mb-2 mt-2 text-extend ">
                                 Theme
                             </p>
