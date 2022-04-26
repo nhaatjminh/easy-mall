@@ -1,7 +1,5 @@
-// import { useDispatch } from "react-redux";
-// import { doSwitchLoginState } from "../redux/slice/loginSlice";
 import { readCookie } from "./cookie";
-
+import { logout } from "./login";
 const token = readCookie("token");
 
 const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
@@ -19,7 +17,8 @@ const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
     let fetchResult;
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
-            if (response.ok) {
+            if (response.status === 401) logout();
+            else if (response.ok) {
                 return response.json();
             }
 
@@ -30,8 +29,8 @@ const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
         })
         .catch((errorCode) => {
             if (errorCode === 401) {
-                // const dispatch = useDispatch();
-                // dispatch(doSwitchLoginState(false));
+                logout();
+                console.log(10000)
             } else {
                 fetchResult = { 'ok': false, 'errorCode': errorCode };
             }
@@ -62,7 +61,8 @@ const callAPIWithPostMethod = async(pathURL, data, bearTokenFlg) => {
     let fetchResult;
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
-            if (response.ok) {
+            if (response.status === 401) logout();
+            else if (response.ok) {
                 return response.json();
             }
 
@@ -73,8 +73,7 @@ const callAPIWithPostMethod = async(pathURL, data, bearTokenFlg) => {
         })
         .catch((errorCode) => {
             if (errorCode === 401) {
-                // const dispatch = useDispatch();
-                // dispatch(doSwitchLoginState(false));
+                logout();
             } else {
                 fetchResult = { 'ok': false, 'errorCode': errorCode };
             }
