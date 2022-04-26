@@ -18,9 +18,7 @@ const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
             if (response.status === 401) logout();
-            else if (response.ok) {
-                return response.json();
-            }
+            else if (response.ok) return response.json();
 
             throw Error(response.status);
         })
@@ -30,7 +28,6 @@ const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
         .catch((errorCode) => {
             if (errorCode === 401) {
                 logout();
-                console.log(10000)
             } else {
                 fetchResult = { 'ok': false, 'errorCode': errorCode };
             }
@@ -62,9 +59,7 @@ const callAPIWithPostMethod = async(pathURL, data, bearTokenFlg) => {
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
             if (response.status === 401) logout();
-            else if (response.ok) {
-                return response.json();
-            }
+            else if (response.ok) return response.json();
 
             throw Error(response.status);
         })
