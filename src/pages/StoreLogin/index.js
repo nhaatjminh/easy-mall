@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import { Avatar, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 
 import { useNavigate } from "react-router-dom";
 import Stack from '@mui/material/Stack';
@@ -10,8 +10,10 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
-const StoreLogin = ({nameAccount}) => {
+import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
+import logo from '../../assets/image/Logo.png'
+
+const StoreLogin = ({ nameAccount }) => {
 
     // use redux to manage state
     const dispatch = useDispatch();
@@ -23,11 +25,11 @@ const StoreLogin = ({nameAccount}) => {
     var changeListStoreCall = (list) => {
         dispatch(doSwitchListStore(list));
     }
-    
+
     // console.log(listStoreInStore);
     //use navigate to change url
-    let navigate = useNavigate(); 
-    const routeChange = (newPath) =>{
+    let navigate = useNavigate();
+    const routeChange = (newPath) => {
         navigate(newPath);
     }
     // const [listStore, setListStore] = useState([]);
@@ -35,12 +37,12 @@ const StoreLogin = ({nameAccount}) => {
     const [isCreateStore, setIsCreateStore] = useState(false);
     const [listStoreShow, setListStoreShow] = useState([]);
     const [newStoreName, setNewStoreName] = useState('');
-    
+
     nameAccount = "TP";
-    
+
     const emailAccount = "Yooooo@gmail.com";
     const handleOnchangeSearch = (e) => {
-        
+
         const newListSearch = [];
         console.log(listStore)
         listStore.map((store) => {
@@ -58,7 +60,7 @@ const StoreLogin = ({nameAccount}) => {
             name: newStoreName
         }
         dispatch(doCreateStore(storeObj))
-        .then((res) => navigate(`/store-detail/home/${res.payload.id}`))
+            .then((res) => navigate(`/store-detail/home/${res.payload.id}`))
     }
 
     useEffect(() => {
@@ -71,23 +73,20 @@ const StoreLogin = ({nameAccount}) => {
 
     return (
         <div className="bgImg">
-            
+
             <div>
                 <Grid>
-                    <Paper elevation={10}  className="paper-style">
+                    <Paper elevation={10} className="paper-style">
                         <div className="row">
                             <div className=" col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <Stack direction="row" spacing={0 } >  
-                                    <Avatar
-                                        src={process.env.PUBLIC_URL + '/img/Logo.png'}
-                                        style={{ height: '4.25rem', width: '4.25rem' }}
-                                    /> 
-                                    <Typography component={'span'} ><h5 className="mt-3 font-weight-bold">EASY MALL</h5></Typography>
-                                </Stack>      
-                            </div>     
+                                <Stack direction="row" spacing={2} >
+                                    <img style={{ width: '100%', height: 'auto' }} src={logo} />
+                                </Stack>
+
+                            </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                                 <Dropdown className="float-right dropdown-store-login p-0 pt-1">
-                                    <Dropdown.Toggle id="dropdown-basic">       
+                                    <Dropdown.Toggle id="dropdown-basic">
                                         <i className="fa-angle-down fa-icon  float-right fa-store-login"></i>
                                     </Dropdown.Toggle>
 
@@ -101,63 +100,63 @@ const StoreLogin = ({nameAccount}) => {
                                 </div>
                             </div>
                         </div>
-                        {!isCreateStore ? 
+                        {!isCreateStore ?
                             <div>
                                 <div className="row mt-5">
                                     <div className="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">
-                                        <h5 className="text-store">Các cửa hàng của bạn</h5>    
-                                    </div>     
+                                        <h5 className="text-store">Các cửa hàng của bạn</h5>
+                                    </div>
                                     <div className="col-5 col-sm-5 col-md-5 col-lg-5 col-xl-5">
-                                        
+
                                         <button className="btn btn-success btn-create-store float-right" onClick={() => setIsCreateStore(true)}> <p className="text-btn-login"> Tạo cửa hàng </p></button>
                                     </div>
                                 </div>
                                 <div className="row mt-5 ">
-                                    <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth onChange={handleOnchangeSearch}/>
+                                    <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth onChange={handleOnchangeSearch} />
                                     <div className="row find-store p-0 scroll-list" >
                                         {listStoreShow ? listStoreShow.map((store, index) => (
-                                        <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
-                                            changeNameStoreSelectedCall(store.name);
-                                            routeChange("/store-detail/home/" + store.id);
-                                        }}></StoreLoginList>
+                                            <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
+                                                changeNameStoreSelectedCall(store.name);
+                                                routeChange("/store-detail/home/" + store.id);
+                                            }}></StoreLoginList>
                                         )) :
-                                        ""
+                                            ""
                                         }
                                     </div>
-                                    
+
                                 </div>
-                                
+
                             </div>
-                        : 
-                        <div>
-                            <div className="row mt-5">  
+                            :
+                            <div>
+                                <div className="row mt-5">
                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
                                         <i className="fa-angle-left fa-icon  float-right fa-store-login" onClick={() => setIsCreateStore(false)}></i>
-                                    </div>   
-                                    <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 pt-3">                      
+                                    </div>
+                                    <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 pt-3">
                                         <h5 className="font-weight-bold text-create-store">Tạo Cửa Hàng</h5>
-                                    </div>    
+                                    </div>
                                 </div>
-                                <div className="row create-store-connect">  
-                                    <p className="text-create-store-2">Cửa hàng này được tạo và kết nối bởi {emailAccount}, và được sử dụng miến phí trong vòng 14 ngày</p> 
+                                <div className="row create-store-connect">
+                                    <p className="text-create-store-2">Cửa hàng này được tạo và kết nối bởi {emailAccount}, và được sử dụng miến phí trong vòng 14 ngày</p>
                                 </div>
                                 <div className="row mt-1">
-                                    <TextField 
-                                    name='create-store' 
-                                    className="find-store"  
-                                    placeholder='Tên cửa hàng' 
-                                    value={newStoreName}
-                                    onChange={(e) => setNewStoreName(e.target.value)}
-                                    fullWidth/>
+                                    <TextField
+                                        name='create-store'
+                                        className="find-store"
+                                        placeholder='Tên cửa hàng'
+                                        value={newStoreName}
+                                        onChange={(e) => setNewStoreName(e.target.value)}
+                                        fullWidth />
                                 </div>
                                 <div className="row mt-1">
                                     <div className="col-8   div-button-create-store pt-5">
                                         <button className="btn btn-success btn-create-store" onClick={onCreateStore}> <p className="text-btn-login"> Tạo cửa hàng </p></button>
-                                    </div>  
-                               </div>
-                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         }
-                        
+
                     </Paper>
                 </Grid>
             </div>

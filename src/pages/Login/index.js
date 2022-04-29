@@ -19,7 +19,7 @@ const Login = () => {
     //=======================STATES===========================
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(readCookie('token') !== null)
+    const [isLogin, setIsLogin] = useState(readCookie('token')?.length > 0)
     const [error, setError] = useState({});
     let navigate = useNavigate();
 

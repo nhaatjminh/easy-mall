@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import logo from '../../assets/image/Logo.png';
 
 import { useNavigate } from "react-router-dom";
 const NavBar = () => {
@@ -13,16 +14,10 @@ const NavBar = () => {
         navigate(newPath);
     }
     return (
-        <>
+        <div className="nav-bar">
             <div className="row logo desktop">
                 <div className=" col-md-3 col-lg-3 col-xl-3">
-                    <Stack direction="row" spacing={2} >
-                        <Avatar
-                            src={process.env.PUBLIC_URL + '/img/Logo.png'}
-                            style={{ height: '4.25rem', width: '4.25rem' }}
-                        />
-                        <Typography component={'span'} ><h3 className="mt-3 font-weight-bold">EASY MALL</h3></Typography>
-                    </Stack>
+                    <img src={logo} />
                 </div>
                 <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 ">
                     <Stack direction="row" spacing={5} className="navigation-menu ">
@@ -37,13 +32,7 @@ const NavBar = () => {
             </div>
             <div className="row logo mobile">
                 <div className="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-3 p-0 m-0">
-                    <Stack direction="row" spacing={1} >
-                        <Avatar
-                            src={process.env.PUBLIC_URL + '/img/Logo.png'}
-                            style={{ height: '4.25rem', width: '4.25rem' }}
-                        />
-                        <Typography component={'span'} ><h3 className="mt-3 font-weight-bold logo-text">EASY MALL</h3></Typography>
-                    </Stack>
+                    <img src={logo} />
                 </div>
                 <div className="col-6 col-sm-6 col-md-5 col-lg-4 col-xl-4 offset-md-3 offset-lg-5 offset-xl-5 p-0">
                     <Stack direction="row" spacing={3} className="navigation-menu ">
@@ -63,7 +52,7 @@ const NavBar = () => {
                 </div>
 
             </div>
-        </>
+        </div>
     );
 }
 
