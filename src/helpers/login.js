@@ -19,8 +19,6 @@ export const logout = () => {
     const domain = 'localhost'
 
     deteletAllCookie(domain);
-
-    if (!tokenQuery) {
-        window.location.replace('/login');
-    }
+    
+    window.location.replace('/login');
 };
