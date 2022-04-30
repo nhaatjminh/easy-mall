@@ -31,53 +31,9 @@ import { v4 as uuid } from 'uuid';
 
 const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
-    const collectionList = useSelector((state) => state.collectionSlice.listCollection);
     let form = useRef({});
     const params = useParams();
-    const [isVariant, setIsVariant] = useState(false);
     const [errorTitle, setErrorTitle] = useState(null);
-    const [collectionSelected, setCollectionSelected] = useState([]);
-    const onChangeIsContinueSelling = (event) => {
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                continue_sell: event.target.checked
-            }
-        }
-    };
-    const handleChangeCollection = (event) => {
-        let selectedCol = [];
-        let value = event.target.value;
-        if (typeof value !== 'string') {
-            value = value.map((collectionId) => {
-                const curColl = collectionList.find((collection) => collection.id === collectionId)
-                let newSelectedCol = {
-                    name: curColl.name,
-                    id: curColl.id
-                }
-                selectedCol.push(newSelectedCol);
-                return curColl.id
-            })
-        }
-        typeof value === 'string' ? form.current = {
-            ...form?.current,   
-            collection: value.split(',')
-        } : form.current = {
-            ...form?.current,
-            collection: value
-        }
-        setCollectionSelected(selectedCol);
-    };
-    const handleChangeDeleteCollection = (id) => {
-        const newCollSelected = collectionSelected.filter((value) => value.id !== id);
-        const newCollForForm = form.current?.collection?.filter((CollId) => CollId !== id)
-        form.current = {
-            ...form?.current,
-            collection: newCollForForm
-        }
-        setCollectionSelected(newCollSelected);
-    }
     const handleChangeProductName = (event) => {
         if (errorTitle) {
             setErrorTitle(null);
@@ -90,49 +46,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             }
         }
     }
-    const handleOnChangeSKU = (event) => {
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                sku: event.target.value
-            }
-        }
-    }
-    const handleOnChangeStatus = (event) => {
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                status: event.target.value
-            }
-        }
-    }
     const handleOnChangeType = (event) => {
         form.current = {
             ...form?.current,
             product: {
                 ...form?.current?.product,
                 type: event.target.value
-            }
-        }
-    }
-    const handleOnChangeInventory = (event) => {
-        if (isVariant)
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    inventory: 0
-                }
-            }
-        else {
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    inventory: event.target.value
-                }
             }
         }
     }
@@ -248,39 +167,22 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         </Stack>
                         <InputLabel name='title' className="text-small" style={{margin: 0, marginTop: '1rem'}}>Add a title and description to see how this product might appear in a search engine listing</InputLabel>
                     </Paper> 
-                    
-                    <div className="mt-4 mb-4">
-                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-desktop">Save</button>
-                    </div>  
                 </div>   
                 <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Status</InputLabel>
-                        <div key={form?.current?.product?.status || "SelectStatus"}>
-                            <Select fullWidth
-                            className="poper-item"
-                            
-                            defaultValue={form?.current?.product?.status || "draft"}
-                            onChange={(e) => handleOnChangeStatus(e)}
-                            >
-                                <MenuItem value="draft">Draft</MenuItem>
-                                <MenuItem value="active">Active</MenuItem>
-                            </Select>
-                        </div>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Collection availability</InputLabel>
                         
-                        <FormHelperText id="filled-weight-helper-text">This product will be hidden from all sales channels.</FormHelperText>
+                        <FormHelperText id="filled-weight-helper-text">Will be available to {} sales channels.</FormHelperText>
                         <Divider className="divider-custom"/>
-                        
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>SALES CHANNELS AND APPS</InputLabel>
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Online Store" />
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Google" />
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
                     </Paper> 
                     <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Product organization</InputLabel>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Online Store</InputLabel>
 
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Type</InputLabel>
+                        <p style={{marginBottom: '1rem'}}> Theme template</p>
                         <div key={form?.current?.product?.type ?? "SelectType"}>
                             <Select fullWidth 
                             className="poper-item"
@@ -291,36 +193,18 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 <MenuItem value="Bike">Bike</MenuItem>
                             </Select>
                         </div>
-                        
-                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium" name='title'>Collection</InputLabel>
-                        <div key={form?.current?.product?.collection ?? "SelectCollection"}>
-                            <Select
-                                fullWidth multiple
-                                className="poper-item"
-                                defaultValue={[]}
-                                value={collectionSelected.map((value) => value.id)}
-                                onChange={(e) => handleChangeCollection(e)}
-                                renderValue={() => (
-                                    <></>
-                                )}
-                            >
-                                {collectionList.map((collection, index) => {
-                                    return <MenuItem value={collection.id} key={index}>{collection.name}</MenuItem>      
-                                })}
-                            </Select>
-                        </div>
-                        {collectionSelected.length > 0 ?
-                            collectionSelected.map((collection, index) => {
-                                return <Chip className="collection-chip" key={index} label={collection.name} onDelete={() => handleChangeDeleteCollection(collection.id)}/>
-                            })
-                        : ""}
+                        <p> Assign a template from your current theme to define how the collection is displayed.</p>
                     </Paper> 
                     
-                    <div className="mt-4 mb-4">
-                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-mobile">Save</button>
-                    </div>  
                 </div>    
             </div>
+            <Divider className="custom-devider" style={{marginTop: 15}} />
+            <div className="mt-4 mb-4 row">
+                <div className="col-12">
+                    <button onClick={saveProduct} style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Save</button>
+            
+                </div>
+            </div>  
         </FormGroup> 
         </>
     );

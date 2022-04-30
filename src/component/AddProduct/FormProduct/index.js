@@ -271,10 +271,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         </Stack>
                         <InputLabel name='title' className="text-small" style={{margin: 0, marginTop: '1rem'}}>Add a title and description to see how this product might appear in a search engine listing</InputLabel>
                     </Paper> 
-                    
-                    <div className="mt-4 mb-4">
-                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-desktop">Save</button>
-                    </div>  
                 </div>   
                 <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
@@ -338,12 +334,16 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             })
                         : ""}
                     </Paper> 
-                    
-                    <div className="mt-4 mb-4">
-                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-mobile">Save</button>
-                    </div>  
                 </div>    
             </div>
+            
+            <Divider className="custom-devider" style={{marginTop: 15}} />
+            <div className="mt-4 mb-4 row">
+                <div className="col-12">
+                    <button onClick={saveProduct} style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Save</button>
+            
+                </div>
+            </div> 
         </FormGroup> 
         </>
     );
