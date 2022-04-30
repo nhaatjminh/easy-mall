@@ -1,23 +1,17 @@
 .text-field-input {
     margin: 0.5rem 0 !important;
-    border: 1px solid rgba(0, 0, 0, 0.42) !important;
     border-radius: 5px;
 }
 .text-field-input .MuiInput-underline::before {
     border: none !important;
 }
 .media-select {
-    width: 100%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    padding: 3rem 2rem 3rem 10rem;
-    text-align: center;
     border: 1px solid rgba(0, 0, 0, 0.42) !important;
 }
-.media-select::before {
-    border-bottom: none !important;
+.media-select-button {
+    margin: 0;
+    padding: 0
 }
-
 .text-black p, .text-black label, .text-black span {
     color: #333 !important;
 }

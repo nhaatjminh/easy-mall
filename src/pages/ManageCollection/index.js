@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
 import Stack from '@mui/material/Stack';
-import './index.css';
 import TableManage from "../../component/TableManage";
 
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import AddProduct from "../../component/AddProduct";
-const ManageStoreProduct = () => {
+const ManageCollection = () => {
   
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -60,7 +59,9 @@ const ManageStoreProduct = () => {
     <>
       <HeaderDetailStore ></HeaderDetailStore>
       <div className="row callpage" >
+
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
+  
               <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table">     
@@ -101,4 +102,4 @@ const ManageStoreProduct = () => {
     );
 }
 
-export default ManageStoreProduct;
+export default ManageCollection;

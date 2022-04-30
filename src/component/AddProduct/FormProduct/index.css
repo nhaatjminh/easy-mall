@@ -2,7 +2,7 @@
     font-size: 1rem;
 }
 .poper-item {
-    border: 1px solid #333;
+    padding-left: 0.5rem;
     border-radius: 5px;
 }
 .poper-item::before, .poper-item::after {
@@ -28,4 +28,42 @@
     font-size: 2rem;
     color: #666;
     cursor: pointer;
+}
+.text-black .error-text {
+    color: red !important;
+    margin-left: 0;
+}
+
+.text-field-input fieldset legend, .poper-item fieldset legend  {
+    width: unset;
+}
+.text-field-input input {
+    padding-left: 0.5rem;
+}
+.MuiChip-root.collection-chip {
+    margin: 5px;
+}
+.MuiPopover-root .MuiMenu-list {
+    overflow-y: auto;
+    max-height: 200px;
+}
+/* md ~ 768*/
+@media (min-width: 768px) {   
+    .save-button-form-product-mobile {
+        display: none;
+    }
+
+    .save-button-form-product-desktop {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {       
+    .save-button-form-product-mobile {
+        display: block;
+    }
+
+    .save-button-form-product-desktop {
+        display: none;
+    }
 }

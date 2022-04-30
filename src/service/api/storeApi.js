@@ -8,5 +8,5 @@ export const StoreApi = {
     createStore: async (storeObj) => {
         const result = await callAPIWithPostMethod('stores', storeObj, true);
         return result;
-    }
+    },
 }

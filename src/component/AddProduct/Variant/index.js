@@ -1,23 +1,41 @@
-import React, {useEffect, useState} from "react";
-import { Paper, Typography } from '@material-ui/core';
+import React, {useState} from "react";
+import { Paper } from '@material-ui/core';
 
-import PropTypes from 'prop-types';
-import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar, TextField   } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
-import {  InputLabel,Chip ,Link, MenuItem, Input, FormGroup, FormControlLabel,Popper, InputAdornment, FormHelperText} from '@material-ui/core';
+import {Checkbox, Box, TextField } from '@mui/material';
+import { InputLabel,Chip ,Link, FormControlLabel,Popper} from '@material-ui/core';
 
 import Divider from '@mui/material/Divider';
 import TableVariant from "./TableVariant";
+import './index.css'
+import Swal from "sweetalert2";
 
-
-const Variant = ({columnsOfData, formRef}) => {
+const Variant = ({formRef, setIsVariant}) => {
+    
+    const columns = [
+        { id: 'title', label: 'Title', minWidth: 170,align: 'right' },
+        { id: 'price', label: 'Price', minWidth: 100, maxWidth: 200,align: 'right' },
+        {
+          id: 'quantity',
+          label: 'Quantity',
+          minWidth: 170,
+          maxWidth: 200,
+          align: 'right',
+        },
+        {
+          label: '',
+          minWidth: 170,
+          maxWidth: 200,
+          align: 'right'
+        },
+    ];
     const form = formRef;
-    const columns = columnsOfData;
-    const rows = formRef?.current?.variant || [];
     const [optionTag, setOptionTag] = useState([]); // state to check length and render option
     const [optionValue, setOptionValue] = useState([]);
     const [showOpt, setShowOpt] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [errorIdxOption, setErrorIdxOption] = useState(-1);
+    const [errorValue, setErrorValue] = useState(-1);
+    const [errorOption, setErrorOption] = useState(-1);
     const open = Boolean(anchorEl);
     
     const handlePopoverOpen = (event) => {
@@ -28,112 +46,109 @@ const Variant = ({columnsOfData, formRef}) => {
     const handlePopoverClose = () => {
         setAnchorEl(null);
     };
+    const checkErrorValue = (newObj) => {
+        if (newObj){
+            for (const [index,option_value] of newObj?.entries()) {     
+                let checkArray = [];
+                for (const [idxValue,value] of  option_value.value?.entries()) {
+                    if (checkArray.includes(value) || !value) {
+                        setErrorValue(idxValue);
+                        setErrorIdxOption(index);
+                        return;
+                    }
+                    checkArray.push(value);
+                }
+                if (index === newObj.length - 1) {
+                    setErrorValue(-1);
+                    setErrorIdxOption(-1);
+                }
+            }
+        }
+        
+    };
+    const checkErrorOption = (newObj) => {
+        let checkArray = [];
+        if (newObj){
+            for (const [index,option] of newObj?.entries()) {
+                if (checkArray.includes(option.name) || !option.name) {
+                    setErrorOption(index)
+                    return;
+                }
+                checkArray.push(option.name);
+                if (index === newObj.length - 1) {
+                    setErrorOption(-1)
+                }
+            }
+        }
+    }
     const changeOptionValue = (e, index, idxValue) => {
-      const valueChange = e.target.value ? e.target.value : "";
-      const newObj = [...optionValue];
-      if (!newObj[index].value.includes(valueChange)) {
-          if (idxValue !== undefined) {
-              newObj[index].value[idxValue] = valueChange; 
-          }else {
-              newObj[index].value.push(valueChange);
-          }
-          setOptionValue(newObj);
-      }
-      else {
-          console.log('error chua lam');
-      }
+        const valueChange = e.target.value ? e.target.value : "";
+        const newObj = [...optionValue];
+        if (!newObj[index].value.includes(valueChange)) {
+            if (errorValue === idxValue && errorIdxOption === index) {
+                setErrorValue(-1);
+                setErrorIdxOption(-1);
+            }
+        }
+        else {
+            if (idxValue !== undefined) {
+                setErrorValue(idxValue);
+                setErrorIdxOption(index);
+            }
+            else {
+                setErrorValue(newObj[index].value?.length);
+                setErrorIdxOption(index);
+            }
+        }
+        if (idxValue !== undefined) {
+            newObj[index].value[idxValue] = valueChange; 
+        } else {
+            newObj[index].value.push(valueChange);
+        }
+        checkErrorValue(newObj);
+        setOptionValue(newObj);
+
+        form.current = {
+            ...form?.current,
+            option: newObj
+        }
     }
     
     const addAnotherOption = (index) => {
-      if (optionTag.length === 3) return;
-      for (const optionValueChild of optionValue) {
-          if (!optionValueChild.name || !optionValueChild.value.length) {
-              console.log("Dmm dien vo cai nay di da");
-              return;
-          }
-      }
-      const temp = [...optionTag];
-      temp.push(true);
-      setOptionTag(temp);
-      const newOptionValue =[ 
-          ...optionValue,
-          {
-          name: "",
-          value: []
-          }];
-      setOptionValue(newOptionValue);
-      createVariantUI();
-    }
-    
-    function combineArrays( array_of_arrays ){
-        if( ! array_of_arrays ){
-            return [];
-        }
-    
-        if( ! Array.isArray( array_of_arrays ) ){
-            return [];
-        }
-    
-        if( array_of_arrays.length == 0 ){
-            return [];
-        }
-    
-        for( let i = 0 ; i < array_of_arrays.length; i++ ){
-            if( ! Array.isArray(array_of_arrays[i]) || array_of_arrays[i].length == 0 ){
-                return [];
+        if (optionTag.length === 3) return;
+        for (const optionValueChild of optionValue) {
+            if (!optionValueChild.name || !optionValueChild.value.length) {
+                Swal.fire(
+                    'Error!',
+                    'Option name and option value can not blank',
+                    'error'
+                )
+                return;
             }
         }
-        let odometer = new Array( array_of_arrays.length );
-        odometer.fill( 0 ); 
-    
-        let output = [];
-    
-        let newCombination = formCombination( odometer, array_of_arrays );
-        output.push( newCombination.substr(1) );
-    
-        while ( odometer_increment( odometer, array_of_arrays ) ){
-            newCombination = formCombination( odometer, array_of_arrays );
-            output.push( newCombination.substr(1) );
+        const temp = [...optionTag];
+        temp.push(true);
+        setOptionTag(temp);
+        const newOptionValue =[ 
+            ...optionValue,
+            {
+                name: "",
+                value: []
+            }];
+        setOptionValue(newOptionValue);
+        form.current = {
+            ...form?.current,
+            option: newOptionValue
         }
-    
-        return output;
     }
     
-    function formCombination( odometer, array_of_arrays ){
-        return odometer.reduce(
-          function(accumulator, odometer_value, odometer_index){
-            return "" + accumulator +"/" +array_of_arrays[odometer_index][odometer_value];
-          },
-          ""
-        );
-    }
-    
-    function odometer_increment( odometer, array_of_arrays ){
-        for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
-            let maxee = array_of_arrays[i_odometer_digit].length - 1;         
-            if( odometer[i_odometer_digit] + 1 <= maxee ){
-                odometer[i_odometer_digit]++;
-                return true;
-            }
-            else{
-                if( i_odometer_digit - 1 < 0 ){
-                    return false;
-                }
-                else{
-                    odometer[i_odometer_digit]=0;
-                    continue;
-                }
-            }
-        }
-    
-    }
     
     const handleOnChangeShowOpt = (e) => {
       if (!showOpt) {
           addAnotherOption();
       }
+      setIsVariant(!showOpt);
       setShowOpt(!showOpt)
-          
       form.current = {
           ...form?.current,
           product: {
@@ -141,63 +156,18 @@ const Variant = ({columnsOfData, formRef}) => {
               is_variant: e.target.checked
           }
       }
-  }
-    const createVariantUI = () => {
-      const idxOption = [];
-      const idxValue = [];
-      new Promise((resolve, reject) => {
-          optionValue.forEach((optionName) => {
-              idxOption.push(optionName.name);
-              idxValue.push(optionName.value);
-          })
-          resolve();
-      }).then(() => {
-          let listVariant = combineArrays(idxValue);
-          
-          const allNewVariant = []
-      
-          listVariant.forEach((variant) => {
-              let listOptionOfVariant = variant.split("/");
-              let newVariant = {};
-              listOptionOfVariant.forEach((opt, idxOpt) => {
-                  let newOpt = {
-                      name: idxOption[idxOpt],
-                      value: opt
-                  }
-                  if (!newVariant?.option)
-                      newVariant = {
-                          name: variant,
-                          option: [newOpt]
-                      }
-                  else newVariant.option.push(newOpt);
-              })
-
-              allNewVariant.push(newVariant);
-          })
-          if (allNewVariant) {
-              //setVariant(allNewVariant);
-              form.current = {
-                  ...form?.current,
-                  variant: allNewVariant
-              }
-          }
-      })
     }
-    const handleChangeValueOption = (e, index) => {
+    const handleChangeOption = (e, index) => {
+        
         const newTargetValue = e.target.value ? e.target.value : "";
-        const tempCheckIncludes = optionValue.some((element) => element.name === newTargetValue);
-        if(tempCheckIncludes) {
-            console.log(optionValue);
-            //error
-        } else {
-            const newObj = [...optionValue];
-            let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
-            newObj[index] = {
-                name: newTargetValue,
-                value: oldValue
-            };
-            setOptionValue(newObj);
-        }
+        const newObj = [...optionValue];
+        let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
+        newObj[index] = {
+            name: newTargetValue,
+            value: oldValue
+        };
+        setOptionValue(newObj);
+        checkErrorOption(newObj);
     }
 
     const handleDeleteOption = (index) => {
@@ -206,50 +176,50 @@ const Variant = ({columnsOfData, formRef}) => {
         let newOptionTag = optionTag.filter((value, idx) => idx !== index);
         setOptionTag(newOptionTag);
         if (newOptionTag.length <= 0) setShowOpt(false);
+        form.current = {
+            ...form?.current,
+            option: newOptionValue
+        }
+        checkErrorOption(newOptionValue);
+        checkErrorValue(newOptionValue);
     }
     const handleDeleteOptionValue = (index, idxValue) => {
         const newObj = [...optionValue];
         newObj[index].value = newObj[index]?.value.filter((value, idx) => idx !== idxValue);
         
         setOptionValue(newObj);
+        
+        checkErrorOption(newObj);
+        checkErrorValue(newObj);
+        form.current = {
+            ...form?.current,
+            option: newObj
+        }
     }
     const doneOrEditOption = (index) => {
-        let tempEdit = optionTag;
-        tempEdit[index] = !tempEdit[index];
-        setOptionTag([...tempEdit]);
-    }
-    
-    const handleChangePriceVariant = (index, valuePrice) => {
-        let newVariant = [...form?.current?.variant];
-        newVariant[index] = {
-            ...form?.current?.variant[index],
-            price: valuePrice
-        }
-        form.current = {
-            ...form?.current,
-            variant: newVariant
-        }
-        //setVariant(newVariant);
-
-    }
-    const handleChangeQuantity = (index, valueQuantity) => {
-        let newVariant = [...form?.current?.variant];
-        newVariant[index] = {
-            ...form?.current?.variant[index],
-            quantity: valueQuantity
-        }
-        form.current = {
-            ...form?.current,
-            variant: newVariant
+        const lengthOfValue = optionValue[index].value.length;
+        if (!lengthOfValue) {
+            Swal.fire(
+                'Error!',
+                'You need add value for this option',
+                'error'
+            )
+        } else if (errorOption === -1 && errorIdxOption === -1) {
+            let tempEdit = optionTag;
+            tempEdit[index] = !tempEdit[index];
+            setOptionTag([...tempEdit]);
+        } else {
+            Swal.fire(
+                'Error!',
+                'You need fix all error before click button Done or Edit',
+                'error'
+            )
         }
     }
-    useEffect(() => {
-        createVariantUI();
-    },[optionValue])
     return (
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-            <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Options</InputLabel>
+            <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Option</InputLabel>
             <FormControlLabel control={<Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
             {showOpt ?
                 <>  
@@ -258,20 +228,25 @@ const Variant = ({columnsOfData, formRef}) => {
                         let popoverId = open ? 'pop-over-' + index : undefined;
                         return element ?
                         (
-                            <>  
-                                <InputLabel className="text-normal " name='title'>Option Name</InputLabel>
+                            <div key={index}>  
+                                <InputLabel className="text-normal " name='title'>Option name</InputLabel>
                                 <div className="row">
                                     <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
                                         <TextField
                                             aria-describedby={popoverId} 
-                                            className="text-field-input"
+                                            className={`text-field-input ${errorOption === index ? "error-cell" : ""}`}
                                             name='title'
                                             fullWidth
                                             required
                                             value={optionValue[index]?.name || ""}
                                             onClick={handlePopoverOpen}
                                             onBlur={handlePopoverClose}
-                                            onChange={(e) => handleChangeValueOption(e, index)}
+                                            onChange={(e) => handleChangeOption(e, index)}
+                                            error={errorOption === index  ? true : false}
+                                            helperText={errorOption === index  ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                            FormHelperTextProps={{
+                                                className: 'error-text'
+                                            }}
                                         />
                                     </div>
                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
@@ -284,52 +259,62 @@ const Variant = ({columnsOfData, formRef}) => {
                                     placement='bottom-start'
                                     >
                                         <Box className="box-poper">
-                                            Example: Size, Color, Material, ...
+                                            Ví dụ: kích cỡ, màu sắc, chất liệu, ...
                                         </Box>
                                 </Popper>
-                                
-                                <InputLabel className="text-normal " name='title'>Option Value</InputLabel>
-                                {
-                                    optionValue[index]?.value.map((value, idxValue) => {
-                                        return (
-                                            <div className="row">
-                                                <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
-                                                    
-                                                <TextField
-                                                        className="text-field-input"
-                                                        name='title'
-                                                        fullWidth
-                                                        required
-                                                        value={value}
-                                                        autoFocus={true}
-                                                        onChange={(e) => changeOptionValue(e, index, idxValue)}
+                                <div style={{paddingLeft: '2rem'}}>
+                                    <InputLabel className="text-normal " name='title'>Option value</InputLabel>
+                                    {
+                                        optionValue[index]?.value.map((value, idxValue) => {
+                                            return (
+                                                <div className="row" key={idxValue}>
+                                                    <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                        
+                                                    <TextField
+                                                            className={`text-field-input ${errorValue === idxValue && errorIdxOption === index ? "error-cell" : ""}`}
+                                                            name='title'
+                                                            fullWidth
+                                                            required
+                                                            value={value}
+                                                            autoFocus={true}
+                                                            onChange={(e) => changeOptionValue(e, index, idxValue)}
+                                                            error={errorValue === idxValue && errorIdxOption === index  ? true : false}
+                                                            helperText={errorValue === idxValue && errorIdxOption === index  ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                                            FormHelperTextProps={{
+                                                                className: 'error-text'
+                                                            }}
                                                         />
+                                                    </div>
+                                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                                        
+                                                        <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOptionValue(index, idxValue)}></i>
+                                                    </div>
                                                 </div>
-                                                <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                                    
-                                                    <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOptionValue(index, idxValue)}></i>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <div className="row">
-                                    <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
-                                                    
-                                        <TextField
-                                            className="text-field-input"
-                                            name='title'
-                                            fullWidth
-                                            required
-                                            value=''
-                                            onChange={(e) => changeOptionValue(e, index)}
-                                        />
-                                    </div>
-                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                        <i className="fa-trash fa-icon icon-trash" ></i>
-                                    </div>
+                                            )
+                                        })
+                                    }
+                                    <div className="row">
+                                        <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                        
+                                            <TextField
+                                                className={`text-field-input ${errorValue === optionValue[index]?.value?.length && errorIdxOption === index  ? "error-cell" : ""}`}
+                                                name='title'
+                                                fullWidth
+                                                required
+                                                value=''
+                                                onChange={(e) => changeOptionValue(e, index)}
+                                                error={errorValue ===  optionValue[index]?.value?.length && errorIdxOption === index ? true : false}
+                                                helperText={errorValue === optionValue[index]?.value?.length && errorIdxOption === index ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                                FormHelperTextProps={{
+                                                    className: 'error-text'
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                            <i className="fa-trash fa-icon icon-trash" ></i>
+                                        </div>
+                                    </div>  
                                 </div>
-                                
                                 <button className="btn-option" onClick={() => doneOrEditOption(index)}>
                                     Done
                                 </button>
@@ -337,19 +322,19 @@ const Variant = ({columnsOfData, formRef}) => {
                                     <Divider className="divider-custom"/>
                                 : ""
                                 }
-                            </>
+                            </div>
                         ) : (
-                            <div className="row">
+                            <div className="row" key={index}>
                                 <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
                                     <h5>{optionValue[index].name}</h5>
                                     <div className="row">
-                                        {optionValue[index]?.value?.map((element) => {
-                                            return <Chip className="chip-width-auto" label={element}/>
+                                        {optionValue[index]?.value?.map((element, index) => {
+                                            return <Chip className="chip-width-auto" key={index} label={element}/>
                                         })}
                                     </div>
                                 </div>
                                 <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                                    <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
+                                    <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Sửa</button>
                                 </div>
                                 {index !== 2 ?    
                                     <Divider className="divider-custom"/>
@@ -361,7 +346,7 @@ const Variant = ({columnsOfData, formRef}) => {
                     {optionTag.length <= 2 ?
                         <div>
                             <i className="fa-plus fa-icon icon-plus-before-text" ></i>
-                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Add another option</Link>
+                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Thêm tùy chọn</Link>
                         </div>
                     : ""
                     }
@@ -370,14 +355,8 @@ const Variant = ({columnsOfData, formRef}) => {
             }
 
         </Paper> 
-        {
-          form?.current?.variant?.length
-          ?   <>
-              <TableVariant data={rows} columnsOfData={columns} handlePrice={handleChangePriceVariant} handleQuantity={handleChangeQuantity}>
-              </TableVariant>
-          </>
-          : <></>
-        }
+        <TableVariant key="TableVariant" optionValue={optionValue} formRef={form} columnsOfData={columns}>
+        </TableVariant>
       </>
     );
 }

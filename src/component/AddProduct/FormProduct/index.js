@@ -1,50 +1,44 @@
 import React, {useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
-import { Paper, TextField, InputLabel, Box,Chip ,Select, MenuItem, Input, FormGroup, FormControlLabel,Popper, Checkbox, InputAdornment, FormHelperText} from '@material-ui/core';
-import {EditorState} from 'draft-js'
-import { Editor } from "react-draft-wysiwyg";
+import {
+    Paper,
+    TextField,
+    InputLabel,
+    Box,
+    Chip,
+    MenuItem,
+    FormGroup,
+    FormControlLabel,
+    Select,
+    Checkbox,
+    FormHelperText,
+    CircularProgress
+} from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import 'react-quill/dist/quill.snow.css';
 import { Link } from "react-router-dom";
 import Variant from "../Variant";
-import { debounce } from "lodash";
 import ImageInput from "../ImageInput"
+import PricingComponent from "../PricingComponent"
+import ReactQuill from 'react-quill'
+import { useSelector, useDispatch } from "react-redux";
+import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
+import { doCreateProduct, doUploadImageProduct } from "../../../redux/slice/productSlice";
+import { Button } from "@mui/material";
+import Swal from "sweetalert2";
+import { v4 as uuid } from 'uuid';
 
-
-const FormProduct = ({mode, oldForm})=> { // mode add or update
-    const [editorState, setEditorState] = useState(()=> EditorState.createEmpty());
-    const [trackQuantity, setTrackQuantity] = useState(false);
-
-    //const [variant, setVariant] = useState([]);
+const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+    const dispatch = useDispatch();
+    const collectionList = useSelector((state) => state.collectionSlice.listCollection);
     let form = useRef({});
-    const [imageInput, setImageInput] = useState([]);
-    const [imageBase64, setImageBase64] = useState([]);
     const params = useParams();
-    const debounceChange = useCallback(debounce((callbackFunction) => callbackFunction, 1000))
-
-    const onChangeTrackQuantity = () => {
-        setTrackQuantity(!trackQuantity);
-    }
-    
-    const columns = [
-        { id: 'title', label: 'Title', minWidth: 170,align: 'right' },
-        { id: 'price', label: 'Price', minWidth: 100, maxWidth: 200,align: 'right' },
-        {
-          id: 'quantity',
-          label: 'Quantity',
-          minWidth: 170,
-          maxWidth: 200,
-          align: 'right',
-        },
-        {
-          label: '',
-          minWidth: 170,
-          maxWidth: 200,
-          align: 'right'
-        },
-    ];
+    const [isVariant, setIsVariant] = useState(false);
+    const [errorTitle, setErrorTitle] = useState(null);
+    const [collectionSelected, setCollectionSelected] = useState([]);
     const onChangeIsContinueSelling = (event) => {
         form.current = {
             ...form?.current,
@@ -55,22 +49,41 @@ const FormProduct = ({mode, oldForm})=> { // mode add or update
         }
     };
     const handleChangeCollection = (event) => {
-        const { target: { value }} = event;
+        let selectedCol = [];
+        let value = event.target.value;
+        if (typeof value !== 'string') {
+            value = value.map((collectionId) => {
+                const curColl = collectionList.find((collection) => collection.id === collectionId)
+                let newSelectedCol = {
+                    name: curColl.name,
+                    id: curColl.id
+                }
+                selectedCol.push(newSelectedCol);
+                return curColl.id
+            })
+        }
         typeof value === 'string' ? form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                collection: value.split(',')
-            }
+            ...form?.current,   
+            collection: value.split(',')
         } : form.current = {
             ...form?.current,
-            product: {
-                ...form?.current?.product,
-                collection: value
-            }
+            collection: value
         }
+        setCollectionSelected(selectedCol);
     };
+    const handleChangeDeleteCollection = (id) => {
+        const newCollSelected = collectionSelected.filter((value) => value.id !== id);
+        const newCollForForm = form.current?.collection?.filter((CollId) => CollId !== id)
+        form.current = {
+            ...form?.current,
+            collection: newCollForForm
+        }
+        setCollectionSelected(newCollSelected);
+    }
     const handleChangeProductName = (event) => {
+        if (errorTitle) {
+            setErrorTitle(null);
+        }
         form.current = {
             ...form?.current,
             product: {
@@ -79,21 +92,12 @@ const FormProduct = ({mode, oldForm})=> { // mode add or update
             }
         }
     }
-    const handleChangeProductPrice = (event) => {
+    const handleOnChangeSKU = (event) => {
         form.current = {
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                price: event
-            }
-        }
-    }
-    const handleChangeProductCostPerItem = (event) => {
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                cost: event
+                sku: event.target.value
             }
         }
     }
@@ -102,7 +106,7 @@ const FormProduct = ({mode, oldForm})=> { // mode add or update
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                status: event
+                status: event.target.value
             }
         }
     }
@@ -111,184 +115,148 @@ const FormProduct = ({mode, oldForm})=> { // mode add or update
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                type: event
+                type: event.target.value
             }
         }
     }
-    const getBase64 = (file, cb) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            cb(reader.result);
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
+    const handleOnChangeInventory = (event) => {
+        if (isVariant)
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    inventory: 0
+                }
+            }
+        else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    inventory: event.target.value
+                }
+            }
+        }
     }
+    const saveProduct = () => {
+        if (form?.current?.product?.title) {   
+            Swal.showLoading();
+            new Promise((resolve) => {    
+                let result = [];
+                const data = form?.current?.product?.images;
+                const listPromise = [];
+                for (let item of data) {
+                    listPromise.push(
+                        new Promise((resolveForUpload) => {
+                            dispatch(doUploadImageProduct({
+                                data: {
+                                    data: [{
+                                        name: uuid(),
+                                        base64Image: item
+                                    }]
+                                }
+                            })).then((result) => {
+                                resolveForUpload(result);
+                            })
+                        })
+                    )
+                };
+                Promise.all(listPromise).then((result) => {
+                    if (result && result.length > 0) {
+                        // payload is array data response from server, first item to link, so get payload[0] in here
+                        result = result.map(data => data.payload[0]); 
+                        form.current = {
+                            ...form?.current,
+                            product: {
+                                ...form?.current?.product,
+                                thumbnail: Object.values(result)[0],
+                                images: Object.values(result)
+                            }
+                        }
+                        resolve();
+                    }
+                })
+            }).then(() => {
+                const createObj = {
+                    storeId: params.storeId,
+                    productObj: form.current
+                }
+                dispatch(doCreateProduct(createObj))
+                .then((res) => {
+                    Swal.close();
+                    Swal.fire(
+                        'Success!',
+                        'Create successful products!',
+                        'success'
+                    ).then((result) => {
+                        returnAfterAdd();
+                    })
+                });
+            })
+        } else {
+                setErrorTitle('You need to enter a value for this field');
+                window.scrollTo(0, 0);
+        }
+    }
+
     useEffect(() => {
-        const NewImageBase64 = [];
-        new Promise((resolve) => {
-            imageInput.forEach((image) => getBase64(image,(result) => NewImageBase64.push(result)));
-            resolve();
-        }).then(() => {
-            setImageBase64(NewImageBase64)
-        })
-    }, [imageInput])
-    useEffect(() => {
-        document.getElementById("title-product").value = "a";
-        console.log(document.getElementById("title-product"));
+        form.current = {
+            ...form?.current,
+            product: {
+                ...form?.current?.product,
+                store_id: params.storeId
+            }
+        }
+        dispatch(doGetListCollectionOfStores(params.storeId));
+        
     },[])
-    // useEffect (() => {
-    //     const newForm = {
-    //         product: {
-    //             store_id: params.storeId,
-    //             // title: productName,
-    //             // price: productPrice,
-    //             // cost: productCostPerItem,
-    //             is_variant: showOpt,
-    //             // status: status,
-    //             //collection: collection,
-    //             //type: type,
-    //             image: imageBase64
-    //         },
-    //         option: optionValue,
-    //         variant: variant
-    //     }
-    // }, [variant,imageBase64, showOpt, optionValue, params.storeId])
-    
-    console.log(form);
     return (
         <>
         <FormGroup>
             <div className="row  text-black">  
-                <div className="offset-1 col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">   
+                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
-                        <TextField className="text-field-input" id="title-product" name='title' onChange={handleChangeProductName} placeholder='Enter Title' fullWidth required />
+                        <TextField
+                            className="text-field-input"
+                            id="title-product"
+                            name='title'
+                            onChange={handleChangeProductName}
+                            fullWidth
+                            required
+                            error={errorTitle ? true : false}
+                            helperText={errorTitle}
+                            FormHelperTextProps={{
+                                className: 'error-text'
+                            }}
+                        />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
-                        <div style={{ border: "1px solid black", padding: '2px', minHeight: '200px' }}>
-                            <Editor
-                            editorState={editorState}
-                            onEditorStateChange={setEditorState}
-                            />
-                        </div>
+                        <ReactQuill value={''}
+                            onChange={() => {}} />
                     </Paper> 
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <ImageInput setImagesInput={setImageInput}></ImageInput>
+                        <ImageInput formRef={form}></ImageInput>
                     </Paper> 
                     
-                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Pricing</InputLabel>
-                        <div className="row">
-                            <Stack
-                                direction="row"
-                                justifyContent="flex-start"
-                                alignItems="center"
-                                spacing={10}
-                                >
-                                <InputLabel name='title' className="text-normal" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
-                                <TextField className="text-field-input"
-                                    style={{width: 'auto'}}
-                                    placeholder="0.00"
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
-                                    }}
-                                    name='title'
-                                    fullWidth
-                                    required
-                                    onChange={(e) => handleChangeProductPrice(e.target.value)}  />
-                            </Stack>
-                        </div>
-                        <FormControlLabel control={<Checkbox onChange={onChangeTrackQuantity}/>} className='font-weight-normal' label="Charge tax on this product" />
-                        <Divider className="divider-custom"/>
-                        
-                        <InputLabel name='title' style={{margin: 0}}>Cost per item</InputLabel>
-                        <Stack
-                            direction="row"
-                            justifyContent="flex-start"
-                            alignItems="center"
-                            spacing={10}
-                            >
-                            
-                            <TextField className="text-field-input"
-                                placeholder="0.00"
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>$</InputAdornment>,
-                                }}
-                                inputProps={{
-                                    'aria-label': 'weight',
-                                }}
-                                name='title'
-                                fullWidth
-                                required
-                                onChange={(e) => handleChangeProductCostPerItem(e.target.value)}  />
-                            {form?.product?.cost && form?.product?.price ? 
-                            <>
-                                <div>
-                                    <p style={{margin: 0}}>Margin</p>
-                                    <p style={{margin: 0}}>{(form?.product?.price - form?.product?.cost)/form?.product?.price * 100} %</p>
-                                </div>
-                                <div>
-                                    <p style={{margin: 0}}>Profit</p>
-                                    <p style={{margin: 0}}>${form?.product?.price - form?.product?.cost}</p>
-                                </div>
-                            </>: ""}
-                        </Stack>
-                        <FormHelperText id="filled-weight-helper-text">Customers won’t see this</FormHelperText>
-                    </Paper>
+                   <PricingComponent key="PricingComponent" formRef={form} isVariant={isVariant}></PricingComponent>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
                         <div className="row">
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+
                                 <InputLabel name='title' style={{margin: 0}}>SKU (Stock Keeping Unit)</InputLabel>
-                                <TextField className="text-field-input" name='title' fullWidth required onChange={() => console.log()}  />
+                                <TextField style={{width: 'auto'}} className="text-field-input" name='title' fullWidth required onChange={(e) => handleOnChangeSKU(e)}  />
+                            </div>
+                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
+                                <InputLabel name='title' style={{margin: 0}}>Quantity</InputLabel>
+                                <TextField style={{width: 'auto'}} disabled={isVariant} className="text-field-input" name='title' fullWidth required onChange={(e) => handleOnChangeInventory(e)}  />
                             </div>
                         </div>
                         <div>
-                            <FormControlLabel className='font-weight-normal' control={<Checkbox onChange={onChangeTrackQuantity}/>} label="Track quantity" />
-                        </div>
-                        <div>
-                            <FormControlLabel className='font-weight-normal' hidden={!trackQuantity} control={<Checkbox onChange={(event) => onChangeIsContinueSelling(event)}/>} label="Continue selling when out of stock" />
-                        </div>
-                        <Divider className="divider-custom"/>
-                        <div className="row">
-
-                            <InputLabel name='title' style={{marginLeft: '0.75rem', marginBottom: '2rem'}}>Quantity</InputLabel>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                spacing={2}
-                                >
-                                    <p style={{marginBottom: 0}}>
-                                        Location name
-                                    </p>
-                                    <p>
-                                        Available
-                                    </p>
-                            </Stack>
-                            <Divider/>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                spacing={2}
-                                >
-                                    <p>
-                                        Location name
-                                    </p>
-                                    {!trackQuantity ? 
-                                        <p>
-                                            Available
-                                        </p>
-                                    :
-                                        <TextField type="number" style={{maxWidth: 75}}   InputProps={{ inputProps: { min: 0, value: 0 } }} className="text-field-input" name='title' fullWidth required onChange={() => console.log()()}  />
-                                    }
-                                    
-                            </Stack>
+                            <FormControlLabel className='font-weight-normal' control={<Checkbox onChange={(event) => onChangeIsContinueSelling(event)}/>} label="Continue selling when out of stock" />
                         </div>
                     </Paper> 
-                    <Variant columnsOfData={columns} formRef={form}
+                    <Variant key="Variant"  formRef={form} setIsVariant={setIsVariant}
                     ></Variant>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <Stack
@@ -304,55 +272,79 @@ const FormProduct = ({mode, oldForm})=> { // mode add or update
                         </Stack>
                         <InputLabel name='title' className="text-small" style={{margin: 0, marginTop: '1rem'}}>Add a title and description to see how this product might appear in a search engine listing</InputLabel>
                     </Paper> 
+                    
+                    <div className="mt-4 mb-4">
+                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-desktop">Save</button>
+                    </div>  
                 </div>   
-                <div className="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4">                      
+                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product Status</InputLabel>
-                        <Select fullWidth
-                        className="poper-item"
-                        onChange={(e) => handleOnChangeStatus(e.target.value)}
-                        >
-                            <MenuItem value="draft">Draft</MenuItem>
-                            <MenuItem value="active">Active</MenuItem>
-                        </Select>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Status</InputLabel>
+                        <div key={form?.current?.product?.status || "SelectStatus"}>
+                            <Select fullWidth
+                            className="poper-item"
+                            
+                            defaultValue={form?.current?.product?.status || "draft"}
+                            onChange={(e) => handleOnChangeStatus(e)}
+                            >
+                                <MenuItem value="draft">Draft</MenuItem>
+                                <MenuItem value="active">Active</MenuItem>
+                            </Select>
+                        </div>
+                        
                         <FormHelperText id="filled-weight-helper-text">This product will be hidden from all sales channels.</FormHelperText>
                         <Divider className="divider-custom"/>
                         
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Sales channels and apps</InputLabel>
-                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={false}/>} label="Online Store" />
-                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={false}/>}  label="Google" />
-                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
-                        <FormControlLabel fullWidth className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>SALES CHANNELS AND APPS</InputLabel>
+                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Online Store" />
+                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Google" />
+                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
+                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
                     </Paper> 
                     <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Product organization</InputLabel>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Product organization</InputLabel>
+
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Type</InputLabel>
+                        <div key={form?.current?.product?.type ?? "SelectType"}>
+                            <Select fullWidth 
+                            className="poper-item"
+                            defaultValue={form?.current?.product?.type ?? ""}
+                            onChange={(e) => handleOnChangeType(e)}>
+                                <MenuItem value="Clothes">Clothes</MenuItem>
+                                <MenuItem value="Book">Book</MenuItem>
+                                <MenuItem value="Bike">Bike</MenuItem>
+                            </Select>
+                        </div>
                         
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Type</InputLabel>
-                        <Select fullWidth 
-                        className="poper-item"
-                        onChange={(e) => handleOnChangeType(e.target.value)}>
-                            <MenuItem value="Clothes">Clothes</MenuItem>
-                            <MenuItem value="Book">Book</MenuItem>
-                            <MenuItem value="Bike">Bike</MenuItem>
-                        </Select>
-                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium  " name='title'>Collection</InputLabel>
-                        <Select fullWidth multiple
-                        className="poper-item"
-                        value={form?.product?.collection || []}
-                        onChange={handleChangeCollection}
-                        renderValue={(selected) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                              {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                              ))}
-                            </Box>
-                          )}>
-                            <MenuItem value="collec1">Collec1</MenuItem>
-                            <MenuItem value="collec2">Collect2</MenuItem>
-                        </Select>
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium" name='title'>Collection</InputLabel>
+                        <div key={form?.current?.product?.collection ?? "SelectCollection"}>
+                            <Select
+                                fullWidth multiple
+                                className="poper-item"
+                                defaultValue={[]}
+                                value={collectionSelected.map((value) => value.id)}
+                                onChange={(e) => handleChangeCollection(e)}
+                                renderValue={() => (
+                                    <></>
+                                )}
+                            >
+                                {collectionList.map((collection, index) => {
+                                    return <MenuItem value={collection.id} key={index}>{collection.name}</MenuItem>      
+                                })}
+                            </Select>
+                        </div>
+                        {collectionSelected.length > 0 ?
+                            collectionSelected.map((collection, index) => {
+                                return <Chip className="collection-chip" key={index} label={collection.name} onDelete={() => handleChangeDeleteCollection(collection.id)}/>
+                            })
+                        : ""}
                     </Paper> 
+                    
+                    <div className="mt-4 mb-4">
+                        <button onClick={saveProduct} className="float-right btn btn-success btn-form-product save-button-form-product-mobile">Save</button>
+                    </div>  
                 </div>    
-            </div>  
+            </div>
         </FormGroup> 
         </>
     );

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
 import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
@@ -6,18 +6,14 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
+import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
 import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
 
 const NavBarDetailStore = ({isDesktop}) => {
     const params = useParams();
-    let navigate = useNavigate(); 
-    const routeChange = (newPath) =>{
-        navigate(newPath);
-    }
+    let routeChange = useNavigate(); 
     //use redux to manage state
     const keySelected = useSelector((state) => state.keySelected.key);
-    console.log(keySelected);
     const dispatch = useDispatch();
     var changeKeySelectedParent = (index) => {
         dispatch(doSwitchKeySelected(index));
@@ -31,16 +27,53 @@ const NavBarDetailStore = ({isDesktop}) => {
     var changeListStoreCall = (list) => {
         dispatch(doSwitchListStore(list));
     }
+    //change route after key change
+    useEffect(() => {      
+        switch (keySelected) {
+            case 1:
+                routeChange(`/store-detail/manage-home/${params.storeId}`)
+                break;
+            case 2:
+                break;
+            case 3:
+                routeChange(`/store-detail/manage-product/${params.storeId}`)
+                break;   
+            case 31:
+                break;          
+            case 32:
+                routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                break;
+                
+            case 33:
+                break;      
+            case 4:
+                break;       
+            case 5:
+                break;       
+            case 6:
+                break;  
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            default:
+                routeChange(`/store-detail/manage-home/${params.storeId}`)
+                break;
+        }
+    }, [keySelected, params.storeId])
     var listStore = listStoreInStore;
     return (
         <>
             <Stack direction="column" spacing={3} justifyContent="space-between" alignItems="stretch" className={`all-nav-detail   ${isDesktop ? "desktop" : "mobile"}`} > 
                 <Stack direction="column" spacing={0} >  
+                
                     {isDesktop ? "" :
                     <Stack direction="row" spacing={0} >  
                         <Avatar
                             src={process.env.PUBLIC_URL + '/img/Logo.png'}
-                            style={{ height: '4rem', width: '4rem' }}
+                            style={{ height: '3rem', width: '3rem' }}
                         /> 
                         <Typography component={'span'} ><p className="mt-3 font-weight-bold mr-0-3rem">{nameStore}</p></Typography>
                         <Dropdown className="float-right dropdown-store-detail p-0">
@@ -56,7 +89,7 @@ const NavBarDetailStore = ({isDesktop}) => {
                                     : ""}
                             </Dropdown.Menu>
                         </Dropdown>
-                    </Stack> }       
+                    </Stack> }  
                     <Typography component={'span'} className={keySelected === 1 ? "nav-element nav-element-selected" : "nav-element "}
                     onClick={() => changeKeySelectedParent(1)}>
                         <p className="m-0 mb-2 mt-2  text-nav-detail">
@@ -85,7 +118,7 @@ const NavBarDetailStore = ({isDesktop}) => {
                         hidden={(keySelected === 3) || 
                                 (keySelected === 31) ||
                                 (keySelected === 32) ||
-                                (keySelected === 33) ? "" : "true"} >         
+                                (keySelected === 33) ? 0 : 1} >         
                         <Typography component={'span'} className={keySelected === 31 ? "nav-element-selected nav-extend" : "nav-extend"}
                         onClick={() => changeKeySelectedParent(31)}>
                             <p className="m-0 mb-2 mt-2 text-extend ">
@@ -106,8 +139,8 @@ const NavBarDetailStore = ({isDesktop}) => {
                     </Stack> 
                     <Typography component={'span'} className={keySelected === 4 ? "nav-element nav-element-selected" : "nav-element "}
                     onClick={() => changeKeySelectedParent(4)}>
-                        <p className="m-0 mb-2 mt-2 pl-0-5rem">
-                            <i className="fa-user fa-icon fa-store-detail-nav p-0 ml-0-25rem mr-1rem"></i>
+                        <p className="m-0 mb-2 mt-2">
+                            <i className="fa-user fa-icon fa-store-detail-nav p-0" style={{marginRight: 17}}></i>
                             Khách hàng
                         </p>
                     </Typography>
@@ -158,7 +191,7 @@ const NavBarDetailStore = ({isDesktop}) => {
                                 (keySelected === 82) ||
                                 (keySelected === 83) ||
                                 (keySelected === 84) ||
-                                (keySelected === 85) ? "" : "true"} >         
+                                (keySelected === 85) ? 0 : 1} >         
                         <Typography component={'span'} className={keySelected === 81 ? "nav-element-selected nav-extend" : "nav-extend"}
                         onClick={() => changeKeySelectedParent(81)}>
                             <p className="m-0 mb-2 mt-2 text-extend ">
