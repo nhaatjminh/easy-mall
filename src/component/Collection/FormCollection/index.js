@@ -20,9 +20,7 @@ import './index.css';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import 'react-quill/dist/quill.snow.css';
 import { Link } from "react-router-dom";
-import Variant from "../Variant";
 import ImageInput from "../ImageInput"
-import PricingComponent from "../PricingComponent"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
@@ -31,7 +29,7 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
 
-const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     const collectionList = useSelector((state) => state.collectionSlice.listCollection);
     let form = useRef({});
@@ -236,27 +234,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <ImageInput formRef={form}></ImageInput>
                     </Paper> 
-                    
-                   <PricingComponent key="PricingComponent" formRef={form} isVariant={isVariant}></PricingComponent>
-                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
-                        <div className="row">
-                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-
-                                <InputLabel name='title' style={{margin: 0}}>SKU (Stock Keeping Unit)</InputLabel>
-                                <TextField style={{width: 'auto'}} className="text-field-input" name='title' fullWidth required onChange={(e) => handleOnChangeSKU(e)}  />
-                            </div>
-                            <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
-                                <InputLabel name='title' style={{margin: 0}}>Quantity</InputLabel>
-                                <TextField style={{width: 'auto'}} disabled={isVariant} className="text-field-input" name='title' fullWidth required onChange={(e) => handleOnChangeInventory(e)}  />
-                            </div>
-                        </div>
-                        <div>
-                            <FormControlLabel className='font-weight-normal' control={<Checkbox onChange={(event) => onChangeIsContinueSelling(event)}/>} label="Continue selling when out of stock" />
-                        </div>
-                    </Paper> 
-                    <Variant key="Variant"  formRef={form} setIsVariant={setIsVariant}
-                    ></Variant>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <Stack
                                 direction="row"
@@ -349,4 +326,4 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     );
 }
 
-export default FormProduct;
+export default FormCollection;

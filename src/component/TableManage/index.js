@@ -236,7 +236,15 @@ const TableManage = ({data, columnsOfData}) => {
                                 }}
                             />
                       </TableCell>
-                      <TableCell
+                      {columnsOfData.map((headCell, index) => (
+                        <TableCell
+                          key={headCell + index}
+                          align={'right'}
+                        >
+                            {row[`${headCell.id}`]}
+                        </TableCell>
+                      ))}
+                      {/* <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
@@ -251,7 +259,7 @@ const TableManage = ({data, columnsOfData}) => {
                       <TableCell align="right">
                         {row.type}</TableCell>
                       <TableCell align="right">
-                        {row.vendor}</TableCell>
+                        {row.vendor}</TableCell> */}
                     
                     </TableRow>
                     );

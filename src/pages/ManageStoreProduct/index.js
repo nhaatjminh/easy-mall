@@ -16,7 +16,7 @@ const ManageStoreProduct = () => {
     { id: 'title', label: 'Title', minWidth: 170 },
     { id: 'status', label: 'Status', minWidth: 100 },
     {
-      id: 'inventoryProduct',
+      id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
       align: 'right',
@@ -28,7 +28,7 @@ const ManageStoreProduct = () => {
       align: 'right',
     },
     {
-      id: 'vendorProduct',
+      id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
       align: 'right'

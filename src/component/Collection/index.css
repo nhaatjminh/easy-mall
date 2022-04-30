@@ -1,0 +1,17 @@
+.text-field-input {
+    margin: 0.5rem 0 !important;
+    border-radius: 5px;
+}
+.text-field-input .MuiInput-underline::before {
+    border: none !important;
+}
+.media-select {
+    border: 1px solid rgba(0, 0, 0, 0.42) !important;
+}
+.media-select-button {
+    margin: 0;
+    padding: 0
+}
+.text-black p, .text-black label, .text-black span {
+    color: #333 !important;
+}

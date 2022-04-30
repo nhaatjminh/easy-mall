@@ -5,56 +5,30 @@ import TableManage from "../../component/TableManage";
 
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
-import AddProduct from "../../component/AddProduct";
+import Collection from "../../component/Collection";
+import { useSelector, useDispatch } from "react-redux";
+import { doGetListCollectionOfStores } from "../../redux/slice/collectionSlice";
+
 const ManageCollection = () => {
-  
+  const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
-  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showAddCollection, setShowAddCollection] = useState(false);
+  
+  const collectionList = useSelector((state) => state.collectionSlice.listCollection);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170 },
-    { id: 'status', label: 'Status', minWidth: 100 },
+    { id: 'name', label: 'Title', minWidth: 300 },
     {
-      id: 'inventoryProduct',
-      label: 'Inventory',
-      minWidth: 170,
-      align: 'right',
-    },
-    {
-      id: 'type',
-      label: 'Type',
-      minWidth: 170,
-      align: 'right',
-    },
-    {
-      id: 'vendorProduct',
-      label: 'Vendor',
+      id: 'condition',
+      label: 'Condition',
       minWidth: 170,
       align: 'right'
     },
   ];
-  const getListProducts = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-
-    var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-    };
-
-    await fetch(process.env.REACT_APP_API_URL + `stores/${params.storeId}/products`, requestOptions)
-    .then(response => response.json())
-    .then(result => {
-      setRows(result.data);
-      console.log(result.data);
-    })
-    .catch(error => {
-        console.log('error', error);
-    });
-  }
+  
   useEffect(() => {
-    if (!showAddProduct) getListProducts();
-  }, [showAddProduct])
+    dispatch(doGetListCollectionOfStores(params.storeId)); 
+  },[showAddCollection])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
@@ -68,7 +42,7 @@ const ManageCollection = () => {
               <div className="row ">
                   
               <>
-              {!showAddProduct ?
+              {!showAddCollection ?
               <>
                 <Stack
                   direction="row"
@@ -76,23 +50,14 @@ const ManageCollection = () => {
                   alignItems="center"
                   spacing={1}
                 >              
-                  <p className="text-btn-login ml-1rem p-0-75rem"> Products </p>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Export </p></button>
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Import </p></button>
-                    <button className="btn btn-success btn-form-product" onClick={() => setShowAddProduct(true)} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Product </p></button>
-                  </Stack>
+                  <p className="text-btn-login ml-1rem p-0-75rem"> Collection </p>
+                  <button className="btn btn-success btn-form-product" onClick={() => setShowAddCollection(true)} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Collection </p></button>
                 </Stack>
                 <div className="table">
-                  <TableManage data={rows} columnsOfData={columns}></TableManage>
+                  <TableManage data={collectionList} columnsOfData={columns}></TableManage>
                 </div>
               </>
-              : <AddProduct returnTable={() => setShowAddProduct(false)}></AddProduct>}
+              : <Collection returnTable={() => setShowAddCollection(false)}></Collection>}
                       
               </>
               </div>
