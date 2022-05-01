@@ -56,6 +56,14 @@ const NavBarDetailStore = ({isDesktop}) => {
                 break;
             case 8:
                 break;
+            case 81:
+                break;
+            case 82:
+                break;
+            case 83:
+                break;
+            case 84:
+                break;
             case 9:
                 break;
             default:
@@ -178,7 +186,6 @@ const NavBarDetailStore = ({isDesktop}) => {
                     <Typography component={'span'} className={keySelected === 8 ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             changeKeySelectedParent(81);
-                            navigate(`/store-detail/${params.storeId}/themes`);
                         }}>
                         <p className="m-0 mb-2 ">
                             <i className="fa-university fa-icon fa-store-detail-nav "></i>
@@ -198,7 +205,6 @@ const NavBarDetailStore = ({isDesktop}) => {
                         <Typography component={'span'} className={keySelected === 81 ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 changeKeySelectedParent(81);
-                                navigate(`/store-detail/${params.storeId}/themes`)
                             }}>
                             <p className="m-0 mb-2 mt-2 text-extend ">
                                 Theme
