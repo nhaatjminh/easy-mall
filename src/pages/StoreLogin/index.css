@@ -12,6 +12,57 @@
     background-color: #2B9361;
     background-repeat:no-repeat;
 }
+
+.store-login__logo {
+    width: 240px;
+    height: 100%;
+}
+
+.store-login__text-store {
+    display: flex;
+    align-items: center;
+}
+
+.store-login__btn--create {
+    width: fit-content !important;
+    height: fit-content !important;
+}
+
+.store-login__dropdown:focus {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.store-login__search {
+    display: flex;
+    align-items: center;
+    margin: 0 1.2rem 0 1.5rem;
+    padding: .5rem;
+    width: 93%;
+    border: 1px solid #9fa3a7;
+    border-radius: .4rem;
+}
+
+.store-login__search--icon {
+    margin: 0 .5rem 0 .5rem;
+}
+
+.store-login__search--input {
+    width: 100%;
+}
+
+.store-login__search--input input{
+    width: 100%;
+    border: none;
+}
+
+.store-login__search--input input:focus {
+    outline: none;
+}
+
+.store-login__list {
+}
+
 .paper-style {
     padding: 20px;
     width: 45%;
@@ -41,10 +92,10 @@
     height: 3.5rem;
 }
 .text-store {
-    padding-top: 1.25rem;
     padding-left: 1rem;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 1.15rem;
+    margin-bottom: 0;
 }
 .find-store {
     width: 93% !important;

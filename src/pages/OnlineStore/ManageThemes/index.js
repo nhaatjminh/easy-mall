@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ViewIcon } from '../../../assets/icon/ViewIcon';
+import { ViewIcon } from '../../../assets/icon/svg/ViewIcon';
 import './index.css'
 import HeaderDetailStore from './../../../component/HeaderDetailStore/index';
 import NavBarDetailStore from "../../../component/NavBarDetailStore";

@@ -12,6 +12,7 @@ import StoreLoginList from "../../component/StoreLoginList";
 import { useSelector, useDispatch } from "react-redux";
 import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
 import logo from '../../assets/image/Logo.png'
+import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -74,18 +75,16 @@ const StoreLogin = ({ nameAccount }) => {
     return (
         <div className="bgImg">
 
-            <div>
+            <div className="store-login">
                 <Grid>
                     <Paper elevation={10} className="paper-style">
                         <div className="row">
                             <div className=" col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <Stack direction="row" spacing={2} >
-                                    <img style={{ width: '100%', height: 'auto' }} src={logo} />
-                                </Stack>
+                                    <img className="store-login__logo" src={logo} />
 
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <Dropdown className="float-right dropdown-store-login p-0 pt-1">
+                                <Dropdown className="store-login__dropdown float-right dropdown-store-login p-0 pt-1">
                                     <Dropdown.Toggle id="dropdown-basic">
                                         <i className="fa-angle-down fa-icon  float-right fa-store-login"></i>
                                     </Dropdown.Toggle>
@@ -103,17 +102,31 @@ const StoreLogin = ({ nameAccount }) => {
                         {!isCreateStore ?
                             <div>
                                 <div className="row mt-5">
-                                    <div className="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">
-                                        <h5 className="text-store">Các cửa hàng của bạn</h5>
+                                    <div className="store-login__text-store col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7">
+                                        <h4 className="text-store">Các cửa hàng của bạn</h4>
                                     </div>
                                     <div className="col-5 col-sm-5 col-md-5 col-lg-5 col-xl-5">
 
-                                        <button className="btn btn-success btn-create-store float-right" onClick={() => setIsCreateStore(true)}> <p className="text-btn-login"> Tạo cửa hàng </p></button>
+                                        <button
+                                            className="store-login__btn--create btn btn-success btn-create-store float-right"
+                                            onClick={() => setIsCreateStore(true)}>
+                                            <p className="text-btn-login"> Tạo cửa hàng </p>
+                                        </button>
                                     </div>
                                 </div>
                                 <div className="row mt-5 ">
-                                    <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth onChange={handleOnchangeSearch} />
-                                    <div className="row find-store p-0 scroll-list" >
+                                    <div className="store-login__search">
+                                        <div className="store-login__search--icon">
+                                            <SearchIcon />
+                                        </div>
+                                        <div className="store-login__search--input">
+                                            <input
+                                                placeholder='Tìm Kiếm'
+                                                onChange={handleOnchangeSearch} />
+                                        </div>
+                                    </div>
+
+                                    <div className="store-login__list row find-store p-0 scroll-list" >
                                         {listStoreShow ? listStoreShow.map((store, index) => (
                                             <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
                                                 changeNameStoreSelectedCall(store.name);
