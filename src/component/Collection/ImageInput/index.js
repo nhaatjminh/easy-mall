@@ -7,7 +7,8 @@ import {
     Checkbox,
     IconButton,
     Typography,
-    Tooltip
+    Tooltip,
+    Button
 }
 from '@mui/material';
 import './index.css';
@@ -19,37 +20,30 @@ const EnhancedTableToolbar = (props) => {
     const { numSelected, onDeleteSelected } = props;
     return (
       <>
-        {numSelected > 0 ?
+        {numSelected ?
           <Toolbar
             style={{marginTop: '1rem'}}
             sx={{
               pl: { sm: 2 },
-              pr: { xs: 1, sm: 1 },
-              ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                  alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-              }),
+              pr: { xs: 1, sm: 1 }
             }}
+            className='collection-image'
           >
-            {numSelected > 0 ? (
               <Typography
                 sx={{ flex: '1 1 80%' }}
                 color="inherit"
                 variant="subtitle1"
                 component="div"
               >
-                {numSelected} Đã chọn
-                
-                {numSelected > 0 ? (
-                  <Tooltip title="Delete" >
-                    <IconButton >
-                      <DeleteIcon onClick={onDeleteSelected}/>
-                    </IconButton>
-                  </Tooltip>
-                ) : ""}
+                Đã chọn
+                <Tooltip title="Delete" >
+                  <IconButton >
+                    <DeleteIcon onClick={onDeleteSelected}/>
+                  </IconButton>
+                </Tooltip>
               </Typography>
               
-            ) : ""}
+              <Button className="btn btn-delete-all"><p className="p-0 m-0">Delete</p></Button>
           </Toolbar>
         :""}
         
@@ -58,13 +52,13 @@ const EnhancedTableToolbar = (props) => {
   };
   
   EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
+    numSelected: PropTypes.bool.isRequired,
   };
 
 const ImageInput = ({formRef}) => {
     const form = formRef;
-    const [images, setImages] = useState([]);
-    const [selected, setSelected] = useState([]);
+    const [images, setImages] = useState();
+    const [selected, setSelected] = useState(false);
     
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
@@ -76,29 +70,11 @@ const ImageInput = ({formRef}) => {
             console.log('Error: ', error);
         };
     }
-    const handleClick = (event, url) => {
-        const selectedIndex = selected.indexOf(url);
-        let newSelected = [];
-    
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, url);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
-          );
-        }
-    
-        setSelected(newSelected);
+    const handleClick = () => {
+        setSelected(!selected);
     };
-    
-    const isSelected = (url) => selected.indexOf(url) !== -1;
     const onDeleteSelected = () => {
-      setSelected([]);
+      setSelected(false);
     }
     const ImagesGallery = (images) => {
         return (
@@ -107,46 +83,44 @@ const ImageInput = ({formRef}) => {
                 rowHeight={164}
                 sx={{ width: 'auto', maxHeight: 400 }}
             >
-                {images.map((url, index) => {
-                    const isItemSelected = isSelected(url);
-                    return <ImageListItem key={index}>
-                        <div className="image-container">
-                            <img
-                                src={url}
-                                alt={index}
-                                loading="lazy"
-                            />
-                            
-                            <div className="overlay"></div>
-                            <Checkbox
-                                className="checkbox-image"
-                                checked={isItemSelected}
-                                onClick={(event) => handleClick(event, url)}
-                                ></Checkbox>
-                        </div>
-                    </ImageListItem>
-                    
-                })}
+              {
+                images ?
+                  <ImageListItem key={`thumbnail-0`}>
+                    <div className="image-container">
+                        <img
+                          src={images}
+                          alt="thumbnail"
+                          loading="lazy"
+                        />
+                        
+                        <div className="overlay"></div>
+                        <Checkbox
+                            className="checkbox-image"
+                            checked={selected}
+                            onClick={(event) => handleClick()}
+                            ></Checkbox>
+                      </div>
+                  </ImageListItem>
+                : ""
+              }
+              
             </ImageList>
         )
     }
     const handleMultipleImages =()=>{
         var fileinput = document.getElementById("browse");
-        const selectedFIles = [...images];
-        const imageToBase64 = [];
+        let selectedFIles;
         const targetFiles = fileinput.files;
         const targetFilesObject= [...targetFiles]
         targetFilesObject.map((file) => {
-            getBase64(file, (result) => imageToBase64.push(result))
-            selectedFIles.push(URL.createObjectURL(file))
+            getBase64(file, (result) => { 
+                form.current = {
+                  ...form?.current,
+                  thumbnail: result
+              }
+            });
+            selectedFIles = URL.createObjectURL(file);
         })
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                images: imageToBase64
-            }
-        }
         setImages(selectedFIles);
     }
     const browseclick = () => {
@@ -168,7 +142,7 @@ const ImageInput = ({formRef}) => {
             
 
   
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
+            <EnhancedTableToolbar numSelected={selected} onDeleteSelected={onDeleteSelected} />
             {ImagesGallery(images)}
         </>
     );

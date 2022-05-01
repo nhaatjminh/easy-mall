@@ -9,16 +9,23 @@ export const doGetListCollectionOfStores = createAsyncThunk(
     }
 );
 
-// export const doCreateCollection = createAsyncThunk(
-//     'collection@post/CreateCollection',
-//     async (storeObj) => {
-//       const result = await collectionApi.createCollections(storeObj);
-//       return {
-//           ...storeObj,
-//           id: result.data
-//         };
-//     }
-// );
+export const doUploadImageCollection = createAsyncThunk(
+    'store@post/UploadImageCollection',
+    async ({data}) => {
+      const result = await collectionApi.uploadImageCollection(data);
+      return result.data
+    }
+);
+export const doCreateCollection = createAsyncThunk(
+    'store@post/CreateCollection',
+    async ({storeId,collectionObj}) => {
+      const result = await collectionApi.createCollections(storeId,collectionObj);
+      return {
+          ...collectionObj,
+          id: result.data
+        };
+    }
+);
 
 export const collectionStore = createSlice({
     name: 'collectionStore',

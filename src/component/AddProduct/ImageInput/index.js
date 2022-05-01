@@ -7,7 +7,8 @@ import {
     Checkbox,
     IconButton,
     Typography,
-    Tooltip
+    Tooltip,
+    Button
 }
 from '@mui/material';
 import './index.css';
@@ -30,6 +31,7 @@ const EnhancedTableToolbar = (props) => {
                   alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
               }),
             }}
+            className="selected-image"
           >
             {numSelected > 0 ? (
               <Typography
@@ -37,6 +39,7 @@ const EnhancedTableToolbar = (props) => {
                 color="inherit"
                 variant="subtitle1"
                 component="div"
+                className=""
               >
                 {numSelected} Đã chọn
                 
@@ -48,8 +51,10 @@ const EnhancedTableToolbar = (props) => {
                   </Tooltip>
                 ) : ""}
               </Typography>
-              
             ) : ""}
+             {/* {numSelected > 0 ? (
+                <Button className="btn btn-delete-all"><p className="p-0 m-0">Delete</p></Button>
+              ) : ""} */}
           </Toolbar>
         :""}
         

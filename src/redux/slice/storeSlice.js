@@ -5,7 +5,7 @@ export const doGetListStore = createAsyncThunk(
     'store@get/GetListStore',
     async () => {
       const result = await StoreApi.getStores();
-      return result.data.id;
+      return result.data;
     }
 );
 
@@ -15,7 +15,7 @@ export const doCreateStore = createAsyncThunk(
       const result = await StoreApi.createStore(storeObj);
       return {
           ...storeObj,
-          id: result.data
+          id: result.data.rows[0].id
         };
     }
 );

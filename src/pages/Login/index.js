@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import validator from 'validator';
-import logo from './Logo.png'
+import logo from '../../assets/image/Logo.png'
 import { useNavigate } from "react-router-dom";
 import { login } from "../../helpers/login";
 import { readCookie } from "../../helpers/cookie";
@@ -19,7 +19,7 @@ const Login = () => {
     //=======================STATES===========================
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(readCookie('token') !== null)
+    const [isLogin, setIsLogin] = useState(readCookie('token')?.length > 0)
     const [error, setError] = useState({});
     let navigate = useNavigate();
 
@@ -193,11 +193,11 @@ const Login = () => {
                 <Grid>
                     <Paper elevation={10} style={paperStyle}>
                         <Stack direction="row" spacing={2}>
-                            <Avatar
+                            <img
                                 src={logo}
-                                style={{ height: '70px', width: '70px' }}
+                                style={{ height: 'auto', width: '100%' }}
                             />
-                            <Typography component={'span'}><h3>EASY MALL</h3></Typography>
+                            {/* <Typography component={'span'}><h3>EASY MALL</h3></Typography> */}
                         </Stack>
                         <Grid>
                             <Typography component={'span'}><h3>Sign in</h3></Typography>

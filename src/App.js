@@ -11,6 +11,8 @@ import PricingScene from "./pages/PricingScene";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageCollection from "./pages/ManageCollection";
 import ManageHome from "./pages/ManageHome";
+import ManageThems from './pages/OnlineStore/ManageThemes/index';
+
 const App = () => {
   return(
     <div>
@@ -21,10 +23,9 @@ const App = () => {
           <Route path='/market-guide' element={<MarketGuide/>}/>
           <Route path='/manage-guide' element={<ManageGuide/>}/>
           <Route path='/pricing-scene' element={<PricingScene/>}/>
-          
-          <Route path='/store-login' element={<StoreLogin/>}/>
-          
+          <Route path='/store-login' element={<StoreLogin/>}/>          
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
+          <Route path='/store-detail/:storeId/themes' element={<ManageThems/>}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/login' element={<Login/>}/>
