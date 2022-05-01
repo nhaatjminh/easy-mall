@@ -8,6 +8,10 @@
     width: 95%;
 }
 
+.callpage p {
+    font-size: .875rem;
+}
+
 .btn-form-product {
     border-radius: 30px !important;
 }
