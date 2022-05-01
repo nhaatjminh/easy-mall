@@ -15,7 +15,7 @@ const StoreLoginList = ({shopName, shopLink, onClicked}) => {
                     </div>
                 </div>
                 <div className="store-list__store-detail col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9">
-                    <p className="font-weight-bold">{shopName}</p>
+                    <p className="store-list__store-detail--name font-weight-bold">{shopName}</p>
                     <p className="text-link">{shopLink}</p>
                 </div>
                 <div className="store-list__go-icon col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">

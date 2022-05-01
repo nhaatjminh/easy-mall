@@ -34,6 +34,10 @@
     align-items: center;
 }
 
+.store-list__store-detail--name {
+    margin: 1rem 0;
+}
+
 .store-list__go-icon {
     display: flex;
     justify-content: center;
