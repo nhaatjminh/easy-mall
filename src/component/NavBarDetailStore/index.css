@@ -3,9 +3,14 @@
     max-height: 79vh;
 }
 .all-nav-detail {
+    position: fixed;
     min-height: 85vh;
     max-height: 85vh;
+    /* width: fit-content; */
     overflow-y: scroll;
+}
+.all-nav-detail p{
+    padding-left: 1rem;
 }
 .dropdown-store-detail .dropdown-toggle{
     background-color: #fff !important;
@@ -20,7 +25,7 @@
     padding-left: 0.45rem;
 }
 .nav-element:hover {
-    background-color: gray;
+    background-color: #dae0db;
     cursor: pointer;
 }
 .nav-element-selected {

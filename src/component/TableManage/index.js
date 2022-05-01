@@ -59,9 +59,9 @@ function EnhancedTableHead(props) {
                   }}
                 />
             </TableCell>
-            {headCells.map((headCell) => (
+            {headCells.map((headCell, index) => (
               <TableCell
-                key={headCell.id}
+                key={index}
                 align={headCell.numeric ? 'right' : 'left'}
                 padding={headCell.disablePadding ? 'none' : 'normal'}
                 sortDirection={orderBy === headCell.id ? order : false}
@@ -169,18 +169,18 @@ const TableManage = ({data, columnsOfData}) => {
     
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-        const newSelecteds = rows.map((n) => n.title);
-        setSelected(newSelecteds);
-        return;
+        const newSelecteds = rows.map((n) => n.id);
+          setSelected(newSelecteds);
+          return;
         }
         setSelected([]);
     };
-    const handleClick = (event, nameProduct) => {
-        const selectedIndex = selected.indexOf(nameProduct);
+    const handleClick = (event, productId) => {
+        const selectedIndex = selected.indexOf(productId);
         let newSelected = [];
     
         if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, nameProduct);
+          newSelected = newSelected.concat(selected, productId);
         } else if (selectedIndex === 0) {
           newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -195,7 +195,7 @@ const TableManage = ({data, columnsOfData}) => {
         setSelected(newSelected);
     };
     
-    const isSelected = (nameProduct) => selected.indexOf(nameProduct) !== -1;
+    const isSelected = (productId) => selected.indexOf(productId) !== -1;
     const onDeleteSelected = () => {
       setSelected([]);
     }
@@ -218,15 +218,14 @@ const TableManage = ({data, columnsOfData}) => {
                 {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row,index) => {
-                  console.log(row);
-                    const isItemSelected = isSelected(row.title);
+                    const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
-                    <TableRow hover onClick={(event) => handleClick(event, row.title)}
+                    <TableRow hover onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.title}
+                    key={index}
                     selected={isItemSelected}>
                         <TableCell padding="checkbox">
                             <Checkbox
@@ -237,7 +236,15 @@ const TableManage = ({data, columnsOfData}) => {
                                 }}
                             />
                       </TableCell>
-                      <TableCell
+                      {columnsOfData.map((headCell, index) => (
+                        <TableCell
+                          key={headCell + index}
+                          align={'right'}
+                        >
+                            {row[`${headCell.id}`]}
+                        </TableCell>
+                      ))}
+                      {/* <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
@@ -252,7 +259,7 @@ const TableManage = ({data, columnsOfData}) => {
                       <TableCell align="right">
                         {row.type}</TableCell>
                       <TableCell align="right">
-                        {row.vendor}</TableCell>
+                        {row.vendor}</TableCell> */}
                     
                     </TableRow>
                     );

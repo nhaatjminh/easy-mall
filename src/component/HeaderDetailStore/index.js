@@ -8,7 +8,7 @@ import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore} from "../../redux/slice/listStore";
+import {  doSwitchListStore, doSwitchSelectedStore} from "../../redux/slice/storeSlice";
 const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
     //use redux to manage state
     const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                             {listStore ? listStore.map((store, index) => (
-                                                <div onClick={() => changeNameStoreSelectedCall(store.name)}>
+                                                <div key={index} onClick={() => changeNameStoreSelectedCall(store.name)}>
                                                     <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                                 </div>
                                             )):

@@ -10,7 +10,7 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/listStore";
+import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
 import logo from '../../assets/image/Logo.png'
 import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 
@@ -36,7 +36,7 @@ const StoreLogin = ({ nameAccount }) => {
     // const [listStore, setListStore] = useState([]);
     const listStore = useSelector((state) => state.listStore.listStore);
     const [isCreateStore, setIsCreateStore] = useState(false);
-    const [listStoreShow, setListStoreShow] = useState([]);
+    const [listStoreShow, setListStoreShow] = useState(listStore);
     const [newStoreName, setNewStoreName] = useState('');
 
     nameAccount = "TP";
@@ -128,10 +128,10 @@ const StoreLogin = ({ nameAccount }) => {
 
                                     <div className="store-login__list row find-store p-0 scroll-list" >
                                         {listStoreShow ? listStoreShow.map((store, index) => (
-                                            <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
-                                                changeNameStoreSelectedCall(store.name);
-                                                routeChange("/store-detail/home/" + store.id);
-                                            }}></StoreLoginList>
+                                        <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
+                                            changeNameStoreSelectedCall(store.name);
+                                            routeChange("/store-detail/manage-home/" + store.id);
+                                        }}></StoreLoginList>
                                         )) :
                                             ""
                                         }

@@ -4,9 +4,19 @@
     width: 97.5%;
 }
 .callpage {
+    margin-top: 50px;
     width: 95%;
 }
 
+.btn-form-product {
+    border-radius: 30px !important;
+}
+
+.text-btn-form-product {
+    font-weight: bold;
+    margin: 0;
+    padding: 0 0.75rem;
+}
 @media (max-width: 1065px) {    
     .desktop-table {
         width: 100%;

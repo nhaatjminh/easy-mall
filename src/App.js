@@ -8,9 +8,10 @@ import MarketGuide from "./pages/MarketGuide";
 import ManageGuide from "./pages/ManageGuide";
 import StoreLogin from "./pages/StoreLogin";
 import PricingScene from "./pages/PricingScene";
-import DetailStore from "./pages/DetailStore";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageThems from './pages/OnlineStore/ManageThemes/index';
+import ManageCollection from "./pages/ManageCollection";
+import ManageHome from "./pages/ManageHome";
 const App = () => {
   return(
     <div>
@@ -23,11 +24,11 @@ const App = () => {
           <Route path='/pricing-scene' element={<PricingScene/>}/>
           
           <Route path='/store-login' element={<StoreLogin/>}/>
+          <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
           
-          <Route path='/store-detail/home/:storeId' element={<DetailStore/>}/>
-          <Route path='/store-detail/:storeId/themes' element={<ManageThems/>}/>
-          
+          <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
+          <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/register' element={<Register/>}/>
         </Routes>

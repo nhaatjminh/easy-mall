@@ -16,7 +16,7 @@ const ManageStoreProduct = () => {
     { id: 'title', label: 'Title', minWidth: 170 },
     { id: 'status', label: 'Status', minWidth: 100 },
     {
-      id: 'inventoryProduct',
+      id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
       align: 'right',
@@ -28,7 +28,7 @@ const ManageStoreProduct = () => {
       align: 'right',
     },
     {
-      id: 'vendorProduct',
+      id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
       align: 'right'
@@ -54,15 +54,13 @@ const ManageStoreProduct = () => {
     });
   }
   useEffect(() => {
-    getListProducts();
-  }, [])
+    if (!showAddProduct) getListProducts();
+  }, [showAddProduct])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
       <div className="row callpage" >
-
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
-  
               <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table">     
@@ -84,9 +82,9 @@ const ManageStoreProduct = () => {
                     alignItems="center"
                     spacing={1}
                   >
-                    <button className="btn  btn-login" > <p className="text-btn-login"> Export </p></button>
-                    <button className="btn  btn-login" > <p className="text-btn-login"> Import </p></button>
-                    <button className="btn btn-success btn-login" onClick={() => setShowAddProduct(true)} ><p className="text-btn-login font-size-0-85-rem-max500"> Add Product </p></button>
+                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Export </p></button>
+                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Import </p></button>
+                    <button className="btn btn-success btn-form-product" onClick={() => setShowAddProduct(true)} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Product </p></button>
                   </Stack>
                 </Stack>
                 <div className="table">
