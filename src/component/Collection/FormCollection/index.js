@@ -13,7 +13,11 @@ import {
     Select,
     Checkbox,
     FormHelperText,
-    CircularProgress
+    CircularProgress,
+    Modal,
+    FormControl,
+    ListItemText,
+    OutlinedInput
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
@@ -24,15 +28,40 @@ import ImageInput from "../ImageInput"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
 import { doUploadImageCollection, doCreateCollection } from "../../../redux/slice/collectionSlice";
+import { doGetListCollectionOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
-
+const styleModal = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 10 + ITEM_PADDING_TOP,
+      width: 300,
+    },
+  },
+};
 const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
+      
     const params = useParams();
     const [errorTitle, setErrorTitle] = useState(null);
+    const [modalShow, setModalShow] = useState(false);
+    const [listProducts, setListProducts] = useState([]);
+    const [listProductOfCollection, setListProductOfCollection] = useState([]);
     const handleChangeCollectionName = (event) => {
         if (errorTitle) {
             setErrorTitle(null);
@@ -86,12 +115,19 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 window.scrollTo(0, 0);
         }
     }
-
+    const handleOpen = () => setModalShow(true);
+    const handleClose = () => setModalShow(false);
+    
+    const handleChangeProductForCollection = (event) => {
+        const {target: { value }} = event;
+        setListProductOfCollection(typeof value === 'string' ? value.split(',') : value,);
+    };
     useEffect(() => {
         form.current = {
             ...form?.current,
             store_id: params.storeId
         }
+        dispatch(doGetListCollectionOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
     },[])
     return (
         <>
@@ -116,9 +152,54 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
                         <ReactQuill value={''}
                             onChange={() => {}} />
-                    </Paper> 
+                    </Paper>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <ImageInput formRef={form}></ImageInput>
+                        <div className="row">
+                            <div className="col-3">
+                                
+                                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Products</InputLabel>
+                            </div>
+                            <div className="col-9">        
+                                <button
+                                    className="media-select-button float-right  btn btn-success btn-form-product p-1"
+                                    onClick={handleOpen}
+                                >
+                                    Add Product
+                                </button>
+                                <Modal
+                                    open={modalShow}
+                                    onClose={handleClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={styleModal}>
+                                        
+                                    <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 20}} >Product</InputLabel>
+                                    <FormControl sx={{ m: 1, width: 300 }}>
+                                        <Select
+                                        labelId="demo-multiple-checkbox-label"
+                                        id="demo-multiple-checkbox"
+                                        multiple
+                                        value={listProductOfCollection}
+                                        renderValue={() => (
+                                            <></>
+                                        )}
+                                        onChange={handleChangeProductForCollection}
+                                        input={<OutlinedInput label="Tag" />}
+                                        MenuProps={MenuProps}
+                                        >
+                                            {listProducts.map((product) => (
+                                                <MenuItem key={product.id} value={product.id}>
+                                                <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
+                                                <ListItemText primary={product.title} />
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    </Box>
+                                </Modal>
+                            </div>
+                        </div>
                     </Paper> 
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <Stack
@@ -146,23 +227,10 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
                         <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
                     </Paper> 
-                    {/* <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Online Store</InputLabel>
-
-                        <p style={{marginBottom: '1rem'}}> Theme template</p>
-                        <div key={form?.current?.product?.type ?? "SelectType"}>
-                            <Select fullWidth 
-                            className="poper-item"
-                            defaultValue={form?.current?.product?.type ?? ""}
-                            onChange={(e) => handleOnChangeType(e)}>
-                                <MenuItem value="Clothes">Clothes</MenuItem>
-                                <MenuItem value="Book">Book</MenuItem>
-                                <MenuItem value="Bike">Bike</MenuItem>
-                            </Select>
-                        </div>
-                        <p> Assign a template from your current theme to define how the collection is displayed.</p>
-                    </Paper>  */}
                     
+                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                        <ImageInput formRef={form}></ImageInput>
+                    </Paper> 
                 </div>    
             </div>
             <Divider className="custom-devider" style={{marginTop: 15}} />

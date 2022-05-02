@@ -28,5 +28,15 @@ export const ProductApi = {
         console.log(data);
         const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
         return result; 
+    },
+    /**
+     * @name getProductsOfStore
+     * @description get allProduct of store
+     * 
+     * @returns {object} data 
+     */
+    getProductsOfStore: async (storeId) => {
+        const result = await callAPIWithGetMethod(`stores/${storeId}/products`, true);
+        return result; 
     }
 }

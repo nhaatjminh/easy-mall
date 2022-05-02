@@ -1,6 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProductApi } from '../../service/api';
 
+export const doGetListCollectionOfStores = createAsyncThunk(
+    'collection@get/GetListProduct',
+    async (id) => {
+      const result = await ProductApi.getProductsOfStore(id);
+      return result.data;
+    }
+);
 export const doCreateProduct = createAsyncThunk(
     'store@post/CreateProduct',
     async ({storeId,productObj}) => {

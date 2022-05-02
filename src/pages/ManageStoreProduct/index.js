@@ -7,8 +7,11 @@ import TableManage from "../../component/TableManage";
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import AddProduct from "../../component/AddProduct";
+import { useDispatch } from "react-redux";
+import { doGetListCollectionOfStores } from "../../redux/slice/productSlice";
 const ManageStoreProduct = () => {
   
+  const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const params = useParams();
@@ -34,36 +37,19 @@ const ManageStoreProduct = () => {
       align: 'right'
     },
   ];
-  const getListProducts = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-
-    var requestOptions = {
-        method: 'GET',
-        headers: myHeaders
-    };
-
-    await fetch(process.env.REACT_APP_API_URL + `stores/${params.storeId}/products`, requestOptions)
-    .then(response => response.json())
-    .then(result => {
-      setRows(result.data);
-      console.log(result.data);
-    })
-    .catch(error => {
-        console.log('error', error);
-    });
-  }
   useEffect(() => {
-    if (!showAddProduct) getListProducts();
+    if (!showAddProduct) 
+      dispatch(doGetListCollectionOfStores(params.storeId))
+      .then((result) => setRows(result.payload));
   }, [showAddProduct])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
       <div className="row callpage" >
-          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
+          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4  navbar-detail">
               <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
           </div> 
-          <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table">     
+          <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">
                   
               <>

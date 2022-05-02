@@ -130,11 +130,11 @@ const ImageInput = ({formRef}) => {
     return (
         <>
             <div className="row">
-              <div className="col-3">
+              <div className="col-8">
                 
                 <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
               </div>
-              <div className="col-9">
+              <div className="col-4 p-0">
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
                 <input type="button" value="Add Image" className="media-select-button float-right  btn btn-success btn-form-product p-1" id="fakeBrowse" onClick={() => browseclick()}/> 
               </div>
