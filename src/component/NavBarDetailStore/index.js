@@ -6,7 +6,7 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
+import {  doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId } from "../../redux/slice/storeSlice";
 import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
 
 const NavBarDetailStore = ({isDesktop}) => {
@@ -23,10 +23,19 @@ const NavBarDetailStore = ({isDesktop}) => {
         dispatch(doSwitchSelectedStore(name));
     }
 
+    var storeId = useSelector((state) => state.listStore.selectedId);
+    var changeIdStoreSelectedCall = (id) => {
+        dispatch(doSwitchSelectedStoreId(id));
+    }
     var listStoreInStore = useSelector((state) => state.listStore.listStore);
     var changeListStoreCall = (list) => {
         dispatch(doSwitchListStore(list));
     }
+    
+    //change route after key change
+    useEffect(() => {  
+        routeChange(`/store-detail/manage-home/${storeId}`)
+    }, [storeId])
     //change route after key change
     useEffect(() => {      
         switch (keySelected) {
@@ -58,6 +67,14 @@ const NavBarDetailStore = ({isDesktop}) => {
                 break;
             case 8:
                 break;
+            case 81:
+                break;
+            case 82:
+                break;
+            case 83:
+                break;
+            case 84:
+                break;
             case 9:
                 break;
             default:
@@ -84,7 +101,10 @@ const NavBarDetailStore = ({isDesktop}) => {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                     {listStore ? listStore.map((store, index) => (
-                                        <div onClick={() => changeNameStoreSelectedCall(store.name)}>
+                                        <div onClick={() => {
+                                            changeNameStoreSelectedCall(store.name);
+                                            changeIdStoreSelectedCall(store.id);
+                                        }}>
                                             <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                         </div>
                                     )) 

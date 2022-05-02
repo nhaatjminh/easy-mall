@@ -43,3 +43,9 @@
 .list-img {
     overflow: auto;
 }
+.collection-image {
+    background-color: #d8e2e3;
+}
+.collection-image .btn-delete-all {
+    border: 1px solid #666666;
+}

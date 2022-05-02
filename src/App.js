@@ -9,9 +9,10 @@ import ManageGuide from "./pages/ManageGuide";
 import StoreLogin from "./pages/StoreLogin";
 import PricingScene from "./pages/PricingScene";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
-import ManageThems from './pages/OnlineStore/ManageThemes/index';
 import ManageCollection from "./pages/ManageCollection";
 import ManageHome from "./pages/ManageHome";
+import ManageThems from './pages/OnlineStore/ManageThemes/index';
+
 const App = () => {
   return(
     <div>
@@ -25,7 +26,7 @@ const App = () => {
           
           <Route path='/store-login' element={<StoreLogin/>}/>
           <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
-          
+           
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>

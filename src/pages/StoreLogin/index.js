@@ -10,7 +10,7 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
+import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId } from "../../redux/slice/storeSlice";
 import logo from '../../assets/image/Logo.png'
 import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 
@@ -21,6 +21,9 @@ const StoreLogin = ({ nameAccount }) => {
     var nameStoreInStore = useSelector((state) => state.listStore.selectedName);
     var changeNameStoreSelectedCall = (name) => {
         dispatch(doSwitchSelectedStore(name));
+    }
+    var changeIdStoreSelectedCall = (id) => {
+        dispatch(doSwitchSelectedStoreId(id));
     }
     var listStoreInStore = useSelector((state) => state.listStore.listStore);
     var changeListStoreCall = (list) => {
@@ -131,6 +134,7 @@ const StoreLogin = ({ nameAccount }) => {
                                         <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
                                             changeNameStoreSelectedCall(store.name);
                                             routeChange("/store-detail/manage-home/" + store.id);
+                                            changeIdStoreSelectedCall(store.id);
                                         }}></StoreLoginList>
                                         )) :
                                             ""

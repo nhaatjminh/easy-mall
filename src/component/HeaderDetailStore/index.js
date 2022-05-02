@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import './index.css';
@@ -8,23 +9,30 @@ import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore} from "../../redux/slice/storeSlice";
+import {  doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId} from "../../redux/slice/storeSlice";
 const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
     //use redux to manage state
     const dispatch = useDispatch();
+    let routeChange = useNavigate(); 
     var nameStore = useSelector((state) => state.listStore.selectedName);
     var changeNameStoreSelectedCall = (name) => {
         dispatch(doSwitchSelectedStore(name));
+    }
+    var storeId = useSelector((state) => state.listStore.selectedId);
+    var changeIdStoreSelectedCall = (id) => {
+        dispatch(doSwitchSelectedStoreId(id));
     }
     nameAccount = "TP";
     var listStoreInStore = useSelector((state) => state.listStore.listStore);
     var changeListStoreCall = (list) => {
         dispatch(doSwitchListStore(list));
     }
-    console.log(listStoreInStore)
+    
     var listStore = listStoreInStore;
     
-    console.log(listStore);
+    useEffect(() => {  
+        routeChange(`/store-detail/manage-home/${storeId}`)
+    }, [storeId])
     return (
         <>
         
@@ -42,7 +50,10 @@ const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                             {listStore ? listStore.map((store, index) => (
-                                                <div key={index} onClick={() => changeNameStoreSelectedCall(store.name)}>
+                                                <div key={index} onClick={() => {
+                                                    changeNameStoreSelectedCall(store.name);
+                                                    changeIdStoreSelectedCall(store.id);
+                                                }}>
                                                     <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                                 </div>
                                             )):

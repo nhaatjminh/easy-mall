@@ -1,5 +1,6 @@
 import React from "react";
 
+import './index.css';
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 const ManageHome = () => {
@@ -7,10 +8,10 @@ const ManageHome = () => {
     <>
       <HeaderDetailStore ></HeaderDetailStore>
       <div className="row callpage" >
-          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
+          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
               <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
           </div> 
-          <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table">
+          <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">
           </div> 
       </div>   
       </>    

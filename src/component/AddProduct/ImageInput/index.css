@@ -43,3 +43,6 @@
 .list-img {
     overflow: auto;
 }
+.selected-image .btn-delete-all {
+    border: 1px solid #666666;
+}
