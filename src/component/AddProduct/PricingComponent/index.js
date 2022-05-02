@@ -48,7 +48,7 @@ const PricingComponent = ({formRef, isVariant}) => {
     return (
         <>
             <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Pricing</InputLabel>
+                        <InputLabel name='title' className="text-medium  font-weight-bold" style={{margin: 0, marginBottom: '1rem'}}>Pricing</InputLabel>
                         <div className="row">
                             <Stack
                                 direction="row"

@@ -158,7 +158,7 @@ const ImageInput = ({formRef}) => {
             <div className="row">
               <div className="col-3">
                 
-                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
+                <InputLabel name='title' className="text-medium p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-9">
                 <input type="file" multiple accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>

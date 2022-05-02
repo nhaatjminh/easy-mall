@@ -48,15 +48,15 @@ body {
   font-size: 0.5rem !important;
 }
 .text-small {
-  font-size: 0.85rem !important;
+  font-size: 0.8rem !important;
 }
 
 .text-normal {
-  font-size: 1rem !important;
+  font-size: .85rem !important;
 }
 
 .text-medium {
-  font-size: 1.25rem !important;
+  font-size: .875rem !important;
 }
 .text-large {
   font-size: 1.5rem !important;
