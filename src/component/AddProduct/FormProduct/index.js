@@ -183,11 +183,11 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 dispatch(doCreateProduct(createObj))
                 .then((res) => {
                     Swal.close();
-                    Swal.fire(
-                        'Success!',
-                        'Create successful products!',
-                        'success'
-                    ).then((result) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Create successful products!',
+                    }).then((result) => {
                         returnAfterAdd();
                     })
                 });

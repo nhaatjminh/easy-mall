@@ -1,13 +1,12 @@
-.nav-detail {
-    min-height: 79vh;
-    max-height: 79vh;
-}
 .all-nav-detail {
     position: fixed;
     min-height: 85vh;
     max-height: 85vh;
     /* width: fit-content; */
     overflow-y: scroll;
+}
+.offcanvas-body .all-nav-detail{
+    position: relative;
 }
 .all-nav-detail p{
     padding-left: 1rem;

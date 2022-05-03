@@ -118,11 +118,11 @@ const Variant = ({formRef, setIsVariant}) => {
         if (optionTag.length === 3) return;
         for (const optionValueChild of optionValue) {
             if (!optionValueChild.name || !optionValueChild.value.length) {
-                Swal.fire(
-                    'Error!',
-                    'Option name and option value can not blank',
-                    'error'
-                )
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Option name and option value can not blank',
+                })
                 return;
             }
         }
@@ -198,22 +198,30 @@ const Variant = ({formRef, setIsVariant}) => {
     }
     const doneOrEditOption = (index) => {
         const lengthOfValue = optionValue[index].value.length;
+        
+        const lengthOfOption = optionValue[index].option;
         if (!lengthOfValue) {
-            Swal.fire(
-                'Error!',
-                'You need add value for this option',
-                'error'
-            )
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'You need add value for this option',
+            })
+        } else if (!lengthOfOption) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'You need add name for this option',
+            })
         } else if (errorOption === -1 && errorIdxOption === -1) {
             let tempEdit = optionTag;
             tempEdit[index] = !tempEdit[index];
             setOptionTag([...tempEdit]);
         } else {
-            Swal.fire(
-                'Error!',
-                'You need fix all error before click button Done or Edit',
-                'error'
-            )
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'You need fix all error before click button Done or Edit',
+            })
         }
     }
     return (

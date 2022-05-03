@@ -6,83 +6,16 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId } from "../../redux/slice/storeSlice";
-import {  doSwitchKeySelected } from "../../redux/slice/keySelected";
+import { doSwitchSelectedStore } from "../../redux/slice/storeSlice";
+import { Key } from "../../constants/constForNavbarDetail";
 
-const NavBarDetailStore = ({isDesktop}) => {
+const NavBarDetailStore = ({isDesktop, keySelected}) => {
     const params = useParams();
     let routeChange = useNavigate(); 
     //use redux to manage state
-    const keySelected = useSelector((state) => state.keySelected.key);
     const dispatch = useDispatch();
-    var changeKeySelectedParent = (index) => {
-        dispatch(doSwitchKeySelected(index));
-    }
-    var nameStore = useSelector((state) => state.listStore.selectedName);
-    var changeNameStoreSelectedCall = (name) => {
-        dispatch(doSwitchSelectedStore(name));
-    }
-
-    var storeId = useSelector((state) => state.listStore.selectedId);
-    var changeIdStoreSelectedCall = (id) => {
-        dispatch(doSwitchSelectedStoreId(id));
-    }
-    var listStoreInStore = useSelector((state) => state.listStore.listStore);
-    var changeListStoreCall = (list) => {
-        dispatch(doSwitchListStore(list));
-    }
-    
-    //change route after key change
-    useEffect(() => {  
-        routeChange(`/store-detail/manage-home/${storeId}`)
-    }, [storeId])
-    //change route after key change
-    useEffect(() => {      
-        switch (keySelected) {
-            case 1:
-                routeChange(`/store-detail/manage-home/${params.storeId}`)
-                break;
-            case 2:
-                break;
-            case 3:
-                routeChange(`/store-detail/manage-product/${params.storeId}`)
-                break;   
-            case 31:
-                break;          
-            case 32:
-                routeChange(`/store-detail/manage-collection/${params.storeId}`)
-                break;
-            case 81:
-                routeChange(`/store-detail/themes/${params.storeId}`);
-                break;
-            case 33:
-                break;      
-            case 4:
-                break;       
-            case 5:
-                break;       
-            case 6:
-                break;  
-            case 7:
-                break;
-            case 8:
-                break;
-            case 81:
-                break;
-            case 82:
-                break;
-            case 83:
-                break;
-            case 84:
-                break;
-            case 9:
-                break;
-            default:
-                routeChange(`/store-detail/manage-home/${params.storeId}`)
-                break;
-        }
-    }, [keySelected, params.storeId])
-    var listStore = listStoreInStore;
+    const nameStore = useSelector((state) => state.listStore.selectedName);
+    const listStoreInStore = useSelector((state) => state.listStore.listStore);
     return (
         <>
             <Stack direction="column" spacing={3} alignItems="stretch" className={`all-nav-detail   ${isDesktop ? "desktop" : "mobile"}`} > 
@@ -100,10 +33,10 @@ const NavBarDetailStore = ({isDesktop}) => {
                                 <i className="fa-angle-down fa-icon  float-right fa-store-detail"></i>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                    {listStore ? listStore.map((store, index) => (
-                                        <div onClick={() => {
-                                            changeNameStoreSelectedCall(store.name);
-                                            changeIdStoreSelectedCall(store.id);
+                                    {listStoreInStore ? listStoreInStore.map((store, index) => (
+                                        <div onClick={() => {     
+                                            dispatch(doSwitchSelectedStore(store.name));   
+                                            routeChange(`/store-detail/manage-home/${store.id}`)
                                         }}>
                                             <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                         </div>
@@ -112,79 +45,106 @@ const NavBarDetailStore = ({isDesktop}) => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </Stack> }  
-                    <Typography component={'span'} className={keySelected === 1 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(1)}>
+                    <Typography component={'span'} className={keySelected === Key.Home ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {
+                            routeChange(`/store-detail/manage-home/${params.storeId}`);
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2  text-nav-detail">
                             <i className="fa-home fa-icon fa-store-detail-nav "></i>
-                            Trang chủ
+                            Home
                         </p>
                     </Typography>
-                    <Typography component={'span'} className={keySelected === 2 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(2)}>
+                    <Typography component={'span'} className={keySelected === Key.Order ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {
+                            //routeChange(`/store-detail/manage-home/${params.storeId}`);
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-file-text-o fa-icon fa-store-detail-nav "></i>
-                            Đơn hàng
+                            Order
                         </p>
                     </Typography>
-                    <Typography component={'span'} className={keySelected === 3 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => {
-                        routeChange(`/store-detail/manage-product/${params.storeId}`)
-                        changeKeySelectedParent(3)
-                    }}>
+                    <Typography component={'span'} className={keySelected === Key.Product ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {
+                            routeChange(`/store-detail/manage-product/${params.storeId}`)
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-cube  fa-icon fa-store-detail-nav "></i>
-                            Sản phẩm
+                            Product
                         </p>
                     </Typography>
                     <Stack direction="column" spacing={0} 
-                        hidden={(keySelected === 3) || 
-                                (keySelected === 31) ||
-                                (keySelected === 32) ||
-                                (keySelected === 33) ? 0 : 1} >         
-                        <Typography component={'span'} className={keySelected === 31 ? "nav-element-selected nav-extend" : "nav-extend"}
-                        onClick={() => changeKeySelectedParent(31)}>
+                        hidden={(keySelected === Key.Product) || 
+                                (keySelected === Key.Inventory) ||
+                                (keySelected === Key.Collection) ||
+                                (keySelected === Key.GiftCard) ? 0 : 1} >         
+                        <Typography component={'span'} className={keySelected === Key.Inventory ? "nav-element-selected nav-extend" : "nav-extend"}
+                            onClick={() => {
+                                //routeChange(`/store-detail/manage-product/${params.storeId}`)
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend ">
-                                Kho
+                                Inventory
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === 32 ? "nav-element-selected nav-extend" : "nav-extend"}
-                        onClick={() => changeKeySelectedParent(32)}>
+                        </Typography><Typography component={'span'} className={keySelected === Key.Collection ? "nav-element-selected nav-extend" : "nav-extend"}
+                            onClick={() => {    
+                                routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
-                                Bộ sưu tập
+                                Collection
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === 33 ? "nav-element-selected nav-extend" : " nav-extend"}
-                        onClick={() => changeKeySelectedParent(33)}>
+                        </Typography><Typography component={'span'} className={keySelected === Key.GiftCard ? "nav-element-selected nav-extend" : " nav-extend"}
+                            onClick={() => {    
+                                routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
-                                Quà tặng
+                                Gift card
                             </p>
                         </Typography>
                     
                     </Stack> 
-                    <Typography component={'span'} className={keySelected === 4 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(4)}>
+                    <Typography component={'span'} className={keySelected === Key.Customer ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {    
+                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2">
                             <i className="fa-user fa-icon fa-store-detail-nav p-0" style={{marginRight: 17}}></i>
-                            Khách hàng
+                            Customer
                         </p>
                     </Typography>
-                    <Typography component={'span'} className={keySelected === 5 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(5)}>
+                    <Typography component={'span'} className={keySelected === Key.Analysis ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {    
+                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-line-chart fa-icon fa-store-detail-nav "></i>
-                            Phân tích
+                            Analysis
                         </p>
                     </Typography>
-                    <Typography component={'span'} className={keySelected === 6 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(6)}>
+                    <Typography component={'span'} className={keySelected === Key.Marketing ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {    
+                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-bullhorn fa-icon fa-store-detail-nav "></i>
-                            Thị trường
+                            Marketing
                         </p>
                     </Typography>
-                    <Typography component={'span'} className={keySelected === 7 ? "nav-element nav-element-selected" : "nav-element "}
-                    onClick={() => changeKeySelectedParent(7)}>
+                    <Typography component={'span'} className={keySelected === Key.Discount ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {    
+                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                        }}
+                    >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-tags fa-icon fa-store-detail-nav "></i>
-                            Giảm giá
+                            Discount
                         </p>
                     </Typography>
                 
@@ -197,10 +157,11 @@ const NavBarDetailStore = ({isDesktop}) => {
                             <i className="fa fa-plus-circle icon-color-black"></i>
                         </button>
                     </p>  
-                    <Typography component={'span'} className={keySelected === 8 ? "nav-element nav-element-selected" : "nav-element "}
-                        onClick={() => {
-                            changeKeySelectedParent(81);
-                        }}>
+                    <Typography component={'span'} className={keySelected === Key.OnlineStore ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {               
+                            routeChange(`/store-detail/themes/${params.storeId}`);
+                        }}
+                    >
                         <p className="m-0 mb-2 ">
                             <i className="fa-university fa-icon fa-store-detail-nav "></i>
                             Online Store
@@ -210,38 +171,51 @@ const NavBarDetailStore = ({isDesktop}) => {
                         </p>
                     </Typography>
                     <Stack direction="column" spacing={0} 
-                        hidden={(keySelected === 8) || 
-                                (keySelected === 81) ||
-                                (keySelected === 82) ||
-                                (keySelected === 83) ||
-                                (keySelected === 84) ||
-                                (keySelected === 85) ? 0 : 1} >         
-                        <Typography component={'span'} className={keySelected === 81 ? "nav-element-selected nav-extend" : "nav-extend"}
-                            onClick={() => {
-                                changeKeySelectedParent(81);
-                            }}>
+                        hidden={(keySelected === Key.OnlineStore) || 
+                                (keySelected === Key.Theme) ||
+                                (keySelected === Key.BlogPost) ||
+                                (keySelected === Key.Navigation) ||
+                                (keySelected === Key.Preferences) ||
+                                (keySelected === Key.Page) ? 0 : 1} >         
+                        <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
+                            onClick={() => {               
+                                routeChange(`/store-detail/themes/${params.storeId}`);
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend ">
                                 Theme
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === 82 ? "nav-element-selected nav-extend" : "nav-extend"}
-                        onClick={() => changeKeySelectedParent(82)}>
+                        </Typography><Typography component={'span'} className={keySelected === Key.BlogPost ? "nav-element-selected nav-extend" : "nav-extend"}
+                            onClick={() => {               
+                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
                                 Blog Posts
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === 83 ? "nav-element-selected nav-extend" : " nav-extend"}
-                        onClick={() => changeKeySelectedParent(83)}>
+                        </Typography><Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
+                            onClick={() => {               
+                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
                                 Pages
                             </p>
                         </Typography>
-                        <Typography component={'span'} className={keySelected === 84 ? "nav-element-selected nav-extend" : " nav-extend"}
-                        onClick={() => changeKeySelectedParent(84)}>
+                        <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
+                            onClick={() => {               
+                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
                                 Navigation
                             </p>
                         </Typography>
-                        <Typography component={'span'} className={keySelected === 85 ? "nav-element-selected nav-extend" : " nav-extend"}
-                        onClick={() => changeKeySelectedParent(85)}>
+                        <Typography component={'span'} className={keySelected === Key.Preferences ? "nav-element-selected nav-extend" : " nav-extend"}
+                            onClick={() => {               
+                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                            }}
+                        >
                             <p className="m-0 mb-2 mt-2 text-extend">
                                 Preferences
                             </p>
@@ -250,11 +224,14 @@ const NavBarDetailStore = ({isDesktop}) => {
                     </Stack>      
                 </Stack> 
                 <Stack direction="column" spacing={0} style={{ marginTop: 'auto' }}>         
-                    <Typography component={'span'} className={keySelected === 9 ? "nav-element nav-element-selected" : "nav-element "}
-                        onClick={() => changeKeySelectedParent(9)}>
+                    <Typography component={'span'} className={keySelected === Key.Setting ? "nav-element nav-element-selected" : "nav-element "}
+                        onClick={() => {               
+                            //routeChange(`/store-detail/themes/${params.storeId}`);
+                        }}
+                    >
                             <p className="m-0 mb-2 mt-2  text-nav-detail">
                                 <i className="fa-gear fa-icon fa-store-detail-nav "></i>
-                                Cài đặt
+                                Setting
                             </p>
                     </Typography>
                 

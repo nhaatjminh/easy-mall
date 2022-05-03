@@ -337,10 +337,11 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
                         <TableCell align="center">
                             <TextField value={row.quantity} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
                         <TableCell align="center">
-                            <button>Sửa</button>
-                            
-                            <button>Xóa</button>
-                            </TableCell>
+                      
+                          <button style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Sửa</button>
+                  
+                          <button style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Xóa</button>
+                        </TableCell>
                         
                         </TableRow>
                         );

@@ -16,7 +16,7 @@ const Collection = ( {returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">Add Collection</h5>
             </div>    
         </div>
-        <FormCollection mode={"ADD"} oldForm={{}} returnAfterAdd={returnTable}></FormCollection>
+        <FormCollection key={`collection-manage`} mode={"ADD"} oldForm={{}} returnAfterAdd={returnTable}></FormCollection>
         </>
     );
 }

@@ -45,7 +45,10 @@
 }
 .MuiPopover-root .MuiMenu-list {
     overflow-y: auto;
-    max-height: 200px;
+    max-height: none;
+}
+.MuiModal-root .btn-close-modal {
+    border: 1px solid #666666;
 }
 /* md ~ 768*/
 @media (min-width: 768px) {   
