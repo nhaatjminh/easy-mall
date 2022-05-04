@@ -26,6 +26,7 @@
 .store-login__btn--create {
     width: fit-content !important;
     height: fit-content !important;
+    border-radius: 5px !important;
 }
 
 .store-login__dropdown:focus {

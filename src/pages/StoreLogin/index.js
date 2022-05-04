@@ -113,7 +113,7 @@ const StoreLogin = ({ nameAccount }) => {
                                         <button
                                             className="store-login__btn--create btn btn-success btn-create-store float-right"
                                             onClick={() => setIsCreateStore(true)}>
-                                            <p className="text-btn-login"> Tạo cửa hàng </p>
+                                            <p className="text-btn-login text-small"> Tạo cửa hàng </p>
                                         </button>
                                     </div>
                                 </div>
