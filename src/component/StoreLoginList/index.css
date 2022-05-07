@@ -8,7 +8,15 @@
 .store-list:hover {
     box-shadow: 0 0 3px rgb(0 0 0 / 10%), 0 4px 20px rgb(0 0 0 / 15%);
     background-color: #f6f6f7;
- }
+}
+
+.store-list:hover .store-list__icon {
+    background-color: #DBDDDF;
+}
+
+.store-list:hover #store-icon {
+    fill: #1A1C1D;
+}
 
 .store-list__icon-container {
     display: flex;
@@ -30,12 +38,15 @@
 }
 
 .store-list__store-detail {
-    display: flex;
-    align-items: center;
+    
 }
 
 .store-list__store-detail--name {
-    margin: 1rem 0;
+    margin: .5rem 0;
+}
+
+.store-list__store-detail--link {
+    margin-bottom: .5rem;
 }
 
 .store-list__go-icon {

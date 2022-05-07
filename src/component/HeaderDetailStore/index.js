@@ -10,6 +10,7 @@ import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
 import {   doSwitchSelectedStore} from "../../redux/slice/storeSlice";
+import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
 const HeaderDetailStore = ({nameAccount}) => {
     //use redux to manage state
     const dispatch = useDispatch();
@@ -47,8 +48,11 @@ const HeaderDetailStore = ({nameAccount}) => {
                                 </Dropdown>
                             </Stack>        
                         </div>  
-                        <div className=" col-md-6 col-lg-7 col-xl-7 mt-3">
-                            <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />  
+                        <div className=" col-md-6 col-lg-7 col-xl-7 header-store__search">
+                            {/* <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />   */}
+                            <CustomSearchInput 
+                                placeholder='Search'
+                            />
                         </div>    
                         <div className="col-md-3 col-lg-2 col-xl-2  ">
                                 <div>
@@ -93,8 +97,11 @@ const HeaderDetailStore = ({nameAccount}) => {
                                 </Container>
                             </Navbar>
                         </div>  
-                        <div className=" col-9 col-sm-8 col-md-8 col-lg-8 col-xl-8 mt-3">
-                            <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />  
+                        <div className=" col-9 col-sm-8 col-md-8 col-lg-8 col-xl-8 header-store__search">
+                            {/* <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />   */}
+                            <CustomSearchInput 
+                                placeholder='Search'
+                            />
                         </div>    
                         <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2  button-header-mobile">
                                 <div>

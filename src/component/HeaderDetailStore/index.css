@@ -1,4 +1,7 @@
-
+.header-store__search {
+    display: flex;
+    align-items: center;
+}
 
 @media (max-width: 650px) {   
     .button-header-mobile {

@@ -35,13 +35,10 @@
 }
 
 .store-login__search {
-    display: flex;
-    align-items: center;
-    margin: 0 1.2rem 0 1.5rem;
-    padding: .5rem;
+    margin-left: 1.5rem;
     width: 93%;
-    border: 1px solid #9fa3a7;
-    border-radius: .4rem;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .store-login__search--icon {
@@ -122,9 +119,14 @@
 }
 .text-create-store {
     font-size: 1.25rem;
+    margin-bottom: 0;
 }
 .text-create-store-2 {
     font-size: 0.8rem;
+}
+.text-create-store-3 {
+    font-size: 0.8rem;
+    margin-bottom: .1rem;
 }
 .create-store-connect {
     padding-left: 0.75rem;
@@ -136,3 +138,19 @@
 .btn-create-store {
     height: 4rem;
 }
+
+.create-store__header {
+    display: flex;
+    align-items: center;
+    margin: 2.5rem .75rem;
+}
+
+.create-store__header__back-icon {
+    cursor: pointer;
+    padding-right: .5rem;
+}
+
+.create-store__header__back-icon path {
+    fill: #008060;
+}
+
