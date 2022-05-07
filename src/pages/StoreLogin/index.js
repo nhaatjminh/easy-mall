@@ -10,7 +10,7 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId } from "../../redux/slice/storeSlice";
+import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
 import logo from '../../assets/image/Logo.png'
 import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 
@@ -18,18 +18,6 @@ const StoreLogin = ({ nameAccount }) => {
 
     // use redux to manage state
     const dispatch = useDispatch();
-    var nameStoreInStore = useSelector((state) => state.listStore.selectedName);
-    var changeNameStoreSelectedCall = (name) => {
-        dispatch(doSwitchSelectedStore(name));
-    }
-    var changeIdStoreSelectedCall = (id) => {
-        dispatch(doSwitchSelectedStoreId(id));
-    }
-    var listStoreInStore = useSelector((state) => state.listStore.listStore);
-    var changeListStoreCall = (list) => {
-        dispatch(doSwitchListStore(list));
-    }
-
     // console.log(listStoreInStore);
     //use navigate to change url
     let navigate = useNavigate();
@@ -131,10 +119,9 @@ const StoreLogin = ({ nameAccount }) => {
 
                                     <div className="store-login__list row find-store p-0 scroll-list" >
                                         {listStoreShow ? listStoreShow.map((store, index) => (
-                                        <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {
-                                            changeNameStoreSelectedCall(store.name);
+                                        <StoreLoginList shopName={store.name} shopLink={store.storeLink} key={index} onClicked={() => {                        
+                                            dispatch(doSwitchSelectedStore(store.name));
                                             routeChange("/store-detail/manage-home/" + store.id);
-                                            changeIdStoreSelectedCall(store.id);
                                         }}></StoreLoginList>
                                         )) :
                                             ""

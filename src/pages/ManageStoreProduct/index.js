@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { useParams } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import './index.css';
@@ -9,11 +9,13 @@ import HeaderDetailStore from "../../component/HeaderDetailStore";
 import AddProduct from "../../component/AddProduct";
 import { useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../redux/slice/productSlice";
+import { Key } from "../../constants/constForNavbarDetail";
 const ManageStoreProduct = () => {
   
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const unmounted = useRef(false);
   const params = useParams();
   const columns = [
     { id: 'title', label: 'Title', minWidth: 170 },
@@ -40,14 +42,19 @@ const ManageStoreProduct = () => {
   useEffect(() => {
     if (!showAddProduct) 
       dispatch(doGetListCollectionOfStores(params.storeId))
-      .then((result) => setRows(result.payload));
+      .then((result) => {
+        if (!unmounted.current) setRows(result.payload);
+      });
+      return () => {
+        unmounted.current = true;
+      };
   }, [showAddProduct])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4  navbar-detail">
-              <NavBarDetailStore  isDesktop={true}></NavBarDetailStore>
+              <NavBarDetailStore  isDesktop={true} keySelected={Key.Product}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">

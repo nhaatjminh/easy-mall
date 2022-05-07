@@ -1,38 +1,23 @@
-import React, {useEffect, useState} from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import {Avatar, Button, Grid, Paper, TextField, Typography} from '@material-ui/core';
+import React, {useEffect} from "react";
+import { useNavigate } from "react-router-dom";
+import {Avatar,  TextField, Typography} from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
-import {Navbar, Container, Offcanvas, Nav, NavDropdown} from 'react-bootstrap'
+import {Navbar, Container, Offcanvas} from 'react-bootstrap'
 import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import {  doSwitchListStore, doSwitchSelectedStore, doSwitchSelectedStoreId} from "../../redux/slice/storeSlice";
-const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
+import {   doSwitchSelectedStore} from "../../redux/slice/storeSlice";
+const HeaderDetailStore = ({nameAccount}) => {
     //use redux to manage state
     const dispatch = useDispatch();
     let routeChange = useNavigate(); 
-    var nameStore = useSelector((state) => state.listStore.selectedName);
-    var changeNameStoreSelectedCall = (name) => {
-        dispatch(doSwitchSelectedStore(name));
-    }
-    var storeId = useSelector((state) => state.listStore.selectedId);
-    var changeIdStoreSelectedCall = (id) => {
-        dispatch(doSwitchSelectedStoreId(id));
-    }
+    const nameStore = useSelector((state) => state.listStore.selectedName);
+
     nameAccount = "TP";
-    var listStoreInStore = useSelector((state) => state.listStore.listStore);
-    var changeListStoreCall = (list) => {
-        dispatch(doSwitchListStore(list));
-    }
-    
-    var listStore = listStoreInStore;
-    
-    useEffect(() => {  
-        routeChange(`/store-detail/manage-home/${storeId}`)
-    }, [storeId])
+    const listStoreInStore = useSelector((state) => state.listStore.listStore);
     return (
         <>
         
@@ -49,10 +34,10 @@ const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
                                         <i className="fa-angle-down fa-icon  float-right fa-store-detail"></i>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                            {listStore ? listStore.map((store, index) => (
+                                            {listStoreInStore ? listStoreInStore.map((store, index) => (
                                                 <div key={index} onClick={() => {
-                                                    changeNameStoreSelectedCall(store.name);
-                                                    changeIdStoreSelectedCall(store.id);
+                                                    dispatch(doSwitchSelectedStore(store.name));
+                                                    routeChange(`/store-detail/manage-home/${store.id}`);
                                                 }}>
                                                     <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                                 </div>
@@ -91,16 +76,17 @@ const HeaderDetailStore = ({nameStore, nameAccount, listStore}) => {
                                 <Container fluid className="navbar-header-mobile ">
                                     <Navbar.Toggle aria-controls="offcanvasNavbar" />
                                     <Navbar.Offcanvas
-                                    id="offcanvasNavbar"
-                                    aria-labelledby="offcanvasNavbarLabel"
-                                    placement="end"
-                                    backdropClassName="mobile"
-                                    className="mobile"
+                                        id="offcanvasNavbar"
+                                        aria-labelledby="offcanvasNavbarLabel"
+                                        placement="start"
+                                        backdropClassName="mobile"
+                                        className="mobile"
                                     >
-                                        <Offcanvas.Header closeButton >
+                                        <Offcanvas.Header closeButton style={{position: 'absolute', right: 0, top: 15}}>
                                             <Offcanvas.Title id="offcanvasNavbarLabel"></Offcanvas.Title>
                                         </Offcanvas.Header>
                                         <Offcanvas.Body >
+                                            
                                             <NavBarDetailStore key={1} isDesktop={false}></NavBarDetailStore>
                                         </Offcanvas.Body>
                                     </Navbar.Offcanvas>

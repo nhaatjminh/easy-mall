@@ -17,7 +17,8 @@ import {
     Modal,
     FormControl,
     ListItemText,
-    OutlinedInput
+    OutlinedInput,
+    ListItemAvatar
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
@@ -34,14 +35,14 @@ import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
 const styleModal = {
     position: 'absolute',
-    top: '50%',
+    top: '25%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
+    p: 3,
 };
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -68,11 +69,14 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         }
         form.current = {
             ...form?.current,
-            name: event.target.value
+            collection: {
+                ...form?.current?.collection,
+                name: event.target.value
+            }
         }
     }
     const saveCollection = () => {
-        if (form?.current?.name) {   
+        if (form?.current?.collection?.name) {   
             Swal.showLoading();
             new Promise((resolve) => { 
                 const data = form?.current?.thumbnail;
@@ -85,10 +89,13 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         }
                     })).then((result) => {
                         if (result?.payload && result?.payload.length > 0) {
-                            // payload is array data response from server, first item to link, so get payload[0] in here
+                            // payload is array data response from server, first item to link, so get payload[0] in here                  
                             form.current = {
                                 ...form?.current,
-                                thumbnail: Object.values(result.payload)[0],
+                                collection: {
+                                    ...form?.current?.collection,
+                                    thumbnail: Object.values(result.payload)[0],
+                                }
                             }
                             resolve();
                         }
@@ -101,11 +108,11 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 dispatch(doCreateCollection(createObj))
                 .then((res) => {
                     Swal.close();
-                    Swal.fire(
-                        'Success!',
-                        'Create successful products!',
-                        'success'
-                    ).then((result) => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Create successful products!',
+                    }).then((result) => {
                         returnAfterAdd();
                     })
                 });
@@ -122,13 +129,27 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         const {target: { value }} = event;
         setListProductOfCollection(typeof value === 'string' ? value.split(',') : value,);
     };
+    const handleDeleteProducts = (index) => {
+        const newList = [...listProductOfCollection];
+        newList.splice(index, 1);
+        setListProductOfCollection(newList);
+    }
     useEffect(() => {
         form.current = {
             ...form?.current,
-            store_id: params.storeId
+            collection: {
+                ...form?.current?.collection,
+                store_id: params.storeId
+            }
         }
         dispatch(doGetListCollectionOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
     },[])
+    useEffect(() => {
+        form.current = {
+            ...form?.current,
+            products: listProductOfCollection
+        }
+    },[listProductOfCollection])
     return (
         <>
         <FormGroup>
@@ -174,31 +195,75 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 >
                                     <Box sx={styleModal}>
                                         
-                                    <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 20}} >Product</InputLabel>
-                                    <FormControl sx={{ m: 1, width: 300 }}>
-                                        <Select
-                                        labelId="demo-multiple-checkbox-label"
-                                        id="demo-multiple-checkbox"
-                                        multiple
-                                        value={listProductOfCollection}
-                                        renderValue={() => (
-                                            <></>
-                                        )}
-                                        onChange={handleChangeProductForCollection}
-                                        input={<OutlinedInput label="Tag" />}
-                                        MenuProps={MenuProps}
-                                        >
-                                            {listProducts.map((product) => (
-                                                <MenuItem key={product.id} value={product.id}>
-                                                <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
-                                                <ListItemText primary={product.title} />
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
+                                        <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
+                                        <FormControl sx={{ m: 1, width: 300 }}>
+                                            <Select
+                                            className="text-field-input select-modal"
+                                            labelId="demo-multiple-checkbox-label"
+                                            id="demo-multiple-checkbox"
+                                            multiple
+                                            value={listProductOfCollection}
+                                            renderValue={() => (
+                                                <></>
+                                            )}
+                                            onChange={handleChangeProductForCollection}
+                                            MenuProps={MenuProps}
+                                            >
+                                                {listProducts.map((product) => (
+                                                    <MenuItem key={product.id} value={product.id}>
+                                                        <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
+                                                        {
+                                                            product.thumbnail ?
+                                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                                    <ListItemAvatar>
+                                                                        <img alt="thumbnail" src={product.thumbnail}/>
+                                                                    </ListItemAvatar>
+                                                                </Box>
+                                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                                    <ListItemAvatar>
+                                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                                    </ListItemAvatar>
+                                                                </Box>
+                                                        }
+                                                        
+                                                        <ListItemText primary={product.title}/>
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        <Button className="float-right p-0 m-0 text-black mt-2 btn-close-modal" onClick={handleClose}><p className="p-0 m-0">Close</p></Button>
                                     </Box>
                                 </Modal>
                             </div>
+                            <Box style={{overflow: "auto", maxHeight: 400}}>
+                                {listProductOfCollection.map((productId, index) => {
+                                    const product = listProducts.find(element => element.id === productId)
+                                    return (
+                                        <>
+                                            <MenuItem key={product.id} value={product.id}>
+                                                <p className="pr-2 m-0">{index}.</p>
+                                                {
+                                                product.thumbnail ?
+                                                    <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar>
+                                                            <img alt="thumbnail" src={product.thumbnail}/>
+                                                        </ListItemAvatar>
+                                                    </Box>
+                                                :  <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar>
+                                                            <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                        </ListItemAvatar>
+                                                    </Box>
+                                                }
+                                                
+                                                <ListItemText primary={product.title}/>
+                                                <i className="fa-trash fa-icon icon-trash float-right text-normal" onClick={() => handleDeleteProducts(index)}></i>
+                                            </MenuItem>
+                                            {index !== listProductOfCollection.length - 1 && <Divider className="divider-custom" />}
+                                            
+                                        </>
+                                )})}
+                            </Box>
                         </div>
                     </Paper> 
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
