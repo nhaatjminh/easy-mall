@@ -9,8 +9,16 @@ import TableVariant from "./TableVariant";
 import './index.css'
 import Swal from "sweetalert2";
 
-const Variant = ({formRef, setIsVariant}) => {
-    
+const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
+    const initOldFormOptionValue = () => {
+        const resultForm = JSON.parse(JSON.stringify(oldForm));
+        if (resultForm?.option) {
+            resultForm.option.map(option => {
+                option.value = option.value.map(value => value.value);
+            })
+        }
+        return resultForm.option;
+    }
     const columns = [
         { id: 'title', label: 'Title', minWidth: 170,align: 'right' },
         { id: 'price', label: 'Price', minWidth: 100, maxWidth: 200,align: 'right' },
@@ -29,9 +37,9 @@ const Variant = ({formRef, setIsVariant}) => {
         },
     ];
     const form = formRef;
-    const [optionTag, setOptionTag] = useState([]); // state to check length and render option
-    const [optionValue, setOptionValue] = useState([]);
-    const [showOpt, setShowOpt] = useState(false);
+    const [optionTag, setOptionTag] = useState(oldForm?.option?.length && mode === "EDIT" ? Array.from({length: oldForm?.option?.length}, (v, i) => true) : []); // state to check length and render option
+    const [optionValue, setOptionValue] = useState(oldForm?.option && mode === "EDIT" ? initOldFormOptionValue() : []);
+    const [showOpt, setShowOpt] = useState((oldForm?.product?.is_variant && mode === "EDIT") || false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [errorIdxOption, setErrorIdxOption] = useState(-1);
     const [errorValue, setErrorValue] = useState(-1);
@@ -51,7 +59,7 @@ const Variant = ({formRef, setIsVariant}) => {
             for (const [index,option_value] of newObj?.entries()) {     
                 let checkArray = [];
                 for (const [idxValue,value] of  option_value.value?.entries()) {
-                    if (checkArray.includes(value) || !value) {
+                    if (checkArray.includes(value) || !value || value.includes("/")) {
                         setErrorValue(idxValue);
                         setErrorIdxOption(index);
                         return;
@@ -141,8 +149,7 @@ const Variant = ({formRef, setIsVariant}) => {
             option: newOptionValue
         }
     }
-    
-    
+     
     const handleOnChangeShowOpt = (e) => {
       if (!showOpt) {
           addAnotherOption();
@@ -157,8 +164,7 @@ const Variant = ({formRef, setIsVariant}) => {
           }
       }
     }
-    const handleChangeOption = (e, index) => {
-        
+    const handleChangeOption = (e, index) => {    
         const newTargetValue = e.target.value ? e.target.value : "";
         const newObj = [...optionValue];
         let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
@@ -199,7 +205,7 @@ const Variant = ({formRef, setIsVariant}) => {
     const doneOrEditOption = (index) => {
         const lengthOfValue = optionValue[index].value.length;
         
-        const lengthOfOption = optionValue[index].option;
+        const lengthOfOption = optionValue[index].name;
         if (!lengthOfValue) {
             Swal.fire({
                 icon: 'error',
@@ -228,7 +234,7 @@ const Variant = ({formRef, setIsVariant}) => {
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
             <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Option</InputLabel>
-            <FormControlLabel control={<Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
+            <FormControlLabel control={<Checkbox defaultChecked={oldForm?.product?.is_variant} checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
             {showOpt ?
                 <>  
                     <Divider className="divider-custom"/>
@@ -251,14 +257,13 @@ const Variant = ({formRef, setIsVariant}) => {
                                             onBlur={handlePopoverClose}
                                             onChange={(e) => handleChangeOption(e, index)}
                                             error={errorOption === index  ? true : false}
-                                            helperText={errorOption === index  ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                            helperText={errorOption === index  ? `You need to enter a value for this field and this value can not be duplicated`: ""}
                                             FormHelperTextProps={{
                                                 className: 'error-text'
                                             }}
                                         />
                                     </div>
                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                        
                                         <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOption(index)} ></i>
                                     </div>
                                 </div>
@@ -267,7 +272,7 @@ const Variant = ({formRef, setIsVariant}) => {
                                     placement='bottom-start'
                                     >
                                         <Box className="box-poper">
-                                            Ví dụ: kích cỡ, màu sắc, chất liệu, ...
+                                            Example: size, color, material,...
                                         </Box>
                                 </Popper>
                                 <div style={{paddingLeft: '2rem'}}>
@@ -287,7 +292,7 @@ const Variant = ({formRef, setIsVariant}) => {
                                                             autoFocus={true}
                                                             onChange={(e) => changeOptionValue(e, index, idxValue)}
                                                             error={errorValue === idxValue && errorIdxOption === index  ? true : false}
-                                                            helperText={errorValue === idxValue && errorIdxOption === index  ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                                            helperText={errorValue === idxValue && errorIdxOption === index  ? `You need to enter a value other than "/" for this field and this value can not be duplicated`: ""}
                                                             FormHelperTextProps={{
                                                                 className: 'error-text'
                                                             }}
@@ -312,7 +317,7 @@ const Variant = ({formRef, setIsVariant}) => {
                                                 value=''
                                                 onChange={(e) => changeOptionValue(e, index)}
                                                 error={errorValue ===  optionValue[index]?.value?.length && errorIdxOption === index ? true : false}
-                                                helperText={errorValue === optionValue[index]?.value?.length && errorIdxOption === index ? "You need to enter a value for this field and this value can not be duplicated": ""}
+                                                helperText={errorValue === optionValue[index]?.value?.length && errorIdxOption === index ? `You need to enter a value other than "/" for this field and this value can not be duplicated`: ""}
                                                 FormHelperTextProps={{
                                                     className: 'error-text'
                                                 }}
@@ -342,7 +347,7 @@ const Variant = ({formRef, setIsVariant}) => {
                                     </div>
                                 </div>
                                 <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                                    <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Sửa</button>
+                                    <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
                                 </div>
                                 {index !== 2 ?    
                                     <Divider className="divider-custom"/>
@@ -354,7 +359,7 @@ const Variant = ({formRef, setIsVariant}) => {
                     {optionTag.length <= 2 ?
                         <div>
                             <i className="fa-plus fa-icon icon-plus-before-text" ></i>
-                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Thêm tùy chọn</Link>
+                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Add another option</Link>
                         </div>
                     : ""
                     }
@@ -363,7 +368,7 @@ const Variant = ({formRef, setIsVariant}) => {
             }
 
         </Paper> 
-        <TableVariant key="TableVariant" optionValue={optionValue} formRef={form} columnsOfData={columns}>
+        <TableVariant key="TableVariant" oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
         </TableVariant>
       </>
     );

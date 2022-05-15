@@ -12,6 +12,7 @@ import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageCollection from "./pages/ManageCollection";
 import ManageHome from "./pages/ManageHome";
 import ManageThems from './pages/OnlineStore/ManageThemes/index';
+import ManageDomain from "./pages/OnlineStore/ManageDomain";
 
 const App = () => {
   return(
@@ -26,6 +27,7 @@ const App = () => {
           
           <Route path='/store-login' element={<StoreLogin/>}/>
           <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
+          <Route path='/store-detail/manage-domain/:storeId' element={<ManageDomain/>}/>
            
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>

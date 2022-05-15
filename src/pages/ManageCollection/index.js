@@ -2,36 +2,77 @@ import React, {useState, useEffect} from "react";
 import Stack from '@mui/material/Stack';
 import { useParams } from "react-router-dom";
 import TableManage from "../../component/TableManage";
-
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import Collection from "../../component/Collection";
 import { useSelector, useDispatch } from "react-redux";
-import { doGetListCollectionOfStores } from "../../redux/slice/collectionSlice";
+import { doGetListCollectionOfStores, doGetOneCollections } from "../../redux/slice/collectionSlice";
 import { Key } from "../../constants/constForNavbarDetail";
+import Swal from "sweetalert2";
 
 const ManageCollection = () => {
-  const [rows, setRows] = useState([]);
   const [showAddCollection, setShowAddCollection] = useState(false);
-  
+  const [oldForm, setOldForm] = useState({});
+  const [mode, setMode] = useState() // just add or edit
   const dispatch = useDispatch();
   const params = useParams();
+  const stringToHTML = function (str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+        return null;
+    }
+    str = JSON.parse(str);
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(str, 'text/html');
+    return doc.body.innerHTML.replace("\"", "`");
+  };
   const collectionList = useSelector((state) => state.collectionSlice.listCollection);
+  const [rows, setRows] = useState(collectionList);
   const columns = [
     { id: 'name', label: 'Title', minWidth: 300 },
     {
-      id: 'condition',
-      label: 'Condition',
+      id: 'description',
+      label: 'Description',
       minWidth: 170,
       align: 'right'
     },
   ];
-  
+  const editFunction = (numSelected, selected) => {
+    if (numSelected !== 1) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Warning!',
+        text: 'You just can edit 1 product!',
+      })
+    } else {
+      Swal.showLoading();
+      new Promise(() => {
+        dispatch((doGetOneCollections(selected[0])))
+        .then((result) => {    
+          // info of product receive from server is array. get first element. into form, need this is object not array
+          if (Array.isArray(result.payload)) result.payload = result.payload[0];
+          setOldForm(result.payload);  
+          setShowAddCollection(true);
+          setMode('EDIT');
+          Swal.close();
+        })
+      })
+    }
+  }
   useEffect(() => {
     if (!showAddCollection) 
       dispatch(doGetListCollectionOfStores(params.storeId))
       .then((result) => setRows(result.payload));
   }, [showAddCollection])
+  useEffect(() => {
+    let newRows = JSON.parse(JSON.stringify(collectionList));
+    newRows = newRows.map((collection) => {
+      collection.description = stringToHTML(collection?.description);
+      return collection;
+    })
+    setRows(newRows);
+  }, [collectionList])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
@@ -54,10 +95,10 @@ const ManageCollection = () => {
                         <button className="btn btn-success btn-form-product" onClick={() => setShowAddCollection(true)} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Collection </p></button>
                       </Stack>
                       <div className="table">
-                        <TableManage data={collectionList} columnsOfData={columns}></TableManage>
+                        <TableManage data={rows} columnsOfData={columns} editFunction={editFunction}></TableManage>
                       </div>
                     </>
-                  : <Collection returnTable={() => setShowAddCollection(false)}></Collection>}
+                  : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={oldForm}></Collection>}
                         
                 </>
               </div>

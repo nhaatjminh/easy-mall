@@ -5,6 +5,10 @@ export const collectionApi = {
         const result = await callAPIWithGetMethod(`stores/${id}/collections/product`, true);
         return result;
     },
+    getOneCollection: async (id) => {
+        const result = await callAPIWithGetMethod(`collections/product/${id}`, true);
+        return result;
+    },
     /**
      * @name createCollections
      * @description send data Collection from client to api -> create Collection

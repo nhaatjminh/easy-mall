@@ -96,7 +96,11 @@ EnhancedTableHead.propTypes = {
 
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, onDeleteSelected } = props;
+  const { numSelected, onDeleteSelected, editFunction, selected, deleteAllFunction, setSelected } = props;
+  const handleDelete = () => {
+    deleteAllFunction(numSelected, selected);
+    setSelected([]);
+  }
   return (
     <>
       {numSelected > 0 ?
@@ -124,14 +128,17 @@ const EnhancedTableToolbar = (props) => {
 
           {numSelected > 0 ? (
             <Tooltip title="Delete" >
-              <IconButton >
+              <IconButton onClick={onDeleteSelected}>
                 <DeleteIcon onClick={onDeleteSelected}/>
               </IconButton>
             </Tooltip>
           ) : ""}
           
           {numSelected > 0 ? (
-            <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit Products </p></button>
+            <button className="btn  btn-login btn-product" onClick={() => editFunction(numSelected, selected)}> <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
+          ) : ""}
+          {numSelected > 0 ? (
+            <button className="btn btn-login btn-product btn-danger ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
           ) : ""}
         </Toolbar>
       :""}
@@ -144,7 +151,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableManage = ({data, columnsOfData}) => {
+const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -203,7 +210,7 @@ const TableManage = ({data, columnsOfData}) => {
         
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
+            <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
             <Table stickyHeader aria-label="sticky table" className="p-0">
             <EnhancedTableHead
               numSelected={selected.length}
@@ -236,31 +243,14 @@ const TableManage = ({data, columnsOfData}) => {
                                 }}
                             />
                       </TableCell>
-                      {columnsOfData.map((headCell, index) => (
+                      {columnsOfData.map((headCell, indexData) => (
                         <TableCell
-                          key={headCell + index}
+                          key={headCell + indexData}
                           align={'right'}
                         >
-                            {row[`${headCell.id}`]}
+                          <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
                         </TableCell>
                       ))}
-                      {/* <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.title}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.status}</TableCell>
-                      <TableCell align="right">
-                        {row.inventory}</TableCell>
-                      <TableCell align="right">
-                        {row.type}</TableCell>
-                      <TableCell align="right">
-                        {row.vendor}</TableCell> */}
-                    
                     </TableRow>
                     );
                 })}

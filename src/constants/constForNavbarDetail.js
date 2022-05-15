@@ -15,5 +15,6 @@ exports.Key = {
     Navigation: 'navigation',
     Preferences: 'preference',
     Theme: 'theme',
+    Domain: 'domain',
     Setting: 'setting',
 }

@@ -173,6 +173,7 @@ const NavBarDetailStore = ({isDesktop, keySelected}) => {
                     <Stack direction="column" spacing={0} 
                         hidden={(keySelected === Key.OnlineStore) || 
                                 (keySelected === Key.Theme) ||
+                                (keySelected === Key.Domain) ||
                                 (keySelected === Key.BlogPost) ||
                                 (keySelected === Key.Navigation) ||
                                 (keySelected === Key.Preferences) ||
@@ -185,7 +186,17 @@ const NavBarDetailStore = ({isDesktop, keySelected}) => {
                             <p className="m-0 mb-2 mt-2 text-extend ">
                                 Theme
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === Key.BlogPost ? "nav-element-selected nav-extend" : "nav-extend"}
+                        </Typography>
+                        <Typography component={'span'} className={keySelected === Key.Domain ? "nav-element-selected nav-extend" : "nav-extend"}
+                            onClick={() => {               
+                                routeChange(`/store-detail/manage-domain/${params.storeId}`);
+                            }}
+                        >
+                            <p className="m-0 mb-2 mt-2 text-extend ">
+                                Domain
+                            </p>
+                        </Typography>
+                        <Typography component={'span'} className={keySelected === Key.BlogPost ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {               
                                 //routeChange(`/store-detail/themes/${params.storeId}`);
                             }}

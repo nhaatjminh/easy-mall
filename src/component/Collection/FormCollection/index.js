@@ -22,14 +22,12 @@ import {
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import 'react-quill/dist/quill.snow.css';
 import { Link } from "react-router-dom";
 import ImageInput from "../ImageInput"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
 import { doUploadImageCollection, doCreateCollection } from "../../../redux/slice/collectionSlice";
-import { doGetListCollectionOfStores } from "../../../redux/slice/productSlice";
+import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
@@ -57,7 +55,6 @@ const MenuProps = {
 const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
-      
     const params = useParams();
     const [errorTitle, setErrorTitle] = useState(null);
     const [modalShow, setModalShow] = useState(false);
@@ -75,11 +72,21 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             }
         }
     }
+    const handleChangeRichtext = (event) => {
+        form.current = {
+            ...form?.current,
+            collection: {
+                ...form?.current?.collection,
+                description: JSON.stringify(event)
+            }
+        }
+    }
     const saveCollection = () => {
         if (form?.current?.collection?.name) {   
             Swal.showLoading();
             new Promise((resolve) => { 
-                const data = form?.current?.thumbnail;
+                const data = form?.current?.collection?.thumbnail;
+                if (data) {
                     dispatch(doUploadImageCollection({
                         data: {
                             data: [{
@@ -100,6 +107,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             resolve();
                         }
                     })
+                } else {
+                    resolve();
+                }
             }).then(() => {
                 const createObj = {
                     storeId: params.storeId,
@@ -124,7 +134,6 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
     }
     const handleOpen = () => setModalShow(true);
     const handleClose = () => setModalShow(false);
-    
     const handleChangeProductForCollection = (event) => {
         const {target: { value }} = event;
         setListProductOfCollection(typeof value === 'string' ? value.split(',') : value,);
@@ -142,7 +151,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 store_id: params.storeId
             }
         }
-        dispatch(doGetListCollectionOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
+        dispatch(doGetListProductsOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
     },[])
     useEffect(() => {
         form.current = {
@@ -166,13 +175,17 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             required
                             error={errorTitle ? true : false}
                             helperText={errorTitle}
+                            defaultValue={mode === "EDIT" ? oldForm?.name : ""}
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
                         <ReactQuill value={''}
-                            onChange={() => {}} />
+                        
+                            defaultValue={mode === "EDIT" ? oldForm?.description : ""}
+                            onChange={(event) => handleChangeRichtext(event)}
+                        />
                     </Paper>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <div className="row">
@@ -180,13 +193,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 
                                 <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Products</InputLabel>
                             </div>
-                            <div className="col-9">        
-                                <button
-                                    className="media-select-button float-right  btn btn-success btn-form-product p-1"
-                                    onClick={handleOpen}
-                                >
-                                    Add Product
-                                </button>
+                            <div className="col-9">  
+                            
+                                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={handleOpen}></i>      
                                 <Modal
                                     open={modalShow}
                                     onClose={handleClose}
