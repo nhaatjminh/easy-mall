@@ -12,6 +12,8 @@ import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageCollection from "./pages/ManageCollection";
 import ManageHome from "./pages/ManageHome";
 import ManageThems from './pages/OnlineStore/ManageThemes/index';
+import Navigation from './pages/OnlineStore/Navigations/index';
+import DetailMenu from './pages/OnlineStore/Navigations/DetailMenu/index';
 
 const App = () => {
   return(
@@ -26,6 +28,8 @@ const App = () => {
           
           <Route path='/store-login' element={<StoreLogin/>}/>
           <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
+          <Route path='/store-detail/navigation/:storeId' element={<Navigation/>}/>
+          <Route path='/store-detail/menu/:id' element={<DetailMenu/>}/>
            
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>

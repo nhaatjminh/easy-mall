@@ -106,3 +106,31 @@ body {
   margin-bottom: 1rem !important;
   margin-top: 1rem !important;
 }
+
+.text-title-1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #202223;
+}
+
+.text-title-2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #202223;
+}
+
+.text-title-3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #202223;
+}
+
+.text-normal-1 {
+  font-size: 14px;
+  color: #202223;
+}
+
+.text-normal-2 {
+  font-size: 14px;
+  color: #6d7175;
+}
