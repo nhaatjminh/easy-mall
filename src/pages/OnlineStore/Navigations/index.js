@@ -9,6 +9,7 @@ import { doGetListNavigation, doSetCurrentMenu, doCreateMenu } from './../../../
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal } from "react-bootstrap";
 import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
+import { Key } from "../../../constants/constForNavbarDetail";
 
 const Navigation = () => {
 
@@ -41,7 +42,7 @@ const Navigation = () => {
                     className="navigation__menus__table--items--title"
                     onClick={() => {
                         dispatch(doSetCurrentMenu(menu));
-                        navigate(`/store-detail/menu/${menu.id}`);
+                        navigate(`/store-detail/navigation/${params.storeId}/menu/${menu.id}`);
                     }}
                 >
                     {menu.title}
@@ -58,7 +59,7 @@ const Navigation = () => {
             <HeaderDetailStore />
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
-                    <NavBarDetailStore isDesktop={true}></NavBarDetailStore>
+                    <NavBarDetailStore isDesktop={true} keySelected={Key.Navigation}></NavBarDetailStore>
                 </div>
                 <div className="navigation col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
                     <div className="navigation__header">

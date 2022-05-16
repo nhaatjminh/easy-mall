@@ -1,8 +1,7 @@
 import React from "react";
 import FormProduct from './FormProduct'
 import './index.css';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-const AddProduct = ( {returnTable })=> {
+const Product = ( {mode, returnTable, oldForm })=> {
     // use redux to manage state
     return (
         <>
@@ -16,9 +15,9 @@ const AddProduct = ( {returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">Add Product</h5>
             </div>    
         </div>
-        <FormProduct mode={"ADD"} oldForm={{}} returnAfterAdd={returnTable}></FormProduct>
+        <FormProduct mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormProduct>
         </>
     );
 }
 
-export default AddProduct;
+export default Product;

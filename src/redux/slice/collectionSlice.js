@@ -8,7 +8,13 @@ export const doGetListCollectionOfStores = createAsyncThunk(
       return result.data;
     }
 );
-
+export const doGetOneCollections = createAsyncThunk(
+    'collection@get/GetOneCollection',
+    async (id) => {
+      const result = await collectionApi.getOneCollection(id);
+      return result.data;
+    }
+);
 export const doUploadImageCollection = createAsyncThunk(
     'store@post/UploadImageCollection',
     async ({data}) => {

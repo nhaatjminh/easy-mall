@@ -10,6 +10,7 @@ import HeaderDetailStore from "../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { CustomCard } from "../../../component/common/CustomCard/CustomCard";
 import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
+import { Key } from "../../../constants/constForNavbarDetail";
 
 const Page = ({ }) => {
 
@@ -49,7 +50,7 @@ const Page = ({ }) => {
             <HeaderDetailStore />
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
-                    <NavBarDetailStore isDesktop={true}></NavBarDetailStore>
+                    <NavBarDetailStore isDesktop={true} keySelected={Key.Page}></NavBarDetailStore>
                 </div>
                 <div className="page col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
                     <div className="page__header">

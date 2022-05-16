@@ -15,6 +15,7 @@ import ManageThems from './pages/OnlineStore/ManageThemes/index';
 import Navigation from './pages/OnlineStore/Navigations/index';
 import DetailMenu from './pages/OnlineStore/Navigations/DetailMenu/index';
 import Page from "./pages/OnlineStore/Pages";
+import ManageDomain from "./pages/OnlineStore/ManageDomain";
 
 const App = () => {
   return(
@@ -31,7 +32,8 @@ const App = () => {
           <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
           <Route path='/store-detail/pages/:storeId' element={<Page/>}/>
           <Route path='/store-detail/navigation/:storeId' element={<Navigation/>}/>
-          <Route path='/store-detail/menu/:id' element={<DetailMenu/>}/>
+          <Route path='/store-detail/navigation/:storeId/menu/:id' element={<DetailMenu/>}/>
+          <Route path='/store-detail/manage-domain/:storeId' element={<ManageDomain/>}/>
            
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>

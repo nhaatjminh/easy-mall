@@ -1,3 +1,6 @@
 .error-cell input {
     background-color: rgba(255,244,244,1);
 }
+.line-through {
+    text-decoration: line-through;
+}

@@ -13,6 +13,7 @@ import { Button, Modal } from "react-bootstrap";
 import { doCreateMenuItem } from './../../../../redux/slice/navigationSlice';
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
 import { useNavigate } from 'react-router-dom';
+import { Key } from "../../../../constants/constForNavbarDetail";
 
 const DetailMenu = ({ }) => {
 
@@ -58,7 +59,7 @@ const DetailMenu = ({ }) => {
             <HeaderDetailStore />
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
-                    <NavBarDetailStore isDesktop={true}></NavBarDetailStore>
+                    <NavBarDetailStore isDesktop={true} keySelected={Key.Navigation}></NavBarDetailStore>
                 </div>
                 <div className="detail-menu col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
                     <div className="detail-menu__header">
