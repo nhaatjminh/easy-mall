@@ -5,8 +5,10 @@ import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { doGetListNavigation, doSetCurrentMenu } from './../../../redux/slice/navigationSlice';
+import { doGetListNavigation, doSetCurrentMenu, doCreateMenu } from './../../../redux/slice/navigationSlice';
 import { useNavigate } from 'react-router-dom';
+import { Button, Modal } from "react-bootstrap";
+import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
 
 const Navigation = () => {
 
@@ -15,24 +17,37 @@ const Navigation = () => {
     const params = useParams();
     const navigate = useNavigate();
 
+    const [showModal, setShowModal] = useState(false);
+    const [title, setTitle] = useState('');
+
     useEffect(() => {
         dispatch(doGetListNavigation(params.storeId));
     }, [])
 
+    const handleCloseModal = () => {
+        setTitle('');
+        setShowModal(false);
+    }
+
+    const hanndleAddNewMenu = () => {
+        dispatch(doCreateMenu({ store_id: params.storeId, title: title }))
+        .then(() => handleCloseModal());
+    }
+
     const listMenuItem = (menu) => {
         return (
             <div key={menu.id} className="navigation__menus__table--items">
-                <div 
+                <div
                     className="navigation__menus__table--items--title"
                     onClick={() => {
-                      dispatch(doSetCurrentMenu(menu));
-                      navigate(`/store-detail/menu/${menu.id}`);
+                        dispatch(doSetCurrentMenu(menu));
+                        navigate(`/store-detail/menu/${menu.id}`);
                     }}
-                    >
+                >
                     {menu.title}
                 </div>
                 <div className="navigation__menus__table--items--content">
-                {menu.listMenuItem.map((item) => `${item.name}, `)}
+                    {menu?.listMenuItem?.length ? menu.listMenuItem.map((item) => `${item.name}, `) : null}
                 </div>
             </div>
         )
@@ -57,7 +72,12 @@ const Navigation = () => {
                         <div className="navigation__menus__table">
                             <div className="navigation__menus__table--header">
                                 <div className="navigation__menus__table--header--menu">Menu</div>
-                                <div className="navigation__menus__table--header--add-btn">Add menu</div>
+                                <div
+                                    className="navigation__menus__table--header--add-btn"
+                                    onClick={() => setShowModal(true)}
+                                >
+                                    Add menu
+                                </div>
                             </div>
                             <div className="navigation__menus__table--col">
                                 <div className="navigation__menus__table--col--title">Title</div>
@@ -69,6 +89,37 @@ const Navigation = () => {
                 </div>
             </div>
 
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <div className="text-title-1">Add menu</div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="navigation__add-menu-modal--title">
+                        <div className="text-normal-1">Title</div>
+                        <CustomInput
+                            placeholder='e.g Slide bar menu'
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="navigation__add-menu-modal--btn">
+                        <Button
+                            className="btn btn-secondary"
+                            onClick={handleCloseModal}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className="btn btn-success"
+                            onClick={hanndleAddNewMenu}
+                        >
+                            Add
+                        </Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }

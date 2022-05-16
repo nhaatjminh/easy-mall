@@ -9,8 +9,12 @@ export const NavigationApi = {
         const result = await callAPIWithGetMethod(`menu/${menuId}`, false);
         return result;
     },
-    // createStore: async (storeObj) => {
-    //     const result = await callAPIWithPostMethod('stores', storeObj, true);
-    //     return result;
-    // },
+    createMenu: async (menuObj) => {
+        const result = await callAPIWithPostMethod('menu', menuObj, true);
+        return result;
+    },
+    createMenuItem: async (itemObj) => {
+        const result = await callAPIWithPostMethod('menu-item', itemObj, true);
+        return result;
+    },
 }

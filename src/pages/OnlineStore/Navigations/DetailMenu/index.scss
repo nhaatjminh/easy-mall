@@ -1,6 +1,10 @@
 .detail-menu {
     &__header {
         margin: 20px 0;
+        &--back-icon {
+            cursor: pointer;
+            margin-right: 20px;
+        }
     }
     &__edit-title {
         margin-bottom: 20px;
@@ -62,6 +66,16 @@
             &--text {
                 color: #2c6ecb !important;
             }
+        }
+    }
+    &__add-item-modal {
+        &--name {
+            margin-bottom: 20px;
+        }
+        &--btn {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
         }
     }
 }
