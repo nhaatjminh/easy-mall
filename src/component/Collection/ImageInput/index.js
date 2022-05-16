@@ -116,8 +116,11 @@ const ImageInput = ({formRef}) => {
             getBase64(file, (result) => { 
                 form.current = {
                   ...form?.current,
-                  thumbnail: result
-              }
+                  collection: {
+                    ...form?.current?.collection,
+                    thumbnail: result
+                  }
+                }
             });
             selectedFIles = URL.createObjectURL(file);
         })
@@ -135,8 +138,8 @@ const ImageInput = ({formRef}) => {
                 <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-4 p-0">
+                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
-                <input type="button" value="Add Image" className="media-select-button float-right  btn btn-success btn-form-product p-1" id="fakeBrowse" onClick={() => browseclick()}/> 
               </div>
             </div>
             

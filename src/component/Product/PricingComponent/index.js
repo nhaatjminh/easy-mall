@@ -1,50 +1,75 @@
-import React, {useState, useEffect} from "react";
-import { Paper, Typography } from '@material-ui/core';
+import React, {useState} from "react";
+import { Paper } from '@material-ui/core';
 
-import PropTypes from 'prop-types';
-import {InputLabel, Stack,InputAdornment, Checkbox , FormControlLabel , Divider, FormHelperText , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar, TextField   } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
+import {InputLabel, Stack,InputAdornment, Checkbox , FormControlLabel , Divider, FormHelperText , TextField   } from '@mui/material';
 
-import { alpha } from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-
-const PricingComponent = ({formRef, isVariant}) => {
+const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
     const form = formRef;
-    const [productPrice, setProductPrice] = useState(0);
-    const [costPerItem, setCostPerItem] = useState(0);
+    const [productPrice, setProductPrice] = useState(Number(oldForm?.product?.price) || 0);
+    const [costPerItem, setCostPerItem] = useState(Number(oldForm?.product?.cost_item) || 0);
     const handleChangeProductPrice = (event) => {
         setProductPrice(Number(event));
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                price: Number(event)
+        if (mode === "EDIT") {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    price: Number(event),
+                    update: "Change"
+                }
+            }
+        } else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    price: Number(event)
+                }
             }
         }
     }
     const handleChangeProductCostPerItem = (event) => {
         setCostPerItem(Number(event));
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                cost_item: Number(event)
+        if (mode === "EDIT") {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    cost_item: Number(event),
+                    update: "Change"
+                }
+            }
+        } else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    cost_item: Number(event)
+                }
             }
         }
+        
     }
     const handleChangeChargeTax = (event) => {
-        form.current = {
-            ...form?.current,
-            product: {
-                ...form?.current?.product,
-                is_charge_tax: event
+        if (mode === "EDIT") {  
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    is_charge_tax: event,
+                    update: "Change"
+                }
+            }
+        } else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    is_charge_tax: event
+                }
             }
         }
     }
-    useEffect(() => {
-        console.log(1);
-    }, [form])
     return (
         <>
             <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
@@ -67,6 +92,7 @@ const PricingComponent = ({formRef, isVariant}) => {
                                     name='title'
                                     fullWidth
                                     required
+                                    defaultValue={oldForm?.product?.price || 0}
                                     onChange={(e) => handleChangeProductPrice(e.target.value)}  />
                             </Stack>
                         </div>
@@ -92,6 +118,8 @@ const PricingComponent = ({formRef, isVariant}) => {
                                 name='title'
                                 fullWidth
                                 required
+                                
+                                defaultValue={oldForm?.product?.cost_item || 0}
                                 onChange={(e) => handleChangeProductCostPerItem(e.target.value)}  />
                             {costPerItem && productPrice ? 
                             <>

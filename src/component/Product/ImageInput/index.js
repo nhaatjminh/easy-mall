@@ -17,7 +17,7 @@ import { alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 
 const EnhancedTableToolbar = (props) => {
-    const { numSelected, onDeleteSelected } = props;
+    const { numSelected, onDeleteSelected, onDelete } = props;
     return (
       <>
         {numSelected > 0 ?
@@ -52,9 +52,9 @@ const EnhancedTableToolbar = (props) => {
                 ) : ""}
               </Typography>
             ) : ""}
-             {/* {numSelected > 0 ? (
-                <Button className="btn btn-delete-all"><p className="p-0 m-0">Delete</p></Button>
-              ) : ""} */}
+            {numSelected > 0 ? (
+                <Button className="btn btn-delete-all" onClick={onDelete}><p className="p-0 m-0">Delete</p></Button>
+            ) : ""}
           </Toolbar>
         :""}
         
@@ -66,9 +66,9 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.number.isRequired,
   };
 
-const ImageInput = ({formRef}) => {
+const ImageInput = ({mode, formRef, oldForm}) => {
     const form = formRef;
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
     
     const getBase64 = (file, cb) => {
@@ -136,9 +136,9 @@ const ImageInput = ({formRef}) => {
         )
     }
     const handleMultipleImages =()=>{
-        var fileinput = document.getElementById("browse");
+        const fileinput = document.getElementById("browse");
         const selectedFIles = [...images];
-        const imageToBase64 = [];
+        const imageToBase64 = form?.current?.product?.images && mode === "EDIT" ? [...form?.current?.product?.images] : [];
         const targetFiles = fileinput.files;
         const targetFilesObject= [...targetFiles]
         targetFilesObject.map((file) => {
@@ -158,6 +158,24 @@ const ImageInput = ({formRef}) => {
       var fileinput = document.getElementById("browse");  // use input file id here
       fileinput.click(); 
     }
+    const handleDelete = () => {
+      const newList = images.filter((image) => !selected.includes(image))
+      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+      selected.forEach((image) => {
+        if (!base64regex.test(image)) {
+          // if not base 64. this is image in database. delete it.
+        }
+      })
+      setImages(newList);
+      setSelected([]);
+      form.current = {
+        ...form?.current,
+        product: {
+            ...form?.current?.product,
+            images: newList
+          }
+      }
+    }
     return (
         <>
             <div className="row">
@@ -166,14 +184,14 @@ const ImageInput = ({formRef}) => {
                 <InputLabel name='title' className="text-medium p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-9">
+                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>
                 <input type="file" multiple accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
-                <input type="button" value="Add Image" className="media-select-button float-right  btn btn-success btn-form-product p-1" id="fakeBrowse" onClick={() => browseclick()}/> 
               </div>
             </div>
             
 
   
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
+            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} onDelete={handleDelete}/>
             {ImagesGallery(images)}
         </>
     );

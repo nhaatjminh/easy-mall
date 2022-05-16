@@ -8,6 +8,8 @@ import { visuallyHidden } from '@mui/utils';
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { current } from "@reduxjs/toolkit";
+import { result } from "lodash";
 
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
@@ -97,7 +99,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({optionValue, columnsOfData, formRef}) => {
+const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
 
     const form = formRef;
     const columns = columnsOfData;
@@ -173,44 +175,123 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
     const onDeleteSelected = () => {
       setSelected([]);
     }
+    const handleNotDeleteVariant =(row) => {
+      const newList = variant.map((element) => {
+        if (element.name === row.name) {
+          delete element.delete;
+        }
+        return element
+      })
+      form.current = {
+        ...form?.current,
+        variant: newList
+      }
+      setVariant(newList);
+    }
+    const handleDeleteOneVariant = async (row) => {
+      if (variant.length === 1) {
+        form.current = {
+          ...form?.current,
+          product: {
+            ...form?.current?.product,
+            is_variant: false
+          },
+          option: [],
+        }
+        setShowOpt(false);
+        setOptionTag([]);
+        setOptionValue([]);
+        return;
+      }
+      let newOptionValue = [...optionValue];
+      let OptionValueDelete;
+      let currentDelete;
+      let OptionValueExist = [];
+      let flag = false;
+      const newList = await variant.map((element) => {
+        if (element.name === row.name) {
+          element = {
+            ...element,
+            delete: true
+          }
+          OptionValueDelete = element.name.split('/'); 
+          currentDelete = element;
+        }
+        return element
+      })
+      await variant.forEach((element) => {
+        if (element.name === currentDelete.name || element?.delete ) return;
+        const splitElement = element.name.split('/');
+        splitElement.forEach((value, index) => {
+          if (value === OptionValueDelete[index] && !OptionValueExist.includes(index)) OptionValueExist.push(index);
+        })
+      })
+      await newOptionValue.forEach((element, index) => {
+        if (OptionValueExist.includes(index)) return;
+        element.value = element.value.filter(valueOfOptionValue => {
+          if (!OptionValueDelete.includes(valueOfOptionValue)) {
+            flag= true;
+            return true;
+          }
+        })
+      })
+      if (!flag) {
+        form.current = {
+          ...form?.current,
+          option: optionValue,
+          variant: newList
+        }
+        setVariant(newList);
+      }
+      else {
+        form.current = {
+          ...form?.current,
+          option: newOptionValue,
+        }
+        let newOptionTag=[...optionTag];
+        setOptionTag(newOptionTag);
+        setOptionValue(newOptionValue);
+        createVariantUI();
+      }
+      
+    }
     useEffect(() => {
       createVariantUI();
     }, [optionValue])
-    function combineArrays( array_of_arrays ){
-      if( ! array_of_arrays ){
+    const combineArrays = (arrayOfArrays ) => {
+      if( !arrayOfArrays ){
           return [];
       }
   
-      if( ! Array.isArray( array_of_arrays ) ){
+      if( ! Array.isArray( arrayOfArrays ) ){
           return [];
       }
   
 
-      for( let i = 0 ; i < array_of_arrays.length; i++ ){
-        if( ! Array.isArray(array_of_arrays[i]) || array_of_arrays[i].length == 0 ){
-          array_of_arrays.splice(i, 1);
+      for( let i = 0 ; i < arrayOfArrays.length; i++ ){
+        if( ! Array.isArray(arrayOfArrays[i]) || arrayOfArrays[i].length == 0 ){
+          arrayOfArrays.splice(i, 1);
           i--;
         }
       }
 
-      if( array_of_arrays.length == 0 ){
+      if( arrayOfArrays.length == 0 ){
           return [];
       }
   
 
-      let odometer = new Array( array_of_arrays.length );
+      let odometer = new Array( arrayOfArrays.length );
       odometer.fill( 0 ); 
   
       let output = [];
   
-      let newCombination = formCombination( odometer, array_of_arrays );
+      let newCombination = formCombination( odometer, arrayOfArrays );
       output.push( newCombination.substr(1) );
   
-      while ( odometer_increment( odometer, array_of_arrays ) ){
-          newCombination = formCombination( odometer, array_of_arrays );
+      while ( odometer_increment( odometer, arrayOfArrays ) ){
+          newCombination = formCombination( odometer, arrayOfArrays );
           output.push( newCombination.substr(1) );
       }
-  
       return output;
     }
     
@@ -257,6 +338,7 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
           const allNewVariant = []
       
           listVariant.forEach((variant) => {
+              const oldVariant = oldForm?.variant?.find(oldvariant => oldvariant.name === variant)
               let listOptionOfVariant = variant.split("/");
               let newVariant = {};
               listOptionOfVariant.forEach((opt, idxOpt) => {
@@ -264,11 +346,20 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
                       name: idxOption[idxOpt],
                       value: opt
                   }
+                  if (oldVariant) {
+                    newVariant = {
+                      ...newVariant,
+                      id: oldVariant?.id,
+                      price: Number(oldVariant?.price),
+                      quantity: Number(oldVariant?.quantity)
+                    }
+                  }
                   if (!newVariant?.option_value)
-                      newVariant = {
-                          name: variant,
-                          option_value: [newOpt]
-                      }
+                    newVariant = {
+                        ...newVariant,
+                        name: variant,
+                        option_value: [newOpt]
+                    }
                   else newVariant.option_value.push(newOpt);
               })
 
@@ -306,11 +397,12 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
                         return (
                         <TableRow hover
                         role="checkbox"
+                        className={`${row.delete ? "line-through" : ""}`}
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         key={index}
                         selected={isItemSelected}>
-                            <TableCell padding="checkbox" 
+                          <TableCell padding="checkbox" 
                             align="left">
                                 <Checkbox
                                     color="primary"
@@ -320,28 +412,24 @@ const TableVariant = ({optionValue, columnsOfData, formRef}) => {
                                     }}
                                     onClick={(event) => handleClick(event, row.name)}
                                 />
-                        </TableCell>
-                        <TableCell
-                            component="th"
-                            id={labelId}
-                            scope="row"
-                            padding="none"
-                            align="center"
-                        >
-                            
-                            {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
-                        </TableCell>
-                        <TableCell align="center">
-                            <TextField value={row.price} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
-                            </TableCell>
-                        <TableCell align="center">
-                            <TextField value={row.quantity} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
-                        <TableCell align="center">
-                      
-                          <button style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Sửa</button>
-                  
-                          <button style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Xóa</button>
-                        </TableCell>
+                          </TableCell>
+                          <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                              align="center"
+                          >
+                              {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
+                          </TableCell>
+                          <TableCell align="center">
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.price} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
+                              </TableCell>
+                          <TableCell align="center">
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.quantity} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
+                          <TableCell align="center">
+                            <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>
+                          </TableCell>
                         
                         </TableRow>
                         );

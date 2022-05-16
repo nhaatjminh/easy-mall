@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
 
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,9 @@ import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 import { CustomInput } from "../../component/common/CustomInput/CustomInput";
 import { BackIcon } from './../../assets/icon/svg/BackIcon';
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
+import { useDebounce } from './../../hooks/useDebounce';
+import { StoreApi } from './../../service/api/storeApi';
+import { NotAllowIcon } from './../../assets/icon/svg/NotAllowIcon';
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -32,6 +35,24 @@ const StoreLogin = ({ nameAccount }) => {
     const [isCreateStore, setIsCreateStore] = useState(false);
     const [listStoreShow, setListStoreShow] = useState(listStore);
     const [newStoreName, setNewStoreName] = useState('');
+    const [err, setErr] = useState('');
+    // const [isValid, setIsValid] = useState(false);
+    const dbValue = useDebounce(newStoreName, 300);
+
+    const mounted = useRef();
+
+    useEffect(async () => {
+        if (!mounted.current) mounted.current = true
+        else {
+            if (newStoreName.length >= 4) {
+                const result = await StoreApi.getStoreByName(newStoreName);
+                if (result.data.length > 0) setErr('A store with that name already exists')
+                else setErr('')
+            } else {
+                setErr('Your store name must be at least 4 characters')
+            }
+        }
+    }, [dbValue])
 
     nameAccount = "TP";
 
@@ -51,6 +72,13 @@ const StoreLogin = ({ nameAccount }) => {
     }
 
     const onCreateStore = () => {
+        if (newStoreName.length < 4) {
+            setErr('Your store name must be at least 4 characters');
+            return;
+        }
+        
+        if (err !== '') return;
+
         const storeObj = {
             name: newStoreName
         }
@@ -111,11 +139,11 @@ const StoreLogin = ({ nameAccount }) => {
                                 <div className="row mt-5">
                                     <div className="store-login__search">
 
-        
-                                    <CustomSearchInput
-                                        placeholder='Search'
-                                        onChange={handleOnchangeSearch}
-                                    />
+
+                                        <CustomSearchInput
+                                            placeholder='Search'
+                                            onChange={handleOnchangeSearch}
+                                        />
                                     </div>
 
                                     <div className="store-login__list row find-store p-0 scroll-list" >
@@ -151,13 +179,26 @@ const StoreLogin = ({ nameAccount }) => {
                                     <CustomInput
                                         value={newStoreName}
                                         placeholder='Store name'
+                                        warning={err !== ''}
                                         onChange={(e) => setNewStoreName(e.target.value)}
                                     />
                                 </div>
-
+                                <div className="row mt-1 ml-2 p-0 create-store__check-valid-text">
+                                    {err !== '' &&
+                                        <div style={{padding: '0'}}>
+                                            <span><NotAllowIcon /></span>
+                                            <span className="create-store__invalid-text">{err}</span>
+                                        </div>
+                                    }
+                                </div>
                                 <div className="row mt-1">
                                     <div className="col-8   div-button-create-store pt-5">
-                                        <button className="btn btn-success basic-btn" onClick={onCreateStore}> <p className="text-btn-login"> Create store </p></button>
+                                        <button 
+                                            className="btn btn-success basic-btn" 
+                                            onClick={onCreateStore} 
+                                            disabled={err !== ''}> 
+                                            <p className="text-btn-login"> Create store </p>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

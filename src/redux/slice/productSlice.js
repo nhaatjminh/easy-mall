@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProductApi } from '../../service/api';
 
-export const doGetListCollectionOfStores = createAsyncThunk(
+export const doGetListProductsOfStores = createAsyncThunk(
     'collection@get/GetListProduct',
     async (id) => {
       const result = await ProductApi.getProductsOfStore(id);
@@ -22,6 +22,27 @@ export const doUploadImageProduct = createAsyncThunk(
     'store@post/UploadImageProduct',
     async ({data}) => {
       const result = await ProductApi.uploadImageProduct(data);
+      return result.data
+    }
+);
+export const doGetOneProductOfStores = createAsyncThunk(
+    'collection@get/GetOneProduct',
+    async (productId) => {
+      const result = await ProductApi.getOneProduct(productId);
+      return result.data;
+    }
+);
+export const doUploadProduct = createAsyncThunk(
+    'product@post/UploadProduct',
+    async ({data}) => {
+      const result = await ProductApi.uploadProduct(data);
+      return result.data
+    }
+);
+export const doDeleteProduct = createAsyncThunk(
+    'product@delete/DeleteProduct',
+    async ({id}) => {
+      const result = await ProductApi.deleteProduct(id);
       return result.data
     }
 );

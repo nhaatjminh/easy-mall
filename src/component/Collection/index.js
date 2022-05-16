@@ -1,8 +1,7 @@
 import React from "react";
 import FormCollection from './FormCollection'
 import './index.css';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-const Collection = ( {returnTable })=> {
+const Collection = ( {mode, oldForm, returnTable })=> {
     // use redux to manage state
     return (
         <>
@@ -16,7 +15,7 @@ const Collection = ( {returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">Add Collection</h5>
             </div>    
         </div>
-        <FormCollection key={`collection-manage`} mode={"ADD"} oldForm={{}} returnAfterAdd={returnTable}></FormCollection>
+        <FormCollection key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormCollection>
         </>
     );
 }

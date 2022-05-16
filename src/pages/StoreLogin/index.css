@@ -61,6 +61,12 @@
 .store-login__list {
 }
 
+.create-store__invalid-text {
+    padding-left: .2rem;
+    color: #d72c0d;
+    font-size: 0.8rem;
+}
+
 .paper-style {
     padding: 20px;
     width: 45%;
