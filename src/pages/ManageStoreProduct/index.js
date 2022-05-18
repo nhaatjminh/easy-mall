@@ -55,10 +55,10 @@ const ManageStoreProduct = () => {
         dispatch((doGetOneProductOfStores(selected[0])))
         .then((result) => {    
           // info of product receive from server is array. get first element. into form, need this is object not array
-          if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0];
+          if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
+          setMode('EDIT');
           setOldForm(result.payload);  
           setShowAddProduct(true);
-          setMode('EDIT');
           Swal.close();
         })
       })

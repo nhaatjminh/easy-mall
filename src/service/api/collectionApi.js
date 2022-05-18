@@ -1,4 +1,4 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod } from "../../helpers/callAPI"
+import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const collectionApi = {
     getCollections: async (id) => {
@@ -34,6 +34,36 @@ export const collectionApi = {
      */
     uploadImageCollection: async (data) => {
         const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
+        return result; 
+    },
+    /**
+     * @name deleteCollection
+     * @description delete one collection with id in param
+     * @param {String} id: 
+     * {
+     *  name: name of image to create key for image -> with product, this is uuid
+     *  base64Image: data (convert image to base 64)
+     * }
+     * 
+     * @returns {object} data have link of image on s3
+     */
+     deleteCollection: async (id) => {
+        const result = await callAPIWithDeleteMethod(`collections/product/${id}`, true);
+        return result; 
+    },
+    /**
+     * @name UpdateCollection
+     * @description Update one collection with id in param
+     * @param {Object} newCollection: 
+     * {
+     *  collection: information of collection. Need have id of collection
+     *  products: list product is assigned for this collection
+     * }
+     * 
+     * @returns {object} data have link of image on s3
+     */
+    updateCollection: async (newCollection) => {
+        const result = await callAPIWithPutMethod(`collections/product/${newCollection.collection.id}`, newCollection, true);
         return result; 
     }
 }

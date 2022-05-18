@@ -109,4 +109,43 @@ const callAPIWithPostMethod = async(pathURL, data, bearTokenFlg) => {
     return fetchResult;
 }
 
-export { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod };
+const callAPIWithPutMethod = async(pathURL, data, bearTokenFlg) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    if (bearTokenFlg) {
+        myHeaders.append("Authorization", "Bearer " + token);
+    } 
+
+    var raw = JSON.stringify(data);
+
+    var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+  
+    let fetchResult;
+    await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
+        .then(response => {
+            if (response.status === 401) logout();
+            else if (response.ok) return response.json();
+
+            throw Error(response.status);
+        })
+        .then(result => {
+            fetchResult = result;
+        })
+        .catch((errorCode) => {
+            if (errorCode === 401) {
+                logout();
+            } else {
+                fetchResult = { 'ok': false, 'errorCode': errorCode };
+            }
+        })
+
+    return fetchResult;
+}
+export { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod, callAPIWithPutMethod };

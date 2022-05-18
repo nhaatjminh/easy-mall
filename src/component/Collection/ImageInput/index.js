@@ -55,9 +55,9 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.bool.isRequired,
   };
 
-const ImageInput = ({formRef}) => {
+const ImageInput = ({formRef, oldForm, mode}) => {
     const form = formRef;
-    const [images, setImages] = useState();
+    const [images, setImages] = useState(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null);
     const [selected, setSelected] = useState(false);
     
     const getBase64 = (file, cb) => {
