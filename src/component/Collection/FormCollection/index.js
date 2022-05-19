@@ -81,38 +81,46 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             }
         }
     }
+    const isBase64 = (str) => {
+        try {
+            return btoa(atob(str)) == str;
+        } catch (err) {
+            return false;
+        }
+    }
     const saveCollection = () => {
         if (form?.current?.collection?.name) {   
             Swal.showLoading();
             new Promise((resolve) => { 
                 const data = form?.current?.collection?.thumbnail;
                 if (data) {
-                    const base64regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/;
                     const base64result = data.substr(data.indexOf(',') + 1);
-                    if (!base64regex.test(base64result)) resolve();
-
-                    //need delete image if u change image
-                    dispatch(doUploadImageCollection({
-                        data: {
-                            data: [data]
-                        }
-                    })).then((result) => {
-                        if (result?.payload && result?.payload.length > 0) {
-                            // payload is array data response from server, first item to link, so get payload[0] in here                  
-                            form.current = {
-                                ...form?.current,
-                                collection: {
-                                    ...form?.current?.collection,
-                                    thumbnail: Object.values(result.payload)[0],
-                                }
+                    if (!isBase64(base64result)) {
+                        resolve();
+                    } else {
+                        //need delete image if u change image
+                        dispatch(doUploadImageCollection({
+                            data: {
+                                data: [data]
                             }
-                            resolve();
-                        }
-                    })
+                        })).then((result) => {
+                            if (result?.payload && result?.payload.length > 0) {
+                                // payload is array data response from server, first item to link, so get payload[0] in here                  
+                                form.current = {
+                                    ...form?.current,
+                                    collection: {
+                                        ...form?.current?.collection,
+                                        thumbnail: Object.values(result.payload)[0],
+                                    }
+                                }
+                                resolve();
+                            }
+                        })
+                    }
                 } else {
                     resolve();
                 }
-            }).then(() => {
+            }).then(async () => {
                 if (mode !== "EDIT") {
                     const createObj = {
                         storeId: params.storeId,
@@ -131,6 +139,13 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     });
                 }
                 else {
+                    const listProductUpdate = []
+                    await form.current?.products?.forEach(product => {
+                        if (product.update){
+                            listProductUpdate.push(product)
+                        }
+                    })
+                    form.current.products = listProductUpdate;
                     const updateObj = {
                         newCollection: form.current
                     }
@@ -184,13 +199,10 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     id: productId,
                     update: "Add"
                 }
-                form.current = {
-                    ...form?.current,
-                    products: [
-                        ...form.current.products,
+                form.current.products = [
+                        ...form?.current?.products,
                         newProduct,
                     ]
-                }
             })
             setListProductOfCollection(typeof value === 'string' ? value.split(',') : value);
         } else {     

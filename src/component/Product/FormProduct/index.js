@@ -106,7 +106,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 form.current = {
                     ...form?.current,
                     collection: [
-                        ...form.current.collection,
+                        ...form?.current?.collection,
                         newCollection,
                     ]
                 }
@@ -298,6 +298,13 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }
+    const isBase64 = (str) => {
+        try {
+            return btoa(atob(str)) == str;
+        } catch (err) {
+            return false;
+        }
+    }
     const saveProduct = () => {
         if (form?.current?.product?.title) {   
             Swal.showLoading();
@@ -305,11 +312,10 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 const data = form?.current?.product?.images;
                 if (data) {
                     const listPromise = [];   
-                    const base64regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/;
                     const oldResult = [];
                     for (let item of data) {
                         const base64result = item.substr(item.indexOf(',') + 1);
-                        if (base64regex.test(base64result)) {
+                        if (!isBase64(base64result)) {
                             listPromise.push(
                                 new Promise((resolveForUpload) => {
                                     dispatch(doUploadImageProduct({
