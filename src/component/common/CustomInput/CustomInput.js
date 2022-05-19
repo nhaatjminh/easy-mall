@@ -1,15 +1,17 @@
 import { React } from 'react';
 import './CustomInput.scss'
 
-export const CustomInput = ({ defaultValue, value, placeholder, onChange, width, height, warning }) => {
+export const CustomInput = ({ defaultValue, value, placeholder, onChange, width, height, warning, disabled }) => {
 
     return (
-        <div className={`custom-input ${warning ? 'custom-input__warning' : ''}`} style={{width: `${width}`, height: `${height}`}}>
+        <div className={`custom-input ${disabled ? 'custom-input__disabled' : ''} ${warning ? 'custom-input__warning' : ''}`}
+            style={{ width: `${width}`, height: `${height}` }}>
             <input
                 defaultValue={defaultValue}
                 value={value}
+                disabled={disabled}
                 placeholder={placeholder}
-                onChange={onChange} 
+                onChange={onChange}
             />
         </div>
     )

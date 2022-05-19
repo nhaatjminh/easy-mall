@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { doCreatePage, doGetListPages } from './../../../redux/slice/pageSlice';
+import { doCreatePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
 import HeaderDetailStore from "../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { CustomCard } from "../../../component/common/CustomCard/CustomCard";
@@ -20,6 +20,7 @@ const Page = ({ }) => {
     const [name, setName] = useState('');
     const [link, setLink] = useState('');
     const [mode, setMode] = useState('ADD');
+    const [updatePageId, setUpdatePageId] = useState(-1);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -36,13 +37,17 @@ const Page = ({ }) => {
         dispatch(doCreatePage({
             store_id: params.storeId,
             name: name,
-            link: link
+            // link: link
         }))
         handleCloseModal()
     }
 
     const handleEitPage = () => {
-
+        dispatch(doUpdatePage({
+            id: updatePageId,
+            name: name
+        }))
+        handleCloseModal()
     }
 
     return (
@@ -85,6 +90,7 @@ const Page = ({ }) => {
                                             onClick={() => {
                                                 setMode('EDIT')
                                                 setName(item.name)
+                                                setUpdatePageId(item.id)
                                                 setLink(item.page_url)
                                                 setShowModal(true)
                                             }}
@@ -138,6 +144,7 @@ const Page = ({ }) => {
                         <CustomInput
                             placeholder='Link to your page or external link'
                             value={link}
+                            disabled={true}
                             onChange={(e) => setLink(e.target.value)}
                         />
                     </div>

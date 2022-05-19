@@ -20,6 +20,17 @@ export const doCreatePage = createAsyncThunk(
     }
 );
 
+export const doUpdatePage = createAsyncThunk(
+    'page@put/UpdatePage',
+    async (pageObj) => {
+        const result = await PageApi.updatePage(pageObj);
+        return {
+            ...pageObj,
+            ...result.data.rows[0]
+        };
+    }
+)
+
 export const pageSlice = createSlice({
     name: 'page',
     initialState: {
@@ -41,8 +52,14 @@ export const pageSlice = createSlice({
         });
 
         // create page
-        builder.addCase(doCreatePage.fulfilled, (state,action) => {
+        builder.addCase(doCreatePage.fulfilled, (state, action) => {
             state.listPages.push(action.payload)
+        })
+
+        // uppate page
+        builder.addCase(doUpdatePage.fulfilled, (state, action) => {
+            const index = state.listPages.findIndex((item) => item.id === action.payload.id);
+            if (index >= 0) state.listPages[index] = action.payload;
         })
     }
 })
