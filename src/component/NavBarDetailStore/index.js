@@ -206,7 +206,7 @@ const NavBarDetailStore = ({isDesktop, keySelected}) => {
                             </p>
                         </Typography><Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {               
-                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                                routeChange(`/store-detail/pages/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 mb-2 mt-2 text-extend">
@@ -215,7 +215,7 @@ const NavBarDetailStore = ({isDesktop, keySelected}) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {               
-                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                                routeChange(`/store-detail/navigation/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 mb-2 mt-2 text-extend">

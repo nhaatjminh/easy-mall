@@ -1,9 +1,13 @@
 .all-nav-detail {
     position: fixed;
-    min-height: 85vh;
-    max-height: 85vh;
+    top: 70px;
+    height: calc(100vh - 70px);
+    /* border-right: 1px solid black; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    /* clip-path: inset(0px -15px 0px 0px); */
+
     /* width: fit-content; */
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .offcanvas-body .all-nav-detail{
     position: relative;

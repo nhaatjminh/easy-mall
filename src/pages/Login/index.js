@@ -100,7 +100,7 @@ const Login = () => {
                     localStorage.setItem("userId", result.data.user._id);
 
                     login(result.data.token);
-                    setIsLogin(true);
+                    // setIsLogin(true);
                     // routeChange('/store-login');
                 }
             })
