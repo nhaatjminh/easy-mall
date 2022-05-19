@@ -399,7 +399,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                                 }
                                                 
                                                 <ListItemText primary={product.title}/>
-                                                <i className="fa-trash fa-icon icon-trash float-right text-normal" onClick={() => handleDeleteProducts(index)}></i>
+                                                <i className="fa-trash fa-icon icon-trash float-right text-extra-large" onClick={() => handleDeleteProducts(index)}></i>
                                             </MenuItem>
                                             {index !== listProductOfCollection.length - 1 && <Divider className="divider-custom" />}
                                             

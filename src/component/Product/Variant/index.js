@@ -327,7 +327,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                                             />
                                         </div>
                                         <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                            <i className="fa-trash fa-icon icon-trash" ></i>
+                                            <i className="fa-trash fa-icon icon-trash text-extra-large" ></i>
                                         </div>
                                     </div>  
                                 </div>
