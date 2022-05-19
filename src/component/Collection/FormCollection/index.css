@@ -41,8 +41,7 @@
     width: unset;
 }
 .text-field-input input {
-    padding-left: 0.5rem;
-    padding: 4px 0 5px;
+    padding: 4px 0 5px 5px;
 }
 .MuiChip-root.collection-chip {
     margin: 5px;

@@ -124,6 +124,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
     
     const addAnotherOption = (index) => {
         if (optionTag.length === 3) return;
+        if (!showOpt && optionTag.length) return;
         for (const optionValueChild of optionValue) {
             if (!optionValueChild.name || !optionValueChild.value.length) {
                 Swal.fire({
@@ -134,6 +135,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                 return;
             }
         }
+        
         const temp = [...optionTag];
         temp.push(true);
         setOptionTag(temp);
@@ -234,7 +236,8 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
             <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Option</InputLabel>
-            <FormControlLabel control={<Checkbox defaultChecked={oldForm?.product?.is_variant} checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
+            <FormControlLabel control={
+                <Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
             {showOpt ?
                 <>  
                     <Divider className="divider-custom"/>
@@ -324,7 +327,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                                             />
                                         </div>
                                         <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                            <i className="fa-trash fa-icon icon-trash" ></i>
+                                            <i className="fa-trash fa-icon icon-trash text-extra-large" ></i>
                                         </div>
                                     </div>  
                                 </div>
@@ -368,7 +371,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
             }
 
         </Paper> 
-        <TableVariant key="TableVariant" oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
+        <TableVariant key="TableVariant" showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
         </TableVariant>
       </>
     );

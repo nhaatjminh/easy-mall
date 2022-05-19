@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import ImageInput from "../ImageInput"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
-import { doUploadImageCollection, doCreateCollection } from "../../../redux/slice/collectionSlice";
+import { doUploadImageCollection, doCreateCollection, doDeleteCollection, doUpdateCollection } from "../../../redux/slice/collectionSlice";
 import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
@@ -81,51 +81,86 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             }
         }
     }
+    const isBase64 = (str) => {
+        try {
+            return btoa(atob(str)) == str;
+        } catch (err) {
+            return false;
+        }
+    }
     const saveCollection = () => {
         if (form?.current?.collection?.name) {   
             Swal.showLoading();
             new Promise((resolve) => { 
                 const data = form?.current?.collection?.thumbnail;
                 if (data) {
-                    dispatch(doUploadImageCollection({
-                        data: {
-                            data: [{
-                                name: uuid(),
-                                base64Image: data
-                            }]
-                        }
-                    })).then((result) => {
-                        if (result?.payload && result?.payload.length > 0) {
-                            // payload is array data response from server, first item to link, so get payload[0] in here                  
-                            form.current = {
-                                ...form?.current,
-                                collection: {
-                                    ...form?.current?.collection,
-                                    thumbnail: Object.values(result.payload)[0],
-                                }
+                    const base64result = data.substr(data.indexOf(',') + 1);
+                    if (!isBase64(base64result)) {
+                        resolve();
+                    } else {
+                        //need delete image if u change image
+                        dispatch(doUploadImageCollection({
+                            data: {
+                                data: [data]
                             }
-                            resolve();
-                        }
-                    })
+                        })).then((result) => {
+                            if (result?.payload && result?.payload.length > 0) {
+                                // payload is array data response from server, first item to link, so get payload[0] in here                  
+                                form.current = {
+                                    ...form?.current,
+                                    collection: {
+                                        ...form?.current?.collection,
+                                        thumbnail: Object.values(result.payload)[0],
+                                    }
+                                }
+                                resolve();
+                            }
+                        })
+                    }
                 } else {
                     resolve();
                 }
-            }).then(() => {
-                const createObj = {
-                    storeId: params.storeId,
-                    collectionObj: form.current
+            }).then(async () => {
+                if (mode !== "EDIT") {
+                    const createObj = {
+                        storeId: params.storeId,
+                        collectionObj: form.current
+                    }
+                    dispatch(doCreateCollection(createObj))
+                    .then((res) => {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Create successful products!',
+                        }).then((result) => {
+                            returnAfterAdd();
+                        })
+                    });
                 }
-                dispatch(doCreateCollection(createObj))
-                .then((res) => {
-                    Swal.close();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Create successful products!',
-                    }).then((result) => {
-                        returnAfterAdd();
+                else {
+                    const listProductUpdate = []
+                    await form.current?.products?.forEach(product => {
+                        if (product.update){
+                            listProductUpdate.push(product)
+                        }
                     })
-                });
+                    form.current.products = listProductUpdate;
+                    const updateObj = {
+                        newCollection: form.current
+                    }
+                    dispatch(doUpdateCollection(updateObj))
+                    .then((res) => {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Edit collection successful !',
+                        }).then((result) => {
+                            returnAfterAdd();
+                        })
+                    });
+                }
             })
         } else {
                 setErrorTitle('You need to enter a value for this field');
@@ -135,13 +170,91 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
     const handleOpen = () => setModalShow(true);
     const handleClose = () => setModalShow(false);
     const handleChangeProductForCollection = (event) => {
-        const {target: { value }} = event;
-        setListProductOfCollection(typeof value === 'string' ? value.split(',') : value,);
+        let {target: { value }} = event;
+        if (mode === "EDIT") { 
+            typeof value === 'string' ? value = value.split(',') : value = value
+            let haveProduct = value;
+            form?.current?.products?.forEach((product) => {
+                if (!value.includes(product.id)) { 
+                    if (product.title) { // if have title. this is old Product
+                        form.current.products = form?.current?.products?.map((productNeedDelete) => {
+                            if (productNeedDelete.id === product.id) {
+                                return {
+                                    ...product,
+                                    update: "Delete"
+                                }
+                            }
+                            return productNeedDelete;
+                        })
+                    } else {
+                        form.current.products = form?.current?.products?.filter(productNeedDelete => productNeedDelete.id !== product.id)
+                    }
+                } else if (product.title && product.update === "Delete" ){
+                    delete product.update;
+                }
+                haveProduct = haveProduct.filter(selectCollection => selectCollection !== product.id);
+            })
+            haveProduct.forEach((productId) => {
+                let newProduct = {
+                    id: productId,
+                    update: "Add"
+                }
+                form.current.products = [
+                        ...form?.current?.products,
+                        newProduct,
+                    ]
+            })
+            setListProductOfCollection(typeof value === 'string' ? value.split(',') : value);
+        } else {     
+            setListProductOfCollection(typeof value === 'string' ? value.split(',') : value);
+        }
     };
     const handleDeleteProducts = (index) => {
         const newList = [...listProductOfCollection];
+        if (mode === "EDIT") {
+            form?.current?.products?.forEach((product) => {
+                if (product.id === newList[index]) { 
+                    if (product.title) { // if have name. this is old collection
+                        form.current.products = form?.current?.products?.map((productNeedDelete) => {
+                            if (productNeedDelete.id === product.id) {
+                                return {
+                                    ...product,
+                                    update: "Delete"
+                                }
+                            }
+                            return productNeedDelete;
+                        })
+                    } else {
+                        form.current.products = form?.current?.products?.filter(productNeedDelete => productNeedDelete.id !== product.id)
+                    }
+                }
+            })
+        } 
+        else {
+            const newProductForForm = form.current?.products?.filter((ProductId) => ProductId !== newList[index])
+            form.current = {
+                ...form?.current,
+                products: newProductForForm
+            }
+        }
         newList.splice(index, 1);
         setListProductOfCollection(newList);
+    }
+    const handleDeleteCollection = () => {
+        Swal.fire({
+            title: 'Please Wait !',
+            html: 'Deleting product',// add html attribute if you want or remove
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+        dispatch(doDeleteCollection({
+            id: form.current.collection.id
+        })).then((result) => {
+            Swal.close();
+            returnAfterAdd();
+        })
     }
     useEffect(() => {
         form.current = {
@@ -153,12 +266,32 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         }
         dispatch(doGetListProductsOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
     },[])
-    useEffect(() => {
-        form.current = {
-            ...form?.current,
-            products: listProductOfCollection
+    useEffect(() => {  
+        if (mode !== "EDIT") {
+            form.current = {
+                ...form?.current,
+                products: listProductOfCollection
+            }
         }
     },[listProductOfCollection])
+    useEffect(() => {
+        if (mode) {
+            if (oldForm && mode === 'EDIT') {
+                form.current = oldForm;
+                const listIdProduct = oldForm?.products?.map(product => product.id);
+                setListProductOfCollection(listIdProduct || [])
+            }
+            else {
+                form.current = {
+                    ...form?.current,
+                    collection: {
+                        ...form?.current?.collection,
+                        store_id: params.storeId
+                    }
+                }
+            }
+        }
+    }, [oldForm, mode, params.storeId])
     return (
         <>
         <FormGroup>
@@ -175,15 +308,14 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             required
                             error={errorTitle ? true : false}
                             helperText={errorTitle}
-                            defaultValue={mode === "EDIT" ? oldForm?.name : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.collection?.name ? oldForm.collection.name : ""}
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
-                        <ReactQuill value={''}
-                        
-                            defaultValue={mode === "EDIT" ? oldForm?.description : ""}
+                        <ReactQuill
+                            defaultValue={mode === "EDIT" && oldForm?.collection?.description ? JSON.parse(oldForm?.collection?.description) : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
                     </Paper>
@@ -246,7 +378,8 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             </div>
                             <Box style={{overflow: "auto", maxHeight: 400}}>
                                 {listProductOfCollection.map((productId, index) => {
-                                    const product = listProducts.find(element => element.id === productId)
+                                    if (!listProducts.length) return (<></>)
+                                    const product = listProducts.find(productTemp => productTemp.id === productId)
                                     return (
                                         <>
                                             <MenuItem key={product.id} value={product.id}>
@@ -266,7 +399,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                                 }
                                                 
                                                 <ListItemText primary={product.title}/>
-                                                <i className="fa-trash fa-icon icon-trash float-right text-normal" onClick={() => handleDeleteProducts(index)}></i>
+                                                <i className="fa-trash fa-icon icon-trash float-right text-extra-large" onClick={() => handleDeleteProducts(index)}></i>
                                             </MenuItem>
                                             {index !== listProductOfCollection.length - 1 && <Divider className="divider-custom" />}
                                             
@@ -303,13 +436,20 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     </Paper> 
                     
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <ImageInput formRef={form}></ImageInput>
+                        <ImageInput formRef={form} oldForm={oldForm} mode={mode}></ImageInput>
                     </Paper> 
                 </div>    
             </div>
             <Divider className="custom-devider" style={{marginTop: 15}} />
             <div className="mt-4 mb-4 row">
-                <div className="col-12">
+                <div className="col-6">
+                    {
+                        mode === "EDIT" ?
+                        <button onClick={handleDeleteCollection} style={{width: 'auto'}} className="float-left btn btn-light btn-form-product btn-delete-product">Delete</button>
+                        : ""
+                    }
+                </div>
+                <div className="col-6">
                     <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Save</button>
             
                 </div>

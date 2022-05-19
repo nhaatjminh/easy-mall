@@ -16,20 +16,34 @@ export const doGetOneCollections = createAsyncThunk(
     }
 );
 export const doUploadImageCollection = createAsyncThunk(
-    'store@post/UploadImageCollection',
+    'collection@post/UploadImageCollection',
     async ({data}) => {
       const result = await collectionApi.uploadImageCollection(data);
       return result.data
     }
 );
 export const doCreateCollection = createAsyncThunk(
-    'store@post/CreateCollection',
+    'collection@post/CreateCollection',
     async ({storeId,collectionObj}) => {
       const result = await collectionApi.createCollections(storeId,collectionObj);
       return {
           ...collectionObj,
           id: result.data
         };
+    }
+);
+export const doDeleteCollection = createAsyncThunk(
+    'collection@delete/DeleteCollection',
+    async ({id}) => {
+      const result = await collectionApi.deleteCollection(id);
+      return result.data
+    }
+);
+export const doUpdateCollection = createAsyncThunk(
+    'collection@put/UpdateCollection',
+    async ({newCollection}) => {
+      const result = await collectionApi.updateCollection(newCollection);
+      return result.data
     }
 );
 

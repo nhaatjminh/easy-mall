@@ -24,7 +24,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
 import { doCreateProduct, doUploadImageProduct, doUploadProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
-import { v4 as uuid } from 'uuid';
 
 const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
@@ -107,7 +106,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 form.current = {
                     ...form?.current,
                     collection: [
-                        ...form.current.collection,
+                        ...form?.current?.collection,
                         newCollection,
                     ]
                 }
@@ -299,6 +298,13 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }
+    const isBase64 = (str) => {
+        try {
+            return btoa(atob(str)) == str;
+        } catch (err) {
+            return false;
+        }
+    }
     const saveProduct = () => {
         if (form?.current?.product?.title) {   
             Swal.showLoading();
@@ -306,11 +312,10 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 const data = form?.current?.product?.images;
                 if (data) {
                     const listPromise = [];   
-                    const base64regex = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/;
                     const oldResult = [];
                     for (let item of data) {
                         const base64result = item.substr(item.indexOf(',') + 1);
-                        if (base64regex.test(base64result)) {
+                        if (!isBase64(base64result)) {
                             listPromise.push(
                                 new Promise((resolveForUpload) => {
                                     dispatch(doUploadImageProduct({
@@ -454,11 +459,11 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
-                            defaultValue={mode === "EDIT" ? oldForm?.product?.title : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.title ? oldForm?.product?.title : ""}
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
-                        <ReactQuill value={''}
-                            defaultValue={mode === "EDIT" ? oldForm?.product?.description : ""}
+                        <ReactQuill value={mode === "EDIT" && oldForm?.product?.description ? JSON.parse(oldForm?.product?.description) : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.description ? JSON.parse(oldForm?.product?.description) : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
                     </Paper> 
@@ -480,7 +485,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     fullWidth
                                     required
                                     onChange={(e) => handleOnChangeSKU(e)}
-                                    defaultValue={mode === "EDIT" ? oldForm?.product?.sku : ""}
+                                    defaultValue={mode === "EDIT" && oldForm?.product?.sku ? oldForm?.product?.sku : ""}
                                 />
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
@@ -493,7 +498,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     fullWidth
                                     required
                                     onChange={(e) => handleOnChangeInventory(e)}
-                                    defaultValue={mode === "EDIT" ? oldForm?.product?.inventory : ""}    
+                                    defaultValue={mode === "EDIT" && oldForm?.product?.inventory ? oldForm?.product?.inventory : ""}    
                                 />
                             </div>
                         </div>
@@ -501,7 +506,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             <FormControlLabel
                                 className='font-weight-normal'
                                 control={
-                                    <Checkbox defaultChecked={mode === "EDIT" ? oldForm?.product?.continue_sell : ""} onChange={(event) => onChangeIsContinueSelling(event)}/>
+                                    <Checkbox defaultChecked={mode === "EDIT" && oldForm?.product?.continue_sell ? oldForm?.product?.continue_sell : false} onChange={(event) => onChangeIsContinueSelling(event)}/>
                                 }
                                 label="Continue selling when out of stock" />
                         </div>
@@ -529,7 +534,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div key={form?.current?.product?.status || "SelectStatus"}>
                             <Select fullWidth
                             className="poper-item"
-                            defaultValue={mode === "EDIT" ? oldForm?.product?.status : "draft"}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "draft"}
                             onChange={(e) => handleOnChangeStatus(e)}
                             >
                                 <MenuItem value="draft">Draft</MenuItem>
@@ -553,7 +558,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div key={form?.current?.product?.type ?? "SelectType"}>
                             <Select fullWidth 
                             className="poper-item"
-                            defaultValue={mode === "EDIT" ? oldForm?.product?.type : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
                             onChange={(e) => handleOnChangeType(e)}>
                                 <MenuItem value="Clothes">Clothes</MenuItem>
                                 <MenuItem value="Book">Book</MenuItem>
@@ -566,7 +571,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             <Select
                                 fullWidth multiple
                                 className="poper-item"
-                                defaultValue={[]}
                                 value={collectionSelected?.map((value) => value.id)}
                                 onChange={(e) => handleChangeCollection(e)}
                                 renderValue={() => (

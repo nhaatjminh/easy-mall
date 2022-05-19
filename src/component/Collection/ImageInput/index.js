@@ -55,9 +55,9 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.bool.isRequired,
   };
 
-const ImageInput = ({formRef}) => {
+const ImageInput = ({formRef, oldForm, mode}) => {
     const form = formRef;
-    const [images, setImages] = useState();
+    const [images, setImages] = useState(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null);
     const [selected, setSelected] = useState(false);
     
     const getBase64 = (file, cb) => {
@@ -79,8 +79,8 @@ const ImageInput = ({formRef}) => {
     const ImagesGallery = (images) => {
         return (
             <ImageList
-                cols={3}
-                rowHeight={164}
+                cols={1}
+                rowHeight={"auto"}
                 sx={{ width: 'auto', maxHeight: 400 }}
             >
               {
@@ -134,7 +134,6 @@ const ImageInput = ({formRef}) => {
         <>
             <div className="row">
               <div className="col-8">
-                
                 <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-4 p-0">
@@ -142,9 +141,6 @@ const ImageInput = ({formRef}) => {
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
               </div>
             </div>
-            
-
-  
             <EnhancedTableToolbar numSelected={selected} onDeleteSelected={onDeleteSelected} />
             {ImagesGallery(images)}
         </>

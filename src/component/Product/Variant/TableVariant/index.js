@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import { Paper, Typography } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
-import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar, TextField   } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
+import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, Toolbar, TextField   } from '@mui/material';
 
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { current } from "@reduxjs/toolkit";
-import { result } from "lodash";
 
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
@@ -99,7 +95,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
+const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
 
     const form = formRef;
     const columns = columnsOfData;
@@ -107,7 +103,7 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState([]);
     const [variant, setVariant] = useState([]);
-    
+    const unmounted = useRef(false);
     const rows = variant;
     
     const handleChangePriceVariant = (index, valuePrice) => {
@@ -122,18 +118,18 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
       }
       //setVariant(newVariant);
 
-  }
-  const handleChangeQuantity = (index, valueQuantity) => {
-      let newVariant = [...form?.current?.variant];
-      newVariant[index] = {
-          ...form?.current?.variant[index],
-          quantity: Number(valueQuantity)
-      }
-      form.current = {
-          ...form?.current,
-          variant: newVariant
-      }
-  }
+    }
+    const handleChangeQuantity = (index, valueQuantity) => {
+        let newVariant = [...form?.current?.variant];
+        newVariant[index] = {
+            ...form?.current?.variant[index],
+            quantity: Number(valueQuantity)
+        }
+        form.current = {
+            ...form?.current,
+            variant: newVariant
+        }
+    }
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -142,7 +138,7 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    
+      
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
         const newSelecteds = rows.map((n) => n.name);
@@ -170,7 +166,7 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
     
         setSelected(newSelected);
     };
-    
+      
     const isSelected = (nameProduct) => selected.indexOf(nameProduct) !== -1;
     const onDeleteSelected = () => {
       setSelected([]);
@@ -256,17 +252,21 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
       
     }
     useEffect(() => {
+      unmounted.current = false;
       createVariantUI();
+      return () => {
+        unmounted.current = true;
+      };
     }, [optionValue])
     const combineArrays = (arrayOfArrays ) => {
       if( !arrayOfArrays ){
           return [];
       }
-  
+
       if( ! Array.isArray( arrayOfArrays ) ){
           return [];
       }
-  
+
 
       for( let i = 0 ; i < arrayOfArrays.length; i++ ){
         if( ! Array.isArray(arrayOfArrays[i]) || arrayOfArrays[i].length == 0 ){
@@ -278,23 +278,23 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
       if( arrayOfArrays.length == 0 ){
           return [];
       }
-  
+
 
       let odometer = new Array( arrayOfArrays.length );
       odometer.fill( 0 ); 
-  
+
       let output = [];
-  
+
       let newCombination = formCombination( odometer, arrayOfArrays );
       output.push( newCombination.substr(1) );
-  
+
       while ( odometer_increment( odometer, arrayOfArrays ) ){
           newCombination = formCombination( odometer, arrayOfArrays );
           output.push( newCombination.substr(1) );
       }
       return output;
     }
-    
+      
     function formCombination( odometer, array_of_arrays ){
         return odometer.reduce(
           function(accumulator, odometer_value, odometer_index){
@@ -365,7 +365,7 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
 
               allNewVariant.push(newVariant);
           })
-          if (allNewVariant) {
+          if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
               form.current = {
                   ...form?.current,
@@ -377,7 +377,7 @@ const TableVariant = ({optionTag, optionValue, columnsOfData , oldForm, formRef,
     return (
       <>
       
-      {variant.length ?
+      {variant.length && showOpt?
         <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
             <TableContainer sx={{ maxHeight: 440 }}>
                 <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />

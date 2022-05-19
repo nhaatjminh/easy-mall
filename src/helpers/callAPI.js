@@ -148,5 +148,4 @@ const callAPIWithPutMethod = async(pathURL, data, bearTokenFlg) => {
 
     return fetchResult;
 }
-
 export { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod, callAPIWithPutMethod };

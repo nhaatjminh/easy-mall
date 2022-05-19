@@ -129,7 +129,7 @@ const EnhancedTableToolbar = (props) => {
           {numSelected > 0 ? (
             <Tooltip title="Delete" >
               <IconButton onClick={onDeleteSelected}>
-                <DeleteIcon onClick={onDeleteSelected}/>
+                <DeleteIcon/>
               </IconButton>
             </Tooltip>
           ) : ""}
@@ -138,7 +138,7 @@ const EnhancedTableToolbar = (props) => {
             <button className="btn  btn-login btn-product" onClick={() => editFunction(numSelected, selected)}> <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
           ) : ""}
           {numSelected > 0 ? (
-            <button className="btn btn-login btn-product btn-danger ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
+            <button className="btn btn-login btn-delete-item btn-product ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
           ) : ""}
         </Toolbar>
       :""}
@@ -209,8 +209,9 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     return (
         
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          
+        <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
         <TableContainer sx={{ maxHeight: 440 }}>
-            <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
             <Table stickyHeader aria-label="sticky table" className="p-0">
             <EnhancedTableHead
               numSelected={selected.length}
