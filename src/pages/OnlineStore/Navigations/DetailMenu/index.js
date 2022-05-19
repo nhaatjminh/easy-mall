@@ -10,7 +10,7 @@ import { CustomCard } from './../../../../component/common/CustomCard/CustomCard
 import { AddIcon } from "../../../../assets/icon/svg/AddIcon";
 import { doGetCurrentMenu } from "../../../../redux/slice/navigationSlice";
 import { Button, Modal } from "react-bootstrap";
-import { doCreateMenuItem } from './../../../../redux/slice/navigationSlice';
+import { doCreateMenuItem, doUpdateMenuItem } from './../../../../redux/slice/navigationSlice';
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
 import { useNavigate } from 'react-router-dom';
 import { Key } from "../../../../constants/constForNavbarDetail";
@@ -25,6 +25,7 @@ const DetailMenu = ({ }) => {
     const [name, setName] = useState('');
     const [link, setLink] = useState('');
     const [mode, setMode] = useState('ADD');
+    const [updateItemId, setUpdateItemId] = useState('');
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -51,7 +52,12 @@ const DetailMenu = ({ }) => {
     }
 
     const handleEitMenuItem = () => {
-
+        dispatch(doUpdateMenuItem({
+            id: updateItemId,
+            name: name, 
+            link: link
+        }))
+        handleCloseModal()
     }
 
     return (
@@ -93,6 +99,7 @@ const DetailMenu = ({ }) => {
                                             className="detail-menu__menu--list--item--btn--edit text-title-3"
                                             onClick={() => {
                                                 setMode('EDIT')
+                                                setUpdateItemId(item.id)
                                                 setName(item.name)
                                                 setLink(item.link)
                                                 setShowModal(true)

@@ -39,6 +39,18 @@ export const doCreateMenuItem = createAsyncThunk(
     }
 );
 
+export const doUpdateMenuItem = createAsyncThunk(
+    'navigation@put/UpdateMenuItem',
+    async (itemObj) => {
+        const result = await NavigationApi.updateMenuItem(itemObj);
+        return {
+            ...itemObj,
+            ...result.data.rows[0]
+            // id: result.data.rows[0].id
+        };
+    }
+);
+
 export const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
@@ -78,8 +90,26 @@ export const navigationSlice = createSlice({
             }
         })
 
+        // update menu item
+        builder.addCase(doUpdateMenuItem.fulfilled, (state, action) => {
+            let updateItem = action.payload;
+            const index1 = state.currentMenu.listMenuItem.findIndex((item) => item.id === updateItem.id)
+            if (index1 >= 0) {
+                updateItem = {
+                    ...state.currentMenu.listMenuItem[index1],
+                    ...updateItem
+                }
+                state.currentMenu.listMenuItem[index1] = updateItem
+            }
+
+            const index = state.listNavigation.findIndex(item => item.id === updateItem.menu_id)
+            if (index >= 0) {
+                state.listNavigation[index].listMenuItem[index1] = updateItem;
+            }
+        })
+
         // create menu
-        builder.addCase(doCreateMenu.fulfilled, (state,action) => {
+        builder.addCase(doCreateMenu.fulfilled, (state, action) => {
             state.listNavigation.push(action.payload)
         })
     }
