@@ -11,6 +11,9 @@
             outline: none;
         }
     }
+    &__disabled {
+        background-color: #f4f4f4;
+    }
     &__warning {
         border: 1px solid #d72c0d;
         background-color: #FFF4F4;
