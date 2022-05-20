@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './index.scss'
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { batch, useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import HeaderDetailStore from "../../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../../component/NavBarDetailStore";
@@ -14,10 +14,13 @@ import { doCreateMenuItem, doUpdateMenuItem } from './../../../../redux/slice/na
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
 import { useNavigate } from 'react-router-dom';
 import { Key } from "../../../../constants/constForNavbarDetail";
+import { doGetListPages } from './../../../../redux/slice/pageSlice';
+import { ConfirmModal } from './../../../../component/common/ConfirmModal/ConfirmModal';
 
 const DetailMenu = ({ }) => {
 
     const menu = useSelector((state) => state.navigation.currentMenu)
+    const listPage = useSelector((state) => state.page.listPages)
     const dispatch = useDispatch();
     const params = useParams();
     const navigate = useNavigate();
@@ -27,16 +30,23 @@ const DetailMenu = ({ }) => {
     const [mode, setMode] = useState('ADD');
     const [updateItemId, setUpdateItemId] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [openConfirmModal, setOpenConfirmModal] = useState(false);
+    const [showPageLinks, setShowPageLinks] = useState(false);
+    const [linkValue, setLinkValue] = useState('');
 
     useEffect(() => {
-        dispatch(doGetCurrentMenu(params.id));
+        batch(() => {
+            dispatch(doGetCurrentMenu(params.id));
+            dispatch(doGetListPages(params.storeId));
+        })
+
     }, [params.id])
 
     useEffect(() => {
         if (menu.title) setTitle(menu.title)
     }, [menu.title])
 
-    const handleCloseModal =() => {
+    const handleCloseModal = () => {
         setName('')
         setLink('')
         setShowModal(false)
@@ -45,8 +55,8 @@ const DetailMenu = ({ }) => {
     const hanndleAddNewMenuItem = () => {
         dispatch(doCreateMenuItem({
             menu_id: menu.id,
-            name: name, 
-            link: link
+            name: name,
+            link: linkValue
         }))
         handleCloseModal()
     }
@@ -54,8 +64,8 @@ const DetailMenu = ({ }) => {
     const handleEitMenuItem = () => {
         dispatch(doUpdateMenuItem({
             id: updateItemId,
-            name: name, 
-            link: link
+            name: name,
+            link: linkValue
         }))
         handleCloseModal()
     }
@@ -69,10 +79,10 @@ const DetailMenu = ({ }) => {
                 </div>
                 <div className="detail-menu col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
                     <div className="detail-menu__header">
-                        <span 
+                        <span
                             onClick={() => navigate(-1)}
                             className="detail-menu__header--back-icon">
-                            <BackIcon/>
+                            <BackIcon />
                         </span>
                         <span className="detail-menu__header--title text-title-1">{menu.title}</span>
                     </div>
@@ -109,17 +119,17 @@ const DetailMenu = ({ }) => {
                                         </div>
                                         <div
                                             className="detail-menu__menu--list--item--btn--delete text-title-3"
-
+                                            onClick={() => setOpenConfirmModal(true)}
                                         >
                                             Delete
                                         </div>
                                     </div>
                                 </div>
-                            )) : null }
+                            )) : null}
                         </div>
 
-                        <div 
-                            className="detail-menu__menu--add" 
+                        <div
+                            className="detail-menu__menu--add"
                             onClick={() => {
                                 setMode('ADD')
                                 setShowModal(true)
@@ -155,18 +165,37 @@ const DetailMenu = ({ }) => {
                             placeholder='Link to your page or external link'
                             value={link}
                             onChange={(e) => setLink(e.target.value)}
+                            onFocus={() => setShowPageLinks(!showPageLinks)}
                         />
+                        {showPageLinks ?
+                            <CustomCard className='detail-menu__add-item-modal--link--list'>
+                                {listPage?.length ? listPage.map((item) => (
+                                    <div
+                                        className="detail-menu__add-item-modal--link--list--link-item text-normal-1"
+                                        onClick={() => {
+                                            setLink(item.name)
+                                            setLinkValue(item.page_url)
+                                            setShowPageLinks(false)
+                                        }}
+                                    >
+                                        {item.name}
+                                    </div>
+                                )) : null}
+                            </CustomCard>
+                            :
+                            null
+                        }
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="detail-menu__add-item-modal--btn">
-                        <Button 
+                        <Button
                             className="btn btn-secondary"
                             onClick={handleCloseModal}
                         >
                             Cancel
                         </Button>
-                        <Button 
+                        <Button
                             className="btn btn-success"
                             onClick={mode === 'ADD' ? hanndleAddNewMenuItem : handleEitMenuItem}
                         >
@@ -175,6 +204,14 @@ const DetailMenu = ({ }) => {
                     </div>
                 </Modal.Footer>
             </Modal>
+
+            <ConfirmModal 
+                show={openConfirmModal}
+                setShow={setOpenConfirmModal}
+                title='Remove menu item?'
+                content={`This will remove this menu item.`}
+                onConfirm={() => {}}
+            />
         </div>
     )
 }

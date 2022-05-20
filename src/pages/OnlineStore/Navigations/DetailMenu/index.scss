@@ -77,5 +77,17 @@
             display: flex;
             justify-content: space-between;
         }
+        &--link {
+            &--list {
+                &--link-item {
+                    margin: 0 -20px;
+                    padding: 5px 20px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #F5F6F8;
+                    }
+                }
+            }
+        }
     }
 }

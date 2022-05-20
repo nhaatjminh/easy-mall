@@ -128,7 +128,7 @@ const Page = ({ }) => {
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <div className="text-title-1">{mode === 'ADD' ? 'Add menu item' : name}</div>
+                    <div className="text-title-1">{mode === 'ADD' ? 'Add page' : name}</div>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="page__add-page-modal--name">
@@ -139,7 +139,7 @@ const Page = ({ }) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div className="page__add-page-modal--link">
+                    {/* <div className="page__add-page-modal--link">
                         <div className="text-normal-1">Link</div>
                         <CustomInput
                             placeholder='Link to your page or external link'
@@ -147,7 +147,7 @@ const Page = ({ }) => {
                             disabled={true}
                             onChange={(e) => setLink(e.target.value)}
                         />
-                    </div>
+                    </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="page__add-page-modal--btn">
