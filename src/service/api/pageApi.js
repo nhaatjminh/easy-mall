@@ -17,8 +17,8 @@ export const PageApi = {
         const result = await callAPIWithPutMethod('pages', pageObj, true);
         return result;
     },
-    deletePage: async (pageObj) => {
-        const result = await callAPIWithDeleteMethod('pages', pageObj, true);
+    deletePage: async (id) => {
+        const result = await callAPIWithDeleteMethod(`pages/${id}`, true);
         return result;
     }
 }
