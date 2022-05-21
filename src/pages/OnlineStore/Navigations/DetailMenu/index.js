@@ -8,7 +8,7 @@ import NavBarDetailStore from "../../../../component/NavBarDetailStore";
 import { CustomInput } from "../../../../component/common/CustomInput/CustomInput";
 import { CustomCard } from './../../../../component/common/CustomCard/CustomCard';
 import { AddIcon } from "../../../../assets/icon/svg/AddIcon";
-import { doGetCurrentMenu } from "../../../../redux/slice/navigationSlice";
+import { doDeleteMenuItem, doGetCurrentMenu } from "../../../../redux/slice/navigationSlice";
 import { Button, Modal } from "react-bootstrap";
 import { doCreateMenuItem, doUpdateMenuItem } from './../../../../redux/slice/navigationSlice';
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
@@ -33,6 +33,7 @@ const DetailMenu = ({ }) => {
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [showPageLinks, setShowPageLinks] = useState(false);
     const [linkValue, setLinkValue] = useState('');
+    const [deleteId, setDeleteId] = useState('')
 
     useEffect(() => {
         batch(() => {
@@ -68,6 +69,14 @@ const DetailMenu = ({ }) => {
             link: linkValue
         }))
         handleCloseModal()
+    }
+
+    const handleDeleteMenuItem = () => {
+        dispatch(doDeleteMenuItem({
+            id: deleteId
+        }))
+        setDeleteId('')
+        setOpenConfirmModal(false)
     }
 
     return (
@@ -119,7 +128,10 @@ const DetailMenu = ({ }) => {
                                         </div>
                                         <div
                                             className="detail-menu__menu--list--item--btn--delete text-title-3"
-                                            onClick={() => setOpenConfirmModal(true)}
+                                            onClick={() => {
+                                                setOpenConfirmModal(true)
+                                                setDeleteId(item.id)
+                                            }}
                                         >
                                             Delete
                                         </div>
@@ -210,7 +222,7 @@ const DetailMenu = ({ }) => {
                 setShow={setOpenConfirmModal}
                 title='Remove menu item?'
                 content={`This will remove this menu item.`}
-                onConfirm={() => {}}
+                onConfirm={handleDeleteMenuItem}
             />
         </div>
     )

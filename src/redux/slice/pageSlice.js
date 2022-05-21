@@ -31,6 +31,16 @@ export const doUpdatePage = createAsyncThunk(
     }
 )
 
+export const doDeletePage = createAsyncThunk(
+    'page@delete/DeletePage',
+    async (pageObj) => {
+        const result = await PageApi.deletePage(pageObj);
+        return {
+            ...pageObj
+        };
+    }
+)
+
 export const pageSlice = createSlice({
     name: 'page',
     initialState: {
@@ -60,6 +70,12 @@ export const pageSlice = createSlice({
         builder.addCase(doUpdatePage.fulfilled, (state, action) => {
             const index = state.listPages.findIndex((item) => item.id === action.payload.id);
             if (index >= 0) state.listPages[index] = action.payload;
+        })
+
+        // delete page
+        builder.addCase(doDeletePage.fulfilled, (state, action) => {
+            const index = state.listPages.findIndex((item) => item.id === action.payload.id);
+            if (index >= 0) state.listPages.splice(index, 1);
         })
     }
 })
