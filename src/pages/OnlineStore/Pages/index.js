@@ -5,12 +5,13 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { doCreatePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
+import { doCreatePage, doDeletePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
 import HeaderDetailStore from "../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { CustomCard } from "../../../component/common/CustomCard/CustomCard";
 import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
 import { Key } from "../../../constants/constForNavbarDetail";
+import { ConfirmModal } from './../../../component/common/ConfirmModal/ConfirmModal';
 
 const Page = ({ }) => {
 
@@ -22,6 +23,8 @@ const Page = ({ }) => {
     const [mode, setMode] = useState('ADD');
     const [updatePageId, setUpdatePageId] = useState(-1);
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
 
     useEffect(() => {
         dispatch(doGetListPages(params.storeId));
@@ -48,6 +51,14 @@ const Page = ({ }) => {
             name: name
         }))
         handleCloseModal()
+    }
+
+    const handleDeletePage = () => {
+        dispatch(doDeletePage({
+            id: deleteId
+        }))
+        setDeleteId('')
+        setShowDeleteModal(false)
     }
 
     return (
@@ -99,7 +110,10 @@ const Page = ({ }) => {
                                         </div>
                                         <div
                                             className="page__table--list--item--btn--delete text-title-3"
-
+                                            onClick={() => {
+                                                setDeleteId(item.id)
+                                                setShowDeleteModal(true)
+                                            }}
                                         >
                                             Delete
                                         </div>
@@ -128,7 +142,7 @@ const Page = ({ }) => {
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <div className="text-title-1">{mode === 'ADD' ? 'Add menu item' : name}</div>
+                    <div className="text-title-1">{mode === 'ADD' ? 'Add page' : name}</div>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="page__add-page-modal--name">
@@ -139,7 +153,7 @@ const Page = ({ }) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div className="page__add-page-modal--link">
+                    {/* <div className="page__add-page-modal--link">
                         <div className="text-normal-1">Link</div>
                         <CustomInput
                             placeholder='Link to your page or external link'
@@ -147,7 +161,7 @@ const Page = ({ }) => {
                             disabled={true}
                             onChange={(e) => setLink(e.target.value)}
                         />
-                    </div>
+                    </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="page__add-page-modal--btn">
@@ -166,6 +180,14 @@ const Page = ({ }) => {
                     </div>
                 </Modal.Footer>
             </Modal>
+
+            <ConfirmModal 
+                show={showDeleteModal}
+                setShow={setShowDeleteModal}
+                title='Delete page?'
+                content='Deleted page cannot be recovered. Do you still want to continue?'
+                onConfirm={handleDeletePage}
+            />
         </div>
     )
 }

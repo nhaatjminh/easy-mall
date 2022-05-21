@@ -51,6 +51,16 @@ export const doUpdateMenuItem = createAsyncThunk(
     }
 );
 
+export const doDeleteMenuItem = createAsyncThunk(
+    'navigation@delete/DeleteMenuItem',
+    async (itemObj) => {
+        const result = await NavigationApi.deleteMenuItem(itemObj);
+        return {
+            ...itemObj
+        };
+    }
+);
+
 export const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
@@ -108,9 +118,19 @@ export const navigationSlice = createSlice({
             }
         })
 
-        // create menu
-        builder.addCase(doCreateMenu.fulfilled, (state, action) => {
-            state.listNavigation.push(action.payload)
+        // delete menu item
+        builder.addCase(doDeleteMenuItem.fulfilled, (state, action) => {
+            const menuItemId = action.payload.id;
+
+            const index = state.currentMenu.listMenuItem.findIndex((item) => item.id === menuItemId)
+            if (index >= 0) {
+                state.currentMenu.listMenuItem.splice(index, 1)
+            } 
+
+            const index2 = state.listNavigation.findIndex(item => item.id === item.menu_id)
+            if (index2 >= 0) {
+                state.listNavigation[index2].listMenuItem.splice(index, 1);
+            }
         })
     }
 })

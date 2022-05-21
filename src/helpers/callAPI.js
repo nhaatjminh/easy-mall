@@ -36,15 +36,17 @@ const callAPIWithGetMethod = async(pathURL, bearTokenFlg) => {
     return fetchResult;
 }
 
-const callAPIWithDeleteMethod = async(pathURL, bearTokenFlg) => {
+const callAPIWithDeleteMethod = async(pathURL, data, bearTokenFlg) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     if (bearTokenFlg) {
         myHeaders.append("Authorization", "Bearer " + token);
     } 
+    var raw = JSON.stringify(data);
     var requestOptions = {
         method: 'DELETE',
         headers: myHeaders,
+        body: raw,
         redirect: 'follow'
     };
 

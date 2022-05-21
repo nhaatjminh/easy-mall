@@ -19,6 +19,7 @@ import { CustomSearchInput } from "../../component/common/CustomSearchInput/Cust
 import { useDebounce } from './../../hooks/useDebounce';
 import { StoreApi } from './../../service/api/storeApi';
 import { NotAllowIcon } from './../../assets/icon/svg/NotAllowIcon';
+import { logout } from "../../helpers/login";
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -112,8 +113,9 @@ const StoreLogin = ({ nameAccount }) => {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu>
-                                        <Dropdown.Item href="#"> <p className="text-nav">Giá cước</p></Dropdown.Item>
-                                        <Dropdown.Item href="#"><p className="text-nav">Tìm hiểu</p></Dropdown.Item>
+                                        <Dropdown.Item href="#"> <p className="text-nav">Pricing</p></Dropdown.Item>
+                                        <Dropdown.Item href="#"><p className="text-nav">Learn</p></Dropdown.Item>
+                                        <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 <div className="circle  float-right">

@@ -1,4 +1,4 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
+import { callAPIWithDeleteMethod, callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const PageApi = {
     getPagesByStore: async (storeId) => {
@@ -11,6 +11,10 @@ export const PageApi = {
     },
     updatePage: async (pageObj) => {
         const result = await callAPIWithPutMethod('pages', pageObj, true);
+        return result;
+    },
+    deletePage: async (pageObj) => {
+        const result = await callAPIWithDeleteMethod('pages', pageObj, true);
         return result;
     }
 }
