@@ -72,9 +72,7 @@ const DetailMenu = ({ }) => {
     }
 
     const handleDeleteMenuItem = () => {
-        dispatch(doDeleteMenuItem({
-            id: deleteId
-        }))
+        dispatch(doDeleteMenuItem(deleteId))
         setDeleteId('')
         setOpenConfirmModal(false)
     }

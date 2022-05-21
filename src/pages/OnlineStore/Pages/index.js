@@ -81,9 +81,7 @@ const Page = ({ }) => {
     }
 
     const handleDeletePage = () => {
-        dispatch(doDeletePage({
-            id: deleteId
-        }))
+        dispatch(doDeletePage(deleteId))
         setDeleteId('')
         setShowDeleteModal(false)
     }

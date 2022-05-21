@@ -53,10 +53,10 @@ export const doUpdateMenuItem = createAsyncThunk(
 
 export const doDeleteMenuItem = createAsyncThunk(
     'navigation@delete/DeleteMenuItem',
-    async (itemObj) => {
-        const result = await NavigationApi.deleteMenuItem(itemObj);
+    async (menuItemId) => {
+        const result = await NavigationApi.deleteMenuItem(menuItemId);
         return {
-            ...itemObj
+            id: menuItemId
         };
     }
 );

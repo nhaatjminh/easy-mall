@@ -33,10 +33,10 @@ export const doUpdatePage = createAsyncThunk(
 
 export const doDeletePage = createAsyncThunk(
     'page@delete/DeletePage',
-    async (pageObj) => {
-        const result = await PageApi.deletePage(pageObj);
+    async (id) => {
+        const result = await PageApi.deletePage(id);
         return {
-            ...pageObj
+            id: id
         };
     }
 )
