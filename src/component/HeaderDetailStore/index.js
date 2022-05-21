@@ -11,6 +11,7 @@ import NavBarDetailStore from "../NavBarDetailStore";
 import { useSelector, useDispatch } from "react-redux";
 import {   doSwitchSelectedStore} from "../../redux/slice/storeSlice";
 import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
+import { logout } from "../../helpers/login";
 const HeaderDetailStore = ({nameAccount}) => {
     //use redux to manage state
     const dispatch = useDispatch();
@@ -62,8 +63,9 @@ const HeaderDetailStore = ({nameAccount}) => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="#"> <p className="text-nav">Giá cước</p></Dropdown.Item>
-                                            <Dropdown.Item href="#"><p className="text-nav">Tìm hiểu</p></Dropdown.Item>
+                                            <Dropdown.Item href="#"> <p className="text-nav">Pricing</p></Dropdown.Item>
+                                            <Dropdown.Item href="#"><p className="text-nav">Learn</p></Dropdown.Item>
+                                            <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                     <div className="circle  float-right">
