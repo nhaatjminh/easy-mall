@@ -76,7 +76,10 @@ body {
   width: 100% !important;
 }
 .ml-0 {
-  margin-left: 0;
+  margin-left: 0 !important;
+}
+.ml-0-8rem {
+  margin-left: .8rem !important;
 }
 .ml-0-25rem {
   margin-left: 0.25rem !important;

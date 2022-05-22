@@ -89,6 +89,10 @@ export const navigationSlice = createSlice({
             state.currentMenu = action.payload;
         });
 
+        builder.addCase(doCreateMenu.fulfilled, (state, action) => {
+            state.listNavigation.push(action.payload);
+        })
+
         // create menu item
         builder.addCase(doCreateMenuItem.fulfilled, (state, action) => {
             const newItem = action.payload;
