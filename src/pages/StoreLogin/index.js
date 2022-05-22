@@ -84,7 +84,7 @@ const StoreLogin = ({ nameAccount }) => {
             name: newStoreName
         }
         dispatch(doCreateStore(storeObj))
-            .then((res) => navigate(`/store-detail/home/${res.payload.id}`))
+            .then((res) => navigate(`/store-detail/manage-home/${res.payload.id}`))
     }
 
     useEffect(() => {
