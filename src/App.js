@@ -29,10 +29,10 @@ const App = () => {
           <Route path='/pricing-scene' element={<PricingScene/>}/>
           
           <Route path='/store-login' element={<StoreLogin/>}/>
-          <Route path='/store-detail/themes/:storeId' element={<ManageThems/>}/>
-          <Route path='/store-detail/pages/:storeId' element={<Page/>}/>
-          <Route path='/store-detail/navigation/:storeId' element={<Navigation/>}/>
-          <Route path='/store-detail/navigation/:storeId/menu/:id' element={<DetailMenu/>}/>
+          <Route path='/store-detail/manage-theme/:storeId' element={<ManageThems/>}/>
+          <Route path='/store-detail/manage-page/:storeId' element={<Page/>}/>
+          <Route path='/store-detail/manage-navigation/:storeId' element={<Navigation/>}/>
+          <Route path='/store-detail/manage-navigation/:storeId/menu/:id' element={<DetailMenu/>}/>
           <Route path='/store-detail/manage-domain/:storeId' element={<ManageDomain/>}/>
            
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>

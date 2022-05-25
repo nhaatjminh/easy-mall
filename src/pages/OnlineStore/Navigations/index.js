@@ -42,7 +42,7 @@ const Navigation = () => {
                     className="navigation__menus__table--items--title"
                     onClick={() => {
                         dispatch(doSetCurrentMenu(menu));
-                        navigate(`/store-detail/navigation/${params.storeId}/menu/${menu.id}`);
+                        navigate(`/store-detail/manage-navigation/${params.storeId}/menu/${menu.id}`);
                     }}
                 >
                     {menu.title}

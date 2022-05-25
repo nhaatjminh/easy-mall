@@ -159,7 +159,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </p>
                     <Typography component={'span'} className={keySelected === Key.OnlineStore ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            routeChange(`/store-detail/themes/${params.storeId}`);
+                            routeChange(`/store-detail/manage-theme/${params.storeId}`);
                         }}
                     >
                         <p className="m-0 mb-2 ">
@@ -180,7 +180,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             (keySelected === Key.Page) ? 0 : 1} >
                         <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/themes/${params.storeId}`);
+                                routeChange(`/store-detail/manage-theme/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -198,7 +198,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.BlogPost ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                                //routeChange(`/store-detail/manage-theme/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -206,7 +206,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             </p>
                         </Typography><Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/pages/${params.storeId}`);
+                                routeChange(`/store-detail/manage-page/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -215,7 +215,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/navigation/${params.storeId}`);
+                                routeChange(`/store-detail/manage-navigation/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -224,7 +224,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Preferences ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
-                                //routeChange(`/store-detail/themes/${params.storeId}`);
+                                //routeChange(`/store-detail/manage-theme/${params.storeId}`);
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -237,7 +237,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                 <Stack direction="column" spacing={0} style={{ marginTop: 'auto' }}>
                     <Typography component={'span'} className={keySelected === Key.Setting ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/themes/${params.storeId}`);
+                            //routeChange(`/store-detail/manage-theme/${params.storeId}`);
                         }}
                     >
                         <p className="m-0 mb-2 mt-2  text-nav-detail">
