@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores, doGetOneCollections, doDeleteCollection } from "../../redux/slice/collectionSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
+import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 
 const ManageCollection = () => {
   const [showAddCollection, setShowAddCollection] = useState(false);
@@ -39,17 +40,10 @@ const ManageCollection = () => {
       align: 'right'
     },
   ];
-  const editFunction = (numSelected, selected) => {
-    if (numSelected !== 1) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Warning!',
-        text: 'You just can edit 1 product!',
-      })
-    } else {
-      Swal.showLoading();
+  const editFunction = (selected) => {
+    Swal.showLoading();
       new Promise(() => {
-        dispatch((doGetOneCollections(selected[0])))
+        dispatch((doGetOneCollections(selected)))
         .then((result) => {
           setMode('EDIT');
           setOldForm(result.payload);  
@@ -57,9 +51,8 @@ const ManageCollection = () => {
           Swal.close();
         })
       })
-    }
   }
-  const deleteAllFunction = async (numSelected, selected) => {
+  const deleteAllFunction = async (selected) => {
     Swal.showLoading();
     const listPromise = [];
     selected.map((product) => {
@@ -100,6 +93,9 @@ const ManageCollection = () => {
     })
     setRows(newRows);
   }, [collectionList])
+  const handleSearch = () => {
+
+  }
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
@@ -112,13 +108,20 @@ const ManageCollection = () => {
                 <>
                   {!showAddCollection ?
                     <>
+                    
+                      <p className="text-btn-login ml-1-5rem p-0-75rem"> Collection </p>
                       <Stack
                         direction="row"
                         justifyContent="space-between"
                         alignItems="center"
                         spacing={1}
-                      >              
-                        <p className="text-btn-login ml-1rem p-0-75rem"> Collection </p>
+                        className="custom"
+                      >      
+                            
+                        <CustomSearchInput
+                          placeholder='Search'
+                          onChange={handleSearch}
+                        />          
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddCollection(true);
                           setMode("ADD")

@@ -33,6 +33,18 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [isVariant, setIsVariant] = useState(false);
     const [errorTitle, setErrorTitle] = useState(null);
     const [collectionSelected, setCollectionSelected] = useState([]);
+
+
+    const initOptionRef = () => {
+        const ref = JSON.parse(JSON.stringify(oldForm));
+        return ref.option;
+    }
+
+        // save option to check optionValue
+    // because change form.current.option.value from object array to string array to async with add render.
+    // so need use ref to save it. will assign for form.current.option when save.
+    const optionRef = useRef(oldForm?.option ? initOptionRef() : []);
+
     const onChangeIsContinueSelling = (event) => {
         if (mode === "EDIT") {
             form.current = {
@@ -207,6 +219,26 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         } 
     }
+    const handleOnChangeVendor = (event) => {
+        if (mode === "EDIT") {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    vendor: event.target.value,
+                    update: "Change"
+                }
+            }
+        } else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    vendor: event.target.value,
+                }
+            }
+        } 
+    }
     const handleOnChangeType = (event) => {
         if (mode === "EDIT") {
             form.current = {
@@ -290,8 +322,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
     }
     const handleCheckVariantDelete = () => {
-        const listVariant = form.current.variant;
-        listVariant.filter((element) => !element.delete);
+        let listVariant = form.current.variant;
+        listVariant = listVariant.filter((element) => !element.delete || element.update);
         form.current = {
             ...form?.current,
             variant: listVariant
@@ -358,21 +390,56 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }).then(() => {
                 handleCheckVariantDelete();
                 if (mode === "EDIT") {
+                    const id = form.current.product.id;
+                    if (optionRef.current) {
+                        optionRef.current = optionRef.current.filter((option, index) => {
+                            if (option.idTemp) delete option.idTemp;
+                            option.value = option.value.filter((value, idxValue) => {
+                                if (value.idTemp) delete value.idTemp;
+                                if (!value.update) {
+                                    return false
+                                } else return true
+                            })
+                            if (!option.update) {
+                                return false
+                            } else return true
+                        })
+                    }
+                    form.current.option = optionRef.current
+                    form.current.collection = form.current?.collection?.filter((collection, index) => {
+                        if (!collection.update) {
+                            return false
+                        } else return true
+                    })
+                    form.current.variant = form.current?.variant?.filter((variant, index) => {
+                        if (!variant.update) {
+                            return false
+                        } else return true
+                    })
+                    if (!form.current?.product?.update) delete form.current.product
+                    if (!form.current?.collection.length) delete form.current.collection
+                    if (!form.current?.variant.length) delete form.current.variant
+                    if (!form.current?.option.length) delete form.current.option
                     //api chưa xong. còn api upload với api delete image
-                    // dispatch(doUploadProduct({
-                    //     data: form.current
-                    // }))
-                    // .then(() => {
-                    //     Swal.close();
-                    //     Swal.fire({
-                    //         icon: 'success',
-                    //         title: 'Success!',
-                    //         text: 'Update product success!',
-                    //     }).then((result) => {
-                    //         returnAfterAdd();
-                    //     })
-                    // });
+                    dispatch(doUploadProduct({
+                        data: form.current,
+                        id: id
+                    }))
+                    .then(() => {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Update product success!',
+                        }).then((result) => {
+                            returnAfterAdd();
+                        })
+                    });
                 } else {
+                    
+                    if (!form.current?.collection?.length) delete form.current.collection
+                    if (!form.current?.variant?.length) delete form.current.variant
+                    if (!form.current?.option?.length) delete form.current.option
                     const createObj = {
                         storeId: params.storeId,
                         productObj: form.current
@@ -412,12 +479,18 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         })
     }
     useEffect(() => {
+        if (mode === "ADD") {
+            form.current = {}
+        }
         form.current = {
             ...form?.current,
             product: {
                 ...form?.current?.product,
                 store_id: params.storeId
             }
+        }
+        if (mode === "ADD") {
+            form.current.product.status = 'draft'
         }
         dispatch(doGetListCollectionOfStores(params.storeId));   
     }, [])
@@ -462,7 +535,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             defaultValue={mode === "EDIT" && oldForm?.product?.title ? oldForm?.product?.title : ""}
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
-                        <ReactQuill value={mode === "EDIT" && oldForm?.product?.description ? JSON.parse(oldForm?.product?.description) : ""}
+                        <ReactQuill
                             defaultValue={mode === "EDIT" && oldForm?.product?.description ? JSON.parse(oldForm?.product?.description) : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
@@ -511,22 +584,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 label="Continue selling when out of stock" />
                         </div>
                     </Paper> 
-                    <Variant key="Variant" mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
+                    <Variant key="Variant" optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
                     ></Variant>
-                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                spacing={2}
-                                >    
-                                    <InputLabel name='title' className="text-medium" style={{margin: 0}}>Search engine listing preview</InputLabel>
-                                    <Link to='#' className="text-decoration-none">
-                                        Edit Website SEO
-                                    </Link>
-                        </Stack>
-                        <InputLabel name='title' className="text-small" style={{margin: 0, marginTop: '1rem'}}>Add a title and description to see how this product might appear in a search engine listing</InputLabel>
-                    </Paper> 
                 </div>   
                 <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
@@ -541,15 +600,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <MenuItem value="active">Active</MenuItem>
                             </Select>
                         </div>
-                        
-                        <FormHelperText id="filled-weight-helper-text">This product will be hidden from all sales channels.</FormHelperText>
-                        <Divider className="divider-custom"/>
-                        
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>SALES CHANNELS AND APPS</InputLabel>
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Online Store" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Google" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
                     </Paper> 
                     <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Product organization</InputLabel>
@@ -566,6 +616,18 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             </Select>
                         </div>
                         
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium">Vendor</InputLabel>
+                        <div key={form?.current?.product?.type ?? "SelectVendor"}>
+                            <Select fullWidth 
+                            className="poper-item"
+                            defaultValue={mode === "EDIT" && oldForm?.product?.vendor ? oldForm?.product?.vendor : ""}
+                            onChange={(e) => handleOnChangeVendor(e)}>
+                                 
+                                <MenuItem value="shoeShop">Shoe Shop</MenuItem>
+                            </Select>
+                        </div>
+
+
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium" name='title'>Collection</InputLabel>
                         <div key={form?.current?.product?.collection ?? "SelectCollection"}>
                             <Select

@@ -1,5 +1,5 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod } from "../../helpers/callAPI"
-
+import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
+import { Common } from '../utils'
 export const ProductApi = {
     /**
      * @name createProduct
@@ -30,6 +30,20 @@ export const ProductApi = {
         return result; 
     },
     /**
+     * @name deleteImageProduct
+     * @description delete image to s3 from api
+     * @param {object} : body with url
+     * {
+     *  url: url of image on s3
+     * }
+     * 
+     * @returns {object} 
+     */
+     deleteImageProduct: async (data) => {
+        const result = await callAPIWithPostMethod(`files/object`, data, true);
+        return result; 
+    },
+    /**
      * @name getProductsOfStore
      * @description get allProduct of store
      * 
@@ -37,8 +51,9 @@ export const ProductApi = {
      * 
      * @returns {object} data 
      */
-    getProductsOfStore: async (storeId) => {
-        const result = await callAPIWithGetMethod(`stores/${storeId}/products`, true);
+    getProductsOfStore: async (storeId, params) => {
+        const query = Common.queryCSV(params);
+        const result = await callAPIWithGetMethod(`stores/${storeId}/products?${query}`, true);
         return result; 
     },
     /**
@@ -59,8 +74,8 @@ export const ProductApi = {
      * @param {object} product: 
      * @returns {object} data 
      */
-    uploadProduct: async (product) => {
-        const result = await callAPIWithPostMethod(`products/${product.product.id}/update`, product, true);
+    uploadProduct: async (product, id) => {
+        const result = await callAPIWithPutMethod(`products/${id}`, product, true);
         return result; 
     },
     /**

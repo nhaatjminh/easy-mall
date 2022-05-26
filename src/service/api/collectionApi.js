@@ -65,5 +65,20 @@ export const collectionApi = {
     updateCollection: async (newCollection) => {
         const result = await callAPIWithPutMethod(`collections/product/${newCollection.collection.id}`, newCollection, true);
         return result; 
-    }
+    },
+    /**
+     * @name deleteThumbnail
+     * @description delete thumbnail 
+     * @param {url} : 
+     * {
+     *  name: name of image to create key for image -> with product, this is uuid
+     *  base64Image: data (convert image to base 64)
+     * }
+     * 
+     * @returns {} data have link of image on s3
+     */
+     uploadImageProduct: async (data) => {
+        const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
+        return result; 
+    },
 }

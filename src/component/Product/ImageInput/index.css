@@ -29,10 +29,16 @@
     display: block;
     background: rgba(0, 0, 0, .3);
 }
+.image-container .overlay-select {
+    display: block;
+    background: rgba(0, 0, 0, .3);
+}
 .image-container:hover .MuiCheckbox-root.checkbox-image {
     opacity: 1;
 }
-  
+.image-container .MuiCheckbox-root.checkbox-image-selected {
+    opacity: 1;
+}
 .MuiCheckbox-root.checkbox-image {
     position: absolute;
     top: 0;

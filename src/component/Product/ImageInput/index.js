@@ -15,6 +15,8 @@ import './index.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
+import { doDeleteImageProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const EnhancedTableToolbar = (props) => {
     const { numSelected, onDeleteSelected, onDelete } = props;
@@ -70,7 +72,8 @@ const ImageInput = ({mode, formRef, oldForm}) => {
     const form = formRef;
     const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
-    
+    const dispatch = useDispatch();
+
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -122,9 +125,9 @@ const ImageInput = ({mode, formRef, oldForm}) => {
                                 loading="lazy"
                             />
                             
-                            <div className="overlay"></div>
+                            <div className={`overlay ${isItemSelected ? "overlay-select" : ""}`}></div>
                             <Checkbox
-                                className="checkbox-image"
+                                className={`checkbox-image ${isItemSelected ? "checkbox-image-selected" : ""}`}
                                 checked={isItemSelected}
                                 onClick={(event) => handleClick(event, url)}
                                 ></Checkbox>
@@ -160,11 +163,18 @@ const ImageInput = ({mode, formRef, oldForm}) => {
     }
     const handleDelete = () => {
       const newList = images.filter((image) => !selected.includes(image))
-      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
       selected.forEach((image) => {
-        if (!base64regex.test(image)) {
-          // if not base 64. this is image in database. delete it.
-        }
+        if (!(image.startsWith('blob:'))) {
+          const listPromise = [];   
+          listPromise.push(
+              new Promise(() => {
+                  dispatch(doDeleteImageProduct({
+                      data: {
+                          url: image
+                      }
+                  }))
+              }))
+          };
       })
       setImages(newList);
       setSelected([]);
@@ -176,6 +186,9 @@ const ImageInput = ({mode, formRef, oldForm}) => {
           }
       }
     }
+    useEffect(() => {
+
+    }, [images])
     return (
         <>
             <div className="row">

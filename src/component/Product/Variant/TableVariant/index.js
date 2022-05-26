@@ -95,40 +95,74 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
-
+const TableVariant = ({optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
     const form = formRef;
     const columns = columnsOfData;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState([]);
     const [variant, setVariant] = useState([]);
+    const [deleteVariant, setDeleteVariant] = useState([]);
+    const [oldVariant, setOldVariant] = useState(oldForm?.variant?.map((variant) => variant.name) || []);
     const unmounted = useRef(false);
+    const [trickRerender, setTrickRerender] = useState(0);
     const rows = variant;
     
     const handleChangePriceVariant = (index, valuePrice) => {
       let newVariant = [...form?.current?.variant];
-      newVariant[index] = {
+      
+      if (mode === "EDIT") {
+        if (newVariant[index].id) {
+          newVariant[index] = {
+            ...form?.current?.variant[index],
+            price: Number(valuePrice),
+            update: "Change"
+          }
+        } else {
+          newVariant[index] = {
+            ...form?.current?.variant[index],
+            price: Number(valuePrice)
+          }
+        }
+      } else {
+        newVariant[index] = {
           ...form?.current?.variant[index],
           price: Number(valuePrice)
+        }
       }
       form.current = {
           ...form?.current,
           variant: newVariant
       }
-      //setVariant(newVariant);
+      setVariant(newVariant);
 
     }
     const handleChangeQuantity = (index, valueQuantity) => {
         let newVariant = [...form?.current?.variant];
-        newVariant[index] = {
+        if (mode === "EDIT") {
+          if (newVariant[index].id) {
+            newVariant[index] = {
+              ...form?.current?.variant[index],
+              quantity: Number(valueQuantity),
+              update: "Change"
+            }
+          } else {
+            newVariant[index] = {
+              ...form?.current?.variant[index],
+              quantity: Number(valueQuantity)
+            }
+          }
+        } else {
+          newVariant[index] = {
             ...form?.current?.variant[index],
             quantity: Number(valueQuantity)
+          }
         }
         form.current = {
             ...form?.current,
             variant: newVariant
         }
+        setVariant(newVariant);
     }
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -173,7 +207,16 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
     }
     const handleNotDeleteVariant =(row) => {
       const newList = variant.map((element) => {
-        if (element.name === row.name) {
+        
+        if (element.name === row.name) { // name can not duplicated
+          if (mode === "EDIT") {
+            if (!oldVariant.includes(element.name)) { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+              element.update = "Add"
+            }
+            if ( oldVariant.includes(element.name)) { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+              element.update = "Change"
+            }
+          }
           delete element.delete;
         }
         return element
@@ -206,9 +249,17 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       let flag = false;
       const newList = await variant.map((element) => {
         if (element.name === row.name) {
-          element = {
-            ...element,
-            delete: true
+          if (mode === "EDIT") { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+            element = {
+              ...element,
+              delete: true,
+              update: "Delete"
+            }
+          } else {
+            element = {
+              ...element,
+              delete: true,
+            }
           }
           OptionValueDelete = element.name.split('/'); 
           currentDelete = element;
@@ -251,13 +302,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       }
       
     }
-    useEffect(() => {
-      unmounted.current = false;
-      createVariantUI();
-      return () => {
-        unmounted.current = true;
-      };
-    }, [optionValue])
+    
     const combineArrays = (arrayOfArrays ) => {
       if( !arrayOfArrays ){
           return [];
@@ -295,7 +340,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       return output;
     }
       
-    function formCombination( odometer, array_of_arrays ){
+    const formCombination = ( odometer, array_of_arrays ) => {
         return odometer.reduce(
           function(accumulator, odometer_value, odometer_index){
             return "" + accumulator +"/" +array_of_arrays[odometer_index][odometer_value];
@@ -304,7 +349,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
         );
     }
     
-    function odometer_increment( odometer, array_of_arrays ){
+    const odometer_increment = ( odometer, array_of_arrays ) => {
         for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
             let maxee = array_of_arrays[i_odometer_digit].length - 1;         
             if( odometer[i_odometer_digit] + 1 <= maxee ){
@@ -334,46 +379,110 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
           resolve();
       }).then(() => {
           let listVariant = combineArrays(idxValue);
-          
-          const allNewVariant = []
-      
+          let allNewVariant = []
+          let allVariantAssignForm = [];
+          if (!optionValueRef.current) { // when u delete some option, create new variant list
+            let listDeleteVariant = oldForm.variant;
+            allVariantAssignForm = listDeleteVariant.map((variant) => {
+                return {
+                    ...variant,
+                    update: "Delete"
+                }
+            })
+          }
           listVariant.forEach((variant) => {
-              const oldVariant = oldForm?.variant?.find(oldvariant => oldvariant.name === variant)
-              let listOptionOfVariant = variant.split("/");
-              let newVariant = {};
-              listOptionOfVariant.forEach((opt, idxOpt) => {
-                  let newOpt = {
-                      name: idxOption[idxOpt],
-                      value: opt
-                  }
-                  if (oldVariant) {
-                    newVariant = {
-                      ...newVariant,
-                      id: oldVariant?.id,
-                      price: Number(oldVariant?.price),
-                      quantity: Number(oldVariant?.quantity)
+              if (!deleteVariant.includes(variant)) {
+                let oldKeyVariant = '';
+                if (optionValueRef.current) {
+                  for (const [key, newVariantName] of Object.entries(optionValueRef.current)) {
+                    if (variant === newVariantName) {
+                      oldKeyVariant = key;
+                      break;
                     }
                   }
-                  if (!newVariant?.option_value)
-                    newVariant = {
+                }
+                const oldFormVariant = oldForm.variant?.find(oldvariant => oldvariant?.name && oldvariant?.name === oldKeyVariant)
+                const oldVariant = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
+                let listOptionOfVariant = variant.split("/");
+                let newVariant = {};
+                if (oldKeyVariant !== variant) {
+                  newVariant = {
+                    ...newVariant,
+                    update: "Change"
+                  }
+                }
+                listOptionOfVariant.forEach((opt, idxOpt) => {
+                    let newOpt = {
+                        name: idxOption[idxOpt],
+                        value: opt
+                    }
+                    if (oldVariant) {
+                      newVariant = {
                         ...newVariant,
-                        name: variant,
-                        option_value: [newOpt]
+                        id: oldVariant?.id,
+                        price: Number(oldVariant?.price),
+                        quantity: Number(oldVariant?.quantity)
+                      }
+                      if (mode === "EDIT" && oldVariant.update) {
+                        newVariant = {
+                          ...newVariant,
+                          update: oldVariant.update
+                        }
+                      }
+                    } else {
+                      if (mode === "EDIT") {
+                        newVariant = {
+                          ...newVariant,
+                          update: "Add"
+                        }
+                      }
                     }
-                  else newVariant.option_value.push(newOpt);
-              })
-
-              allNewVariant.push(newVariant);
+                    if (!newVariant?.option_value)
+                      newVariant = {
+                          ...newVariant,
+                          name: variant,
+                          option_value: [newOpt]
+                      }
+                    else newVariant.option_value.push(newOpt);
+                })
+                allNewVariant.push(newVariant);
+              }
           })
           if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
+              setTrickRerender(trickRerender + 1);
+              allNewVariant.forEach((newVariant) => {
+                allVariantAssignForm.push(newVariant)
+              })
               form.current = {
                   ...form?.current,
-                  variant: allNewVariant
+                  variant: allVariantAssignForm
               }
           }
       })
     }
+    useEffect(() => {
+      unmounted.current = false;
+      createVariantUI();
+      return () => {
+        unmounted.current = true;
+      };
+    }, [optionValue, deleteVariant])
+    useEffect(() => {
+      const idxValue = [];
+      optionValue.forEach((optionName) => {
+        idxValue.push(optionName.value);
+      })
+      let listVariant = combineArrays(idxValue);
+      let oldList = oldForm?.variant?.map((variant) => variant.name)
+      let deleteList = []
+      listVariant.map((variant) => {
+        if (!oldList.includes(variant)) {
+          deleteList.push(variant);
+        }
+      })
+      setDeleteVariant(deleteList);
+    }, [])
     return (
       <>
       
@@ -423,10 +532,10 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
                               {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                           </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.price} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
-                              </TableCell>
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.price ? row.price : ""} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
+                          </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.quantity} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.quantity ? row.quantity : ""} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
                           <TableCell align="center">
                             <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>
                           </TableCell>

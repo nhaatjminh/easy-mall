@@ -30,7 +30,6 @@ import { doUploadImageCollection, doCreateCollection, doDeleteCollection, doUpda
 import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
-import { v4 as uuid } from 'uuid';
 const styleModal = {
     position: 'absolute',
     top: '25%',
@@ -257,6 +256,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         })
     }
     useEffect(() => {
+        if (mode === "ADD") {
+            form.current = {}
+        }
         form.current = {
             ...form?.current,
             collection: {
@@ -264,7 +266,10 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 store_id: params.storeId
             }
         }
-        dispatch(doGetListProductsOfStores(params.storeId)).then((result) => setListProducts(result.payload)); 
+        dispatch(doGetListProductsOfStores({
+            id: params.storeId,
+            params: {}
+        })).then((result) => setListProducts(result.payload)); 
     },[])
     useEffect(() => {  
         if (mode !== "EDIT") {
@@ -408,34 +413,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             </Box>
                         </div>
                     </Paper> 
-                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                spacing={2}
-                                >    
-                                    <InputLabel name='title' className="text-medium" style={{margin: 0}}>Search engine listing preview</InputLabel>
-                                    <Link to='#' className="text-decoration-none">
-                                        Edit Website SEO
-                                    </Link>
-                        </Stack>
-                        <InputLabel name='title' className="text-small" style={{margin: 0, marginTop: '1rem'}}>Add a title and description to see how this product might appear in a search engine listing</InputLabel>
-                    </Paper> 
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
-                    <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Collection availability</InputLabel>
-                        
-                        <FormHelperText id="filled-weight-helper-text">Will be available to {} sales channels.</FormHelperText>
-                        <Divider className="divider-custom"/>
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Online Store" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Google" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>} label="Facebook" />
-                        <FormControlLabel  className="w-100" control={<Checkbox checked={false}/>}  label="Microsoft" />
-                    </Paper> 
-                    
-                    <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                    <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <ImageInput formRef={form} oldForm={oldForm} mode={mode}></ImageInput>
                     </Paper> 
                 </div>    
