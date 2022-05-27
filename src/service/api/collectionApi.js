@@ -1,8 +1,9 @@
 import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithDeleteMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
-
+import { Common } from '../utils'
 export const collectionApi = {
-    getCollections: async (id) => {
-        const result = await callAPIWithGetMethod(`stores/${id}/collections/product`, true);
+    getCollections: async (id, params) => {
+        const query = Common.queryCSV(params);
+        const result = await callAPIWithGetMethod(`stores/${id}/collections/product?${query}`, true);
         return result;
     },
     getOneCollection: async (id) => {
@@ -33,7 +34,7 @@ export const collectionApi = {
      * @returns {object} data have link of image on s3
      */
     uploadImageCollection: async (data) => {
-        const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
+        const result = await callAPIWithPostMethod(`files/upload-product-image`, data, true);
         return result; 
     },
     /**
@@ -79,6 +80,20 @@ export const collectionApi = {
      */
      uploadImageProduct: async (data) => {
         const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
+        return result; 
+    },
+    /**
+     * @name deleteImageCollection
+     * @description delete image to s3 from api
+     * @param {object} : body with url
+     * {
+     *  url: url of image on s3
+     * }
+     * 
+     * @returns {object} 
+     */
+    deleteImageCollection: async (data) => {
+        const result = await callAPIWithPutMethod(`files/object`, data, true);
         return result; 
     },
 }

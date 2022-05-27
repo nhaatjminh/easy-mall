@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Paper, Typography } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
@@ -158,7 +158,7 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState([]);
-    
+    const [buttonState, setButtonState] = useState(false);
     const handleRequestSort = (event, property) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
@@ -200,14 +200,16 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     
         setSelected(newSelected);
     };
-    
+    useEffect(() => {
+      setSelected([]);
+    }, [buttonState])
     const isSelected = (productId) => selected.indexOf(productId) !== -1;
     const onDeleteSelected = () => {
       setSelected([]);
     }
     const handleDelete = (selected) => {
       deleteAllFunction(selected);
-      setSelected([])
+      setButtonState(!buttonState);
     }
     return (
         
@@ -247,16 +249,20 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
                                 }}
                             />
                         </TableCell>
-                        {columnsOfData.map((headCell, indexData) => (
+                        {columnsOfData.map((headCell, indexData) => {
+                          return (
                           <TableCell
                             key={headCell + indexData}
                             align={'right'}
                           >
                             <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
                           </TableCell>
-                        ))}
+                        )})}
                         <TableCell>
-                          <IconButton onClick={() => editFunction(row.id)}>
+                          <IconButton onClick={() => { 
+                            setButtonState(!buttonState);
+                            editFunction(row.id)
+                          }}>
                             <EditIcon/>
                           </IconButton>
                           <IconButton onClick={() => handleDelete([row.id])}>

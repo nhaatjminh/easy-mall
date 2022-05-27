@@ -26,7 +26,7 @@ export const ProductApi = {
      */
     uploadImageProduct: async (data) => {
         console.log(data);
-        const result = await callAPIWithPostMethod(`files/upload-image-to-s3`, data, true);
+        const result = await callAPIWithPostMethod(`files/upload-product-image`, data, true);
         return result; 
     },
     /**
@@ -40,7 +40,7 @@ export const ProductApi = {
      * @returns {object} 
      */
      deleteImageProduct: async (data) => {
-        const result = await callAPIWithPostMethod(`files/object`, data, true);
+        const result = await callAPIWithPutMethod(`files/object`, data, true);
         return result; 
     },
     /**

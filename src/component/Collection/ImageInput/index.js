@@ -8,9 +8,12 @@ import {
 from '@mui/material';
 import './index.css';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { doDeleteImageCollection } from "../../../redux/slice/collectionSlice";
+import { useDispatch } from "react-redux";
 
 const ImageInput = ({formRef, oldForm, mode}) => {
     const form = formRef;
+    const dispatch = useDispatch();
     const [images, setImages] = useState(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null);
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
@@ -69,26 +72,25 @@ const ImageInput = ({formRef, oldForm, mode}) => {
       var fileinput = document.getElementById("browse");  // use input file id here
       fileinput.click(); 
     }
-    const isBase64 = (str) => {
-      try {
-          return btoa(atob(str)) == str;
-      } catch (err) {
-          return false;
+    const handleDelete = () => {
+      if (!(images.startsWith('blob:'))) {
+        new Promise(() => {
+          dispatch(doDeleteImageCollection({
+              data: {
+                  url: images
+              }
+          }))
+        })
       }
-  }
-  const handleDelete = () => {
-    if (!isBase64(images)) {
-      // if not base 64. this is image in database. delete it.
-    }
-    setImages(null);
-    form.current = {
-      ...form?.current,
-      collection: {
-        ...form?.current?.collection,
-        thumbnail: ""
+      setImages(null);
+      form.current = {
+        ...form?.current,
+        collection: {
+          ...form?.current?.collection,
+          thumbnail: null
+        }
       }
     }
-  }
     return (
         <>
             <div className="row">

@@ -10,6 +10,7 @@ import { doGetListCollectionOfStores, doGetOneCollections, doDeleteCollection } 
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
+import { useDebounce } from './../../hooks/useDebounce';
 
 const ManageCollection = () => {
   const [showAddCollection, setShowAddCollection] = useState(false);
@@ -31,6 +32,8 @@ const ManageCollection = () => {
   };
   const collectionList = useSelector((state) => state.collectionSlice.listCollection);
   const [rows, setRows] = useState(collectionList);
+  const [filterSeach, setFilterSearch] = useState(null);
+  const dbValue = useDebounce(filterSeach, 300);
   const columns = [
     { id: 'name', label: 'Title', minWidth: 300 },
     {
@@ -72,7 +75,10 @@ const ManageCollection = () => {
     })
   }
   const returnTable = async () => {
-    await dispatch(doGetListCollectionOfStores(params.storeId))
+    await dispatch(doGetListCollectionOfStores({
+            id: params.storeId,
+            params: {}
+          }))
         .then((result) => {
           if (!unmounted.current) {
             setRows(result.payload);  
@@ -82,20 +88,43 @@ const ManageCollection = () => {
   }
   useEffect(() => {
     if (!showAddCollection) 
-      dispatch(doGetListCollectionOfStores(params.storeId))
-      .then((result) => setRows(result.payload));
+    dispatch(doGetListCollectionOfStores({
+      id: params.storeId,
+      params: {}
+    }))
+    .then((result) => setRows(result.payload));
   }, [showAddCollection])
   useEffect(() => {
     let newRows = JSON.parse(JSON.stringify(collectionList));
     newRows = newRows.map((collection) => {
-      collection.description = stringToHTML(collection?.description);
+      if (collection.description) collection.description = stringToHTML(collection?.description);
       return collection;
     })
     setRows(newRows);
   }, [collectionList])
-  const handleSearch = () => {
-
+  const handleSearch = (e) => {
+    setFilterSearch(e.target.value);
   }
+  const fetchCollectionWithFilter = async () => {
+    if (filterSeach) {
+      dispatch(doGetListCollectionOfStores({
+        id: params.storeId,
+        params: {
+          name: filterSeach
+        }
+      }))
+        .then((result) => {
+          if (!unmounted.current) setRows(result.payload);
+      });
+    }
+  }
+  useEffect(() => {
+    unmounted.current = false;
+    fetchCollectionWithFilter()
+    return () => {
+      unmounted.current = true;
+    };
+}, [dbValue])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>

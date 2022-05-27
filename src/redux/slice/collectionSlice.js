@@ -3,8 +3,8 @@ import { collectionApi } from '../../service/api';
 
 export const doGetListCollectionOfStores = createAsyncThunk(
     'collection@get/GetListCollection',
-    async (id) => {
-      const result = await collectionApi.getCollections(id);
+    async (object) => {
+      const result = await collectionApi.getCollections(object.id, object.params);
       return result.data;
     }
 );
@@ -30,6 +30,13 @@ export const doCreateCollection = createAsyncThunk(
           ...collectionObj,
           id: result.data
         };
+    }
+);
+export const doDeleteImageCollection = createAsyncThunk(
+    'store@post/UploadImageProduct',
+    async ({data}) => {
+      const result = await collectionApi.deleteImageProduct(data);
+      return result.data
     }
 );
 export const doDeleteCollection = createAsyncThunk(

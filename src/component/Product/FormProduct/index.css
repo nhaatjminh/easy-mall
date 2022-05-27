@@ -68,7 +68,11 @@
     max-height: 400px;
     overflow-y: auto;
 }
-
+.custom-type {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 /* md ~ 768*/
 @media (min-width: 768px) {   
     .save-button-form-product-mobile {

@@ -33,8 +33,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [isVariant, setIsVariant] = useState(false);
     const [errorTitle, setErrorTitle] = useState(null);
     const [collectionSelected, setCollectionSelected] = useState([]);
-
-
+    const [customType, setCustomType] = useState(false);
+    const nameStore = useSelector((state) => state.listStore.selectedName);
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
         return ref.option;
@@ -240,6 +240,29 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         } 
     }
     const handleOnChangeType = (event) => {
+        
+        if (!customType) return;
+        if (mode === "EDIT") {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    type: event.target.value,
+                    update: "Change"
+                }
+            }
+        } else {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    type: event.target.value
+                }
+            }
+        }
+    }
+    const handleOnChangeCustomType = (event) => {
+        if (customType) return;
         if (mode === "EDIT") {
             form.current = {
                 ...form?.current,
@@ -343,47 +366,42 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             new Promise((resolve) => { 
                 const data = form?.current?.product?.images;
                 if (data) {
-                    const listPromise = [];   
                     const oldResult = [];
+                    const listImage = [];
                     for (let item of data) {
                         const base64result = item.substr(item.indexOf(',') + 1);
-                        if (!isBase64(base64result)) {
-                            listPromise.push(
-                                new Promise((resolveForUpload) => {
-                                    dispatch(doUploadImageProduct({
-                                        data: {
-                                            data: [item]
-                                        }
-                                    })).then((result) => {
-                                        resolveForUpload(result);
-                                    })
-                                })
-                            )
+                        if (isBase64(base64result)) {
+                            listImage.push(item);
                         } else {
                             oldResult.push(item);
                         }
                        
                     };
-                    if (listPromise.length) {
-                        Promise.all(listPromise).then((result) => {
-                            if (result && result.length > 0) {
-                                // payload is array data response from server, first item to link, so get payload[0] in here
-                                result = result.map(data => data.payload[0]); 
-                                result = result.concat(oldResult);
-                                form.current = {
-                                    ...form?.current,
-                                    product: {
-                                        ...form?.current?.product,
-                                        thumbnail: Object.values(result)[0],
-                                        images: Object.values(result)
-                                    }
-                                }
-                                resolve();
+                    new Promise((resolveForUpload) => {
+                        dispatch(doUploadImageProduct({
+                            data: {
+                                data: listImage
                             }
+                        })).then((result) => {
+                            resolveForUpload(result);
                         })
-                    } else {
-                        resolve();
-                    }
+                    }).then((result) => {
+                        if (result) {
+                            // payload is array data response from server, first item to link, so get payload[0] in here
+                            result = result.payload
+                            result = result.concat(oldResult);
+                            form.current = {
+                                ...form?.current,
+                                product: {
+                                    ...form?.current?.product,
+                                    thumbnail: result[0],
+                                    images: result
+                                }
+                            }
+                            resolve();
+                        }
+                        if (mode === "EDIT") form.current.product.update = "Change";
+                    })
                 } else {
                     resolve();
                 }
@@ -478,6 +496,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             returnAfterAdd();
         })
     }
+    const disableCustomType = () => {
+        setCustomType(false);
+    }
+    const enableCustomType = () => {
+        setCustomType(true);
+    }
     useEffect(() => {
         if (mode === "ADD") {
             form.current = {}
@@ -490,9 +514,13 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         }
         if (mode === "ADD") {
-            form.current.product.status = 'draft'
+            form.current.product.status = 'Draft';
+            form.current.product.vendor = nameStore;
         }
-        dispatch(doGetListCollectionOfStores(params.storeId));   
+        dispatch(doGetListCollectionOfStores({
+            id: params.storeId,
+            params: {}
+        }));   
     }, [])
     
     useEffect(() => {
@@ -593,11 +621,11 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div key={form?.current?.product?.status || "SelectStatus"}>
                             <Select fullWidth
                             className="poper-item"
-                            defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "draft"}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "Draft"}
                             onChange={(e) => handleOnChangeStatus(e)}
                             >
-                                <MenuItem value="draft">Draft</MenuItem>
-                                <MenuItem value="active">Active</MenuItem>
+                                <MenuItem value="Draft">Draft</MenuItem>
+                                <MenuItem value="Active">Active</MenuItem>
                             </Select>
                         </div>
                     </Paper> 
@@ -607,23 +635,49 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Type</InputLabel>
                         <div key={form?.current?.product?.type ?? "SelectType"}>
                             <Select fullWidth 
+                            disabled={customType}
                             className="poper-item"
                             defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
                             onChange={(e) => handleOnChangeType(e)}>
                                 <MenuItem value="Clothes">Clothes</MenuItem>
                                 <MenuItem value="Book">Book</MenuItem>
                                 <MenuItem value="Bike">Bike</MenuItem>
+                                <MenuItem value="custom-type" onClick={enableCustomType} style={{justifyContent: 'space-between'}}>
+                                    <p style={{margin: 0}}>Custom Type</p> 
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </MenuItem>
                             </Select>
                         </div>
+                        {customType
+                            ?   
+                            <>
+                                <InputLabel style={{marginTop: '1rem'}} className="text-medium">Custom</InputLabel>
+                                <div className="custom-type">
+                                    <TextField
+                                        style={{width: 'auto'}}
+                                        disabled={isVariant}
+                                        className="text-field-input"
+                                        name='title'
+                                        fullWidth
+                                        required
+                                        onChange={(e) => handleOnChangeType(e)}
+                                        defaultValue={mode === "EDIT" && oldForm?.product?.inventory ? oldForm?.product?.inventory : ""}    
+                                    />
+                                    
+                                    <i className="fa fa-trash icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={disableCustomType}></i>
+                                </div>
+                            </>
+                            
+                            :   <></>
+                        }
                         
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium">Vendor</InputLabel>
                         <div key={form?.current?.product?.type ?? "SelectVendor"}>
                             <Select fullWidth 
                             className="poper-item"
-                            defaultValue={mode === "EDIT" && oldForm?.product?.vendor ? oldForm?.product?.vendor : ""}
+                            defaultValue={nameStore}
                             onChange={(e) => handleOnChangeVendor(e)}>
-                                 
-                                <MenuItem value="shoeShop">Shoe Shop</MenuItem>
+                                <MenuItem value={nameStore}>{nameStore}</MenuItem>
                             </Select>
                         </div>
 
