@@ -20,12 +20,6 @@ const ManageCollection = () => {
   const params = useParams();
   const unmounted = useRef(false);
   const stringToHTML = function (str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-        return null;
-    }
-    str = JSON.parse(str);
     let parser = new DOMParser();
     let doc = parser.parseFromString(str, 'text/html');
     return doc.body.innerHTML.replace("\"", "`");

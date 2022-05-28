@@ -39,7 +39,7 @@ export const ProductApi = {
      * 
      * @returns {object} 
      */
-     deleteImageProduct: async (data) => {
+    deleteImageProduct: async (data) => {
         const result = await callAPIWithPutMethod(`files/object`, data, true);
         return result; 
     },
@@ -87,6 +87,43 @@ export const ProductApi = {
      */
     deleteProduct: async (id) => {
         const result = await callAPIWithDeleteMethod(`products/${id}`, true);
+        return result; 
+    },
+    /**
+     * @name getAllType
+     * @description Get all Custom Type
+     * @param {id} : id of store
+     * 
+     * @returns {object} 
+     */
+    getAllType: async (id) => {
+        const result = await callAPIWithGetMethod(`stores/${id}/products/custom-type`, true);
+        return result; 
+    },
+    /**
+     * @name getAllVendor
+     * @description Get all Custom Vendor
+     * @param {id} : id of store
+     * 
+     * @returns {object} 
+     */
+    getAllVendor: async (id) => {
+        const result = await callAPIWithGetMethod(`stores/${id}/products/vendor`, true);
+        return result; 
+    },
+    /**
+     * @name getDescription
+     * @description Get description of product from s3
+     * @param {url}
+     * 
+     * @returns {object} 
+     */
+     getDescription: async (url) => {
+        let result = '';
+        await fetch(url)
+        .then(res => res.json())
+        .then(out => result = out)
+        .catch(err => console.log(err));
         return result; 
     }
 }

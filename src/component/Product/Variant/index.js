@@ -51,6 +51,14 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
     // save {key: value} = {oldName: newName} use for variant
     const optionValueRef = useRef({});
 
+    useEffect(() => {
+        form.current = {
+            product: {},
+            option: [],
+            variant: [],
+            collection: []
+        }
+    }, [])
 
     
     const handlePopoverOpen = (event) => {
@@ -229,13 +237,13 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
         setOptionTag(temp);
         let newOption = {
             name: "",
-            value: [],
-            idTemp: uuid()
+            value: []
         }
         if (mode === "EDIT") {
             newOption = {
                 ...newOption,
-                update: "Add"
+                update: "Add",  
+                idTemp: uuid()
             }
         }
         const newOptionValue =[ 
@@ -243,10 +251,13 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
             newOption
         ];
         // if mode !== EDIT => optionValue === form.current.option
-        const newOptionForForm = [
-            ...form.current.option,
-            newOption
-        ]
+        let newOptionForForm;
+        if (form.current?.option) {
+            newOptionForForm = [
+                ...form.current?.option,
+                newOption
+            ]
+        } else newOptionForForm = [newOption]
         optionRef.current.push(newOption)
         setOptionValue(newOptionValue);
         form.current = {
@@ -609,7 +620,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
             }
 
         </Paper> 
-        <TableVariant key="TableVariant" optionValueRef={optionValueRef} mode={mode} showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
+        <TableVariant key="TableVariant" optionRef={optionRef} optionValueRef={optionValueRef} mode={mode} showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
         </TableVariant>
       </>
     );

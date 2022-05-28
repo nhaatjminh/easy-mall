@@ -6,6 +6,7 @@ import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContai
 
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ModalAddVariant from '../ModalAddVariant';
 
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
@@ -95,7 +96,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
+const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
     const form = formRef;
     const columns = columnsOfData;
     const [page, setPage] = useState(0);
@@ -408,7 +409,12 @@ const TableVariant = ({optionValueRef, mode, showOpt, optionTag, optionValue, co
                 if (oldKeyVariant !== variant) {
                   newVariant = {
                     ...newVariant,
-                    update: "Change"
+                  }
+                  if (mode === "EDIT") {
+                    newVariant = {
+                      ...newVariant,
+                      update: "Change"
+                    }
                   }
                 }
                 listOptionOfVariant.forEach((opt, idxOpt) => {
@@ -489,6 +495,14 @@ const TableVariant = ({optionValueRef, mode, showOpt, optionTag, optionValue, co
       {variant.length && showOpt?
         <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
             <TableContainer sx={{ maxHeight: 440 }}>
+                <div style={{justifyContent: 'space-between', alignItems: 'center', display: 'flex', padding: '5px 15px'}}>
+                  <p className="font-weight-bold text-normal m-0" style={{width: 'auto'}}>Variant</p>
+                  {
+                  mode === "EDIT" ? 
+                    <ModalAddVariant optionRef={optionRef} styleButton={{width: 'auto', float: 'right'}}></ModalAddVariant>
+                  : ""
+                  }
+                </div>
                 <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
                 <Table stickyHeader aria-label="sticky table" className="p-0">
                 <EnhancedTableHead

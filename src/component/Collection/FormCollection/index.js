@@ -76,7 +76,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             ...form?.current,
             collection: {
                 ...form?.current?.collection,
-                description: JSON.stringify(event)
+                description: event
             }
         }
     }
@@ -320,7 +320,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
                         <ReactQuill
-                            defaultValue={mode === "EDIT" && oldForm?.collection?.description ? JSON.parse(oldForm?.collection?.description) : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.collection?.description ? oldForm?.collection?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
                     </Paper>

@@ -54,6 +54,27 @@ export const doDeleteProduct = createAsyncThunk(
       return result.data
     }
 );
+export const doGetAllType = createAsyncThunk(
+    'product@get/getAllType',
+    async ({id}) => {
+      const result = await ProductApi.getAllType(id);
+      return result.data
+    }
+);
+export const doGetAllVendor = createAsyncThunk(
+    'product@get/getAllVendor',
+    async ({id}) => {
+      const result = await ProductApi.getAllVendor(id);
+      return result.data
+    }
+);
+export const doGetDescription = createAsyncThunk(
+    'product@get/getDescription',
+    async ({url}) => {
+      const result = await ProductApi.getDescription(url);
+      return result.data
+    }
+);
 export const productSlice = createSlice({
     name: 'productSlice',
     initialState:  {

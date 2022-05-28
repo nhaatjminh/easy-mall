@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef } from "react";
 import { useParams } from 'react-router-dom';
-import Stack from '@mui/material/Stack';
 import {
     Paper,
     TextField,
@@ -10,19 +9,17 @@ import {
     FormGroup,
     FormControlLabel,
     Select,
-    Checkbox,
-    FormHelperText
+    Checkbox
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
-import { Link } from "react-router-dom";
 import Variant from "../Variant";
 import ImageInput from "../ImageInput"
 import PricingComponent from "../PricingComponent"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
-import { doCreateProduct, doUploadImageProduct, doUploadProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
+import { doCreateProduct, doUploadImageProduct, doUploadProduct, doGetDescription, doDeleteProduct, doGetAllType, doGetAllVendor } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
 
 const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
@@ -30,10 +27,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const collectionList = useSelector((state) => state.collectionSlice.listCollection);
     let form = useRef(oldForm);
     const params = useParams();
-    const [isVariant, setIsVariant] = useState(false);
+    const [isVariant, setIsVariant] = useState(mode === "EDIT" && oldForm?.product?.is_variant ? oldForm?.product?.is_variant : false);
     const [errorTitle, setErrorTitle] = useState(null);
     const [collectionSelected, setCollectionSelected] = useState([]);
-    const [customType, setCustomType] = useState(false);
+    const [customType, setCustomType] = useState(mode === "EDIT" && oldForm?.product?.custom_type ? oldForm?.product?.custom_type : false);
+    const [customTypeList, setCustomTypeList] = useState([]);
+    const [vendorList, setVendorList] = useState([]);
     const nameStore = useSelector((state) => state.listStore.selectedName);
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
@@ -240,8 +239,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         } 
     }
     const handleOnChangeType = (event) => {
-        
-        if (!customType) return;
         if (mode === "EDIT") {
             form.current = {
                 ...form?.current,
@@ -260,27 +257,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 }
             }
         }
-    }
-    const handleOnChangeCustomType = (event) => {
-        if (customType) return;
-        if (mode === "EDIT") {
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    type: event.target.value,
-                    update: "Change"
-                }
-            }
-        } else {
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    type: event.target.value
-                }
-            }
-        }
+        form.current.product.custom_type = customType;
     }
     const handleOnChangeInventory = (event) => {
         if (mode === "EDIT") {
@@ -330,7 +307,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    description: JSON.stringify(event),
+                    description: event,
                     update: "Change"
                 }
             }
@@ -339,7 +316,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    description: JSON.stringify(event)
+                    description: event
                 }
             }
         }
@@ -454,7 +431,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         })
                     });
                 } else {
-                    
                     if (!form.current?.collection?.length) delete form.current.collection
                     if (!form.current?.variant?.length) delete form.current.variant
                     if (!form.current?.option?.length) delete form.current.option
@@ -498,9 +474,16 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     const disableCustomType = () => {
         setCustomType(false);
+        form.current.product.type = '';
     }
     const enableCustomType = () => {
         setCustomType(true);
+        form.current.product.type = '';
+    }
+    const fetchDescription = (url) => {
+        dispatch(doGetDescription({
+            url: url
+        })).then((result) => oldForm.product.description = result.payload); 
     }
     useEffect(() => {
         if (mode === "ADD") {
@@ -521,13 +504,23 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             id: params.storeId,
             params: {}
         }));   
+        dispatch(doGetAllType({
+            id: params.storeId
+        })).then((result) => {
+            setCustomTypeList(result.payload);
+        })
+        dispatch(doGetAllVendor({
+            id: params.storeId
+        })).then((result) => {
+            setVendorList(result.payload);
+        })
     }, [])
-    
     useEffect(() => {
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
                 setCollectionSelected(oldForm.collection || []);
+                fetchDescription(oldForm.product.description)
             }
             else {
                 form.current = {
@@ -564,7 +557,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
                         <ReactQuill
-                            defaultValue={mode === "EDIT" && oldForm?.product?.description ? JSON.parse(oldForm?.product?.description) : ""}
+                            defaultValue={mode === "EDIT" && oldForm?.product?.description ? oldForm?.product?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
                     </Paper> 
@@ -633,35 +626,52 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Product organization</InputLabel>
 
                         <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Type</InputLabel>
-                        <div key={form?.current?.product?.type ?? "SelectType"}>
+                        <div key={form?.current?.product?.type ? `${form?.current?.product?.type} - type ` : "SelectType"}>
                             <Select fullWidth 
                             disabled={customType}
                             className="poper-item"
                             defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
+                            renderValue={(value) => {
+                                if (value === 'custom-type') {
+                                    if (customType)
+                                        return <p className="m-0 p-0">Remove Custom Type To Enable Type</p>
+                                    else {
+                                        return <></>
+                                    }
+                                }
+                                else return value;
+                            }}
                             onChange={(e) => handleOnChangeType(e)}>
-                                <MenuItem value="Clothes">Clothes</MenuItem>
-                                <MenuItem value="Book">Book</MenuItem>
                                 <MenuItem value="Bike">Bike</MenuItem>
-                                <MenuItem value="custom-type" onClick={enableCustomType} style={{justifyContent: 'space-between'}}>
-                                    <p style={{margin: 0}}>Custom Type</p> 
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                <MenuItem value="Book">Book</MenuItem>
+                                <MenuItem value="Clothes">Clothes</MenuItem>
+                                <MenuItem value="Electronic">Electronic</MenuItem>
+                                <MenuItem value="Entertainment">Entertainment</MenuItem>
+                                <MenuItem value="Food">Food</MenuItem>
+                                <MenuItem key={`${customType} - custom-type - select`} value="custom-type" onClick={enableCustomType} style={{justifyContent: 'space-between'}}>
+                                    <p style={{margin: 0}}>Custom Type</p>
+                                    <i className="fa fa-plus" aria-hidden="true"></i>
                                 </MenuItem>
+                                {customTypeList ?
+                                customTypeList.map(type => {
+                                    return <MenuItem key={`${type} - custom type`} value={`${type}`}>{type}</MenuItem>
+                                })
+                                : <></>}
                             </Select>
                         </div>
                         {customType
                             ?   
                             <>
-                                <InputLabel style={{marginTop: '1rem'}} className="text-medium">Custom</InputLabel>
+                                <InputLabel style={{marginTop: '1rem'}} className="text-medium">Custom Type</InputLabel>
                                 <div className="custom-type">
                                     <TextField
                                         style={{width: 'auto'}}
-                                        disabled={isVariant}
                                         className="text-field-input"
                                         name='title'
                                         fullWidth
                                         required
                                         onChange={(e) => handleOnChangeType(e)}
-                                        defaultValue={mode === "EDIT" && oldForm?.product?.inventory ? oldForm?.product?.inventory : ""}    
+                                        defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}    
                                     />
                                     
                                     <i className="fa fa-trash icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={disableCustomType}></i>
@@ -672,13 +682,20 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         }
                         
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium">Vendor</InputLabel>
-                        <div key={form?.current?.product?.type ?? "SelectVendor"}>
-                            <Select fullWidth 
-                            className="poper-item"
-                            defaultValue={nameStore}
-                            onChange={(e) => handleOnChangeVendor(e)}>
-                                <MenuItem value={nameStore}>{nameStore}</MenuItem>
-                            </Select>
+                        <div key={form?.current?.product?.vendor ?? "SelectVendor"}>
+                            <input 
+                                name="myBrowser"
+                                className="input-with-dropdown"
+                                defaultValue={form.current?.product?.vendor ?? nameStore}
+                                list="browsers"
+                                onChange={(e) => handleOnChangeVendor(e)}
+                                autoComplete="off"/>
+                            <datalist id="browsers">
+                                {vendorList.length ?
+                                vendorList.map((vendor, index) => <option key={`${vendor} + ${index}`} value={vendor}/>)
+                                :
+                                <option value={nameStore}/>}
+                            </datalist>
                         </div>
 
 
