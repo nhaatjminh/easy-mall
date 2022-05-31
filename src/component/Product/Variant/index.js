@@ -2,9 +2,10 @@ import React, {useState, useRef, useEffect} from "react";
 import { Paper } from '@material-ui/core';
 
 import {Checkbox, Box, TextField } from '@mui/material';
-import { InputLabel,Chip ,Link, FormControlLabel,Popper} from '@material-ui/core';
+import { InputLabel,Chip ,Link, FormControlLabel,Popper, IconButton } from '@material-ui/core';
 
 import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TableVariant from "./TableVariant";
 import './index.css'
 import Swal from "sweetalert2";
@@ -147,7 +148,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                 let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef].value.filter((value) => value.update !== "Delete")
                 let indexOfOptionValue =
                     optionRef.current[indexOfOptionRef].value.findIndex(option => 
-                        (option?.id && option?.id === arrayOptionRefLikeOptionValue[idxValue].id)
+                        (option?.id && option?.id === arrayOptionRefLikeOptionValue[idxValue]?.id)
                         || (option?.idTemp && option?.idTemp === arrayOptionRefLikeOptionValue[idxValue]?.idTemp))
                 
                 if (optionRef.current[indexOfOptionRef]?.value[indexOfOptionValue]?.update) update = optionRef?.current[indexOfOptionRef]?.value[indexOfOptionValue]?.update;
@@ -196,6 +197,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                     (option?.id && option?.id === newObj[index]?.id)
                     || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
                 optionRef.current[indexOfOptionRef].value.push(newOption)
+                if (optionRef.current[indexOfOptionRef].update) update = optionRef?.current[indexOfOptionRef]?.update;
+                else update = "Change"
+                optionRef.current[indexOfOptionRef].update = update
                 if (optionValueRef.current && !valueChange.includes("/")) {
                     const key = Object.keys(optionValueRef.current)
                     if (key.length) {
@@ -356,7 +360,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                             (option?.id && option?.id === optionValue[index].id)
                             || (option?.idTemp && option?.idTemp === optionValue[index]?.idTemp))
                         if (optionRef.current[indexOfOptionRef]?.idTemp) {
-                            delete optionRef.current[indexOfOptionRef]
+                            optionRef.current.splice(indexOfOptionRef,1)
                         } else optionRef.current[indexOfOptionRef].update = "Delete";
                     }
                     optionValueRef.current = null; //clear this to create new Variant
@@ -476,7 +480,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
     }
     useEffect(() => {
         if (mode === "EDIT") {
-            form.current?.variant?.map((variant) => {
+            oldForm?.variant?.map((variant) => {
                 optionValueRef.current[variant.name] = variant.name
             })
         }
@@ -516,7 +520,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                         />
                                     </div>
                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                        <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOption(index)} ></i>
+                                        <IconButton onClick={(e) => handleDeleteOption(index)}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </div>
                                 <Popper id={popoverId} open={open} anchorEl={anchorEl}
@@ -551,8 +557,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                                         />
                                                     </div>
                                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                                        
-                                                        <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOptionValue(index, idxValue)}></i>
+                                                        <IconButton onClick={(e) => handleDeleteOptionValue(index, idxValue)}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
                                                     </div>
                                                 </div>
                                             )
@@ -576,7 +583,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                             />
                                         </div>
                                         <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                            <i className="fa-trash fa-icon icon-trash text-extra-large" ></i>
+                                            <IconButton>
+                                                <DeleteIcon/>
+                                            </IconButton>
                                         </div>
                                     </div>  
                                 </div>
@@ -611,7 +620,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                     {optionTag.length <= 2 ?
                         <div>
                             <i className="fa-plus fa-icon icon-plus-before-text" ></i>
-                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Add another option</Link>
+                            <Link to="#" className="text-decoration-none" style={{color: 'black', cursor:'pointer'}} onClick={addAnotherOption}>Add another option</Link>
                         </div>
                     : ""
                     }

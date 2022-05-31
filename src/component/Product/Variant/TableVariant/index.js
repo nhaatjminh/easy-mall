@@ -61,6 +61,7 @@ const EnhancedTableToolbar = (props) => {
                 alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
             }),
           }}
+          style={{justifyContent: 'space-between'}}
         >
           {numSelected > 0 ? (
             <Typography
@@ -74,17 +75,15 @@ const EnhancedTableToolbar = (props) => {
             
           ) : ""}
 
-          {numSelected > 0 ? (
-            <Tooltip title="Delete" >
-              <IconButton >
-                <DeleteIcon onClick={onDeleteSelected}/>
-              </IconButton>
-            </Tooltip>
-          ) : ""}
+          <div className="float-right">
           
-          {numSelected > 0 ? (
-            <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit Products </p></button>
-          ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
+            ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+            ) : ""}
+          </div>
         </Toolbar>
       :""}
       
@@ -107,7 +106,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
     const [oldVariant, setOldVariant] = useState(oldForm?.variant?.map((variant) => variant.name) || []);
     const unmounted = useRef(false);
     const [trickRerender, setTrickRerender] = useState(0);
-    const rows = variant;
+    const [addValueVariant, setAddValueVariant] = useState([]);
     
     const handleChangePriceVariant = (index, valuePrice) => {
       let newVariant = [...form?.current?.variant];
@@ -176,7 +175,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
       
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-        const newSelecteds = rows.map((n) => n.name);
+        const newSelecteds = variant.map((n) => n.name);
         setSelected(newSelecteds);
         return;
         }
@@ -403,7 +402,10 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                   }
                 }
                 const oldFormVariant = oldForm.variant?.find(oldvariant => oldvariant?.name && oldvariant?.name === oldKeyVariant)
-                const oldVariant = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
+                let oldVariant = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
+                if (!oldVariant && mode === "EDIT") {
+                  oldVariant = addValueVariant.find(variantAdd => variantAdd.name === variant)
+                }
                 let listOptionOfVariant = variant.split("/");
                 let newVariant = {};
                 if (oldKeyVariant !== variant) {
@@ -423,9 +425,14 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                         value: opt
                     }
                     if (oldVariant) {
+                      if (oldVariant.id) {
+                        newVariant = {
+                          ...newVariant,
+                          id: oldVariant?.id,
+                        }
+                      }
                       newVariant = {
                         ...newVariant,
-                        id: oldVariant?.id,
                         price: Number(oldVariant?.price),
                         quantity: Number(oldVariant?.quantity)
                       }
@@ -494,36 +501,60 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
       
       {variant.length && showOpt?
         <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
+            <div style={{justifyContent: 'space-between', alignItems: 'center', display: 'flex', padding: '5px 15px 0 15px'}}>
+              <p className="font-weight-bold text-normal m-0" style={{width: 'auto'}}>Variant</p>
+              {
+              mode === "EDIT" ? 
+                <ModalAddVariant
+                  variant={variant}
+                  addValueVariant={addValueVariant}
+                  setAddValueVariant={setAddValueVariant}
+                  combineArrays={combineArrays}
+                  form={form}
+                  setDeleteList={setDeleteVariant}
+                  deleteList={deleteVariant}
+                  optionValue={optionValue}
+                  setOptionValue={setOptionValue}
+                  optionValueRef={optionValueRef}
+                  optionRef={optionRef}
+                  styleButton={
+                    {
+                      width: 'auto',
+                      float: 'right',
+                      border: '1px solid #666666',
+                      padding: '5px 10px',
+                      margin: '10px 0 0 0',
+                      borderRadius: 10,
+                      backgroundColor: '#0d6efd',
+                      color: 'white'
+                    }
+                  }></ModalAddVariant>
+              : ""
+              }
+            </div>
             <TableContainer sx={{ maxHeight: 440 }}>
-                <div style={{justifyContent: 'space-between', alignItems: 'center', display: 'flex', padding: '5px 15px'}}>
-                  <p className="font-weight-bold text-normal m-0" style={{width: 'auto'}}>Variant</p>
-                  {
-                  mode === "EDIT" ? 
-                    <ModalAddVariant optionRef={optionRef} styleButton={{width: 'auto', float: 'right'}}></ModalAddVariant>
-                  : ""
-                  }
-                </div>
+                
                 <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
                 <Table stickyHeader aria-label="sticky table" className="p-0">
                 <EnhancedTableHead
                   numSelected={selected.length}
                   onSelectAllClick={handleSelectAllClick}
-                  rowCount={rows.length}
+                  rowCount={variant.length}
                   headCells={columns}
                 />
                 <TableBody>
-                    {rows
+                    {variant
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row,index) => {
                         const isItemSelected = isSelected(row.name);
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                         <TableRow hover
+                        key={`${row.quantity} + ${row.price} + ${index}  + variant`}
                         role="checkbox"
                         className={`${row.delete ? "line-through" : ""}`}
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={index}
                         selected={isItemSelected}>
                           <TableCell padding="checkbox" 
                             align="left">
@@ -563,7 +594,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={variant.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

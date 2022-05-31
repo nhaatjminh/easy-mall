@@ -398,9 +398,9 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             if (!option.update) {
                                 return false
                             } else return true
-                        })
+                        }) 
+                        form.current.option = optionRef.current
                     }
-                    form.current.option = optionRef.current
                     form.current.collection = form.current?.collection?.filter((collection, index) => {
                         if (!collection.update) {
                             return false
@@ -456,21 +456,34 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 window.scrollTo(0, 0);
         }
     }
-    const deleteProduct = () => {  
+    const deleteProduct = () => {
         Swal.fire({
-            title: 'Please Wait !',
-            html: 'Deleting product',// add html attribute if you want or remove
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            },
-        });
-        dispatch(doDeleteProduct({
-            id: form.current.product.id
-        })).then((result) => {
-            Swal.close();
-            returnAfterAdd();
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Please Wait !',
+                    html: 'Deleting product',// add html attribute if you want or remove
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                dispatch(doDeleteProduct({
+                    id: form.current.product.id
+                })).then((result) => {
+                    Swal.close();
+                    returnAfterAdd();
+                })
+            }
         })
+        
     }
     const disableCustomType = () => {
         setCustomType(false);
@@ -550,6 +563,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             required
                             error={errorTitle ? true : false}
                             helperText={errorTitle}
+                            
+                            key={form?.current?.product?.title ?? "Name"}
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
@@ -631,6 +646,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             disabled={customType}
                             className="poper-item"
                             defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
+                            value={form.current?.product?.type}
+                            key={form?.current?.product?.type ?? "Select-Type"}
                             renderValue={(value) => {
                                 if (value === 'custom-type') {
                                     if (customType)
@@ -706,6 +723,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 className="poper-item"
                                 value={collectionSelected?.map((value) => value.id)}
                                 onChange={(e) => handleChangeCollection(e)}
+                                key={form?.current?.product?.collection ?? "Select-Collection"}
                                 renderValue={() => (
                                     <></>
                                 )}

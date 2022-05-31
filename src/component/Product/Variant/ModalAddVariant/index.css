@@ -1,3 +1,6 @@
 .add-variant-modal .MuiDialog-paper {
     min-width: 400px;
 }
+.swal2-container {
+    z-index: 1500 !important;
+  }

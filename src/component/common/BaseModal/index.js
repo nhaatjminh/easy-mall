@@ -29,7 +29,7 @@ const BootstrapDialogTitle = (props) => {
         <IconButton
           aria-label="close"
           onClick={onClose}
-          sx={{
+          style={{
             position: 'absolute',
             right: 8,
             top: 8,
@@ -57,7 +57,10 @@ export default function BaseModal({children, title, titleButton, showAction , on
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleOk = async () => {
+    await onOK();
+    handleClose();
+  }
   return (
     <div>
       <Button style={styleButton} onClick={handleClickOpen}>
@@ -77,7 +80,7 @@ export default function BaseModal({children, title, titleButton, showAction , on
         </DialogContent>
         {showAction ?
             <DialogActions>
-            <Button autoFocus onClick={onOK}>
+            <Button autoFocus onClick={handleOk}>
                 Save
             </Button>
             </DialogActions> : ""
