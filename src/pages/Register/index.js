@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import {Avatar, Button, Grid, Paper, TextField, Typography, Checkbox, FormControlLabel} from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import './index.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import validator from 'validator';
 import logo from '../../assets/image/Logo.png';
 
@@ -18,6 +18,7 @@ const Register = () => {
     const [error, setError] = useState({});
 
     const [checked, setChecked] = useState(false);
+    const navigate = useNavigate()
     //=======================STYLES===========================
     const paperStyle = {
         padding: 20,
@@ -90,7 +91,7 @@ const Register = () => {
                 redirect: 'follow'
             };
 
-            fetch(process.env.REACT_APP_API_URL + "accounts/create", requestOptions)
+            fetch(process.env.REACT_APP_API_URL + "auth/register", requestOptions)
             .then(response => response.json())
             .then(result => {
                 alert(result.message);

@@ -1,0 +1,9 @@
+.confirm-modal {
+    &__btn {
+        display: flex;
+        justify-content: flex-end;
+        &--confirm {
+            margin-left: 10px !important;
+        }
+    }
+}

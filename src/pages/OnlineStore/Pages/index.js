@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import './index.scss'
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { doCreatePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
+import { doCreatePage, doDeletePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
 import HeaderDetailStore from "../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { CustomCard } from "../../../component/common/CustomCard/CustomCard";
 import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
 import { Key } from "../../../constants/constForNavbarDetail";
+import { ConfirmModal } from './../../../component/common/ConfirmModal/ConfirmModal';
+import { NotAllowIcon } from "../../../assets/icon/svg/NotAllowIcon";
+import { useDebounce } from './../../../hooks/useDebounce';
+import { PageApi } from './../../../service/api/pageApi';
 
 const Page = ({ }) => {
 
@@ -18,10 +22,30 @@ const Page = ({ }) => {
     const dispatch = useDispatch();
     const params = useParams();
     const [name, setName] = useState('');
+    const [preName, setPreName] = useState('');
     const [link, setLink] = useState('');
     const [mode, setMode] = useState('ADD');
     const [updatePageId, setUpdatePageId] = useState(-1);
     const [showModal, setShowModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
+    const [err, setErr] = useState('');
+    const dbValue = useDebounce(name, 300);
+    const mounted = useRef();
+
+    useEffect(async () => {
+        if (!mounted.current) mounted.current = true
+        else {
+            if ((mode === 'EDIT') && (name === preName)) return;
+            if (name.length >= 4) {
+                const result = await PageApi.checkExistName(name, params.storeId);
+                if (result.data.length > 0) setErr('A page with that name already exists')
+                else setErr('')
+            } else {
+                setErr('Your page name must be at least 4 characters')
+            }
+        }
+    }, [dbValue])
 
     useEffect(() => {
         dispatch(doGetListPages(params.storeId));
@@ -29,11 +53,17 @@ const Page = ({ }) => {
 
     const handleCloseModal = () => {
         setName('')
+        setPreName('')
         setLink('')
+        setErr('')
         setShowModal(false)
     }
 
     const handleAddNewPage = () => {
+        if (name === '') {
+            setErr('Your page name must be at least 4 characters')
+            return
+        }
         dispatch(doCreatePage({
             store_id: params.storeId,
             name: name,
@@ -48,6 +78,12 @@ const Page = ({ }) => {
             name: name
         }))
         handleCloseModal()
+    }
+
+    const handleDeletePage = () => {
+        dispatch(doDeletePage(deleteId))
+        setDeleteId('')
+        setShowDeleteModal(false)
     }
 
     return (
@@ -90,6 +126,7 @@ const Page = ({ }) => {
                                             onClick={() => {
                                                 setMode('EDIT')
                                                 setName(item.name)
+                                                setPreName(item.name)
                                                 setUpdatePageId(item.id)
                                                 setLink(item.page_url)
                                                 setShowModal(true)
@@ -99,7 +136,10 @@ const Page = ({ }) => {
                                         </div>
                                         <div
                                             className="page__table--list--item--btn--delete text-title-3"
-
+                                            onClick={() => {
+                                                setDeleteId(item.id)
+                                                setShowDeleteModal(true)
+                                            }}
                                         >
                                             Delete
                                         </div>
@@ -128,7 +168,7 @@ const Page = ({ }) => {
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <div className="text-title-1">{mode === 'ADD' ? 'Add menu item' : name}</div>
+                    <div className="text-title-1">{mode === 'ADD' ? 'Add page' : preName}</div>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="page__add-page-modal--name">
@@ -136,10 +176,17 @@ const Page = ({ }) => {
                         <CustomInput
                             placeholder='e.g About us'
                             value={name}
+                            warning={err !== ''}
                             onChange={(e) => setName(e.target.value)}
                         />
+                        {err !== '' &&
+                            <div style={{ marginTop: '10px' }}>
+                                <span style={{ marginRight: '10px' }}><NotAllowIcon /></span>
+                                <span>{err}</span>
+                            </div>
+                        }
                     </div>
-                    <div className="page__add-page-modal--link">
+                    {/* <div className="page__add-page-modal--link">
                         <div className="text-normal-1">Link</div>
                         <CustomInput
                             placeholder='Link to your page or external link'
@@ -147,7 +194,7 @@ const Page = ({ }) => {
                             disabled={true}
                             onChange={(e) => setLink(e.target.value)}
                         />
-                    </div>
+                    </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="page__add-page-modal--btn">
@@ -159,6 +206,7 @@ const Page = ({ }) => {
                         </Button>
                         <Button
                             className="btn btn-success"
+                            disabled={(err !== '') || ((mode === 'EDIT') && (name === preName))}
                             onClick={mode === 'ADD' ? handleAddNewPage : handleEitPage}
                         >
                             {mode === 'ADD' ? 'Add' : 'Save'}
@@ -166,6 +214,14 @@ const Page = ({ }) => {
                     </div>
                 </Modal.Footer>
             </Modal>
+
+            <ConfirmModal
+                show={showDeleteModal}
+                setShow={setShowDeleteModal}
+                title='Delete page?'
+                content='Deleted page cannot be recovered. Do you still want to continue?'
+                onConfirm={handleDeletePage}
+            />
         </div>
     )
 }

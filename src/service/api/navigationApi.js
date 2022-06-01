@@ -1,4 +1,4 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
+import { callAPIWithDeleteMethod, callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const NavigationApi = {
     getNavigation: async (storeId) => {
@@ -19,6 +19,10 @@ export const NavigationApi = {
     },
     updateMenuItem: async (itemObj) => {
         const result = await callAPIWithPutMethod('menu-item', itemObj, true);
+        return result;
+    },
+    deleteMenuItem: async (menuItemId) => {
+        const result = await callAPIWithDeleteMethod(`menu-item/${menuItemId}`, true);
         return result;
     },
 }

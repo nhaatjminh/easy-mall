@@ -1,0 +1,75 @@
+/* if any css for all page manage. add in here */
+@media screen and (min-width: 1065px) {  
+    .navbar-detail {
+        width: 250px;
+    }
+   /* get screen - 250px of nav bar */
+   .main-content-manage {
+        width: calc(94vw - 250px);
+   }
+}
+/*  */
+
+.manage-home__main {
+    margin: 30px auto;
+    max-width: 850px;
+    &__title {
+        margin: 0 -20px;
+        padding: 0 20px;
+        padding-bottom: 10px;
+        // border-bottom: 1px solid #dfdfdf;
+        font-weight: 100px !important;
+    }
+    &__body {
+        display: flex;
+    }
+    &__tabs {
+        margin: 0 -20px -20px;
+    }
+    &__tab {
+        cursor: pointer;
+        padding: 24px 20px;
+        border-top: 1px solid #dfdfdf;
+        border-right: 1px solid #dfdfdf;
+        background-color: #FAFBFB;
+        width: 220px;
+        &--icon {
+            margin-right: 20px;
+        }
+        &--active {
+            background-color: white;
+            border-right: none;
+            border-left: 4px solid #007F5F;
+            svg {
+                fill: #007F5F
+            }
+            .manage-home__main__tab--title {
+                color: #007F5F;
+            }
+        }
+    }
+    &__content {
+        width: 100%;
+        border-top: 1px solid #dfdfdf;
+        margin-left: 20px;
+        margin-right: -20px;
+        padding: 20px 30px;
+        &--title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        &--btn {
+            margin-top: 40px;
+        }
+    }
+    &__illustration {
+        margin-right: -20px;
+        border-top: 1px solid #dfdfdf;
+        padding-top: 20px;
+        img {
+            width: 120px;
+            height: auto;
+        }
+    }
+}
