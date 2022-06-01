@@ -211,7 +211,7 @@ const Login = () => {
 
                         <button className="btnLogin" type='button' variant='contained' onClick={onLogin}>Sign In</button>
                         <FacebookLogin
-                            appId="842222179779996"
+                            appId="4563573897043264"
                             fields="name,picture,email"
                             autoLoad={false}
                             cssClass="btnFacebook"
