@@ -1,65 +1,20 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import {
     InputLabel,
     ImageList,
-    ImageListItem,
-    Toolbar,
-    Checkbox,
+    ImageListItem, 
     IconButton,
-    Typography,
-    Tooltip,
-    Button
 }
 from '@mui/material';
 import './index.css';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { alpha } from '@mui/material/styles';
-import PropTypes from 'prop-types';
-
-const EnhancedTableToolbar = (props) => {
-    const { numSelected, onDeleteSelected } = props;
-    return (
-      <>
-        {numSelected ?
-          <Toolbar
-            style={{marginTop: '1rem'}}
-            sx={{
-              pl: { sm: 2 },
-              pr: { xs: 1, sm: 1 }
-            }}
-            className='collection-image'
-          >
-              <Typography
-                sx={{ flex: '1 1 80%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >
-                Đã chọn
-                <Tooltip title="Delete" >
-                  <IconButton >
-                    <DeleteIcon onClick={onDeleteSelected}/>
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              
-              <Button className="btn btn-delete-all"><p className="p-0 m-0">Delete</p></Button>
-          </Toolbar>
-        :""}
-        
-      </>
-    );
-  };
-  
-  EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.bool.isRequired,
-  };
+import { doDeleteImageCollection } from "../../../redux/slice/collectionSlice";
+import { useDispatch } from "react-redux";
 
 const ImageInput = ({formRef, oldForm, mode}) => {
     const form = formRef;
+    const dispatch = useDispatch();
     const [images, setImages] = useState(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null);
-    const [selected, setSelected] = useState(false);
-    
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -69,12 +24,6 @@ const ImageInput = ({formRef, oldForm, mode}) => {
         reader.onerror = function (error) {
             console.log('Error: ', error);
         };
-    }
-    const handleClick = () => {
-        setSelected(!selected);
-    };
-    const onDeleteSelected = () => {
-      setSelected(false);
     }
     const ImagesGallery = (images) => {
         return (
@@ -92,13 +41,6 @@ const ImageInput = ({formRef, oldForm, mode}) => {
                           alt="thumbnail"
                           loading="lazy"
                         />
-                        
-                        <div className="overlay"></div>
-                        <Checkbox
-                            className="checkbox-image"
-                            checked={selected}
-                            onClick={(event) => handleClick()}
-                            ></Checkbox>
                       </div>
                   </ImageListItem>
                 : ""
@@ -130,6 +72,25 @@ const ImageInput = ({formRef, oldForm, mode}) => {
       var fileinput = document.getElementById("browse");  // use input file id here
       fileinput.click(); 
     }
+    const handleDelete = () => {
+      if (!(images.startsWith('blob:'))) {
+        new Promise(() => {
+          dispatch(doDeleteImageCollection({
+              data: {
+                  url: images
+              }
+          }))
+        })
+      }
+      setImages(null);
+      form.current = {
+        ...form?.current,
+        collection: {
+          ...form?.current?.collection,
+          thumbnail: null
+        }
+      }
+    }
     return (
         <>
             <div className="row">
@@ -137,11 +98,13 @@ const ImageInput = ({formRef, oldForm, mode}) => {
                 <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-4 p-0">
+                
+              <i className="fa fa-trash icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => handleDelete()}></i>
                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
+                
               </div>
             </div>
-            <EnhancedTableToolbar numSelected={selected} onDeleteSelected={onDeleteSelected} />
             {ImagesGallery(images)}
         </>
     );

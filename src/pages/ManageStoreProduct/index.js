@@ -11,6 +11,10 @@ import { useDispatch } from "react-redux";
 import { doDeleteProduct, doGetListProductsOfStores, doGetOneProductOfStores } from "../../redux/slice/productSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
+import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
+import { useDebounce } from './../../hooks/useDebounce';
+import { ProductApi } from "../../service/api";
+
 const ManageStoreProduct = () => {
   
   const dispatch = useDispatch();
@@ -42,49 +46,59 @@ const ManageStoreProduct = () => {
       align: 'right'
     },
   ];
-  const editFunction = (numSelected, selected) => {
-    if (numSelected !== 1) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Warning!',
-        text: 'You just can edit 1 product!',
-      })
-    } else {
-      Swal.showLoading();
-      new Promise(() => {
-        dispatch((doGetOneProductOfStores(selected[0])))
-        .then((result) => {    
-          // info of product receive from server is array. get first element. into form, need this is object not array
-          if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
-          setMode('EDIT');
-          setOldForm(result.payload);  
-          setShowAddProduct(true);
-          Swal.close();
-        })
-      })
-    }
-  }
-  const deleteAllFunction = async (numSelected, selected) => {
+  const [filterSeach, setFilterSearch] = useState(null);
+  const dbValue = useDebounce(filterSeach, 300);
+  const editFunction = (selected) => {
     Swal.showLoading();
-    const listPromise = [];
-    selected.map((product) => {
-      listPromise.push(
-        new Promise((resolve) => {
-          dispatch(doDeleteProduct({
-            id: product
-            })).then(() => {
-                resolve();
+    new Promise(() => {
+      dispatch((doGetOneProductOfStores(selected)))
+      .then((result) => {    
+        // info of product receive from server is array. get first element. into form, need this is object not array
+        if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
+        setMode('EDIT');
+        setOldForm(result.payload);  
+        setShowAddProduct(true);
+        Swal.close();
+      })
+    })
+  }
+  const deleteAllFunction = async (selected) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.showLoading();
+        const listPromise = [];
+        selected.map((product) => {
+          listPromise.push(
+            new Promise((resolve) => {
+              dispatch(doDeleteProduct({
+                id: product
+                })).then(() => {
+                    resolve();
+                })
             })
+          )
         })
-      )
-    })
-    Promise.all(listPromise).then(() => {
-      Swal.close();
-      returnTable();
-    })
+        Promise.all(listPromise).then(() => {
+          Swal.close();
+          returnTable();
+        })
+      }
+  })
+   
   }
   const returnTable = async () => {
-    await dispatch(doGetListProductsOfStores(params.storeId))
+    await dispatch(doGetListProductsOfStores({
+          id: params.storeId,
+          params: {}
+        }))
         .then((result) => {
           if (!unmounted.current) {
             setRows(result.payload);  
@@ -95,7 +109,10 @@ const ManageStoreProduct = () => {
   useEffect(() => {
     unmounted.current = false;
     if (!showAddProduct) 
-      dispatch(doGetListProductsOfStores(params.storeId))
+      dispatch(doGetListProductsOfStores({
+        id: params.storeId,
+        params: {}
+      }))
         .then((result) => {
           if (!unmounted.current) setRows(result.payload);
       });
@@ -104,6 +121,29 @@ const ManageStoreProduct = () => {
         unmounted.current = true;
       };
   }, [showAddProduct])
+  const handleSearch = (e) => {
+    setFilterSearch(e.target.value);
+  }
+  const fetchProductWithFilter = async () => {
+    if (filterSeach) {
+      dispatch(doGetListProductsOfStores({
+        id: params.storeId,
+        params: {
+          title: filterSeach
+        }
+      }))
+        .then((result) => {
+          if (!unmounted.current) setRows(result.payload);
+      });
+    }
+  }
+  useEffect(() => {
+    unmounted.current = false;
+    fetchProductWithFilter()
+    return () => {
+      unmounted.current = true;
+    };
+}, [dbValue])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
@@ -117,13 +157,19 @@ const ManageStoreProduct = () => {
               <>
               {!showAddProduct ?
               <>
+              
+                <p className="text-btn-login ml-1-5rem p-0-75rem"> Products </p>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  spacing={1}
-                >              
-                  <p className="text-btn-login ml-1rem p-0-75rem"> Products </p>
+                  spacing={10}
+                  className="custom"
+                >           
+                  <CustomSearchInput
+                    placeholder='Search'
+                    onChange={handleSearch}
+                  />   
                   <Stack
                     direction="row"
                     justifyContent="flex-end"

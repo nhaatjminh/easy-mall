@@ -1,15 +1,17 @@
-import React, {useState} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { Paper } from '@material-ui/core';
 
 import {Checkbox, Box, TextField } from '@mui/material';
-import { InputLabel,Chip ,Link, FormControlLabel,Popper} from '@material-ui/core';
+import { InputLabel,Chip ,Link, FormControlLabel,Popper, IconButton } from '@material-ui/core';
 
 import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TableVariant from "./TableVariant";
 import './index.css'
 import Swal from "sweetalert2";
+import { v4 as uuid } from 'uuid';
 
-const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
+const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
     const initOldFormOptionValue = () => {
         const resultForm = JSON.parse(JSON.stringify(oldForm));
         if (resultForm?.option) {
@@ -37,6 +39,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
         },
     ];
     const form = formRef;
+
     const [optionTag, setOptionTag] = useState(oldForm?.option?.length && mode === "EDIT" ? Array.from({length: oldForm?.option?.length}, (v, i) => true) : []); // state to check length and render option
     const [optionValue, setOptionValue] = useState(oldForm?.option && mode === "EDIT" ? initOldFormOptionValue() : []);
     const [showOpt, setShowOpt] = useState((oldForm?.product?.is_variant && mode === "EDIT") || false);
@@ -45,6 +48,19 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
     const [errorValue, setErrorValue] = useState(-1);
     const [errorOption, setErrorOption] = useState(-1);
     const open = Boolean(anchorEl);
+    
+    // save {key: value} = {oldName: newName} use for variant
+    const optionValueRef = useRef({});
+
+    useEffect(() => {
+        form.current = {
+            product: {},
+            option: [],
+            variant: [],
+            collection: []
+        }
+    }, [])
+
     
     const handlePopoverOpen = (event) => {
       setAnchorEl(event.currentTarget);
@@ -89,9 +105,21 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
             }
         }
     }
+    const createNameForNewVariant = (arrayAfterSplit, newValue, idxValue) => {
+        let result = '';
+        arrayAfterSplit.map((curValue, idx) => {
+            if (idx === idxValue) {
+                result += newValue;
+            } else {
+                result += curValue;
+            }
+            if (idx !== arrayAfterSplit.length - 1) result += "/"
+        })
+        return result;
+    }
     const changeOptionValue = (e, index, idxValue) => {
         const valueChange = e.target.value ? e.target.value : "";
-        const newObj = [...optionValue];
+        const newObj = JSON.parse(JSON.stringify(optionValue));
         if (!newObj[index].value.includes(valueChange)) {
             if (errorValue === idxValue && errorIdxOption === index) {
                 setErrorValue(-1);
@@ -109,9 +137,81 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
             }
         }
         if (idxValue !== undefined) {
-            newObj[index].value[idxValue] = valueChange; 
+            let oldValue = newObj[index].value[idxValue];
+            newObj[index].value[idxValue] = valueChange;
+            if (mode === "EDIT") {
+                let update;
+                let indexOfOptionRef = optionRef.current.findIndex(option =>
+                    (option?.id && option?.id === newObj[index].id)
+                    || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
+
+                let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef].value.filter((value) => value.update !== "Delete")
+                let indexOfOptionValue =
+                    optionRef.current[indexOfOptionRef].value.findIndex(option => 
+                        (option?.id && option?.id === arrayOptionRefLikeOptionValue[idxValue]?.id)
+                        || (option?.idTemp && option?.idTemp === arrayOptionRefLikeOptionValue[idxValue]?.idTemp))
+                
+                if (optionRef.current[indexOfOptionRef]?.value[indexOfOptionValue]?.update) update = optionRef?.current[indexOfOptionRef]?.value[indexOfOptionValue]?.update;
+                else update = "Change"
+                optionRef.current[indexOfOptionRef].value[indexOfOptionValue] = {
+                    ...optionRef.current[indexOfOptionRef].value[indexOfOptionValue],
+                    value: valueChange,
+                    update: update
+                };
+
+
+                if (optionRef.current[indexOfOptionRef].update) update = optionRef?.current[indexOfOptionRef]?.update;
+                else update = "Change"
+                optionRef.current[indexOfOptionRef].update = update
+
+
+                newObj[index] = {
+                    ...newObj[index],
+                    update: "Change"
+                }
+            }
+            if (optionValueRef.current) {
+                for (const [key, variantName] of Object.entries(optionValueRef.current)) {
+                    let optionOfVariant = variantName.split("/");
+                    if (optionOfVariant[index] === oldValue) {
+                        optionValueRef.current[key] = createNameForNewVariant(optionOfVariant, valueChange, index)   
+                    }
+                }
+            }
         } else {
-            newObj[index].value.push(valueChange);
+            newObj[index].value.push(valueChange);  
+            if (mode === "EDIT") {
+                let update;
+                if ( newObj[index]?.update) update = newObj[index].update;
+                else update = "Change"   
+                newObj[index] = {
+                    ...newObj[index],
+                    update: update
+                }
+                let newOption = {
+                    idTemp: uuid(),
+                    value: valueChange,
+                    update: "Add"
+                };
+                let indexOfOptionRef = optionRef.current.findIndex(option =>
+                    (option?.id && option?.id === newObj[index]?.id)
+                    || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
+                optionRef.current[indexOfOptionRef].value.push(newOption)
+                if (optionRef.current[indexOfOptionRef].update) update = optionRef?.current[indexOfOptionRef]?.update;
+                else update = "Change"
+                optionRef.current[indexOfOptionRef].update = update
+                if (optionValueRef.current && !valueChange.includes("/")) {
+                    const key = Object.keys(optionValueRef.current)
+                    if (key.length) {
+                        const lengthOptionOfFirstVariant = optionValueRef.current[key[0]].split("/");
+                        if (lengthOptionOfFirstVariant !== optionRef?.current?.length) {
+                           
+                            optionValueRef.current = null; //clear this to create new Variant
+                        }
+                    }
+
+                }
+            }
         }
         checkErrorValue(newObj);
         setOptionValue(newObj);
@@ -139,69 +239,215 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
         const temp = [...optionTag];
         temp.push(true);
         setOptionTag(temp);
+        let newOption = {
+            name: "",
+            value: []
+        }
+        if (mode === "EDIT") {
+            newOption = {
+                ...newOption,
+                update: "Add",  
+                idTemp: uuid()
+            }
+        }
         const newOptionValue =[ 
             ...optionValue,
-            {
-                name: "",
-                value: []
-            }];
+            newOption
+        ];
+        // if mode !== EDIT => optionValue === form.current.option
+        let newOptionForForm;
+        if (form.current?.option) {
+            newOptionForForm = [
+                ...form.current?.option,
+                newOption
+            ]
+        } else newOptionForForm = [newOption]
+        optionRef.current.push(newOption)
         setOptionValue(newOptionValue);
         form.current = {
             ...form?.current,
-            option: newOptionValue
+            option: newOptionForForm
         }
     }
      
     const handleOnChangeShowOpt = (e) => {
-      if (!showOpt) {
-          addAnotherOption();
-      }
-      setIsVariant(!showOpt);
-      setShowOpt(!showOpt)
-      form.current = {
-          ...form?.current,
-          product: {
-              ...form?.current?.product,
-              is_variant: e.target.checked
-          }
-      }
+        if (!showOpt) {
+            addAnotherOption();
+        }
+        setIsVariant(!showOpt);
+        setShowOpt(!showOpt)
+        form.current = {
+            ...form?.current,
+            product: {
+                ...form?.current?.product,
+                is_variant: e
+            }
+        }
+        if (mode === "EDIT") {
+            form.current.product.update = "Change"
+        }
     }
     const handleChangeOption = (e, index) => {    
         const newTargetValue = e.target.value ? e.target.value : "";
         const newObj = [...optionValue];
-        let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : [] 
+        let oldValue = newObj[index]?.value.length ? [...optionValue[index].value] : []     
         newObj[index] = {
+            ...newObj[index],
             name: newTargetValue,
             value: oldValue
         };
+        if (mode === "EDIT") {
+            let indexOfOptionRef = optionRef.current.findIndex(option =>
+                (option?.id && option?.id === newObj[index]?.id)
+                || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
+            if (newObj[index].id) {
+                optionRef.current[indexOfOptionRef].update = "Change";
+            } else {
+                optionRef.current[indexOfOptionRef].update = "Add";
+            }  
+            optionRef.current[indexOfOptionRef].name = newTargetValue;
+        }
+        form.current.option = form.current.option.map((option) => {
+            if (option?.id && option?.id === newObj[index]?.id) {
+                return newObj[index]
+            } else if (option?.idTemp && option?.idTemp === newObj[index]?.idTemp) {
+                return newObj[index]
+            }
+            else return option;
+        })
         setOptionValue(newObj);
         checkErrorOption(newObj);
     }
 
     const handleDeleteOption = (index) => {
-        let newOptionValue = optionValue.filter((value, idx) => idx !== index);
-        setOptionValue(newOptionValue);
-        let newOptionTag = optionTag.filter((value, idx) => idx !== index);
-        setOptionTag(newOptionTag);
-        if (newOptionTag.length <= 0) setShowOpt(false);
-        form.current = {
-            ...form?.current,
-            option: newOptionValue
-        }
-        checkErrorOption(newOptionValue);
-        checkErrorValue(newOptionValue);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'This Option has been deleted.',
+                    icon: 'success'
+                }) 
+                let newOptionValue = [];
+                if (mode === "EDIT") {
+                    let optionForForm = [];
+                    optionValue.forEach((value, idx) => {
+                        if (idx === index) {
+                            if (value.id) {
+                                value = {
+                                    ...value,
+                                    update: "Delete"
+                                }        
+                                optionForForm.push(value);
+                            }
+                        } else {
+                            optionForForm.push(value);
+                        }
+                        form.current = {
+                            ...form?.current,
+                            option: optionForForm
+                        }
+                    });
+                    if (mode === "EDIT") {
+                        let indexOfOptionRef = optionRef.current.findIndex(option =>
+                            (option?.id && option?.id === optionValue[index].id)
+                            || (option?.idTemp && option?.idTemp === optionValue[index]?.idTemp))
+                        if (optionRef.current[indexOfOptionRef]?.idTemp) {
+                            optionRef.current.splice(indexOfOptionRef,1)
+                        } else optionRef.current[indexOfOptionRef].update = "Delete";
+                    }
+                    optionValueRef.current = null; //clear this to create new Variant
+                    newOptionValue = optionValue.filter((value, idx) => idx !== index);
+                } else {
+                    newOptionValue = optionValue.filter((value, idx) => idx !== index);
+                    form.current = {
+                        ...form?.current,
+                        option: newOptionValue
+                    }
+                }
+                setOptionValue(newOptionValue);
+                let newOptionTag = optionTag.filter((value, idx) => idx !== index);
+                setOptionTag(newOptionTag);
+                if (newOptionTag.length <= 0) {
+                    handleOnChangeShowOpt(false)
+                };
+                checkErrorOption(newOptionValue);
+                checkErrorValue(newOptionValue);
+            }
+        })
     }
     const handleDeleteOptionValue = (index, idxValue) => {
-        const newObj = [...optionValue];
-        newObj[index].value = newObj[index]?.value.filter((value, idx) => idx !== idxValue);
-        
-        setOptionValue(newObj);
-        
-        checkErrorOption(newObj);
-        checkErrorValue(newObj);
-        form.current = {
-            ...form?.current,
-            option: newObj
+        if (errorValue !== -1) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'You need fix value error before delete.',
+                icon: 'warning'
+            }) 
+        } else {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'This Option has been deleted.',
+                        icon: 'success'
+                    }) 
+                    const newObj = [...optionValue];
+                    
+                    let oldValue = newObj[index]?.value[idxValue]
+                    newObj[index].value = newObj[index]?.value.filter((value, idx) => idx !== idxValue);
+                    setOptionValue(newObj);
+                    
+                    checkErrorOption(newObj);
+                    checkErrorValue(newObj);
+                    form.current = {
+                        ...form?.current,
+                        option: newObj
+                    }
+                    if (mode === "EDIT") {
+                        let indexOfOptionRef = optionRef.current.findIndex(option =>
+                            (option?.id && option?.id === newObj[index].id)
+                            || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
+    
+                        let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef].value.filter((value) => value.update !== "Delete")
+                        let indexOfOptionValue =
+                            optionRef.current[indexOfOptionRef].value.findIndex(option => 
+                                (option?.id && option?.id === arrayOptionRefLikeOptionValue[idxValue].id)
+                                || (option?.idTemp && option?.idTemp === arrayOptionRefLikeOptionValue[idxValue]?.idTemp))
+                        if (optionRef.current[indexOfOptionRef]?.value[indexOfOptionValue]?.idTemp) {
+                            delete optionRef.current[indexOfOptionRef]?.value[indexOfOptionValue]
+                        } else {
+                            optionRef.current[indexOfOptionRef].value[indexOfOptionValue].update = "Delete"
+                        }
+                        let update;
+                        if (optionRef.current[indexOfOptionRef].update) update = optionRef?.current[indexOfOptionRef]?.update;
+                        else update = "Change"
+                        optionRef.current[indexOfOptionRef].update = update
+                        if (optionValueRef.current) {
+                            for (const [key, variantName] of Object.entries(optionValueRef.current)) {
+                                let optionOfVariant = variantName.split("/");
+                                if (optionOfVariant[index] === oldValue) {
+                                    delete optionValueRef.current[key]   
+                                }
+                            }
+                        }
+                    }
+                }
+            })
         }
     }
     const doneOrEditOption = (index) => {
@@ -232,12 +478,19 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
             })
         }
     }
+    useEffect(() => {
+        if (mode === "EDIT") {
+            oldForm?.variant?.map((variant) => {
+                optionValueRef.current[variant.name] = variant.name
+            })
+        }
+    },[mode])
     return (
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
             <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Option</InputLabel>
             <FormControlLabel control={
-                <Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e)}/>} label="This product has options, like size or color" />
+                <Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e.target.checked)}/>} label="This product has options, like size or color" />
             {showOpt ?
                 <>  
                     <Divider className="divider-custom"/>
@@ -267,7 +520,9 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                                         />
                                     </div>
                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                        <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOption(index)} ></i>
+                                        <IconButton onClick={(e) => handleDeleteOption(index)}>
+                                            <DeleteIcon/>
+                                        </IconButton>
                                     </div>
                                 </div>
                                 <Popper id={popoverId} open={open} anchorEl={anchorEl}
@@ -302,8 +557,9 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                                                         />
                                                     </div>
                                                     <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                                        
-                                                        <i className="fa-trash fa-icon icon-trash" onClick={(e) => handleDeleteOptionValue(index, idxValue)}></i>
+                                                        <IconButton onClick={(e) => handleDeleteOptionValue(index, idxValue)}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
                                                     </div>
                                                 </div>
                                             )
@@ -327,7 +583,9 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                                             />
                                         </div>
                                         <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
-                                            <i className="fa-trash fa-icon icon-trash text-extra-large" ></i>
+                                            <IconButton>
+                                                <DeleteIcon/>
+                                            </IconButton>
                                         </div>
                                     </div>  
                                 </div>
@@ -362,7 +620,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
                     {optionTag.length <= 2 ?
                         <div>
                             <i className="fa-plus fa-icon icon-plus-before-text" ></i>
-                            <Link to="#" className="text-decoration-none" style={{color: 'black'}} onClick={addAnotherOption}>Add another option</Link>
+                            <Link to="#" className="text-decoration-none" style={{color: 'black', cursor:'pointer'}} onClick={addAnotherOption}>Add another option</Link>
                         </div>
                     : ""
                     }
@@ -371,7 +629,7 @@ const Variant = ({ mode, formRef, setIsVariant, oldForm }) => {
             }
 
         </Paper> 
-        <TableVariant key="TableVariant" showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
+        <TableVariant key="TableVariant" optionRef={optionRef} optionValueRef={optionValueRef} mode={mode} showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
         </TableVariant>
       </>
     );

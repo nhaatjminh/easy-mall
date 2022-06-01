@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Paper, Typography } from '@material-ui/core';
 
 import PropTypes from 'prop-types';
@@ -8,6 +8,7 @@ import { visuallyHidden } from '@mui/utils';
 
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -80,6 +81,10 @@ function EnhancedTableHead(props) {
                 </TableSortLabel>
               </TableCell>
             ))}
+            
+            <TableCell>
+              Action
+            </TableCell>
         </TableRow>
       </TableHead>
     );
@@ -96,15 +101,16 @@ EnhancedTableHead.propTypes = {
 
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, onDeleteSelected, editFunction, selected, deleteAllFunction, setSelected } = props;
+  const { numSelected, onDeleteSelected, selected, deleteAllFunction, setSelected } = props;
   const handleDelete = () => {
-    deleteAllFunction(numSelected, selected);
+    deleteAllFunction(selected);
     setSelected([]);
   }
   return (
     <>
       {numSelected > 0 ?
         <Toolbar
+          style={{justifyContent: 'space-between'}}
           sx={{
             pl: { sm: 2 },
             pr: { xs: 1, sm: 1 },
@@ -125,21 +131,14 @@ const EnhancedTableToolbar = (props) => {
             </Typography>
             
           ) : ""}
-
-          {numSelected > 0 ? (
-            <Tooltip title="Delete" >
-              <IconButton onClick={onDeleteSelected}>
-                <DeleteIcon/>
-              </IconButton>
-            </Tooltip>
-          ) : ""}
-          
-          {numSelected > 0 ? (
-            <button className="btn  btn-login btn-product" onClick={() => editFunction(numSelected, selected)}> <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
-          ) : ""}
-          {numSelected > 0 ? (
-            <button className="btn btn-login btn-delete-item btn-product ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
-          ) : ""}
+          <div className="float-right">
+            {numSelected > 0 ? (
+              <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+            ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn btn-login btn-delete-item btn-product ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
+            ) : ""}
+          </div>
         </Toolbar>
       :""}
       
@@ -159,7 +158,7 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState([]);
-    
+    const [buttonState, setButtonState] = useState(false);
     const handleRequestSort = (event, property) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
@@ -201,10 +200,16 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     
         setSelected(newSelected);
     };
-    
+    useEffect(() => {
+      setSelected([]);
+    }, [buttonState])
     const isSelected = (productId) => selected.indexOf(productId) !== -1;
     const onDeleteSelected = () => {
       setSelected([]);
+    }
+    const handleDelete = (selected) => {
+      deleteAllFunction(selected);
+      setButtonState(!buttonState);
     }
     return (
         
@@ -243,15 +248,27 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
                                     'aria-labelledby': labelId,
                                 }}
                             />
-                      </TableCell>
-                      {columnsOfData.map((headCell, indexData) => (
-                        <TableCell
-                          key={headCell + indexData}
-                          align={'right'}
-                        >
-                          <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
                         </TableCell>
-                      ))}
+                        {columnsOfData.map((headCell, indexData) => {
+                          return (
+                          <TableCell
+                            key={headCell + indexData}
+                            align={'right'}
+                          >
+                            <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
+                          </TableCell>
+                        )})}
+                        <TableCell>
+                          <IconButton onClick={() => { 
+                            setButtonState(!buttonState);
+                            editFunction(row.id)
+                          }}>
+                            <EditIcon/>
+                          </IconButton>
+                          <IconButton onClick={() => handleDelete([row.id])}>
+                            <DeleteIcon/>
+                          </IconButton>
+                        </TableCell>
                     </TableRow>
                     );
                 })}

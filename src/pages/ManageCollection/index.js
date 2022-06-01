@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores, doGetOneCollections, doDeleteCollection } from "../../redux/slice/collectionSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
+import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
+import { useDebounce } from './../../hooks/useDebounce';
 
 const ManageCollection = () => {
   const [showAddCollection, setShowAddCollection] = useState(false);
@@ -18,18 +20,14 @@ const ManageCollection = () => {
   const params = useParams();
   const unmounted = useRef(false);
   const stringToHTML = function (str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-        return null;
-    }
-    str = JSON.parse(str);
     let parser = new DOMParser();
     let doc = parser.parseFromString(str, 'text/html');
     return doc.body.innerHTML.replace("\"", "`");
   };
   const collectionList = useSelector((state) => state.collectionSlice.listCollection);
   const [rows, setRows] = useState(collectionList);
+  const [filterSeach, setFilterSearch] = useState(null);
+  const dbValue = useDebounce(filterSeach, 300);
   const columns = [
     { id: 'name', label: 'Title', minWidth: 300 },
     {
@@ -39,17 +37,10 @@ const ManageCollection = () => {
       align: 'right'
     },
   ];
-  const editFunction = (numSelected, selected) => {
-    if (numSelected !== 1) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Warning!',
-        text: 'You just can edit 1 product!',
-      })
-    } else {
-      Swal.showLoading();
+  const editFunction = (selected) => {
+    Swal.showLoading();
       new Promise(() => {
-        dispatch((doGetOneCollections(selected[0])))
+        dispatch((doGetOneCollections(selected)))
         .then((result) => {
           setMode('EDIT');
           setOldForm(result.payload);  
@@ -57,9 +48,8 @@ const ManageCollection = () => {
           Swal.close();
         })
       })
-    }
   }
-  const deleteAllFunction = async (numSelected, selected) => {
+  const deleteAllFunction = async (selected) => {
     Swal.showLoading();
     const listPromise = [];
     selected.map((product) => {
@@ -79,7 +69,10 @@ const ManageCollection = () => {
     })
   }
   const returnTable = async () => {
-    await dispatch(doGetListCollectionOfStores(params.storeId))
+    await dispatch(doGetListCollectionOfStores({
+            id: params.storeId,
+            params: {}
+          }))
         .then((result) => {
           if (!unmounted.current) {
             setRows(result.payload);  
@@ -89,17 +82,43 @@ const ManageCollection = () => {
   }
   useEffect(() => {
     if (!showAddCollection) 
-      dispatch(doGetListCollectionOfStores(params.storeId))
-      .then((result) => setRows(result.payload));
+    dispatch(doGetListCollectionOfStores({
+      id: params.storeId,
+      params: {}
+    }))
+    .then((result) => setRows(result.payload));
   }, [showAddCollection])
   useEffect(() => {
     let newRows = JSON.parse(JSON.stringify(collectionList));
     newRows = newRows.map((collection) => {
-      collection.description = stringToHTML(collection?.description);
+      if (collection.description) collection.description = stringToHTML(collection?.description);
       return collection;
     })
     setRows(newRows);
   }, [collectionList])
+  const handleSearch = (e) => {
+    setFilterSearch(e.target.value);
+  }
+  const fetchCollectionWithFilter = async () => {
+    if (filterSeach) {
+      dispatch(doGetListCollectionOfStores({
+        id: params.storeId,
+        params: {
+          name: filterSeach
+        }
+      }))
+        .then((result) => {
+          if (!unmounted.current) setRows(result.payload);
+      });
+    }
+  }
+  useEffect(() => {
+    unmounted.current = false;
+    fetchCollectionWithFilter()
+    return () => {
+      unmounted.current = true;
+    };
+}, [dbValue])
   return (
     <>
       <HeaderDetailStore ></HeaderDetailStore>
@@ -112,13 +131,20 @@ const ManageCollection = () => {
                 <>
                   {!showAddCollection ?
                     <>
+                    
+                      <p className="text-btn-login ml-1-5rem p-0-75rem"> Collection </p>
                       <Stack
                         direction="row"
                         justifyContent="space-between"
                         alignItems="center"
                         spacing={1}
-                      >              
-                        <p className="text-btn-login ml-1rem p-0-75rem"> Collection </p>
+                        className="custom"
+                      >      
+                            
+                        <CustomSearchInput
+                          placeholder='Search'
+                          onChange={handleSearch}
+                        />          
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddCollection(true);
                           setMode("ADD")

@@ -6,6 +6,7 @@ import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContai
 
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ModalAddVariant from '../ModalAddVariant';
 
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
@@ -60,6 +61,7 @@ const EnhancedTableToolbar = (props) => {
                 alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
             }),
           }}
+          style={{justifyContent: 'space-between'}}
         >
           {numSelected > 0 ? (
             <Typography
@@ -73,17 +75,15 @@ const EnhancedTableToolbar = (props) => {
             
           ) : ""}
 
-          {numSelected > 0 ? (
-            <Tooltip title="Delete" >
-              <IconButton >
-                <DeleteIcon onClick={onDeleteSelected}/>
-              </IconButton>
-            </Tooltip>
-          ) : ""}
+          <div className="float-right">
           
-          {numSelected > 0 ? (
-            <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit Products </p></button>
-          ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
+            ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+            ) : ""}
+          </div>
         </Toolbar>
       :""}
       
@@ -95,40 +95,74 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
-
+const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
     const form = formRef;
     const columns = columnsOfData;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState([]);
     const [variant, setVariant] = useState([]);
+    const [deleteVariant, setDeleteVariant] = useState([]);
+    const [oldVariant, setOldVariant] = useState(oldForm?.variant?.map((variant) => variant.name) || []);
     const unmounted = useRef(false);
-    const rows = variant;
+    const [trickRerender, setTrickRerender] = useState(0);
+    const [addValueVariant, setAddValueVariant] = useState([]);
     
     const handleChangePriceVariant = (index, valuePrice) => {
       let newVariant = [...form?.current?.variant];
-      newVariant[index] = {
+      
+      if (mode === "EDIT") {
+        if (newVariant[index].id) {
+          newVariant[index] = {
+            ...form?.current?.variant[index],
+            price: Number(valuePrice),
+            update: "Change"
+          }
+        } else {
+          newVariant[index] = {
+            ...form?.current?.variant[index],
+            price: Number(valuePrice)
+          }
+        }
+      } else {
+        newVariant[index] = {
           ...form?.current?.variant[index],
           price: Number(valuePrice)
+        }
       }
       form.current = {
           ...form?.current,
           variant: newVariant
       }
-      //setVariant(newVariant);
+      setVariant(newVariant);
 
     }
     const handleChangeQuantity = (index, valueQuantity) => {
         let newVariant = [...form?.current?.variant];
-        newVariant[index] = {
+        if (mode === "EDIT") {
+          if (newVariant[index].id) {
+            newVariant[index] = {
+              ...form?.current?.variant[index],
+              quantity: Number(valueQuantity),
+              update: "Change"
+            }
+          } else {
+            newVariant[index] = {
+              ...form?.current?.variant[index],
+              quantity: Number(valueQuantity)
+            }
+          }
+        } else {
+          newVariant[index] = {
             ...form?.current?.variant[index],
             quantity: Number(valueQuantity)
+          }
         }
         form.current = {
             ...form?.current,
             variant: newVariant
         }
+        setVariant(newVariant);
     }
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -141,7 +175,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-        const newSelecteds = rows.map((n) => n.name);
+        const newSelecteds = variant.map((n) => n.name);
         setSelected(newSelecteds);
         return;
         }
@@ -173,7 +207,16 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
     }
     const handleNotDeleteVariant =(row) => {
       const newList = variant.map((element) => {
-        if (element.name === row.name) {
+        
+        if (element.name === row.name) { // name can not duplicated
+          if (mode === "EDIT") {
+            if (!oldVariant.includes(element.name)) { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+              element.update = "Add"
+            }
+            if ( oldVariant.includes(element.name)) { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+              element.update = "Change"
+            }
+          }
           delete element.delete;
         }
         return element
@@ -206,9 +249,17 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       let flag = false;
       const newList = await variant.map((element) => {
         if (element.name === row.name) {
-          element = {
-            ...element,
-            delete: true
+          if (mode === "EDIT") { // have update, but not have id => this is new Variant. return from "Delete" to "Add"
+            element = {
+              ...element,
+              delete: true,
+              update: "Delete"
+            }
+          } else {
+            element = {
+              ...element,
+              delete: true,
+            }
           }
           OptionValueDelete = element.name.split('/'); 
           currentDelete = element;
@@ -251,13 +302,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       }
       
     }
-    useEffect(() => {
-      unmounted.current = false;
-      createVariantUI();
-      return () => {
-        unmounted.current = true;
-      };
-    }, [optionValue])
+    
     const combineArrays = (arrayOfArrays ) => {
       if( !arrayOfArrays ){
           return [];
@@ -295,7 +340,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
       return output;
     }
       
-    function formCombination( odometer, array_of_arrays ){
+    const formCombination = ( odometer, array_of_arrays ) => {
         return odometer.reduce(
           function(accumulator, odometer_value, odometer_index){
             return "" + accumulator +"/" +array_of_arrays[odometer_index][odometer_value];
@@ -304,7 +349,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
         );
     }
     
-    function odometer_increment( odometer, array_of_arrays ){
+    const odometer_increment = ( odometer, array_of_arrays ) => {
         for( let i_odometer_digit = odometer.length-1; i_odometer_digit >=0; i_odometer_digit-- ){ 
             let maxee = array_of_arrays[i_odometer_digit].length - 1;         
             if( odometer[i_odometer_digit] + 1 <= maxee ){
@@ -334,73 +379,182 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
           resolve();
       }).then(() => {
           let listVariant = combineArrays(idxValue);
-          
-          const allNewVariant = []
-      
+          let allNewVariant = []
+          let allVariantAssignForm = [];
+          if (!optionValueRef.current) { // when u delete some option, create new variant list
+            let listDeleteVariant = oldForm.variant;
+            allVariantAssignForm = listDeleteVariant.map((variant) => {
+                return {
+                    ...variant,
+                    update: "Delete"
+                }
+            })
+          }
           listVariant.forEach((variant) => {
-              const oldVariant = oldForm?.variant?.find(oldvariant => oldvariant.name === variant)
-              let listOptionOfVariant = variant.split("/");
-              let newVariant = {};
-              listOptionOfVariant.forEach((opt, idxOpt) => {
-                  let newOpt = {
-                      name: idxOption[idxOpt],
-                      value: opt
+              if (!deleteVariant.includes(variant)) {
+                let oldKeyVariant = '';
+                if (optionValueRef.current) {
+                  for (const [key, newVariantName] of Object.entries(optionValueRef.current)) {
+                    if (variant === newVariantName) {
+                      oldKeyVariant = key;
+                      break;
+                    }
                   }
-                  if (oldVariant) {
+                }
+                const oldFormVariant = oldForm.variant?.find(oldvariant => oldvariant?.name && oldvariant?.name === oldKeyVariant)
+                let oldVariant = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
+                if (!oldVariant && mode === "EDIT") {
+                  oldVariant = addValueVariant.find(variantAdd => variantAdd.name === variant)
+                }
+                let listOptionOfVariant = variant.split("/");
+                let newVariant = {};
+                if (oldKeyVariant !== variant) {
+                  newVariant = {
+                    ...newVariant,
+                  }
+                  if (mode === "EDIT") {
                     newVariant = {
                       ...newVariant,
-                      id: oldVariant?.id,
-                      price: Number(oldVariant?.price),
-                      quantity: Number(oldVariant?.quantity)
+                      update: "Change"
                     }
                   }
-                  if (!newVariant?.option_value)
-                    newVariant = {
-                        ...newVariant,
-                        name: variant,
-                        option_value: [newOpt]
+                }
+                listOptionOfVariant.forEach((opt, idxOpt) => {
+                    let newOpt = {
+                        name: idxOption[idxOpt],
+                        value: opt
                     }
-                  else newVariant.option_value.push(newOpt);
-              })
-
-              allNewVariant.push(newVariant);
+                    if (oldVariant) {
+                      if (oldVariant.id) {
+                        newVariant = {
+                          ...newVariant,
+                          id: oldVariant?.id,
+                        }
+                      }
+                      newVariant = {
+                        ...newVariant,
+                        price: Number(oldVariant?.price),
+                        quantity: Number(oldVariant?.quantity)
+                      }
+                      if (mode === "EDIT" && oldVariant.update) {
+                        newVariant = {
+                          ...newVariant,
+                          update: oldVariant.update
+                        }
+                      }
+                    } else {
+                      if (mode === "EDIT") {
+                        newVariant = {
+                          ...newVariant,
+                          update: "Add"
+                        }
+                      }
+                    }
+                    if (!newVariant?.option_value)
+                      newVariant = {
+                          ...newVariant,
+                          name: variant,
+                          option_value: [newOpt]
+                      }
+                    else newVariant.option_value.push(newOpt);
+                })
+                allNewVariant.push(newVariant);
+              }
           })
           if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
+              setTrickRerender(trickRerender + 1);
+              allNewVariant.forEach((newVariant) => {
+                allVariantAssignForm.push(newVariant)
+              })
               form.current = {
                   ...form?.current,
-                  variant: allNewVariant
+                  variant: allVariantAssignForm
               }
           }
       })
     }
+    useEffect(() => {
+      unmounted.current = false;
+      createVariantUI();
+      return () => {
+        unmounted.current = true;
+      };
+    }, [optionValue, deleteVariant])
+    useEffect(() => {
+      const idxValue = [];
+      optionValue.forEach((optionName) => {
+        idxValue.push(optionName.value);
+      })
+      let listVariant = combineArrays(idxValue);
+      let oldList = oldForm?.variant?.map((variant) => variant.name)
+      let deleteList = []
+      listVariant.map((variant) => {
+        if (!oldList.includes(variant)) {
+          deleteList.push(variant);
+        }
+      })
+      setDeleteVariant(deleteList);
+    }, [])
     return (
       <>
       
       {variant.length && showOpt?
         <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
+            <div style={{justifyContent: 'space-between', alignItems: 'center', display: 'flex', padding: '5px 15px 0 15px'}}>
+              <p className="font-weight-bold text-normal m-0" style={{width: 'auto'}}>Variant</p>
+              {
+              mode === "EDIT" ? 
+                <ModalAddVariant
+                  variant={variant}
+                  addValueVariant={addValueVariant}
+                  setAddValueVariant={setAddValueVariant}
+                  combineArrays={combineArrays}
+                  form={form}
+                  setDeleteList={setDeleteVariant}
+                  deleteList={deleteVariant}
+                  optionValue={optionValue}
+                  setOptionValue={setOptionValue}
+                  optionValueRef={optionValueRef}
+                  optionRef={optionRef}
+                  styleButton={
+                    {
+                      width: 'auto',
+                      float: 'right',
+                      border: '1px solid #666666',
+                      padding: '5px 10px',
+                      margin: '10px 0 0 0',
+                      borderRadius: 10,
+                      backgroundColor: '#0d6efd',
+                      color: 'white'
+                    }
+                  }></ModalAddVariant>
+              : ""
+              }
+            </div>
             <TableContainer sx={{ maxHeight: 440 }}>
+                
                 <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
                 <Table stickyHeader aria-label="sticky table" className="p-0">
                 <EnhancedTableHead
                   numSelected={selected.length}
                   onSelectAllClick={handleSelectAllClick}
-                  rowCount={rows.length}
+                  rowCount={variant.length}
                   headCells={columns}
                 />
                 <TableBody>
-                    {rows
+                    {variant
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row,index) => {
                         const isItemSelected = isSelected(row.name);
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                         <TableRow hover
+                        key={`${row.quantity} + ${row.price} + ${index}  + variant`}
                         role="checkbox"
                         className={`${row.delete ? "line-through" : ""}`}
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={index}
                         selected={isItemSelected}>
                           <TableCell padding="checkbox" 
                             align="left">
@@ -423,10 +577,10 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
                               {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                           </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.price} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
-                              </TableCell>
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.price ? row.price : ""} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
+                          </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" value={row.quantity} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
+                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.quantity ? row.quantity : ""} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
                           <TableCell align="center">
                             <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>
                           </TableCell>
@@ -440,7 +594,7 @@ const TableVariant = ({showOpt, optionTag, optionValue, columnsOfData , oldForm,
             <TablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={rows.length}
+                count={variant.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

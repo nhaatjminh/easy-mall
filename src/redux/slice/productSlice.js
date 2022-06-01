@@ -3,9 +3,9 @@ import { ProductApi } from '../../service/api';
 
 export const doGetListProductsOfStores = createAsyncThunk(
     'collection@get/GetListProduct',
-    async (id) => {
-      const result = await ProductApi.getProductsOfStore(id);
-      return result.data;
+    async (object) => {
+        const result = await ProductApi.getProductsOfStore(object.id, object.params);
+        return result.data;
     }
 );
 export const doCreateProduct = createAsyncThunk(
@@ -25,6 +25,14 @@ export const doUploadImageProduct = createAsyncThunk(
       return result.data
     }
 );
+
+export const doDeleteImageProduct = createAsyncThunk(
+    'store@post/UploadImageProduct',
+    async ({data}) => {
+      const result = await ProductApi.deleteImageProduct(data);
+      return result.data
+    }
+);
 export const doGetOneProductOfStores = createAsyncThunk(
     'collection@get/GetOneProduct',
     async (productId) => {
@@ -33,9 +41,9 @@ export const doGetOneProductOfStores = createAsyncThunk(
     }
 );
 export const doUploadProduct = createAsyncThunk(
-    'product@post/UploadProduct',
-    async ({data}) => {
-      const result = await ProductApi.uploadProduct(data);
+    'product@put/UploadProduct',
+    async ({data, id}) => {
+      const result = await ProductApi.uploadProduct(data, id);
       return result.data
     }
 );
@@ -43,6 +51,27 @@ export const doDeleteProduct = createAsyncThunk(
     'product@delete/DeleteProduct',
     async ({id}) => {
       const result = await ProductApi.deleteProduct(id);
+      return result.data
+    }
+);
+export const doGetAllType = createAsyncThunk(
+    'product@get/getAllType',
+    async ({id}) => {
+      const result = await ProductApi.getAllType(id);
+      return result.data
+    }
+);
+export const doGetAllVendor = createAsyncThunk(
+    'product@get/getAllVendor',
+    async ({id}) => {
+      const result = await ProductApi.getAllVendor(id);
+      return result.data
+    }
+);
+export const doGetDescription = createAsyncThunk(
+    'product@get/getDescription',
+    async ({url}) => {
+      const result = await ProductApi.getDescription(url);
       return result.data
     }
 );
