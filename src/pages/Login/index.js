@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, Typography } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link } from "react-router-dom";
@@ -11,6 +12,8 @@ import logo from '../../assets/image/Logo.png'
 import { useNavigate } from "react-router-dom";
 import { login } from "../../helpers/login";
 import { readCookie } from "../../helpers/cookie";
+import { AuthApi } from "../../service/api/authApi";
+import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
 
 
 
@@ -21,6 +24,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [isLogin, setIsLogin] = useState(readCookie('token')?.length > 0)
     const [error, setError] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
     let navigate = useNavigate();
 
     //=======================STYLES===========================
@@ -70,43 +74,28 @@ const Login = () => {
         var checkValid = validate();
         if (checkValid > 0) return;
 
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        const user = {
+            email: username,
+            password: password
+        }
+        setIsLoading(true)
+        AuthApi.login(user)
+            .then((res) => {
+                if (res.statusCode === 200) {
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("userId", res.data.user.id);
 
-        var raw = JSON.stringify({
-            "email": username,
-            "password": password
-        });
-
-        var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow'
-        };
-
-        fetch(process.env.REACT_APP_API_URL + "auth/login", requestOptions)
-            .then(response => {
-                console.log(response)
-                if (response.ok) {
-                    return response.json();
+                    login(res.data.token);
                 }
-
-                throw response.status;
-            })
-            .then(result => {
-                if (result.statusCode === 200) {
-                    localStorage.setItem("token", result.data.token);
-                    localStorage.setItem("userId", result.data.user._id);
-
-                    login(result.data.token);
-                    // setIsLogin(true);
-                    // routeChange('/store-login');
+                else {
+                    setError({ password: '* ' + res.message })
+                    setIsLoading(false)
                 }
             })
             .catch(error => {
-                if (error.status === 401) console.log('error', error)
-                alert("Incorrect username or password!");
+                console.log('error', error)
+                setError({ password: '* ' + error })
+                setIsLoading(false)
             });
     }
     const responseFacebook = (response) => {
@@ -203,13 +192,15 @@ const Login = () => {
                             <Typography component={'span'}><h3>Sign in</h3></Typography>
                         </Grid>
 
-                        <TextField name='email' style={{ margin: '0.5rem 0' }} label='Email' placeholder='Enter email' fullWidth required onChange={handleOnchangeUsername} />
+                        <TextField className="login__text-field" variant="outlined" name='email' label='Email' placeholder='Enter email' fullWidth onChange={handleOnchangeUsername} />
                         <Typography style={errorStyle}>{error.email}</Typography>
 
-                        <TextField name='password' label='Password' placeholder='Enter password' type='password' fullWidth required onChange={handleOnchangePassword} />
+                        <TextField className="login__text-field" variant="outlined" name='password' label='Password' placeholder='Enter password' type='password' fullWidth onChange={handleOnchangePassword} />
                         <Typography style={errorStyle}>{error.password}</Typography>
 
-                        <button className="btnLogin" type='button' variant='contained' onClick={onLogin}>Sign In</button>
+                        <button className="btnLogin" type='button' variant='contained' onClick={onLogin}>
+                            Sign in
+                        </button>
                         <FacebookLogin
                             appId="842222179779996"
                             fields="name,picture,email"
@@ -243,6 +234,7 @@ const Login = () => {
 
                 </Grid>
             </div>
+            <LoadingModal show={isLoading} />
         </div>
     );
 }
