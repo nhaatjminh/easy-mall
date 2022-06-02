@@ -20,6 +20,7 @@ import { useDebounce } from './../../hooks/useDebounce';
 import { StoreApi } from './../../service/api/storeApi';
 import { NotAllowIcon } from './../../assets/icon/svg/NotAllowIcon';
 import { logout } from "../../helpers/login";
+import { Loader } from "../../component/common/Loader/Loader";
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -33,8 +34,9 @@ const StoreLogin = ({ nameAccount }) => {
     }
     // const [listStore, setListStore] = useState([]);
     const listStore = useSelector((state) => state.listStore.listStore);
+    const [isLoading, setIsLoading] = useState(false);
     const [isCreateStore, setIsCreateStore] = useState(false);
-    const [listStoreShow, setListStoreShow] = useState(listStore);
+    const [listStoreShow, setListStoreShow] = useState();
     const [newStoreName, setNewStoreName] = useState('');
     const [err, setErr] = useState('');
     // const [isValid, setIsValid] = useState(false);
@@ -45,8 +47,9 @@ const StoreLogin = ({ nameAccount }) => {
     useEffect(async () => {
         if (!mounted.current) mounted.current = true
         else {
-            if (newStoreName.length >= 4) {
-                const result = await StoreApi.getStoreByName(newStoreName);
+            const value = newStoreName.trim().replace(/\s+/g,' ')
+            if (value.length >= 4) {
+                const result = await StoreApi.getStoreByName(value);
                 if (result.data.length > 0) setErr('A store with that name already exists')
                 else setErr('')
             } else {
@@ -59,9 +62,7 @@ const StoreLogin = ({ nameAccount }) => {
 
     const emailAccount = "Yooooo@gmail.com";
     const handleOnchangeSearch = (e) => {
-
         const newListSearch = [];
-        console.log(listStore)
         listStore.map((store) => {
             if (store.name.includes(e.target.value) || store.store_link.includes(e.target.value)) {
                 newListSearch.push(store);
@@ -73,27 +74,36 @@ const StoreLogin = ({ nameAccount }) => {
     }
 
     const onCreateStore = () => {
-        if (newStoreName.length < 4) {
+        const value = newStoreName.trim().replace(/\s+/g,' ')
+        if (value.length < 4) {
             setErr('Your store name must be at least 4 characters');
             return;
         }
-        
+
         if (err !== '') return;
 
         const storeObj = {
-            name: newStoreName
+            name: value
         }
         dispatch(doCreateStore(storeObj))
             .then((res) => navigate(`/store-detail/manage-home/${res.payload.id}`))
     }
 
     useEffect(() => {
+        setIsLoading(true)
         dispatch(doGetListStore())
+        .then((res) => {
+            setListStoreShow(res.payload)
+            setIsLoading(false)
+        })
     }, [])
 
-    useEffect(() => {
-        setListStoreShow(listStore)
-    }, [listStore])
+    // useEffect(() => {
+    //     if (listStore) {
+    //         setListStoreShow(listStore)
+    //         setIsLoading(false)
+    //     }
+    // }, [listStore])
 
     return (
         <div className="bgImg">
@@ -149,14 +159,19 @@ const StoreLogin = ({ nameAccount }) => {
                                     </div>
 
                                     <div className="store-login__list row find-store p-0 scroll-list" >
-                                        {listStoreShow ? listStoreShow.map((store, index) => (
-                                            <StoreLoginList shopName={store.name} shopLink={store.store_link} key={index} onClicked={() => {
-                                                dispatch(doSwitchSelectedStore(store.name));
-                                                routeChange("/store-detail/manage-home/" + store.id);
-                                            }}></StoreLoginList>
-                                        )) :
-                                            ""
+                                        {listStoreShow && listStoreShow.length > 0 ?
+                                            listStoreShow.map((store, index) => (
+                                                <StoreLoginList shopName={store.name} shopLink={store.store_link} key={index} onClicked={() => {
+                                                    dispatch(doSwitchSelectedStore(store.name));
+                                                    routeChange("/store-detail/manage-home/" + store.id);
+                                                }}></StoreLoginList>
+                                            )) :
+                                            !listStoreShow && isLoading ?
+                                                <Loader />
+                                                :
+                                                <></>
                                         }
+
                                     </div>
 
                                 </div>
@@ -187,7 +202,7 @@ const StoreLogin = ({ nameAccount }) => {
                                 </div>
                                 <div className="row mt-1 ml-2 p-0 create-store__check-valid-text">
                                     {err !== '' &&
-                                        <div style={{padding: '0'}}>
+                                        <div style={{ padding: '0' }}>
                                             <span><NotAllowIcon /></span>
                                             <span className="create-store__invalid-text">{err}</span>
                                         </div>
@@ -195,10 +210,10 @@ const StoreLogin = ({ nameAccount }) => {
                                 </div>
                                 <div className="row mt-1">
                                     <div className="col-8   div-button-create-store pt-5">
-                                        <button 
-                                            className="btn btn-success basic-btn" 
-                                            onClick={onCreateStore} 
-                                            disabled={err !== ''}> 
+                                        <button
+                                            className="btn btn-success basic-btn"
+                                            onClick={onCreateStore}
+                                            disabled={err !== ''}>
                                             <p className="text-btn-login"> Create store </p>
                                         </button>
                                     </div>
