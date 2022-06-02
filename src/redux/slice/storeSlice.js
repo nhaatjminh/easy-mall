@@ -24,6 +24,7 @@ export const listStoreSlice = createSlice({
     name: 'listStore',
     initialState:  {
         listStore: [],
+        isLoading: false,
         selectedName: ''
     },
     reducers: {
@@ -47,8 +48,15 @@ export const listStoreSlice = createSlice({
         });
 
         // get list store
+        builder.addCase(doGetListStore.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doGetListStore.fulfilled, (state, action) => {
             state.listStore = action.payload;
+            state.isLoading = false;
+        });
+        builder.addCase(doGetListStore.rejected, (state, action) => {
+            state.isLoading = false;
         });
     }
 })

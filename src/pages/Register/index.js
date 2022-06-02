@@ -1,14 +1,17 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { styled } from '@mui/material/styles';
-import {Avatar, Button, Grid, Paper, TextField, Typography, Checkbox, FormControlLabel} from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, Typography, Checkbox, FormControlLabel } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import './index.css';
 import { Link, useNavigate } from "react-router-dom";
 import validator from 'validator';
 import logo from '../../assets/image/Logo.png';
+import { AuthApi } from "../../service/api/authApi";
+import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
 
 const Register = () => {
-    
+
     //=======================STATES===========================
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,6 +19,7 @@ const Register = () => {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [error, setError] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     const [checked, setChecked] = useState(false);
     const navigate = useNavigate()
@@ -63,112 +67,114 @@ const Register = () => {
         if (!validator.isEmail(email)) {
             err.email = "*Invalid email!"
         }
-        if (firstname.length === 0  || lastname.length === 0) {
+        if (firstname.length === 0 || lastname.length === 0) {
             err.name = "*You must fill in first name and last name!"
         }
-        
+
         setError(err);
 
         return (Object.keys(err).length);
     }
-    
+
     const register = () => {
         var checkValid = validate();
         if (checkValid === 0) {
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-
-            var raw = JSON.stringify({
+            const userObj = {
                 "email": email,
                 "password": password,
-                "fullname": firstname + ' ' + lastname,
-            });
+                "fullname": firstname.trim() + ' ' + lastname.trim(),
+            }
 
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-
-            fetch(process.env.REACT_APP_API_URL + "auth/register", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                alert(result.message);
+            setIsLoading(true)
+            AuthApi.register(userObj)
+            .then((result) => {
+                if (result.statusCode === 201) {
+                    navigate(`/emailsent/${email}`)
+                }
+                else {
+                    setError({
+                        email: '* ' + result.message 
+                    })
+                }
+                setIsLoading(false)
             })
-            .catch(error => {
-                console.log('error', error);
-                alert("Register fail!")
-            });
+            .catch((err) => {
+                console.log(err)
+                setIsLoading(false)
+            })
         }
     }
 
     return (
         <div className="bgImg">
             <div className="page-content">
-            <Grid >
-                <Paper elevation={10} style ={paperStyle}>
-                    <Stack direction="row" spacing={2}>
-                        <img
-                            src={logo}
-                            style={{ height: 'auto', width: '100%' }}
-                        />
-                    </Stack>
-                    <Grid>
-                    <Typography component={'span'}><h3>Sign up</h3></Typography>
-                    </Grid>
-                    <TextField name='email'
-                            label='Email' 
-                            placeholder='Enter email' 
+                <Grid >
+                    <Paper elevation={10} style={paperStyle}>
+                        <Stack direction="row" spacing={2}>
+                            <img
+                                src={logo}
+                                style={{ height: 'auto', width: '100%' }}
+                            />
+                        </Stack>
+                        <Grid>
+                            <Typography component={'span'}><h3>Sign up</h3></Typography>
+                        </Grid>
+                        <TextField 
+                            className="register__text-field"
+                            name='email'
+                            label='Email'
+                            variant="outlined"
+                            placeholder='Enter email'
                             fullWidth
-                            required
                             value={email}
-                            onChange={handleOnchangeEmail}/>
-                            
-                    <Typography style={errorStyle}>{error.email}</Typography>
+                            onChange={handleOnchangeEmail} 
+                            />
 
-                    <Stack direction="row" spacing={2}>
-                    <TextField name='firstname' label='First Name' placeholder='Enter First Name' value={firstname} fullWidth required onChange={handleOnchangeFirstname}/>
-                    <TextField name='lastname' label='Last Name' placeholder='Enter Last Name' value={lastname} fullWidth required onChange={handleOnchangeLastname}/> 
-                    </Stack>
-                    <Typography style={errorStyle}>{error.name}</Typography>
+                        <Typography style={errorStyle}>{error.email}</Typography>
 
-                    <TextField name='password' label='Password' placeholder='Enter password' type='password' value={password} fullWidth required onChange={handleOnchangePassword}/>
-                    <Typography style={errorStyle}>{error.password}</Typography>
+                        <Stack className="register__text-field" direction="row" spacing={2}>
+                            <TextField name='firstname' label='First Name' variant="outlined" placeholder='Enter First Name' value={firstname} fullWidth onChange={handleOnchangeFirstname} />
+                            <TextField name='lastname' label='Last Name' variant="outlined" placeholder='Enter Last Name' value={lastname} fullWidth onChange={handleOnchangeLastname} />
+                        </Stack>
+                        <Typography style={errorStyle}>{error.name}</Typography>
 
-                    <TextField label='Confirm Password' placeholder='Enter password again' type='password' value={confirm} fullWidth required onChange={handleOnchangeConfirm}/>
-                    <Typography style={errorStyle}>{error.confirm}</Typography>
+                        <TextField className="register__text-field" name='password' label='Password' variant="outlined" placeholder='Enter password' type='password' value={password} fullWidth onChange={handleOnchangePassword} />
+                        <Typography style={errorStyle}>{error.password}</Typography>
 
-                    <FormControlLabel className='label-check-terms'
-                        control={<Checkbox checked={checked} onChange={handleOnchangeChecked} style={{color: 'black'}}/>}
-                        label={
-                            <div>
-                               <span>I accept the </span>
-                               <Link to={'#'}>Terms of Use</Link>
-                            </div>
+                        <TextField className="register__text-field" label='Confirm Password' variant="outlined" placeholder='Enter password again' type='password' value={confirm} fullWidth onChange={handleOnchangeConfirm} />
+                        <Typography style={errorStyle}>{error.confirm}</Typography>
+
+                        <FormControlLabel className='label-check-terms'
+                            control={<Checkbox checked={checked} onChange={handleOnchangeChecked} style={{ color: 'black' }} />}
+                            label={
+                                <div>
+                                    <span>I accept the </span>
+                                    <Link to={'#'}>Terms of Use</Link>
+                                </div>
                             }
-                    />
-                    <button className="btnRegister"
-                            type='button'  
-                            onClick={register} 
-                            variant='contained' 
+                        />
+                        <button className="btnRegister"
+                            type='button'
+                            onClick={register}
+                            variant='contained'
                             disabled={!checked}>
-                        Sign Up
-                    </button>
-                    <Typography>
-                        Already have an account? <Link to={'/login'}>Sign in</Link>
-                    </Typography>
-                    
-                    <Grid container justifyContent="flex-end">
-                    <Stack direction="row" spacing={2} mt={5}>
-                        <Typography> <Link to={'#'} className="link-footer">Help</Link></Typography>
-                        <div className="line"></div>  
-                        <Typography><Link to={'#'} className="link-footer">Terms</Link></Typography>        
-                    </Stack>
-                    </Grid>
-                </Paper>
-            </Grid>
+                            Sign Up
+                        </button>
+                        <Typography>
+                            Already have an account? <Link to={'/login'}>Sign in</Link>
+                        </Typography>
+
+                        <Grid container justifyContent="flex-end">
+                            <Stack direction="row" spacing={2} mt={5}>
+                                <Typography> <Link to={'#'} className="link-footer">Help</Link></Typography>
+                                <div className="line"></div>
+                                <Typography><Link to={'#'} className="link-footer">Terms</Link></Typography>
+                            </Stack>
+                        </Grid>
+                    </Paper>
+                </Grid>
             </div>
+            <LoadingModal show={isLoading} />
         </div>
     );
 }

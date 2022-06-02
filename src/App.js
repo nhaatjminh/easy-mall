@@ -16,6 +16,7 @@ import Navigation from './pages/OnlineStore/Navigations/index';
 import DetailMenu from './pages/OnlineStore/Navigations/DetailMenu/index';
 import Page from "./pages/OnlineStore/Pages";
 import ManageDomain from "./pages/OnlineStore/ManageDomain";
+import EmailSent from './pages/EmailSent/index';
 
 const App = () => {
   return(
@@ -39,6 +40,7 @@ const App = () => {
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/login' element={<Login/>}/>
+          <Route path='/emailsent/:email' element={<EmailSent/>}/>
           <Route path='/register' element={<Register/>}/>
         </Routes>
       </BrowserRouter>
