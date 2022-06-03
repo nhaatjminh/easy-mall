@@ -61,6 +61,15 @@
 .store-login__list {
 }
 
+.store-login__loader {
+    width: fit-content;
+    margin-top: 100px;
+}
+
+.store-login__loader circle {
+    stroke-width: 3;
+}
+
 .create-store__invalid-text {
     padding-left: .2rem;
     color: #d72c0d;

@@ -1,0 +1,95 @@
+.blank-layout {
+    width: 100%;
+    max-width: 100vw;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #f6f6f7;
+    overflow: auto;
+}
+
+.profile {
+    max-width: 800px;
+    width: 100%;
+    margin: 80px auto 0;
+    &__title {
+        padding-bottom: 30px;
+        border-bottom: 1px solid #c9cccf;
+    }
+    &__detail {
+        margin-top: 30px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid #c9cccf;
+        &__card {
+            margin-top: 20px;
+            &--avatar {
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid #c9cccf;
+                &__img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-right: 30px;
+                }
+                .btn {
+                    margin-left: 10px;
+                    height: fit-content;
+                }
+                &__save {
+                    margin-left: auto !important;
+                }
+            }
+            &--info {
+                display: flex;
+                padding: 10px;
+                &__item {
+                    padding: 10px;
+                    flex-grow: 5;
+                    width: 100%;
+                }
+            }
+
+        }
+    }
+    &__password {
+        margin-top: 30px;
+        &--card {
+            padding: 20px;
+            margin: 20px 0;
+            .btn {
+                margin-top: 20px;
+            }
+        }
+    }
+    &__change-pw-modal {
+        &--error {
+            background-color: #FFF4F4;
+            border: 1px solid #E0B3B2;
+            box-shadow: none;
+            margin-bottom: 20px;
+            .text-normal-1 {
+                margin-left: 20px;
+            }
+        }
+        &__text-field {
+            margin-bottom: 20px;
+            .text-normal-1 {
+                margin-bottom: 5px;
+            }
+            .text-link {
+                margin-top: 5px;
+            }
+            
+            fieldset {
+                legend {
+                    width: unset;
+                }
+            }
+        }
+        .text-normal-2 {
+            margin-bottom: 20px;
+        }
+    }
+}

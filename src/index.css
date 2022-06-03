@@ -113,6 +113,13 @@ body {
   margin-top: 1rem !important;
 }
 
+.text-link {
+  font-size: 14px;
+  color: #2c6ecb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .text-title-1 {
   font-size: 20px;
   font-weight: 700;

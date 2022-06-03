@@ -17,6 +17,7 @@ import DetailMenu from './pages/OnlineStore/Navigations/DetailMenu/index';
 import Page from "./pages/OnlineStore/Pages";
 import ManageDomain from "./pages/OnlineStore/ManageDomain";
 import EmailSent from './pages/EmailSent/index';
+import { Profile } from "./pages/Profile";
 
 const App = () => {
   return(
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/pricing-scene' element={<PricingScene/>}/>
           
           <Route path='/store-login' element={<StoreLogin/>}/>
+          <Route path='/profile/:userId' element={<Profile/>}/>
           <Route path='/store-detail/manage-theme/:storeId' element={<ManageThems/>}/>
           <Route path='/store-detail/manage-page/:storeId' element={<Page/>}/>
           <Route path='/store-detail/manage-navigation/:storeId' element={<Navigation/>}/>
