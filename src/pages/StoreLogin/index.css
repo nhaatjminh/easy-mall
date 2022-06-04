@@ -16,6 +16,7 @@
 .store-login__logo {
     width: 240px;
     height: 100%;
+    cursor: pointer;
 }
 
 .store-login__text-store {

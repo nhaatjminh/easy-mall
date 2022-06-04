@@ -75,3 +75,12 @@
     margin: 0;
     padding: 0 0.75rem;
 }
+
+.nav-bar__logo {
+    cursor: pointer;
+}
+
+.nav-bar__logo__img {
+    height: 5rem;
+    width: auto;
+}

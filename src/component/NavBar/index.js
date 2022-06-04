@@ -16,8 +16,10 @@ const NavBar = () => {
     return (
         <div className="nav-bar">
             <div className="row logo desktop">
-                <div className=" col-md-3 col-lg-3 col-xl-3">
-                    <img src={logo} />
+                <div className="nav-bar__logo col-md-3 col-lg-3 col-xl-3">
+                    <Link to='/'>
+                        <img src={logo} className="nav-bar__logo__img" />
+                    </Link>
                 </div>
                 <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 ">
                     <Stack direction="row" spacing={5} className="navigation-menu ">
@@ -31,8 +33,10 @@ const NavBar = () => {
 
             </div>
             <div className="row logo mobile">
-                <div className="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-3 p-0 m-0">
-                    <img src={logo} />
+                <div className="nav-bar__logo col-6 col-sm-6 col-md-4 col-lg-3 col-xl-3 p-0 m-0">
+                    <Link to='/'>
+                        <img src={logo} className="nav-bar__logo__img" />
+                    </Link>
                 </div>
                 <div className="col-6 col-sm-6 col-md-5 col-lg-4 col-xl-4 offset-md-3 offset-lg-5 offset-xl-5 p-0">
                     <Stack direction="row" spacing={3} className="navigation-menu ">

@@ -30,7 +30,7 @@ const Login = () => {
     //=======================STYLES===========================
     const paperStyle = {
         padding: 20,
-        width: 340,
+        width: 400,
         display: 'block'
     }
 
@@ -184,7 +184,8 @@ const Login = () => {
                         <Stack direction="row" spacing={2}>
                             <img
                                 src={logo}
-                                style={{ height: 'auto', width: '100%' }}
+                                style={{ height: 'auto', width: '100%', cursor: 'pointer' }}
+                                onClick={() => navigate('/')}
                             />
                             {/* <Typography component={'span'}><h3>EASY MALL</h3></Typography> */}
                         </Stack>

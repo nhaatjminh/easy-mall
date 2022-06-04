@@ -113,7 +113,7 @@ const StoreLogin = ({ nameAccount }) => {
                     <Paper elevation={10} className="paper-style">
                         <div className="row">
                             <div className=" col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <img className="store-login__logo" src={logo} />
+                                <img className="store-login__logo" src={logo} onClick={() => navigate('/')}/>
 
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">

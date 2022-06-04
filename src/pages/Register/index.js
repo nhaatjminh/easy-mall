@@ -26,7 +26,7 @@ const Register = () => {
     //=======================STYLES===========================
     const paperStyle = {
         padding: 20,
-        width: 340,
+        width: 400,
         display: 'block'
     }
 
@@ -113,7 +113,8 @@ const Register = () => {
                         <Stack direction="row" spacing={2}>
                             <img
                                 src={logo}
-                                style={{ height: 'auto', width: '100%' }}
+                                style={{ height: 'auto', width: '100%', cursor: 'pointer' }}
+                                onClick={() => navigate('/')}
                             />
                         </Stack>
                         <Grid>
