@@ -1,0 +1,38 @@
+.header-account {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-bottom: 1px solid #EAEAEC;
+    &__logo {
+        padding-left: 10px;
+        &__img {
+            height: 50px;
+            width: auto;
+        }
+    }
+    &__info {
+        display: flex;
+        padding-right: 10px;
+        justify-content: center;
+        align-items: center;
+        .circle {
+            margin: unset;
+            margin-right: .5rem;
+        }
+        .dropdown-toggle {
+            padding-top: 0;
+            padding-bottom: 0;
+            background-color: white;
+            border: none;
+            &:focus {
+                background-color: white;
+            }
+        }
+    }
+}

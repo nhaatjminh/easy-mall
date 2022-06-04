@@ -5,6 +5,7 @@ import collectionSlice from "../slice/collectionSlice";
 import productSlice from "../slice/productSlice";
 import navigation from '../slice/navigationSlice';
 import page from '../slice/pageSlice';
+import user from '../slice/userSlice';
 
 export const rootReducer = combineReducers ({
     listStore,
@@ -12,5 +13,6 @@ export const rootReducer = combineReducers ({
     collectionSlice,
     productSlice,
     navigation,
-    page
+    page,
+    user
 })
