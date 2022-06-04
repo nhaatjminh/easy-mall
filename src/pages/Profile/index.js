@@ -14,6 +14,8 @@ import { removeSpace } from "../../helpers/common";
 import { CustomCard } from './../../component/common/CustomCard/CustomCard';
 import { DangerIcon } from "../../assets/icon/svg/DangerIcon";
 import { UserApi } from "../../service/api/userApi";
+import { BackIcon } from "../../assets/icon/svg/BackIcon";
+import { useNavigate } from "react-router-dom";
 
 export const Profile = () => {
     const dispatch = useDispatch();
@@ -28,7 +30,10 @@ export const Profile = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
+    let navigate = useNavigate();
+
     useEffect(() => {
+        setIsLoading(true)
         dispatch(doGetUserInfo())
             .then((res) => {
                 const info = res.payload
@@ -37,6 +42,11 @@ export const Profile = () => {
                 setLastname(name.substring(name.indexOf(' ') + 1))
                 setEmail(info.email)
                 setPhone(info.phone)
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                console.log(err)
+                setIsLoading(false)
             })
     }, [])
 
@@ -98,6 +108,9 @@ export const Profile = () => {
 
             <div className="profile">
                 <div className="profile__title text-title-1">
+                    <span className="profile__title__back-btn" onClick={() => navigate(-1)}>
+                        <BackIcon/>
+                    </span>
                     Profile
                 </div>
                 <div className="profile__detail">

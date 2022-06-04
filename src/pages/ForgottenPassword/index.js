@@ -96,8 +96,9 @@ const ForgottenPassword = () => {
                             variant='contained'>
                             Submit
                         </button>
-                        <Typography>
-                            Back to <Link to={'/login'}>sign in</Link>
+                        <Typography style={{marginTop: '.5rem', textAlign: 'center'}}>
+                            Back to 
+                            <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/login'}> sign in</Link>
                         </Typography>
 
                         <Grid container justifyContent="flex-end">

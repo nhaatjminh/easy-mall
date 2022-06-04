@@ -15,6 +15,12 @@
     &__title {
         padding-bottom: 30px;
         border-bottom: 1px solid #c9cccf;
+        display: flex;
+        align-items: center;
+        &__back-btn {
+            margin-right: 15px;
+            cursor: pointer;
+        }
     }
     &__detail {
         margin-top: 30px;

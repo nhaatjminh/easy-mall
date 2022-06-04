@@ -219,13 +219,24 @@ const Login = () => {
                             className="btnGoogle"
                             scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
                         />
-                        <Typography style={{marginBottom: '.5rem'}}>
-                            Forgotten password? 
-                            <Link to={'/forgotten-password'}> Reset it</Link>
+                        <Typography 
+                            style={{cursor: 'pointer', 
+                                    textAlign: 'center', 
+                                    marginTop: '1rem', 
+                                    paddingBottom: '1.5rem',
+                                    borderBottom: '1px solid #c0c0c5',
+                                    width: '70%',
+                                    margin: '1rem auto'
+                                }}
+                            onClick={() => navigate('/forgotten-password')}    
+                        >
+                            Forgot password?
                         </Typography>
-                        <Typography >
+                        <Typography 
+                            style={{marginTop: '1.5rem', textAlign: 'center'}}
+                        >
                             Don't have an account? 
-                            <Link to={'/register'}> Sign up</Link>
+                            <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/register'}> Sign up</Link>
                         </Typography>
                         <Grid container justifyContent="flex-end">
                             <Stack direction="row" spacing={2} mt={5}>

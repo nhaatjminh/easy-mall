@@ -161,8 +161,9 @@ const Register = () => {
                             disabled={!checked}>
                             Sign Up
                         </button>
-                        <Typography>
-                            Already have an account? <Link to={'/login'}>Sign in</Link>
+                        <Typography style={{marginTop: '.5rem', textAlign: 'center'}}>
+                            Already have an account? 
+                            <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/login'}> Sign in</Link>
                         </Typography>
 
                         <Grid container justifyContent="flex-end">

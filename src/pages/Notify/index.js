@@ -35,7 +35,12 @@ const Notify = () => {
                     <div className="email-sent__title">{content[type].title}</div>
                     <div className="email-sent__content text-normal">{content[type].content}<b>{email}</b></div>
                     <div className="email-sent__remind text-normal">{content[type].remind}</div>
-                    {type === "reset-password" ? null :
+                    {type === "reset-password" ? 
+                        <CustomButton
+                            className='email-sent__proceed'
+                            content='Back to login'
+                            onClick={() => navigate(`/login`)}
+                        /> :
                      type === "password-reseted" ?
                         <CustomButton
                             className='email-sent__proceed'
