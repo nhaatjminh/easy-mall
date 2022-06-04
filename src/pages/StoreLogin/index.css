@@ -16,6 +16,7 @@
 .store-login__logo {
     width: 240px;
     height: 100%;
+    cursor: pointer;
 }
 
 .store-login__text-store {
@@ -59,6 +60,15 @@
 }
 
 .store-login__list {
+}
+
+.store-login__loader {
+    width: fit-content;
+    margin-top: 100px;
+}
+
+.store-login__loader circle {
+    stroke-width: 3;
 }
 
 .create-store__invalid-text {

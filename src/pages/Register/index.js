@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { styled } from '@mui/material/styles';
 import {Avatar, Button, Grid, Paper, TextField, Typography, Checkbox, FormControlLabel} from '@mui/material';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import './index.css';
 import { Link, useNavigate } from "react-router-dom";
 import validator from 'validator';
@@ -26,7 +25,7 @@ const Register = () => {
     //=======================STYLES===========================
     const paperStyle = {
         padding: 20,
-        width: 340,
+        width: 400,
         display: 'block'
     }
 
@@ -89,7 +88,7 @@ const Register = () => {
             AuthApi.register(userObj)
             .then((result) => {
                 if (result.statusCode === 201) {
-                    navigate(`/emailsent/${email}`)
+                    navigate(`/notify/verify/${email}`)
                 }
                 else {
                     setError({
@@ -113,7 +112,8 @@ const Register = () => {
                         <Stack direction="row" spacing={2}>
                             <img
                                 src={logo}
-                                style={{ height: 'auto', width: '100%' }}
+                                style={{ height: 'auto', width: '100%', cursor: 'pointer' }}
+                                onClick={() => navigate('/')}
                             />
                         </Stack>
                         <Grid>
@@ -160,8 +160,9 @@ const Register = () => {
                             disabled={!checked}>
                             Sign Up
                         </button>
-                        <Typography>
-                            Already have an account? <Link to={'/login'}>Sign in</Link>
+                        <Typography style={{marginTop: '.5rem', textAlign: 'center'}}>
+                            Already have an account? 
+                            <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/login'}> Sign in</Link>
                         </Typography>
 
                         <Grid container justifyContent="flex-end">

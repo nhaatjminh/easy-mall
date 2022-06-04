@@ -29,7 +29,7 @@ const Login = () => {
     //=======================STYLES===========================
     const paperStyle = {
         padding: 20,
-        width: 340,
+        width: 400,
         display: 'block'
     }
 
@@ -183,7 +183,8 @@ const Login = () => {
                         <Stack direction="row" spacing={2}>
                             <img
                                 src={logo}
-                                style={{ height: 'auto', width: '100%' }}
+                                style={{ height: 'auto', width: '100%', cursor: 'pointer' }}
+                                onClick={() => navigate('/')}
                             />
                             {/* <Typography component={'span'}><h3>EASY MALL</h3></Typography> */}
                         </Stack>
@@ -217,9 +218,24 @@ const Login = () => {
                             className="btnGoogle"
                             scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
                         />
-                        <Typography >
-                            Don't have an account?
-                            <Link to={'/register'}> Sign up</Link>
+                        <Typography 
+                            style={{cursor: 'pointer', 
+                                    textAlign: 'center', 
+                                    marginTop: '1rem', 
+                                    paddingBottom: '1.5rem',
+                                    borderBottom: '1px solid #c0c0c5',
+                                    width: '70%',
+                                    margin: '1rem auto'
+                                }}
+                            onClick={() => navigate('/forgotten-password')}    
+                        >
+                            Forgot password?
+                        </Typography>
+                        <Typography 
+                            style={{marginTop: '1.5rem', textAlign: 'center'}}
+                        >
+                            Don't have an account? 
+                            <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/register'}> Sign up</Link>
                         </Typography>
                         <Grid container justifyContent="flex-end">
                             <Stack direction="row" spacing={2} mt={5}>

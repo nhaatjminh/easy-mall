@@ -47,7 +47,7 @@ const StoreLogin = ({ nameAccount }) => {
     useEffect(async () => {
         if (!mounted.current) mounted.current = true
         else {
-            const value = newStoreName.trim().replace(/\s+/g,' ')
+            const value = newStoreName.trim().replace(/\s+/g, ' ')
             if (value.length >= 4) {
                 const result = await StoreApi.getStoreByName(value);
                 if (result.data.length > 0) setErr('A store with that name already exists')
@@ -74,7 +74,7 @@ const StoreLogin = ({ nameAccount }) => {
     }
 
     const onCreateStore = () => {
-        const value = newStoreName.trim().replace(/\s+/g,' ')
+        const value = newStoreName.trim().replace(/\s+/g, ' ')
         if (value.length < 4) {
             setErr('Your store name must be at least 4 characters');
             return;
@@ -92,10 +92,10 @@ const StoreLogin = ({ nameAccount }) => {
     useEffect(() => {
         setIsLoading(true)
         dispatch(doGetListStore())
-        .then((res) => {
-            setListStoreShow(res.payload)
-            setIsLoading(false)
-        })
+            .then((res) => {
+                setListStoreShow(res.payload)
+                setIsLoading(false)
+            })
     }, [])
 
     // useEffect(() => {
@@ -113,7 +113,7 @@ const StoreLogin = ({ nameAccount }) => {
                     <Paper elevation={10} className="paper-style">
                         <div className="row">
                             <div className=" col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <img className="store-login__logo" src={logo} />
+                                <img className="store-login__logo" src={logo} onClick={() => navigate('/')}/>
 
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
@@ -165,11 +165,12 @@ const StoreLogin = ({ nameAccount }) => {
                                                     dispatch(doSwitchSelectedStore(store.name));
                                                     routeChange("/store-detail/manage-home/" + store.id);
                                                 }}></StoreLoginList>
-                                            )) :
+                                            ))
+                                            :
                                             !listStoreShow && isLoading ?
-                                                <Loader />
-                                                :
-                                                <></>
+                                            <Loader className='store-login__loader' />
+                                            :
+                                            <></>
                                         }
 
                                     </div>

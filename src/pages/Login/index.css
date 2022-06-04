@@ -33,6 +33,7 @@
     display: inline-block;
     margin-top: 0.5rem;
     background: #4267b2;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 28%);
 }
 
 .btnFacebook:hover {
@@ -48,6 +49,7 @@
     height: 2.75rem;
     color: black !important;
     border-radius: 15px !important;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 28%) !important;
 }
 .btnLogin {
     margin: 2.5rem 0 0.6rem 0;
@@ -57,6 +59,7 @@
     border-radius: 15px;
     color: white;
     border: none;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 28%) !important;
 }
 .btnLogin:hover {
     background-color: '#2B9361';

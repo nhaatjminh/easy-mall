@@ -1,0 +1,9 @@
+.reset-password {
+    &__textfield {
+        fieldset {
+            legend {
+                width: unset;
+            }
+        }
+    }
+}

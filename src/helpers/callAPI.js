@@ -132,9 +132,10 @@ const callAPIWithPutMethod = async(pathURL, data, bearTokenFlg) => {
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
             if (response.status === 401) logout();
-            else if (response.ok) return response.json();
+            return response.json();
+            // else if (response.ok) return response.json();
 
-            throw Error(response.status);
+            // throw Error(response.status);
         })
         .then(result => {
             fetchResult = result;

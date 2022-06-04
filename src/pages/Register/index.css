@@ -30,6 +30,7 @@
     border-radius: 15px;
     color: white;
     border: none;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 28%);
 }
 .btnLogin:hover {
     background-color: '#2B9361';

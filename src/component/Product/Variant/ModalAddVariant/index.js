@@ -104,8 +104,8 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
     return (
         <>
             <BaseModal
-                title={"Add Variant"}
-                titleButton={"Add Variant"}
+                title="Add Variant"
+                titleButton="Add Variant"
                 onOK={handleOk}
                 showAction={true}
                 classNameModal='add-variant-modal'
