@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import {InputLabel, Select,MenuItem, IconButton , Divider , TextField   } from '@mui/material';
@@ -39,6 +39,9 @@ const CustomType = ({mode, formRef, oldForm, customTypeList}) => {
         setType('')
         form.current.product.type = '';
     }
+    useEffect(() => {
+        setType(oldForm?.product?.type);
+    }, [oldForm])
     return (
         <>
            <InputLabel style={{marginBottom: '1rem'}} className="text-label">Type</InputLabel>

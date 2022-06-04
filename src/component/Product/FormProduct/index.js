@@ -24,6 +24,7 @@ import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlic
 import { doCreateProduct, doUploadImageProduct, doUploadProduct, doGetDescription, doDeleteProduct, doGetAllType, doGetAllVendor } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
 import CustomType from "../CustomType";
+import { BaseNumberField } from '../../common/BaseNumberField';
 
 const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
@@ -261,7 +262,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     ...form?.current,
                     product: {
                         ...form?.current?.product,
-                        inventory: event.target.value,
+                        inventory: event,
                         update: "Change"
                     }
                 }
@@ -280,7 +281,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     ...form?.current,
                     product: {
                         ...form?.current?.product,
-                        inventory: event.target.value
+                        inventory: event
                     }
                 }
             }
@@ -309,7 +310,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     const handleCheckVariantDelete = () => {
         let listVariant = form.current.variant;
-        listVariant = listVariant.filter((element) => !element.delete || element.update);
+        listVariant = listVariant?.filter((element) => !element.delete || element.update);
+        if (!listVariant) listVariant = []
         form.current = {
             ...form?.current,
             variant: listVariant
@@ -512,6 +514,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 form.current = oldForm;
                 setCollectionSelected(oldForm.collection || []);
                 fetchDescription(oldForm.product.description)
+                setVendorValue(oldForm.product.vendor);
             }
             else {
                 form.current = {
@@ -584,20 +587,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
                                 <InputLabel className="text-label" name='title' style={{margin: 0}}>Quantity</InputLabel>
-                                <TextField
-                                    style={{width: 'auto'}}
-                                    disabled={isVariant}
-                                    className={`text-field-input text-content ${isVariant && 'disabled-text'} `}
-                                    name='title'
-                                    fullWidth
-                                    required
-                                    onInput = {(e) =>{
-                                        e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
-                                        if (isNaN(e.target.value)) e.target.value = null;
-                                    }}
-                                    onChange={(e) => handleOnChangeInventory(e)}
-                                    defaultValue={mode === "EDIT" && oldForm?.product?.inventory ? oldForm?.product?.inventory : ""}    
-                                />
+                                <BaseNumberField length={8} className={`${isVariant && 'disabled-text'}`} key="Inventory" disabled={isVariant}  value={oldForm?.product?.inventory} fullWidth={true} setValue={(value) => handleOnChangeInventory(value)}></BaseNumberField>
                             </div>
                         </div>
                         <div>

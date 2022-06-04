@@ -8,6 +8,15 @@
     background-color: rgb(13, 110, 253);
     color: white;
 }
+.button-done {
+    width: 65px;
+    height: 30px;
+    background-color: transparent;
+    border-radius: 5px;
+    border:none;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 28%);
+}
 .link-add-option:hover {
     font-weight: bold;
 }

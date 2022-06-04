@@ -29,5 +29,5 @@
 }
 
 .table-height {
-    max-height: 100vh - 225px;
+    max-height: calc(100vh - 350px);
 }

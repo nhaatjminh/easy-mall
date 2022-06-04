@@ -24,7 +24,7 @@ const EnhancedTableToolbar = (props) => {
       <>
         {numSelected > 0 ?
           <Toolbar
-            style={{marginTop: '1rem'}}
+            style={{marginTop: '1rem', minHeight: 40}}
             sx={{
               pl: { sm: 2 },
               pr: { xs: 1, sm: 1 },
@@ -43,22 +43,18 @@ const EnhancedTableToolbar = (props) => {
                 component="div"
                 className=""
               >
-                {numSelected} Đã chọn
-                
-                {numSelected > 0 ? (
-                  <Tooltip title="Delete" >
-                    <IconButton >
-                      <DeleteIcon onClick={onDeleteSelected}/>
-                    </IconButton>
-                  </Tooltip>
-                ) : ""}
+                {numSelected} Selected
               </Typography>
             ) : ""}
             {numSelected > 0 ? (
-                <Button className="btn btn-delete-all" onClick={onDelete}><p className="p-0 m-0">Delete</p></Button>
+              <button className="btn btn-login btn-manager ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+            ) : ""}
+            {numSelected > 0 ? (
+              <button className="btn btn-login btn-delete-item btn-manager ml-2" onClick={onDelete}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete </p></button>
             ) : ""}
           </Toolbar>
-        :""}
+        : <Toolbar 
+        style={{marginTop: '1rem', minHeight: 20}}></Toolbar>}
         
       </>
     );

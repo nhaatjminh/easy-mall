@@ -10,6 +10,8 @@ import ModalAddVariant from '../ModalAddVariant';
 import { Dropdown } from 'react-bootstrap';
 import BaseModal from "../../../common/BaseModal";
 
+import { BaseNumberField } from '../../../common/BaseNumberField';
+
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
       props;
@@ -47,12 +49,6 @@ EnhancedTableHead.propTypes = {
   onSelectAllClick: PropTypes.func.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
-
-const ModalPriceOrQuantity = (props) => {
-  return (
-    <BaseModal></BaseModal>
-  )
-}
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected, onDeleteSelected } = props;
@@ -128,6 +124,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
     const unmounted = useRef(false);
     const [trickRerender, setTrickRerender] = useState(0);
     const [addValueVariant, setAddValueVariant] = useState([]);
+    const [firstReload, setFirstReload] = useState(true);
     
     const handleChangePriceVariant = (index, valuePrice) => {
       let newVariant = [...form?.current?.variant];
@@ -303,6 +300,40 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
           }
         })
       })
+      
+      // delete in form
+      if (mode === "EDIT") {
+        const listVariant = [...form.current?.variant];
+        form.current.variant = listVariant.filter(variant => {
+          if (variant.name === row.name) {
+            variant.update = "Delete";
+          }
+          if (!variant.id) {
+            return false
+          }
+          return true;
+        })
+        const newObj = JSON.parse(JSON.stringify(optionValue));
+        newObj.map((option, index) => {
+          if (OptionValueExist.includes(index)) return;
+          let indexOfOptionRef = optionRef.current.findIndex(option =>
+            (option?.id && option?.id === newObj[index]?.id)
+            || (option?.idTemp && option?.idTemp === newObj[index]?.idTemp))
+          if (optionRef.current[indexOfOptionRef].idTemp) optionRef.current.splice(indexOfOptionRef, 1)
+          else {
+            if (optionRef.current[indexOfOptionRef]?.value?.length >= 1) {
+              optionRef.current[indexOfOptionRef].update = 'Change'
+            } else optionRef.current[indexOfOptionRef].update = 'Delete'
+          }
+          let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef].value.filter((value) => value.update !== "Delete")
+          arrayOptionRefLikeOptionValue.map((value, indexValue) => {
+            if (value.value === OptionValueDelete[index]) {
+              arrayOptionRefLikeOptionValue[indexValue].update = "Delete"
+            }
+          })
+        })
+        
+      }
       if (!flag) {
         form.current = {
           ...form?.current,
@@ -321,7 +352,6 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
         setOptionValue(newOptionValue);
         createVariantUI();
       }
-      
     }
     
     const combineArrays = (arrayOfArrays ) => {
@@ -485,6 +515,8 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
           if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
               setTrickRerender(trickRerender + 1);
+              let deleteVariantList = form.current.variant.filter(variant => variant.update === "Delete")
+              allVariantAssignForm = allVariantAssignForm.concat(deleteVariantList);
               allNewVariant.forEach((newVariant) => {
                 allVariantAssignForm.push(newVariant)
               })
@@ -497,11 +529,11 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
     }
     useEffect(() => {
       unmounted.current = false;
-      createVariantUI();
+      if (!firstReload) createVariantUI();
       return () => {
         unmounted.current = true;
       };
-    }, [optionValue, deleteVariant])
+    }, [optionValue, deleteVariant, firstReload])
     useEffect(() => {
       const idxValue = [];
       optionValue.forEach((optionName) => {
@@ -516,6 +548,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
         }
       })
       setDeleteVariant(deleteList);
+      setFirstReload(false);
     }, [])
     return (
       <>
@@ -542,12 +575,12 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                     {
                       width: 'auto',
                       float: 'right',
-                      border: '1px solid #666666',
                       padding: '5px 10px',
                       margin: '10px 0 0 0',
                       borderRadius: 10,
                       backgroundColor: '#0d6efd',
-                      color: 'white'
+                      color: 'white',
+                      boxShadow: `0 2px 5px 1px rgb(64 60 67 / 28%)`
                     }
                   }></ModalAddVariant>
               : ""
@@ -598,26 +631,13 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                               {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                           </TableCell>
                           <TableCell align="center">
-                              <TextField 
-                                onInput = {(e) =>{
-                                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
-                                    if (isNaN(e.target.value)) e.target.value = null;
-                                }}
-                                disabled={row.delete ? true : false}
-                                className="text-field-input"
-                                defaultValue={row.price ? row.price : ""}
-                                onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
+                            
+                            <BaseNumberField key="Price" className={`${row.delete && 'disabled-text'}`} disabled={row.delete} currency="VND" placeholder="0.00" value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
                           </TableCell>
                           <TableCell align="center">
-                              <TextField
-                                onInput = {(e) =>{
-                                  e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
-                                  if (isNaN(e.target.value)) e.target.value = null;
-                                }}
-                                disabled={row.delete ? true : false}
-                                className="text-field-input"
-                                defaultValue={row.quantity ? row.quantity : ""}
-                                onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
+                            
+                            <BaseNumberField length={8} className={`${row.delete && 'disabled-text'}`} key="Inventory" disabled={row.delete}  value={row.quantity} fullWidth={true} setValue={(value) => handleChangeQuantity(index, value)}></BaseNumberField>
+                          </TableCell>
                           <TableCell align="center">
                             <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>
                           </TableCell>

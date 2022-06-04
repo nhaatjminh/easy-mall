@@ -264,6 +264,7 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
                             <TableCell
                               key={headCell + indexData}
                               align={headCell?.align || 'center'}
+                              className={`${headCell?.classNameBody} ${headCell.classNameWithData && headCell?.classNameWithData(row[`${headCell.id}`])}`}
                             >
                               <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
                             </TableCell>

@@ -4,7 +4,7 @@ exports.Key = {
     Product: 'product',
     Inventory: 'inventory',
     Collection: 'collection',
-    GiftCard: 'giftcard',
+    Banner: 'banner',
     Customer: 'customer',
     Analysis: 'analysis',
     Marketing: 'marketing',

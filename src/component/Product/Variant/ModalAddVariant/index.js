@@ -58,7 +58,7 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
                 let update;
                 let newOption = {
                     value: newVariantName[index],
-                    id: uuid(),
+                    idTemp: uuid(),
                     update: "Add"
                 }
                 

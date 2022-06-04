@@ -23,6 +23,12 @@
     margin-left: 1.5rem;
     width: 300px;
 }
+.active-product {
+    color:green !important;
+}
+.draft-product {
+    color:red !important;
+}
 @media (max-width: 1065px) {    
     .desktop-table {
         width: 100%;

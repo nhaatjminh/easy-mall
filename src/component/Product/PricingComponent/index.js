@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Paper } from '@mui/material';
-import {InputLabel, Stack,InputAdornment, Checkbox , FormControlLabel , Divider, FormHelperText , TextField   } from '@mui/material';
+import {InputLabel, Stack,InputAdornment, Divider, FormHelperText , TextField   } from '@mui/material';
+import { BaseNumberField } from '../../common/BaseNumberField';
 
 const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
     const form = formRef;
@@ -25,7 +26,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 }
             }
         }
-        setProductPrice(event.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        setProductPrice(event);
     }
     const handleChangeProductCostPerItem = (event) => {
         if (mode === "EDIT") {
@@ -46,19 +47,19 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 }
             }
         } 
-        setCostPerItem(event.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        setCostPerItem(event);
     }
+    
     useEffect(() => {
         if (mode === "ADD") {
             setProductPrice(null)
             setCostPerItem(null)
         } else {
-            setProductPrice(form.current?.product?.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-            setCostPerItem(form.current?.product?.cost_item?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+            setProductPrice(Number(form.current?.product?.price))
+            setCostPerItem(Number(form.current?.product?.cost_item))
         }
     }, [mode])
     useEffect(() => {
-        setProductPrice(null);
     }, [isVariant])
     return (
         <>
@@ -72,23 +73,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                                 spacing={10}
                                 >
                                 <InputLabel name='title' className="text-label" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
-                                <TextField className={`text-field-input text-content ${isVariant && 'disabled-text'} `}
-                                    disabled={isVariant}
-                                    style={{width: 'auto'}}
-                                    placeholder="0.00"
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>VND</InputAdornment>,
-                                    }} 
-                                    onInput = {(e) =>{
-                                        e.target.value = e.target.value.replaceAll(',','');
-                                        e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
-                                        if (isNaN(e.target.value)) e.target.value = null;
-                                    }}
-                                    name='title'
-                                    fullWidth
-                                    required
-                                    value={isVariant ? '' : productPrice}
-                                    onChange={(e) => handleChangeProductPrice(e.target.value)}  />
+                                <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency="VND" placeholder="0.00" value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
                             </Stack>
                         </div>
                         <Divider className="divider-custom"/>
@@ -100,33 +85,16 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                             alignItems="center"
                             spacing={10}
                             >
-                            <TextField className="text-field-input text-content"
-                                placeholder="0.00"
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start" style={{paddingLeft: '0.25rem'}}>VND</InputAdornment>,
-                                }}
-                                onInput = {(e) =>{
-                                    e.target.value = e.target.value.replaceAll(',','');
-                                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
-                                    if (isNaN(e.target.value)) e.target.value = null;
-                                }}
-                                inputProps={{
-                                    'aria-label': 'weight',
-                                }}
-                                name='title'
-                                fullWidth
-                                required
-                                value={costPerItem}
-                                onChange={(e) => handleChangeProductCostPerItem(e.target.value)}  />
-                            {costPerItem && productPrice && Number(productPrice.replaceAll(',','')) && Number(costPerItem.replaceAll(',','')) ? 
+                                <BaseNumberField currency="VND" placeholder="0.00" key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
+                            {costPerItem && productPrice ? 
                             <>
                                 <div>
                                     <p style={{margin: 0}}>Margin(%)</p>
-                                    <p style={{margin: 0}}>{((Number(productPrice.replaceAll(',','')) - Number(costPerItem.replaceAll(',',''))) / Number(productPrice.replaceAll(',','')) * 100).toFixed(2)}</p>
+                                    <p style={{margin: 0}}>{((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
                                 </div>
                                 <div>
                                     <p style={{margin: 0}}>Profit(VND)</p>
-                                    <p style={{margin: 0}}>{(Number(productPrice.replaceAll(',','')) - Number(costPerItem.replaceAll(',',''))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                                    <p style={{margin: 0}}>{(productPrice - costPerItem).toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
                                 </div>
                             </>: ""}
                         </Stack>

@@ -26,7 +26,17 @@ const ManageStoreProduct = () => {
   const params = useParams();
   const columns = [
     { id: 'title', label: 'Title', minWidth: 170, align: 'center' },
-    { id: 'status', label: 'Status', minWidth: 100, align: 'center'},
+    {
+      id: 'status',
+      label: 'Status',
+      minWidth: 100,
+      align: 'center',
+      classNameWithData: (data) => {
+        console.log('vo roi nhe')
+        if (data === "Active") return 'active-product'
+        return 'draft-product'
+      }
+    },
     {
       id: 'inventory',
       label: 'Inventory',
