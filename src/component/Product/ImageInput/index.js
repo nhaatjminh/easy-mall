@@ -194,7 +194,7 @@ const ImageInput = ({mode, formRef, oldForm}) => {
             <div className="row">
               <div className="col-3">
                 
-                <InputLabel name='title' className="text-medium p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
+                <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-9">
                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>

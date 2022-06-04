@@ -1,8 +1,8 @@
 import React, {useState, useRef, useEffect} from "react";
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 
 import {Checkbox, Box, TextField } from '@mui/material';
-import { InputLabel,Chip ,Link, FormControlLabel,Popper, IconButton } from '@material-ui/core';
+import { InputLabel,Chip ,Link, FormControlLabel,Popper, IconButton } from '@mui/material';
 
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -488,8 +488,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
     return (
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-            <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Option</InputLabel>
-            <FormControlLabel control={
+            <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Option</InputLabel>
+            <FormControlLabel className="text-label" control={
                 <Checkbox checked={showOpt} onChange={(e) => handleOnChangeShowOpt(e.target.checked)}/>} label="This product has options, like size or color" />
             {showOpt ?
                 <>  
@@ -499,12 +499,12 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                         return element ?
                         (
                             <div key={index}>  
-                                <InputLabel className="text-normal " name='title'>Option name</InputLabel>
+                                <InputLabel className="text-label" name='title'>Option name</InputLabel>
                                 <div className="row">
                                     <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
                                         <TextField
                                             aria-describedby={popoverId} 
-                                            className={`text-field-input ${errorOption === index ? "error-cell" : ""}`}
+                                            className={`text-field-input text-content ${errorOption === index ? "error-cell" : ""}`}
                                             name='title'
                                             fullWidth
                                             required
@@ -519,7 +519,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                             }}
                                         />
                                     </div>
-                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
                                         <IconButton onClick={(e) => handleDeleteOption(index)}>
                                             <DeleteIcon/>
                                         </IconButton>
@@ -533,8 +533,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                             Example: size, color, material,...
                                         </Box>
                                 </Popper>
-                                <div style={{paddingLeft: '2rem'}}>
-                                    <InputLabel className="text-normal " name='title'>Option value</InputLabel>
+                                <div style={{paddingLeft: '2rem', paddingRight: 3}}>
+                                    <InputLabel className="text-label" name='title'>Option value</InputLabel>
                                     {
                                         optionValue[index]?.value.map((value, idxValue) => {
                                             return (
@@ -542,7 +542,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                                     <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
                                                         
                                                     <TextField
-                                                            className={`text-field-input ${errorValue === idxValue && errorIdxOption === index ? "error-cell" : ""}`}
+                                                            className={`text-content text-field-input ${errorValue === idxValue && errorIdxOption === index ? "error-cell" : ""}`}
                                                             name='title'
                                                             fullWidth
                                                             required
@@ -556,7 +556,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                                             }}
                                                         />
                                                     </div>
-                                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
                                                         <IconButton onClick={(e) => handleDeleteOptionValue(index, idxValue)}>
                                                             <DeleteIcon/>
                                                         </IconButton>
@@ -569,7 +569,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                         <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
                                                         
                                             <TextField
-                                                className={`text-field-input ${errorValue === optionValue[index]?.value?.length && errorIdxOption === index  ? "error-cell" : ""}`}
+                                                className={`text-content text-field-input ${errorValue === optionValue[index]?.value?.length && errorIdxOption === index  ? "error-cell" : ""}`}
                                                 name='title'
                                                 fullWidth
                                                 required
@@ -582,14 +582,14 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                                 }}
                                             />
                                         </div>
-                                        <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1">
+                                        <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
                                             <IconButton>
                                                 <DeleteIcon/>
                                             </IconButton>
                                         </div>
                                     </div>  
                                 </div>
-                                <button className="btn-option" onClick={() => doneOrEditOption(index)}>
+                                <button className="btn-option button-done text-content" onClick={() => doneOrEditOption(index)}>
                                     Done
                                 </button>
                                 {index !== 2 ?    
@@ -608,7 +608,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                     </div>
                                 </div>
                                 <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                                    <button className="btn-option" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
+                                    <button className="btn-option button-done text-content" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
                                 </div>
                                 {index !== 2 ?    
                                     <Divider className="divider-custom"/>
@@ -619,8 +619,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                     })}
                     {optionTag.length <= 2 ?
                         <div>
-                            <i className="fa-plus fa-icon icon-plus-before-text" ></i>
-                            <Link to="#" className="text-decoration-none" style={{color: 'black', cursor:'pointer'}} onClick={addAnotherOption}>Add another option</Link>
+                            <i className="fa-plus fa-icon icon-plus-before-text link-add-option" style={{color:'blue'}} ></i>
+                            <Link to="#" className='link-add-option' style={{color: 'blue', textDecoration: 'underline', cursor:'pointer'}} onClick={addAnotherOption}>Add another option</Link>
                         </div>
                     : ""
                     }

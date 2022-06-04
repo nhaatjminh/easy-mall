@@ -1,12 +1,14 @@
 import React, {useEffect, useState, useRef} from "react";
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
 
 import PropTypes from 'prop-types';
-import {Checkbox, IconButton,Tooltip, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, Toolbar, TextField   } from '@mui/material';
-
+import {Checkbox, IconButton,MenuItem, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, Toolbar, TextField   } from '@mui/material';
+import './index.css'
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModalAddVariant from '../ModalAddVariant';
+import { Dropdown } from 'react-bootstrap';
+import BaseModal from "../../../common/BaseModal";
 
 function EnhancedTableHead(props) {
     const { onSelectAllClick, numSelected, rowCount, headCells } =
@@ -46,6 +48,11 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+const ModalPriceOrQuantity = (props) => {
+  return (
+    <BaseModal></BaseModal>
+  )
+}
 
 const EnhancedTableToolbar = (props) => {
   const { numSelected, onDeleteSelected } = props;
@@ -75,13 +82,27 @@ const EnhancedTableToolbar = (props) => {
             
           ) : ""}
 
-          <div className="float-right">
+          <div className="float-right" style={{display: 'inherit'}}>
           
             {numSelected > 0 ? (
-              <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
+              <Dropdown className="float-right dropdown-variant-action p-0">
+                <Dropdown.Toggle id="dropdown-basic" className='p-0 m-0'>       
+                  <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
+                </Dropdown.Toggle>
+                <Dropdown.Menu style={{display: 'flex', flexDirection: 'column' }}>
+                  <MenuItem className="item">Edit Price All</MenuItem>
+                  <MenuItem  className="item">Edit Quantity All</MenuItem>
+                  <MenuItem  className="item">Create All</MenuItem>
+                  <MenuItem  className="item">Delete All</MenuItem>
+                </Dropdown.Menu>
+            </Dropdown>
+              
             ) : ""}
+            
             {numSelected > 0 ? (
-              <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+              <div className='ml-2'>
+                <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+              </div>
             ) : ""}
           </div>
         </Toolbar>
@@ -532,9 +553,9 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
               : ""
               }
             </div>
+            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
             <TableContainer sx={{ maxHeight: 440 }}>
                 
-                <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
                 <Table stickyHeader aria-label="sticky table" className="p-0">
                 <EnhancedTableHead
                   numSelected={selected.length}
@@ -550,7 +571,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                         <TableRow hover
-                        key={`${row.quantity} + ${row.price} + ${index}  + variant`}
+                        key={`${labelId} + ${index}  + variant`}
                         role="checkbox"
                         className={`${row.delete ? "line-through" : ""}`}
                         aria-checked={isItemSelected}
@@ -577,10 +598,26 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                               {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                           </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.price ? row.price : ""} onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
+                              <TextField 
+                                onInput = {(e) =>{
+                                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
+                                    if (isNaN(e.target.value)) e.target.value = null;
+                                }}
+                                disabled={row.delete ? true : false}
+                                className="text-field-input"
+                                defaultValue={row.price ? row.price : ""}
+                                onChange={(e) => handleChangePriceVariant(index, e.target.value)}/>
                           </TableCell>
                           <TableCell align="center">
-                              <TextField disabled={row.delete ? true : false} className="text-field-input" defaultValue={row.quantity ? row.quantity : ""} onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
+                              <TextField
+                                onInput = {(e) =>{
+                                  e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
+                                  if (isNaN(e.target.value)) e.target.value = null;
+                                }}
+                                disabled={row.delete ? true : false}
+                                className="text-field-input"
+                                defaultValue={row.quantity ? row.quantity : ""}
+                                onChange={(e) => handleChangeQuantity(index, e.target.value)}/></TableCell>
                           <TableCell align="center">
                             <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>
                           </TableCell>

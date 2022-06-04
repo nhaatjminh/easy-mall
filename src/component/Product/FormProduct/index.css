@@ -62,11 +62,17 @@
     background-color: #ffffff;
     color: red;
 }
+.btn-product {
+    width: 80px;
+    height: 40px;
+    border-radius: 30px;
+}
 /* react-quill */
 .ql-editor{
     min-height:150px;
     max-height: 400px;
     overflow-y: auto;
+    padding: 4px 0 5px 5px;
 }
 .custom-type {
     display: flex;
@@ -75,6 +81,20 @@
 }
 .input-with-dropdown {
     width: 100%;
+}
+.auto-complete-vendor .MuiAutocomplete-endAdornmen {
+    top: 0;
+    right: 8px;
+}
+
+.auto-complete-vendor .MuiButtonBase-root {
+    padding: 0;
+}
+.auto-complete-vendor .MuiFormControl-root .MuiInputBase-root  {
+    padding: 3px 0 3px 5px !important;
+}
+.auto-complete-vendor .MuiFormControl-root .MuiInputBase-root input  {
+    padding: 0;
 }
 /* md ~ 768*/
 @media (min-width: 768px) {   

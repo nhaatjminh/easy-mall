@@ -23,7 +23,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return(
-    <div>
+    <div style={{overflowX: 'hidden'}}>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>

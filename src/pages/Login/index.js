@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import { Avatar, Button, Grid, Paper, Typography } from '@material-ui/core';
-import TextField from '@mui/material/TextField';
+import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link } from "react-router-dom";
