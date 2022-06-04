@@ -16,8 +16,10 @@ import Navigation from './pages/OnlineStore/Navigations/index';
 import DetailMenu from './pages/OnlineStore/Navigations/DetailMenu/index';
 import Page from "./pages/OnlineStore/Pages";
 import ManageDomain from "./pages/OnlineStore/ManageDomain";
-import EmailSent from './pages/EmailSent/index';
 import { Profile } from "./pages/Profile";
+import ForgottenPassword from "./pages/ForgottenPassword";
+import Notify from "./pages/Notify/index";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return(
@@ -42,8 +44,11 @@ const App = () => {
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/login' element={<Login/>}/>
-          <Route path='/emailsent/:email' element={<EmailSent/>}/>
+          <Route path='/notify/:type/:email' element={<Notify/>}/>
+          <Route path='/notify/:type' element={<Notify/>}/>
           <Route path='/register' element={<Register/>}/>
+          <Route path='/forgotten-password' element={<ForgottenPassword/>}/>
+          <Route path='reset-password/:userId/:resetString' element={<ResetPassword/>}/>
         </Routes>
       </BrowserRouter>
     </div>

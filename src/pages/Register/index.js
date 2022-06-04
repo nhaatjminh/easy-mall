@@ -89,7 +89,7 @@ const Register = () => {
             AuthApi.register(userObj)
             .then((result) => {
                 if (result.statusCode === 201) {
-                    navigate(`/emailsent/${email}`)
+                    navigate(`/notify/verify/${email}`)
                 }
                 else {
                     setError({

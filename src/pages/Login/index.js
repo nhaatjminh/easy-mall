@@ -219,8 +219,12 @@ const Login = () => {
                             className="btnGoogle"
                             scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
                         />
+                        <Typography style={{marginBottom: '.5rem'}}>
+                            Forgotten password? 
+                            <Link to={'/forgotten-password'}> Reset it</Link>
+                        </Typography>
                         <Typography >
-                            Don't have an account?
+                            Don't have an account? 
                             <Link to={'/register'}> Sign up</Link>
                         </Typography>
                         <Grid container justifyContent="flex-end">
