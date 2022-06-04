@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-import {Avatar,  TextField, Typography} from '@material-ui/core';
+import { useNavigate, useParams } from "react-router-dom";
+import {Avatar,  TextField, Typography} from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
@@ -9,17 +9,28 @@ import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import {   doSwitchSelectedStore} from "../../redux/slice/storeSlice";
+import { doSwitchSelectedStore, doGetListStore } from "../../redux/slice/storeSlice";
 import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
 import { logout } from "../../helpers/login";
-const HeaderDetailStore = ({nameAccount}) => {
+const HeaderDetailStore = ({nameAccount, keySelected}) => {
     //use redux to manage state
     const dispatch = useDispatch();
     let routeChange = useNavigate(); 
     const nameStore = useSelector((state) => state.listStore.selectedName);
-
     nameAccount = "TP";
     const listStoreInStore = useSelector((state) => state.listStore.listStore);
+    const params = useParams();
+    useEffect(() => {
+        if (!nameStore) {
+            dispatch(doGetListStore()).then((result) => {
+                result?.payload?.map((store) => {
+                    if (store?.id && store?.id === params.storeId ) {
+                        dispatch(doSwitchSelectedStore(store.name));
+                    }
+                })
+            })
+        }
+    }, [])
     return (
         <>
         
@@ -93,7 +104,7 @@ const HeaderDetailStore = ({nameAccount}) => {
                                         </Offcanvas.Header>
                                         <Offcanvas.Body >
                                             
-                                            <NavBarDetailStore key={1} isDesktop={false}></NavBarDetailStore>
+                                            <NavBarDetailStore keySelected={keySelected} isDesktop={false}></NavBarDetailStore>
                                         </Offcanvas.Body>
                                     </Navbar.Offcanvas>
                                 </Container>

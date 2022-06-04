@@ -19,7 +19,7 @@ import ManageDomain from "./pages/OnlineStore/ManageDomain";
 
 const App = () => {
   return(
-    <div>
+    <div style={{overflowX: 'hidden'}}>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>

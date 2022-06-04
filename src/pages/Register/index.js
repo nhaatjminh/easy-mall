@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { styled } from '@mui/material/styles';
-import {Avatar, Button, Grid, Paper, TextField, Typography, Checkbox, FormControlLabel} from '@material-ui/core';
+import {Avatar, Button, Grid, Paper, TextField, Typography, Checkbox, FormControlLabel} from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link, useNavigate } from "react-router-dom";

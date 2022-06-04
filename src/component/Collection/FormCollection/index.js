@@ -131,7 +131,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
-                            text: 'Create successful products!',
+                            text: 'Create successful collection!',
                         }).then((result) => {
                             returnAfterAdd();
                         })
@@ -241,19 +241,32 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
     }
     const handleDeleteCollection = () => {
         Swal.fire({
-            title: 'Please Wait !',
-            html: 'Deleting product',// add html attribute if you want or remove
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            },
-        });
-        dispatch(doDeleteCollection({
-            id: form.current.collection.id
-        })).then((result) => {
-            Swal.close();
-            returnAfterAdd();
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Please Wait !',
+                    html: 'Deleting Collection',// add html attribute if you want or remove
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    },
+                });
+                dispatch(doDeleteCollection({
+                    id: form.current.collection.id
+                })).then((result) => {
+                    Swal.close();
+                    returnAfterAdd();
+                })
+            }
         })
+        
     }
     useEffect(() => {
         if (mode === "ADD") {
@@ -425,12 +438,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 <div className="col-6">
                     {
                         mode === "EDIT" ?
-                        <button onClick={handleDeleteCollection} style={{width: 'auto'}} className="float-left btn btn-light btn-form-product btn-delete-product">Delete</button>
+                        <button onClick={handleDeleteCollection} style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
                         : ""
                     }
                 </div>
                 <div className="col-6">
-                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Save</button>
+                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
             
                 </div>
             </div>  

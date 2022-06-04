@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import './index.css';
@@ -79,7 +79,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         hidden={(keySelected === Key.Product) ||
                             (keySelected === Key.Inventory) ||
                             (keySelected === Key.Collection) ||
-                            (keySelected === Key.GiftCard) ? 0 : 1} >
+                            (keySelected === Key.GiftCard) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Inventory ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 //routeChange(`/store-detail/manage-product/${params.storeId}`)
@@ -177,7 +177,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             (keySelected === Key.BlogPost) ||
                             (keySelected === Key.Navigation) ||
                             (keySelected === Key.Preferences) ||
-                            (keySelected === Key.Page) ? 0 : 1} >
+                            (keySelected === Key.Page) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 routeChange(`/store-detail/manage-theme/${params.storeId}`);

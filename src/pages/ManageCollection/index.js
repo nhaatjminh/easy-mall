@@ -39,34 +39,51 @@ const ManageCollection = () => {
   ];
   const editFunction = (selected) => {
     Swal.showLoading();
-      new Promise(() => {
-        dispatch((doGetOneCollections(selected)))
-        .then((result) => {
-          setMode('EDIT');
-          setOldForm(result.payload);  
-          setShowAddCollection(true);
-          Swal.close();
-        })
-      })
+    dispatch((doGetOneCollections(selected)))
+    .then((result) => {
+      setMode('EDIT');
+      setOldForm(result.payload);  
+      setShowAddCollection(true);
+      Swal.close();
+    })
   }
   const deleteAllFunction = async (selected) => {
     Swal.showLoading();
-    const listPromise = [];
-    selected.map((product) => {
-      listPromise.push(
-        new Promise((resolve) => {
-          dispatch(doDeleteCollection({
-            id: product
-            })).then(() => {
-                resolve();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const listPromise = [];
+        selected.map((product) => {
+          listPromise.push(
+            new Promise((resolve) => {
+              dispatch(doDeleteCollection({
+                id: product
+                })).then(() => {
+                    resolve();
+                })
             })
+          )
         })
-      )
+        Promise.all(listPromise).then(() => {
+          Swal.close();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Delete successful collection!',
+          }).then((result) => {   
+            returnTable();
+          })
+        })
+      }
     })
-    Promise.all(listPromise).then(() => {
-      Swal.close();
-      returnTable();
-    })
+    
   }
   const returnTable = async () => {
     await dispatch(doGetListCollectionOfStores({
@@ -100,17 +117,17 @@ const ManageCollection = () => {
     setFilterSearch(e.target.value);
   }
   const fetchCollectionWithFilter = async () => {
+    let search = {};
     if (filterSeach) {
-      dispatch(doGetListCollectionOfStores({
-        id: params.storeId,
-        params: {
-          name: filterSeach
-        }
-      }))
-        .then((result) => {
-          if (!unmounted.current) setRows(result.payload);
-      });
+      search.name = filterSeach;
     }
+    dispatch(doGetListCollectionOfStores({
+      id: params.storeId,
+      params: search
+    }))
+      .then((result) => {
+        if (!unmounted.current) setRows(result.payload);
+    });
   }
   useEffect(() => {
     unmounted.current = false;
@@ -121,7 +138,7 @@ const ManageCollection = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore ></HeaderDetailStore>
+      <HeaderDetailStore keySelected={Key.Collection}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
               <NavBarDetailStore  isDesktop={true} keySelected={Key.Collection}></NavBarDetailStore>

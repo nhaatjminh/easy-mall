@@ -21,3 +21,13 @@
 .table .btn-delete-item {
     background-color: #f07067;
 }
+.row-table-manager:hover {
+    cursor: pointer;
+}
+.btn-manager {
+    border: 1px solid #6666;
+}
+
+.table-height {
+    max-height: 100vh - 100px;
+}
