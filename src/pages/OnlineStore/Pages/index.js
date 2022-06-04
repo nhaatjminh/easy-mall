@@ -59,6 +59,11 @@ const Page = ({ }) => {
         setShowModal(false)
     }
 
+    const handleOpenModal = () => {
+        setErr('')
+        setShowModal(true)
+    }
+
     const handleAddNewPage = () => {
         if (name === '') {
             setErr('Your page name must be at least 4 characters')
@@ -105,7 +110,7 @@ const Page = ({ }) => {
                             className="btn btn-success"
                             onClick={() => {
                                 setMode('ADD')
-                                setShowModal(true)
+                                handleOpenModal()
                             }}
                         >
                             Add page
@@ -129,7 +134,7 @@ const Page = ({ }) => {
                                                 setPreName(item.name)
                                                 setUpdatePageId(item.id)
                                                 setLink(item.page_url)
-                                                setShowModal(true)
+                                                handleOpenModal()
                                             }}
                                         >
                                             Edit

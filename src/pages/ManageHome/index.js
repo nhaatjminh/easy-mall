@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './index.scss';
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
@@ -14,6 +14,7 @@ import themeImg from '../../assets/image/theme.svg'
 import pageImg from '../../assets/image/page.svg'
 import navigationImg from '../../assets/image/navigation.svg'
 import { useNavigate, useParams } from 'react-router-dom';
+import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
 
 const tabContent = {
   'product': {
@@ -47,8 +48,16 @@ const tabImg = {
 
 const ManageHome = () => {
   const [tab, setTab] = useState('product');
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000)
+  }, [])
 
   return (
     <>
@@ -58,57 +67,61 @@ const ManageHome = () => {
           <NavBarDetailStore isDesktop={true} keySelected={Key.Home}></NavBarDetailStore>
         </div>
         <div className="manage-home col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">
-          <CustomCard className="manage-home__main">
-            <div className="manage-home__main__title text-title-1">You're off to a great start.</div>
-            <div className="manage-home__main__body">
-              <div className="manage-home__main__tabs">
-                <div 
-                  className={`manage-home__main__tab ${tab === 'product' ? 'manage-home__main__tab--active' : ''}`} 
-                  onClick={() => setTab('product')}>
-                  <span className="manage-home__main__tab--icon"><TagIcon /></span>
-                  <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Add Product</span>
+          {isLoading ? null :
+            <CustomCard className="manage-home__main">
+              <div className="manage-home__main__title text-title-1">You're off to a great start.</div>
+              <div className="manage-home__main__body">
+                <div className="manage-home__main__tabs">
+                  <div
+                    className={`manage-home__main__tab ${tab === 'product' ? 'manage-home__main__tab--active' : ''}`}
+                    onClick={() => setTab('product')}>
+                    <span className="manage-home__main__tab--icon"><TagIcon /></span>
+                    <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Add Product</span>
+                  </div>
+                  <div
+                    className={`manage-home__main__tab ${tab === 'theme' ? 'manage-home__main__tab--active' : ''}`}
+                    onClick={() => setTab('theme')}>
+                    <span className="manage-home__main__tab--icon"><EditIcon /></span>
+                    <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Customize theme</span>
+                  </div>
+                  <div
+                    className={`manage-home__main__tab ${tab === 'page' ? 'manage-home__main__tab--active' : ''}`}
+                    onClick={() => setTab('page')}>
+                    <span className="manage-home__main__tab--icon"><GridIcon /></span>
+                    <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Add pages</span>
+                  </div>
+                  <div
+                    className={`manage-home__main__tab ${tab === 'navigation' ? 'manage-home__main__tab--active' : ''}`}
+                    onClick={() => setTab('navigation')}>
+                    <span className="manage-home__main__tab--icon"><NavIcon /></span>
+                    <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Organize navigation</span>
+                  </div>
                 </div>
-                <div 
-                  className={`manage-home__main__tab ${tab === 'theme' ? 'manage-home__main__tab--active' : ''}`}  
-                  onClick={() => setTab('theme')}>
-                  <span className="manage-home__main__tab--icon"><EditIcon /></span>
-                  <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Customize theme</span>
-                </div>
-                <div 
-                  className={`manage-home__main__tab ${tab === 'page' ? 'manage-home__main__tab--active' : ''}`} 
-                  onClick={() => setTab('page')}>
-                  <span className="manage-home__main__tab--icon"><GridIcon /></span>
-                  <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Add pages</span>
-                </div>
-                <div 
-                  className={`manage-home__main__tab ${tab === 'navigation' ? 'manage-home__main__tab--active' : ''}`} 
-                  onClick={() => setTab('navigation')}>
-                  <span className="manage-home__main__tab--icon"><NavIcon /></span>
-                  <span className="manage-home__main__tab--title text-normal-2 font-weight-bold">Organize navigation</span>
-                </div>
-              </div>
 
-              <div className="manage-home__main__content">
-                <div className="manage-home__main__content--title">
-                  {tabContent[tab].title}
+                <div className="manage-home__main__content">
+                  <div className="manage-home__main__content--title">
+                    {tabContent[tab].title}
+                  </div>
+                  <div className="manage-home__main__content--content text-normal-1">
+                    {tabContent[tab].content}
+                  </div>
+                  <CustomButton
+                    className="manage-home__main__content--btn"
+                    content={tabContent[tab].btn}
+                    onClick={() => navigate(`/store-detail/manage-${tab}/${params.storeId}`)}
+                  />
                 </div>
-                <div className="manage-home__main__content--content text-normal-1">
-                {tabContent[tab].content}
-                </div>
-                <CustomButton 
-                  className="manage-home__main__content--btn"
-                  content={tabContent[tab].btn}
-                  onClick={() => navigate(`/store-detail/manage-${tab}/${params.storeId}`)}
-                />
-              </div>
 
-              <div className="manage-home__main__illustration">
-                <img src={tabImg[tab]}/>
+                <div className="manage-home__main__illustration">
+                  <img src={tabImg[tab]} />
+                </div>
               </div>
-            </div>
-          </CustomCard>
+            </CustomCard>
+          }
         </div>
       </div>
+
+      <LoadingModal show={isLoading} />
     </>
   );
 }

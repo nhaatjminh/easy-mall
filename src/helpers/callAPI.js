@@ -90,19 +90,20 @@ const callAPIWithPostMethod = async(pathURL, data, bearTokenFlg) => {
     let fetchResult;
     await fetch(process.env.REACT_APP_API_URL + pathURL, requestOptions)
         .then(response => {
-            if (response.status === 401) logout();
-            else if (response.ok) return response.json();
-
-            throw Error(response.status);
+            if (response.status === 401) {
+                if (window.location.pathname !== '/login') logout()
+                else return response.json();
+            }
+            return response.json()
         })
         .then(result => {
             fetchResult = result;
         })
-        .catch((errorCode) => {
-            if (errorCode === 401) {
+        .catch((error) => {
+            if (error.status === 401  && window.location.pathname !== '/login') {
                 logout();
             } else {
-                fetchResult = { 'ok': false, 'errorCode': errorCode };
+                fetchResult = error;
             }
         })
 

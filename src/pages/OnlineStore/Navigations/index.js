@@ -45,7 +45,7 @@ const Navigation = () => {
                         navigate(`/store-detail/manage-navigation/${params.storeId}/menu/${menu.id}`);
                     }}
                 >
-                    {menu.title}
+                    {menu.name}
                 </div>
                 <div className="navigation__menus__table--items--content">
                     {menu?.listMenuItem?.length ? menu.listMenuItem.map((item) => `${item.name}, `) : null}

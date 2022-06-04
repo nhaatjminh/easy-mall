@@ -74,8 +74,7 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="#"> <p className="text-nav">Pricing</p></Dropdown.Item>
-                                            <Dropdown.Item href="#"><p className="text-nav">Learn</p></Dropdown.Item>
+                                            <Dropdown.Item href="#" onClick={() => routeChange('/store-login')}> <p className="text-nav">Stores</p></Dropdown.Item>
                                             <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
