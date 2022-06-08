@@ -32,7 +32,6 @@ const ManageStoreProduct = () => {
       minWidth: 100,
       align: 'center',
       classNameWithData: (data) => {
-        console.log('vo roi nhe')
         if (data === "Active") return 'active-product'
         return 'draft-product'
       }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef } from "react";
+import React, {useState, useEffect, useCallback, useRef, Fragment } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import {
@@ -18,9 +18,11 @@ import {
     FormControl,
     ListItemText,
     OutlinedInput,
+    IconButton,
     ListItemAvatar
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './index.css';
 import { Link } from "react-router-dom";
 import ImageInput from "../ImageInput"
@@ -321,6 +323,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             className="text-field-input"
                             id="title-product"
                             name='title'
+                            key={`collection-name`}
                             onChange={handleChangeCollectionName}
                             fullWidth
                             required
@@ -347,16 +350,20 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                             
                                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={handleOpen}></i>      
                                 <Modal
+                                    key={`modal`}
                                     open={modalShow}
                                     onClose={handleClose}
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box sx={styleModal}>
+                                    <Box sx={styleModal} 
+                                    key={`box-modal`}>
                                         
                                         <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
                                         <FormControl sx={{ m: 1, width: 300 }}>
                                             <Select
+                                            
+                                            key={`collection-product`}
                                             className="text-field-input select-modal"
                                             labelId="demo-multiple-checkbox-label"
                                             id="demo-multiple-checkbox"
@@ -369,7 +376,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                             MenuProps={MenuProps}
                                             >
                                                 {listProducts.map((product) => (
-                                                    <MenuItem key={product.id} value={product.id}>
+                                                    <MenuItem key={`${product.id} select-modal`} value={product.id}>
                                                         <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
                                                         {
                                                             product.thumbnail ?
@@ -395,33 +402,34 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 </Modal>
                             </div>
                             <Box style={{overflow: "auto", maxHeight: 400}}>
-                                {listProductOfCollection.map((productId, index) => {
-                                    if (!listProducts.length) return (<></>)
+                                {listProducts.length && listProductOfCollection.map((productId, index) => {
                                     const product = listProducts.find(productTemp => productTemp.id === productId)
                                     return (
-                                        <>
-                                            <MenuItem key={product.id} value={product.id}>
+                                        <div key={productId + "item-select"}>
+                                            <MenuItem key={`${productId}-selected`} value={product.id}>
                                                 <p className="pr-2 m-0">{index}.</p>
                                                 {
                                                 product.thumbnail ?
-                                                    <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar>
+                                                    <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src={product.thumbnail}/>
                                                         </ListItemAvatar>
                                                     </Box>
-                                                :  <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar>
+                                                :  <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 }
                                                 
-                                                <ListItemText primary={product.title}/>
-                                                <i className="fa-trash fa-icon icon-trash float-right text-extra-large" onClick={() => handleDeleteProducts(index)}></i>
+                                                <ListItemText key={`${product.id} title`} primary={product.title}/>
+                                                <IconButton className="float-right text-extra-large" onClick={() => handleDeleteProducts(index)}>
+                                                    <DeleteIcon/>
+                                                </IconButton>
                                             </MenuItem>
                                             {index !== listProductOfCollection.length - 1 && <Divider className="divider-custom" />}
                                             
-                                        </>
+                                        </div>
                                 )})}
                             </Box>
                         </div>
@@ -434,7 +442,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 </div>    
             </div>
             <Divider className="custom-devider" style={{marginTop: 15}} />
-            <div className="mt-4 mb-4 row">
+            <div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
                     {
                         mode === "EDIT" ?

@@ -101,7 +101,7 @@ const ImageInput = ({formRef, oldForm, mode}) => {
               <IconButton className="icon-color-black float-right btn-form-product p-1" onClick={() => handleDelete()}>
                 <DeleteIcon/>
               </IconButton>
-                <i className="fa fa-plus-circle icon-color-black float-right  btn " onClick={() => browseclick()}></i>
+                <i className="fa fa-plus-circle icon-color-black float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
                 
               </div>

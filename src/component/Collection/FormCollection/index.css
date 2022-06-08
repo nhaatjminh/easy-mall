@@ -58,6 +58,11 @@
     height: 40px;
     border-radius: 30px;
 }
+
+.form-group-button {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
 /* md ~ 768*/
 @media (min-width: 768px) {   
     .save-button-form-product-mobile {

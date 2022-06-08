@@ -37,7 +37,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [customTypeList, setCustomTypeList] = useState([]);
     const [vendorList, setVendorList] = useState([]);
     const nameStore = useSelector((state) => state.listStore.selectedName);
-    const [vendorValue, setVendorValue] = useState(null);
+    const [vendorValue, setVendorValue] = useState('');
     const [optionVendor, setOptionVendor] = useState([nameStore]);
     const [trickRerender, setTrickRerender] = useState(0);
     const initOptionRef = () => {
@@ -555,7 +555,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
-                            defaultValue={mode === "EDIT" && oldForm?.product?.title ? oldForm?.product?.title : ""}
                         />
                         <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header font-weight-bold">Description</InputLabel>
                         <ReactQuill
@@ -611,8 +610,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             className="poper-item text-content"
                             defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "Draft"}
                             onChange={(e) => handleOnChangeStatus(e)}
-                            
-                            value={form.current?.product?.status}
                             >
                                 <MenuItem value="Draft" fullWidth>Draft</MenuItem>
                                 <MenuItem value="Active" fullWidth>Active</MenuItem>
@@ -627,12 +624,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div>
                             <Autocomplete
                                 className="auto-complete-vendor"
-                                value={vendorValue}
+                                value={vendorValue || ''}
                                 onChange={(e, newValue) => {
                                     setVendorValue(newValue);
                                     handleOnChangeVendor(newValue);
                                 }}
-                                inputValue={vendorValue}
+                                inputValue={vendorValue || ''}
                                 onInputChange={(event, newInputValue) => {
                                     setVendorValue(newInputValue);
                                     handleOnChangeVendor(newInputValue);
@@ -640,6 +637,9 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 options={optionVendor}
                                 fullWidth
                                 renderInput={(params) => <TextField {...params} 
+                                onChange = {(e) => {
+                                    if (!e.target.value) e.target.value = "";
+                                }}
                                 className="text-field-input text-content" size="small" />}
                             />
                         </div>
@@ -654,7 +654,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 onChange={(e) => handleChangeCollection(e)}
                                 key={form?.current?.product?.collection ?? "Select-Collection"}
                                 renderValue={() => (
-                                    <></>
+                                    [<></>]
                                 )}
                             >
                                 {collectionList.map((collection, index) => {
@@ -672,7 +672,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             </div>
             
             <Divider className="custom-devider" style={{marginTop: 15}} />
-            <div className="mt-4 mb-4 row">
+            <div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
                     {
                     mode === "EDIT" ?

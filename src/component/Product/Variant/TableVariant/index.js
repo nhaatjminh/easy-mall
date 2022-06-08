@@ -515,7 +515,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
           if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
               setTrickRerender(trickRerender + 1);
-              let deleteVariantList = form.current.variant.filter(variant => variant.update === "Delete")
+              let deleteVariantList = form.current?.variant?.filter(variant => variant?.update === "Delete")
               allVariantAssignForm = allVariantAssignForm.concat(deleteVariantList);
               allNewVariant.forEach((newVariant) => {
                 allVariantAssignForm.push(newVariant)

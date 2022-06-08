@@ -5,7 +5,7 @@ import {InputLabel, Select,MenuItem, IconButton , Divider , TextField   } from '
 
 const CustomType = ({mode, formRef, oldForm, customTypeList}) => {
     const form = formRef;
-    const [type, setType]= useState(null);
+    const [type, setType]= useState(mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : "");
     const [customType, setCustomType] = useState(mode === "EDIT" && oldForm?.product?.custom_type ? oldForm?.product?.custom_type : false);
     const handleOnChangeType = (event) => {
         if (mode === "EDIT") {
@@ -49,15 +49,14 @@ const CustomType = ({mode, formRef, oldForm, customTypeList}) => {
                             <Select fullWidth 
                             disabled={customType}
                             className="poper-item text-content"
-                            defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
-                            value={type}
+                            value={type || ''}
                             key={"Select-Type"}
                             renderValue={(value) => {
                                 if (value === 'custom-type') {
                                     if (customType)
                                         return <p className="m-0 p-0">Remove Custom Type To Enable Type</p>
                                     else {
-                                        return <></>
+                                        return null
                                     }
                                 }
                                 else return value;
@@ -75,7 +74,7 @@ const CustomType = ({mode, formRef, oldForm, customTypeList}) => {
                                 </MenuItem>
                                 {customTypeList.length ?
                                  <Divider className="divider-custom"/>
-                                : <></>
+                                : <div></div>
                                 }
                                 {customTypeList ?
                                 customTypeList.map(type => {
@@ -97,7 +96,6 @@ const CustomType = ({mode, formRef, oldForm, customTypeList}) => {
                                         required
                                         key={`custom-type`}
                                         onChange={(e) => handleOnChangeType(e)}
-                                        defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
                                         value={type === 'custom-type' ? '' : type}  
                                     />
                                     <IconButton onClick={disableCustomType}>

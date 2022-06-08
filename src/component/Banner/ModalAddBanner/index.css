@@ -1,0 +1,6 @@
+.add-banner-modal .MuiDialog-paper {
+    min-width: 700px;
+}
+.swal2-container {
+    z-index: 1500 !important;
+  }
