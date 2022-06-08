@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from "../../component/NavBar";
 import FooterHomePage from "../../component/FooterHomepage";
+import { EndSlide } from "../../component/EndSlide";
 const HomePage = () => {
     
     return (
@@ -41,25 +42,25 @@ const HomePage = () => {
                     </div>
                     <div className=" row  m-0 column4-second-slide">
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-                            <i class="fab fa-shopping-bag fa-icon ml-0"></i>
+                            <i className="fab fa-shopping-bag fa-icon ml-0"></i>
                             <h5 className="font-weight-bold text-second-slide-1">Kinh doanh Online</h5>
                             <h5 className=" text-second-slide-3">Tạo cơ sở kinh doanh, dù bạn vừa nảy ra ý tưởng sáng tạo hay đang tìm cách thức kiếm tiền mới</h5>
                         </div>
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
                             
-                            <i class="fab fa-globe fa-icon ml-0"></i>
+                            <i className="fab fa-globe fa-icon ml-0"></i>
                             <h5 className="font-weight-bold text-second-slide-1">Đưa cơ sở lên mạng</h5>
                             <h5 className="text-second-slide-3">Biến cửa hàng bán lẻ của bạn thành cửa hàng online và tiếp tục phục vụ khách hàng mà không bị gián đoạn</h5>
                         
                         </div>
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-                            <i class="fab fa-refresh fa-icon ml-0"></i>
+                            <i className="fab fa-refresh fa-icon ml-0"></i>
                             <h5 className="font-weight-bold text-second-slide-1">Chuyển sang EasyMall</h5>
                             <h5 className="text-second-slide-3">Đưa cơ sở kinh doanh của bạn lên EasyMall, bất kể bạn hiện đang sử dụng nền tảng thương mại điện tử nào</h5>
                         
                         </div>
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
-                            <i class="fab fa-users fa-icon ml-0"></i>
+                            <i className="fab fa-users fa-icon ml-0"></i>
                             <h5 className="font-weight-bold text-second-slide-1">Thuê chuyên gia EasyMall</h5>
                             <h5 className="text-second-slide-3">Thiết lập cửa hàng với sự giúp đỡ của một người làm tự do hay đại lí đáng tin cậy từ Trung tâm chuyên gia EasyMall</h5>
                         
@@ -108,14 +109,7 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="end-slide ">
-                    <h5 className="font-weight-bold text-end-slide-1">Bắt đầu hành trình kinh doanh của bạn với EasyMall</h5>
-
-                    <h5 className="text-end-slide-2">
-                        Dùng thử EasyMall miễn phí, khám phá tất cả các công cụ và dịch vụ để khởi động, vận hành và phát triển doanh nghiệp của riêng mình.
-                    </h5>
-                    <button className="btn btn-success btn-end-slide mt-5" > <p className="text-btn-end-slide"> Bắt đầu dùng thử miễn phí </p></button>
-                </div>
+                <EndSlide/>
             </div>
            
             <FooterHomePage></FooterHomePage>

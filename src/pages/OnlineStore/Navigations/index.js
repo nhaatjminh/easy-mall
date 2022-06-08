@@ -10,10 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal } from "react-bootstrap";
 import { CustomInput } from "../../../component/common/CustomInput/CustomInput";
 import { Key } from "../../../constants/constForNavbarDetail";
+import { LoadingModal } from "../../../component/common/LoadingModal/LoadingModal";
 
 const Navigation = () => {
 
     const listNavigation = useSelector((state) => state.navigation.listNavigation);
+    const isLoading = useSelector((state) => state.navigation.isLoading);
     const dispatch = useDispatch();
     const params = useParams();
     const navigate = useNavigate();
@@ -22,7 +24,7 @@ const Navigation = () => {
     const [title, setTitle] = useState('');
 
     useEffect(() => {
-        dispatch(doGetListNavigation(params.storeId));
+        dispatch(doGetListNavigation(params.storeId))
     }, [])
 
     const handleCloseModal = () => {
@@ -31,8 +33,8 @@ const Navigation = () => {
     }
 
     const hanndleAddNewMenu = () => {
-        dispatch(doCreateMenu({ store_id: params.storeId, title: title }))
-        .then(() => handleCloseModal());
+        dispatch(doCreateMenu({ store_id: params.storeId, name: title }))
+        handleCloseModal();
     }
 
     const listMenuItem = (menu) => {
@@ -121,6 +123,7 @@ const Navigation = () => {
                     </div>
                 </Modal.Footer>
             </Modal>
+            <LoadingModal show={isLoading}/>
         </div>
     )
 }

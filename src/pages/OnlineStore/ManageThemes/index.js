@@ -6,19 +6,28 @@ import NavBarDetailStore from "../../../component/NavBarDetailStore";
 import { useParams } from 'react-router-dom';
 import { StoreApi } from "../../../service/api";
 import { Key } from "../../../constants/constForNavbarDetail";
+import { LoadingModal } from "../../../component/common/LoadingModal/LoadingModal";
 
 const ManageThems = () => {
     const params = useParams();
     const [homePageId, setHomePageId] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const query = {
             name: 'Home'
         }
         
+        setIsLoading(true)
         StoreApi.getPagesByStoreId(params.storeId, query)
-            .then((result) => setHomePageId(result.data[0].id))
-            .catch(err => console.log(err));
+            .then((result) => {
+                setHomePageId(result.data[0].id)
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                console.log(err)
+                setIsLoading(false)
+            });
 
     }, [])
 
@@ -47,7 +56,7 @@ const ManageThems = () => {
                     </div>
                 </div>
             </div>
-
+            <LoadingModal show={isLoading} />
         </div>
     )
 }

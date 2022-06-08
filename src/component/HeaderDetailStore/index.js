@@ -63,7 +63,7 @@ const HeaderDetailStore = ({ nameAccount }) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile/${localStorage.getItem('userId')}`)}> <p className="text-nav">Profile</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile`)}> <p className="text-nav">Profile</p></Dropdown.Item>
                                 <Dropdown.Item href="#" onClick={() => routeChange('/store-login')}> <p className="text-nav">Stores</p></Dropdown.Item>
                                 <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
@@ -113,7 +113,7 @@ const HeaderDetailStore = ({ nameAccount }) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile/${localStorage.getItem('userId')}`)}> <p className="text-nav">Profile</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile`)}> <p className="text-nav">Profile</p></Dropdown.Item>
                                 <Dropdown.Item href="#" onClick={() => routeChange('/store-login')}> <p className="text-nav">Stores</p></Dropdown.Item>
                                 <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>

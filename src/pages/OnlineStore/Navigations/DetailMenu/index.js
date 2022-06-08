@@ -16,10 +16,12 @@ import { useNavigate } from 'react-router-dom';
 import { Key } from "../../../../constants/constForNavbarDetail";
 import { doGetListPages } from './../../../../redux/slice/pageSlice';
 import { ConfirmModal } from './../../../../component/common/ConfirmModal/ConfirmModal';
+import { LoadingModal } from './../../../../component/common/LoadingModal/LoadingModal';
 
 const DetailMenu = ({ }) => {
 
     const menu = useSelector((state) => state.navigation.currentMenu)
+    const isLoading = useSelector((state) => state.navigation.isLoading)
     const listPage = useSelector((state) => state.page.listPages)
     const dispatch = useDispatch();
     const params = useParams();
@@ -33,19 +35,19 @@ const DetailMenu = ({ }) => {
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
     const [showPageLinks, setShowPageLinks] = useState(false);
     const [linkValue, setLinkValue] = useState('');
-    const [deleteId, setDeleteId] = useState('')
+    const [deleteId, setDeleteId] = useState('');
 
     useEffect(() => {
         batch(() => {
             dispatch(doGetCurrentMenu(params.id));
-            dispatch(doGetListPages(params.storeId));
+            dispatch(doGetListPages(params.storeId))
         })
 
-    }, [params.id])
+    }, [])
 
     useEffect(() => {
-        if (menu.title) setTitle(menu.title)
-    }, [menu.title])
+        if (menu.name) setTitle(menu.name)
+    }, [menu.name])
 
     const handleCloseModal = () => {
         setName('')
@@ -91,7 +93,7 @@ const DetailMenu = ({ }) => {
                             className="detail-menu__header--back-icon">
                             <BackIcon />
                         </span>
-                        <span className="detail-menu__header--title text-title-1">{menu.title}</span>
+                        <span className="detail-menu__header--title text-title-1">{menu.name}</span>
                     </div>
                     <CustomCard className="detail-menu__edit-title">
                         <div className="detail-menu__edit-title--text text-normal-1">Title</div>
@@ -181,6 +183,7 @@ const DetailMenu = ({ }) => {
                             <CustomCard className='detail-menu__add-item-modal--link--list'>
                                 {listPage?.length ? listPage.map((item) => (
                                     <div
+                                        key={item.id}
                                         className="detail-menu__add-item-modal--link--list--link-item text-normal-1"
                                         onClick={() => {
                                             setLink(item.name)
@@ -222,7 +225,9 @@ const DetailMenu = ({ }) => {
                 content={`This will remove this menu item.`}
                 onConfirm={handleDeleteMenuItem}
             />
+            <LoadingModal show={isLoading}/>
         </div>
+
     )
 }
 

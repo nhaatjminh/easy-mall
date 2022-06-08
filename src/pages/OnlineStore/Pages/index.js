@@ -15,21 +15,29 @@ import { ConfirmModal } from './../../../component/common/ConfirmModal/ConfirmMo
 import { NotAllowIcon } from "../../../assets/icon/svg/NotAllowIcon";
 import { useDebounce } from './../../../hooks/useDebounce';
 import { PageApi } from './../../../service/api/pageApi';
+import { useDidMountEffect } from "../../../hooks/useDidMountEffct";
+import { Loader } from './../../../component/common/Loader/Loader';
+import { checkValidURL } from "../../../helpers/common";
+import { LoadingModal } from "../../../component/common/LoadingModal/LoadingModal";
 
 const Page = ({ }) => {
 
     const listPages = useSelector((state) => state.page.listPages)
+    const isLoading = useSelector((state) => state.page.isLoading)
     const dispatch = useDispatch();
     const params = useParams();
     const [name, setName] = useState('');
     const [preName, setPreName] = useState('');
     const [link, setLink] = useState('');
+    const [preLink, setPreLink] = useState('');
     const [mode, setMode] = useState('ADD');
     const [updatePageId, setUpdatePageId] = useState(-1);
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState('');
     const [err, setErr] = useState('');
+    const [linkErr, setLinkErr] = useState('');
+    const [isChecking, setIsChecking] = useState(false);
     const dbValue = useDebounce(name, 300);
     const mounted = useRef();
 
@@ -38,9 +46,16 @@ const Page = ({ }) => {
         else {
             if ((mode === 'EDIT') && (name === preName)) return;
             if (name.length >= 4) {
+                setIsChecking(true)
                 const result = await PageApi.checkExistName(name, params.storeId);
-                if (result.data.length > 0) setErr('A page with that name already exists')
-                else setErr('')
+                if (result?.data?.length > 0) {
+                    setErr('A page with that name already exists')
+                    setIsChecking(false)
+                }
+                else {
+                    setErr('')
+                    setIsChecking(false)
+                }
             } else {
                 setErr('Your page name must be at least 4 characters')
             }
@@ -48,7 +63,15 @@ const Page = ({ }) => {
     }, [dbValue])
 
     useEffect(() => {
-        dispatch(doGetListPages(params.storeId));
+        if (showModal) {
+            const isValid = checkValidURL(link);
+            if (isValid) setLinkErr('')
+            else setLinkErr('Invalid link!')
+        }
+    }, [link])
+
+    useEffect(() => {
+        dispatch(doGetListPages(params.storeId))
     }, [params.storeId])
 
     const handleCloseModal = () => {
@@ -56,12 +79,21 @@ const Page = ({ }) => {
         setPreName('')
         setLink('')
         setErr('')
+        setLinkErr('')
         setShowModal(false)
     }
 
     const handleOpenModal = () => {
         setErr('')
+        setLinkErr('')
         setShowModal(true)
+    }
+
+    const handleOnchangeLink = (e) => {
+        const value = e.target.value;
+
+        if (value.length === 0) setLink('/');
+        else setLink(value)
     }
 
     const handleAddNewPage = () => {
@@ -74,13 +106,18 @@ const Page = ({ }) => {
             name: name,
             // link: link
         }))
+            .then((res) => {
+                if (res.error) setErr(res.error.message)
+            })
+        
         handleCloseModal()
     }
 
     const handleEitPage = () => {
         dispatch(doUpdatePage({
             id: updatePageId,
-            name: name
+            name: name,
+            page_url: link !== '/' ? link : ''
         }))
         handleCloseModal()
     }
@@ -122,35 +159,38 @@ const Page = ({ }) => {
                             All pages
                         </div>
                         <div className="page__table--list">
-                            {listPages?.length ? listPages.map((item) => (
-                                <div key={item.id} className="page__table--list--item">
-                                    <div className="page__table--list--item--name text-normal-1">{item.name}</div>
-                                    <div className="page__table--list--item--btn">
-                                        <div
-                                            className="page__table--list--item--btn--edit text-title-3"
-                                            onClick={() => {
-                                                setMode('EDIT')
-                                                setName(item.name)
-                                                setPreName(item.name)
-                                                setUpdatePageId(item.id)
-                                                setLink(item.page_url)
-                                                handleOpenModal()
-                                            }}
-                                        >
-                                            Edit
-                                        </div>
-                                        <div
-                                            className="page__table--list--item--btn--delete text-title-3"
-                                            onClick={() => {
-                                                setDeleteId(item.id)
-                                                setShowDeleteModal(true)
-                                            }}
-                                        >
-                                            Delete
+                            {isLoading ? <Loader className="page__loader" />
+                                :
+                                listPages?.length ? listPages.map((item) => (
+                                    <div key={item.id} className="page__table--list--item">
+                                        <div className="page__table--list--item--name text-normal-1">{item.name}</div>
+                                        <div className="page__table--list--item--btn">
+                                            <div
+                                                className="page__table--list--item--btn--edit text-title-3"
+                                                onClick={() => {
+                                                    setMode('EDIT')
+                                                    setName(item.name)
+                                                    setPreName(item.name)
+                                                    setUpdatePageId(item.id)
+                                                    setLink(item.page_url)
+                                                    setPreLink(item.page_url)
+                                                    handleOpenModal()
+                                                }}
+                                            >
+                                                Edit
+                                            </div>
+                                            <div
+                                                className="page__table--list--item--btn--delete text-title-3"
+                                                onClick={() => {
+                                                    setDeleteId(item.id)
+                                                    setShowDeleteModal(true)
+                                                }}
+                                            >
+                                                Delete
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )) : null}
+                                )) : null}
                         </div>
 
                         {/* <div
@@ -171,7 +211,7 @@ const Page = ({ }) => {
                 </div>
             </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal centered show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <div className="text-title-1">{mode === 'ADD' ? 'Add page' : preName}</div>
                 </Modal.Header>
@@ -191,15 +231,24 @@ const Page = ({ }) => {
                             </div>
                         }
                     </div>
-                    {/* <div className="page__add-page-modal--link">
-                        <div className="text-normal-1">Link</div>
-                        <CustomInput
-                            placeholder='Link to your page or external link'
-                            value={link}
-                            disabled={true}
-                            onChange={(e) => setLink(e.target.value)}
-                        />
-                    </div> */}
+                    {mode === "EDIT" &&
+                        <div className="page__add-page-modal--link">
+                            <div className="text-normal-1">Link</div>
+                            <CustomInput
+                                placeholder='Link to your page or external link'
+                                value={link}
+                                warning={linkErr !== ''}
+                                onChange={handleOnchangeLink}
+                            />
+                        </div>
+                    }
+                    {linkErr !== '' &&
+                        <div style={{ marginTop: '10px' }}>
+                            <span style={{ marginRight: '10px' }}><NotAllowIcon /></span>
+                            <span>{linkErr}</span>
+                        </div>
+                    }
+                    {/* {isChecking && <Loader className="page__loader" small/> } */}
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="page__add-page-modal--btn">
@@ -211,7 +260,7 @@ const Page = ({ }) => {
                         </Button>
                         <Button
                             className="btn btn-success"
-                            disabled={(err !== '') || ((mode === 'EDIT') && (name === preName))}
+                            disabled={(err !== '') || (linkErr !== '') || ((mode === 'EDIT') && (name === preName) && (link === preLink))}
                             onClick={mode === 'ADD' ? handleAddNewPage : handleEitPage}
                         >
                             {mode === 'ADD' ? 'Add' : 'Save'}
@@ -227,6 +276,8 @@ const Page = ({ }) => {
                 content='Deleted page cannot be recovered. Do you still want to continue?'
                 onConfirm={handleDeletePage}
             />
+
+            <LoadingModal show={isLoading} />
         </div>
     )
 }

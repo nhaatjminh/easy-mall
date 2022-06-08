@@ -23,10 +23,10 @@ const NavBar = () => {
                 </div>
                 <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 ">
                     <Stack direction="row" spacing={5} className="navigation-menu ">
-                        <Link to={'#'} className="text-nav"> Giá cước</Link>
-                        <Link to={'#'} className="text-nav"> Tìm hiểu</Link>
+                        <Link to={'#'} className="text-nav"> Pricing </Link>
+                        <Link to={'#'} className="text-nav"> Learn more </Link>
                         <Link to={'/login'}>
-                            <button className="btn btn-success btn-login"> <p className="text-btn-login"> Đăng nhập </p></button>
+                            <button className="btn btn-success btn-login"> <p className="text-btn-login"> Login </p></button>
                         </Link>
                     </Stack>
                 </div>
@@ -43,12 +43,12 @@ const NavBar = () => {
                         <button className="btn btn-success btn-login" onClick={() => routeChange("/login")}> <p className="text-btn-login"> Đăng nhập </p></button>
                         <Dropdown>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                <i class="fa fa-icon fa-bars"></i>
+                                <i className="fa fa-icon fa-bars"></i>
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#"> <p className="text-nav">Giá cước</p></Dropdown.Item>
-                                <Dropdown.Item href="#"><p className="text-nav">Tìm hiểu</p></Dropdown.Item>
+                                <Dropdown.Item href="#"> <p className="text-nav">Pricing</p></Dropdown.Item>
+                                <Dropdown.Item href="#"><p className="text-nav">Learn more</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Stack>

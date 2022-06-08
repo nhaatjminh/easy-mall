@@ -9,6 +9,10 @@ export const PageApi = {
         const result = await callAPIWithGetMethod(`stores/${storeId}/page/${name}`, false);
         return result;
     },
+    checkValidURL: async (url) => {
+        const result = await callAPIWithPostMethod(`pages/check-url`, { url }, false);
+        return result;
+    },
     createPage: async (pageObj) => {
         const result = await callAPIWithPostMethod('pages', pageObj, true);
         return result;

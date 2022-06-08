@@ -65,7 +65,8 @@ export const navigationSlice = createSlice({
     name: 'navigation',
     initialState: {
         listNavigation: [],
-        currentMenu: {}
+        currentMenu: {},
+        isLoading: false
     },
     reducers: {
         doSetCurrentMenu(state, action) {
@@ -75,25 +76,45 @@ export const navigationSlice = createSlice({
     extraReducers: (builder) => {
         // get Navigation
         builder.addCase(doGetListNavigation.pending, (state) => {
-
+            state.isLoading = true
         });
         builder.addCase(doGetListNavigation.fulfilled, (state, action) => {
             state.listNavigation = action.payload;
+            state.isLoading = false
         });
         builder.addCase(doGetListNavigation.rejected, (state, action) => {
-
+            state.isLoading = false
         });
 
         // get current menu
+        builder.addCase(doGetCurrentMenu.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doGetCurrentMenu.fulfilled, (state, action) => {
             state.currentMenu = action.payload;
+            state.isLoading = false
+        });
+        builder.addCase(doGetCurrentMenu.rejected, (state, action) => {
+            state.isLoading = false
         });
 
+        // create menu
+        builder.addCase(doCreateMenu.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doCreateMenu.fulfilled, (state, action) => {
             state.listNavigation.push(action.payload);
-        })
+            state.isLoading = false;
+        });
+        builder.addCase(doCreateMenu.rejected, (state, action) => {
+            state.isLoading = false
+        });
+
 
         // create menu item
+        builder.addCase(doCreateMenuItem.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doCreateMenuItem.fulfilled, (state, action) => {
             const newItem = action.payload;
             state.currentMenu.listMenuItem.push(newItem);
@@ -102,9 +123,16 @@ export const navigationSlice = createSlice({
             if (index >= 0) {
                 state.listNavigation[index].listMenuItem.push(newItem);
             }
+            state.isLoading = false;
         })
+        builder.addCase(doCreateMenuItem.rejected, (state, action) => {
+            state.isLoading = false
+        });
 
         // update menu item
+        builder.addCase(doUpdateMenuItem.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doUpdateMenuItem.fulfilled, (state, action) => {
             let updateItem = action.payload;
             const index1 = state.currentMenu.listMenuItem.findIndex((item) => item.id === updateItem.id)
@@ -120,9 +148,16 @@ export const navigationSlice = createSlice({
             if (index >= 0) {
                 state.listNavigation[index].listMenuItem[index1] = updateItem;
             }
+            state.isLoading = false
         })
+        builder.addCase(doUpdateMenuItem.rejected, (state, action) => {
+            state.isLoading = false
+        });
 
         // delete menu item
+        builder.addCase(doDeleteMenuItem.pending, (state) => {
+            state.isLoading = true;
+        });
         builder.addCase(doDeleteMenuItem.fulfilled, (state, action) => {
             const menuItemId = action.payload.id;
 
@@ -135,7 +170,11 @@ export const navigationSlice = createSlice({
             if (index2 >= 0) {
                 state.listNavigation[index2].listMenuItem.splice(index, 1);
             }
+            state.isLoading = false
         })
+        builder.addCase(doDeleteMenuItem.rejected, (state, action) => {
+            state.isLoading = false
+        });
     }
 })
 const { actions, reducer } = navigationSlice;
