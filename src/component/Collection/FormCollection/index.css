@@ -53,6 +53,11 @@
 .MuiModal-root .btn-close-modal {
     border: 1px solid #666666;
 }
+.btn-collection {
+    width: 80px;
+    height: 40px;
+    border-radius: 30px;
+}
 /* md ~ 768*/
 @media (min-width: 768px) {   
     .save-button-form-product-mobile {

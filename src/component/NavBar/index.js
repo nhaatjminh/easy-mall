@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Typography } from '@material-ui/core';
+import { Avatar, Typography } from '@mui/material';
 import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import './index.css';

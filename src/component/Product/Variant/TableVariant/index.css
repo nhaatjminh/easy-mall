@@ -1,0 +1,10 @@
+.dropdown-variant-action {
+    border: none !important;
+}
+.dropdown-variant-action #dropdown-basic {
+    background-color: transparent !important;
+    border: none !important;
+}
+.dropdown-variant-action .item {
+    padding: 5px 10px;
+}

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
 
 import PropTypes from 'prop-types';
 import './index.css';
@@ -71,6 +71,7 @@ function EnhancedTableHead(props) {
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
+                  hideSortIcon
                 >
                   {headCell.label}
                   {orderBy === headCell.id ? (
@@ -122,7 +123,6 @@ const EnhancedTableToolbar = (props) => {
         >
           {numSelected > 0 ? (
             <Typography
-              sx={{ flex: '1 1 100%' }}
               color="inherit"
               variant="subtitle1"
               component="div"
@@ -133,14 +133,18 @@ const EnhancedTableToolbar = (props) => {
           ) : ""}
           <div className="float-right">
             {numSelected > 0 ? (
-              <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+              <button className="btn btn-login btn-manager ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
             ) : ""}
             {numSelected > 0 ? (
-              <button className="btn btn-login btn-delete-item btn-product ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
+              <button className="btn btn-login btn-delete-item btn-manager ml-2" onClick={() => handleDelete()}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete All </p></button>
             ) : ""}
           </div>
         </Toolbar>
-      :""}
+      : <Toolbar style={{justifyContent: 'space-between'}}
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+      }}></Toolbar>}
       
     </>
   );
@@ -212,67 +216,76 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
       setButtonState(!buttonState);
     }
     return (
-        
+      <>
+        <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
+       
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           
-        <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
-        <TableContainer sx={{ maxHeight: 440 }}>
+         <TableContainer className="table-height">
             <Table stickyHeader aria-label="sticky table" className="p-0">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              onSelectAllClick={handleSelectAllClick}
-              rowCount={rows.length}
-              headCells={columns}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row,index) => {
-                    const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
-                    return (
-                    <TableRow hover onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={index}
-                    selected={isItemSelected}>
-                        <TableCell padding="checkbox">
-                            <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                    'aria-labelledby': labelId,
-                                }}
-                            />
-                        </TableCell>
-                        {columnsOfData.map((headCell, indexData) => {
-                          return (
-                          <TableCell
-                            key={headCell + indexData}
-                            align={'right'}
-                          >
-                            <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
+              <EnhancedTableHead
+                numSelected={selected.length}
+                onSelectAllClick={handleSelectAllClick}
+                rowCount={rows.length}
+                headCells={columns}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                  {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row,index) => {
+                      const isItemSelected = isSelected(row.id);
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      return (
+                      <TableRow hover onClick={() => { 
+                        setButtonState(!buttonState);
+                        editFunction(row.id)
+                      }}
+                      tabIndex={-1}
+                      key={index}
+                      className='row-table-manager'>
+                          <TableCell padding="checkbox">
+                              <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    handleClick(event, row.id)
+                                  }}
+                                  inputProps={{
+                                      'aria-labelledby': labelId,
+                                  }}
+                              />
                           </TableCell>
-                        )})}
-                        <TableCell>
-                          <IconButton onClick={() => { 
-                            setButtonState(!buttonState);
-                            editFunction(row.id)
-                          }}>
-                            <EditIcon/>
-                          </IconButton>
-                          <IconButton onClick={() => handleDelete([row.id])}>
-                            <DeleteIcon/>
-                          </IconButton>
-                        </TableCell>
-                    </TableRow>
-                    );
-                })}
-            </TableBody>
+                          {columnsOfData.map((headCell, indexData) => {
+                            return (
+                            <TableCell
+                              key={headCell + indexData}
+                              align={headCell?.align || 'center'}
+                            >
+                              <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
+                            </TableCell>
+                          )})}
+                          <TableCell>
+                            <IconButton onClick={() => { 
+                              setButtonState(!buttonState);
+                              editFunction(row.id)
+                            }}>
+                              <EditIcon/>
+                            </IconButton>
+                            <IconButton onClick={(event) => {
+                              event.stopPropagation();
+                              handleDelete([row.id]);
+                            }}>
+                              <DeleteIcon/>
+                            </IconButton>
+                          </TableCell>
+                      </TableRow>
+                      );
+                  })}
+              </TableBody>
             </Table>
         </TableContainer>
         <TablePagination
@@ -286,6 +299,7 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
             className=" table-manager-pagination"
         />
         </Paper>
+      </>
     );
 }
 

@@ -37,7 +37,7 @@ const ManageThems = () => {
 
     return (
         <div>
-            <HeaderDetailStore />
+            <HeaderDetailStore  keySelected={Key.Theme}/>
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
                     <NavBarDetailStore isDesktop={true} keySelected={Key.Theme}></NavBarDetailStore>

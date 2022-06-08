@@ -9,7 +9,9 @@ import {
     FormGroup,
     FormControlLabel,
     Select,
-    Checkbox
+    Checkbox,
+    Autocomplete,
+    Box
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import './index.css';
@@ -21,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
 import { doCreateProduct, doUploadImageProduct, doUploadProduct, doGetDescription, doDeleteProduct, doGetAllType, doGetAllVendor } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
+import CustomType from "../CustomType";
 
 const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
@@ -30,10 +33,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [isVariant, setIsVariant] = useState(mode === "EDIT" && oldForm?.product?.is_variant ? oldForm?.product?.is_variant : false);
     const [errorTitle, setErrorTitle] = useState(null);
     const [collectionSelected, setCollectionSelected] = useState([]);
-    const [customType, setCustomType] = useState(mode === "EDIT" && oldForm?.product?.custom_type ? oldForm?.product?.custom_type : false);
     const [customTypeList, setCustomTypeList] = useState([]);
     const [vendorList, setVendorList] = useState([]);
     const nameStore = useSelector((state) => state.listStore.selectedName);
+    const [vendorValue, setVendorValue] = useState(null);
+    const [optionVendor, setOptionVendor] = useState([nameStore]);
+    const [trickRerender, setTrickRerender] = useState(0);
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
         return ref.option;
@@ -176,6 +181,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 }
             }
         }
+        setTrickRerender(trickRerender + 1);
     }
     const handleOnChangeSKU = (event) => {
         if (mode === "EDIT") {
@@ -217,14 +223,15 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 }
             }
         } 
+        setTrickRerender(trickRerender + 1);
     }
-    const handleOnChangeVendor = (event) => {
+    const handleOnChangeVendor = (value) => {
         if (mode === "EDIT") {
             form.current = {
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    vendor: event.target.value,
+                    vendor: value,
                     update: "Change"
                 }
             }
@@ -233,31 +240,10 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    vendor: event.target.value,
-                }
-            }
-        } 
-    }
-    const handleOnChangeType = (event) => {
-        if (mode === "EDIT") {
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    type: event.target.value,
-                    update: "Change"
-                }
-            }
-        } else {
-            form.current = {
-                ...form?.current,
-                product: {
-                    ...form?.current?.product,
-                    type: event.target.value
+                    vendor: value,
                 }
             }
         }
-        form.current.product.custom_type = customType;
     }
     const handleOnChangeInventory = (event) => {
         if (mode === "EDIT") {
@@ -485,14 +471,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         })
         
     }
-    const disableCustomType = () => {
-        setCustomType(false);
-        form.current.product.type = '';
-    }
-    const enableCustomType = () => {
-        setCustomType(true);
-        form.current.product.type = '';
-    }
     const fetchDescription = (url) => {
         dispatch(doGetDescription({
             url: url
@@ -547,15 +525,21 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }, [oldForm, mode, params.storeId])
+    useEffect(() => {
+        if (vendorList.length) {
+            if (!vendorList.includes(nameStore)) vendorList.push(nameStore);
+            setOptionVendor(vendorList);
+        }
+    }, [vendorList])
     return (
         <>
         <FormGroup key={mode === 'EDIT' ? '1' : '2'}>
             <div className="row  text-black">  
                 <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
+                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0}}>Title</InputLabel>
                         <TextField
-                            className="text-field-input"
+                            className="text-field-input text-content"
                             id="title-product"
                             name='title'
                             onChange={handleChangeProductName}
@@ -563,15 +547,16 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             required
                             error={errorTitle ? true : false}
                             helperText={errorTitle}
-                            
-                            key={form?.current?.product?.title ?? "Name"}
+                            value={form.current?.product?.title || ''}
+                            key={"Name"}
                             FormHelperTextProps={{
                                 className: 'error-text'
                             }}
                             defaultValue={mode === "EDIT" && oldForm?.product?.title ? oldForm?.product?.title : ""}
                         />
-                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
+                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header font-weight-bold">Description</InputLabel>
                         <ReactQuill
+                            className="text-content"
                             defaultValue={mode === "EDIT" && oldForm?.product?.description ? oldForm?.product?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
@@ -582,14 +567,14 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     
                    <PricingComponent mode={mode} key="PricingComponent" formRef={form} isVariant={isVariant} oldForm={oldForm}></PricingComponent>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
+                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
                         <div className="row">
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 
-                                <InputLabel name='title' style={{margin: 0}}>SKU (Stock Keeping Unit)</InputLabel>
+                                <InputLabel className="text-label" name='title' style={{margin: 0}}>SKU (Stock Keeping Unit)</InputLabel>
                                 <TextField
                                     style={{width: 'auto'}}
-                                    className="text-field-input"
+                                    className="text-field-input text-content"
                                     name='title'
                                     fullWidth
                                     required
@@ -598,14 +583,18 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 />
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
-                                <InputLabel name='title' style={{margin: 0}}>Quantity</InputLabel>
+                                <InputLabel className="text-label" name='title' style={{margin: 0}}>Quantity</InputLabel>
                                 <TextField
                                     style={{width: 'auto'}}
                                     disabled={isVariant}
-                                    className="text-field-input"
+                                    className={`text-field-input text-content ${isVariant && 'disabled-text'} `}
                                     name='title'
                                     fullWidth
                                     required
+                                    onInput = {(e) =>{
+                                        e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0,15)
+                                        if (isNaN(e.target.value)) e.target.value = null;
+                                    }}
                                     onChange={(e) => handleOnChangeInventory(e)}
                                     defaultValue={mode === "EDIT" && oldForm?.product?.inventory ? oldForm?.product?.inventory : ""}    
                                 />
@@ -613,7 +602,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         </div>
                         <div>
                             <FormControlLabel
-                                className='font-weight-normal'
+                                className='font-weight-normal text-label'
+                                style={{padding: 8}}
                                 control={
                                     <Checkbox defaultChecked={mode === "EDIT" && oldForm?.product?.continue_sell ? oldForm?.product?.continue_sell : false} onChange={(event) => onChangeIsContinueSelling(event)}/>
                                 }
@@ -625,102 +615,51 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 </div>   
                 <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium  " name='title'>Status</InputLabel>
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Status</InputLabel>
                         <div key={form?.current?.product?.status || "SelectStatus"}>
                             <Select fullWidth
-                            className="poper-item"
+                            className="poper-item text-content"
                             defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "Draft"}
                             onChange={(e) => handleOnChangeStatus(e)}
+                            
+                            value={form.current?.product?.status}
                             >
-                                <MenuItem value="Draft">Draft</MenuItem>
-                                <MenuItem value="Active">Active</MenuItem>
+                                <MenuItem value="Draft" fullWidth>Draft</MenuItem>
+                                <MenuItem value="Active" fullWidth>Active</MenuItem>
                             </Select>
                         </div>
                     </Paper> 
                     <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Product organization</InputLabel>
-
-                        <InputLabel style={{marginBottom: '1rem'}} className="text-medium">Type</InputLabel>
-                        <div key={form?.current?.product?.type ? `${form?.current?.product?.type} - type ` : "SelectType"}>
-                            <Select fullWidth 
-                            disabled={customType}
-                            className="poper-item"
-                            defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}
-                            value={form.current?.product?.type}
-                            key={form?.current?.product?.type ?? "Select-Type"}
-                            renderValue={(value) => {
-                                if (value === 'custom-type') {
-                                    if (customType)
-                                        return <p className="m-0 p-0">Remove Custom Type To Enable Type</p>
-                                    else {
-                                        return <></>
-                                    }
-                                }
-                                else return value;
-                            }}
-                            onChange={(e) => handleOnChangeType(e)}>
-                                <MenuItem value="Bike">Bike</MenuItem>
-                                <MenuItem value="Book">Book</MenuItem>
-                                <MenuItem value="Clothes">Clothes</MenuItem>
-                                <MenuItem value="Electronic">Electronic</MenuItem>
-                                <MenuItem value="Entertainment">Entertainment</MenuItem>
-                                <MenuItem value="Food">Food</MenuItem>
-                                <MenuItem key={`${customType} - custom-type - select`} value="custom-type" onClick={enableCustomType} style={{justifyContent: 'space-between'}}>
-                                    <p style={{margin: 0}}>Custom Type</p>
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
-                                </MenuItem>
-                                {customTypeList ?
-                                customTypeList.map(type => {
-                                    return <MenuItem key={`${type} - custom type`} value={`${type}`}>{type}</MenuItem>
-                                })
-                                : <></>}
-                            </Select>
-                        </div>
-                        {customType
-                            ?   
-                            <>
-                                <InputLabel style={{marginTop: '1rem'}} className="text-medium">Custom Type</InputLabel>
-                                <div className="custom-type">
-                                    <TextField
-                                        style={{width: 'auto'}}
-                                        className="text-field-input"
-                                        name='title'
-                                        fullWidth
-                                        required
-                                        onChange={(e) => handleOnChangeType(e)}
-                                        defaultValue={mode === "EDIT" && oldForm?.product?.type ? oldForm?.product?.type : ""}    
-                                    />
-                                    
-                                    <i className="fa fa-trash icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={disableCustomType}></i>
-                                </div>
-                            </>
-                            
-                            :   <></>
-                        }
+                        <InputLabel style={{marginBottom: '1rem'}} className="text-header">Product organization</InputLabel>
+                        <CustomType formRef={form} oldForm={oldForm} customTypeList={customTypeList} mode={mode}></CustomType>
                         
-                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium">Vendor</InputLabel>
-                        <div key={form?.current?.product?.vendor ?? "SelectVendor"}>
-                            <input 
-                                name="myBrowser"
-                                className="input-with-dropdown"
-                                defaultValue={form.current?.product?.vendor ?? nameStore}
-                                list="browsers"
-                                onChange={(e) => handleOnChangeVendor(e)}
-                                autoComplete="off"/>
-                            <datalist id="browsers">
-                                {vendorList.length ?
-                                vendorList.map((vendor, index) => <option key={`${vendor} + ${index}`} value={vendor}/>)
-                                :
-                                <option value={nameStore}/>}
-                            </datalist>
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-label">Vendor</InputLabel>
+                        <div>
+                            <Autocomplete
+                                className="auto-complete-vendor"
+                                value={vendorValue}
+                                onChange={(e, newValue) => {
+                                    setVendorValue(newValue);
+                                    handleOnChangeVendor(newValue);
+                                }}
+                                inputValue={vendorValue}
+                                onInputChange={(event, newInputValue) => {
+                                    setVendorValue(newInputValue);
+                                    handleOnChangeVendor(newInputValue);
+                                }}
+                                options={optionVendor}
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} 
+                                className="text-field-input text-content" size="small" />}
+                            />
                         </div>
+                        
 
-
-                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-medium" name='title'>Collection</InputLabel>
+                        <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-label" name='title'>Collection</InputLabel>
                         <div key={form?.current?.product?.collection ?? "SelectCollection"}>
                             <Select
                                 fullWidth multiple
-                                className="poper-item"
+                                className="poper-item text-content"
                                 value={collectionSelected?.map((value) => value.id)}
                                 onChange={(e) => handleChangeCollection(e)}
                                 key={form?.current?.product?.collection ?? "Select-Collection"}
@@ -747,11 +686,11 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 <div className="col-6">
                     {
                     mode === "EDIT" ?
-                    <button onClick={deleteProduct} style={{width: 'auto'}} className="float-left btn btn-light btn-form-product btn-delete-product">Delete</button>
+                    <button onClick={deleteProduct} className="float-left btn btn-light btn-product btn-delete-product">Delete</button>
                     : ""}
                 </div>
                 <div className="col-6">
-                    <button onClick={saveProduct} style={{width: 'auto'}} className="float-right btn btn-success btn-form-product">Save</button>
+                    <button onClick={saveProduct} className="float-right btn btn-success btn-product">Save</button>
                 </div>
             </div> 
         </FormGroup> 

@@ -25,41 +25,39 @@ const ManageStoreProduct = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170 },
-    { id: 'status', label: 'Status', minWidth: 100 },
+    { id: 'title', label: 'Title', minWidth: 170, align: 'center' },
+    { id: 'status', label: 'Status', minWidth: 100, align: 'center'},
     {
       id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
-      align: 'right',
+      align: 'center',
     },
     {
       id: 'type',
       label: 'Type',
       minWidth: 170,
-      align: 'right',
+      align: 'center',
     },
     {
       id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
-      align: 'right'
+      align: 'center'
     },
   ];
-  const [filterSeach, setFilterSearch] = useState(null);
+  const [filterSeach, setFilterSearch] = useState();
   const dbValue = useDebounce(filterSeach, 300);
   const editFunction = (selected) => {
     Swal.showLoading();
-    new Promise(() => {
-      dispatch((doGetOneProductOfStores(selected)))
-      .then((result) => {    
-        // info of product receive from server is array. get first element. into form, need this is object not array
-        if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
-        setMode('EDIT');
-        setOldForm(result.payload);  
-        setShowAddProduct(true);
-        Swal.close();
-      })
+    dispatch((doGetOneProductOfStores(selected)))
+    .then((result) => {    
+      // info of product receive from server is array. get first element. into form, need this is object not array
+      if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
+      setMode('EDIT');
+      setOldForm(result.payload);  
+      setShowAddProduct(true);
+      Swal.close();
     })
   }
   const deleteAllFunction = async (selected) => {
@@ -88,10 +86,16 @@ const ManageStoreProduct = () => {
         })
         Promise.all(listPromise).then(() => {
           Swal.close();
-          returnTable();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Delete successful products!',
+          }).then((result) => {   
+            returnTable();
+          })
         })
       }
-  })
+    })
    
   }
   const returnTable = async () => {
@@ -125,17 +129,17 @@ const ManageStoreProduct = () => {
     setFilterSearch(e.target.value);
   }
   const fetchProductWithFilter = async () => {
+    let search = {};
     if (filterSeach) {
-      dispatch(doGetListProductsOfStores({
-        id: params.storeId,
-        params: {
-          title: filterSeach
-        }
-      }))
-        .then((result) => {
-          if (!unmounted.current) setRows(result.payload);
-      });
+      search.title = filterSeach;
     }
+    dispatch(doGetListProductsOfStores({
+      id: params.storeId,
+      params: search
+    }))
+      .then((result) => {
+        if (!unmounted.current) setRows(result.payload);
+    });
   }
   useEffect(() => {
     unmounted.current = false;
@@ -146,7 +150,7 @@ const ManageStoreProduct = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore ></HeaderDetailStore>
+      <HeaderDetailStore keySelected={Key.Product} ></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4  navbar-detail">
               <NavBarDetailStore  isDesktop={true} keySelected={Key.Product}></NavBarDetailStore>
