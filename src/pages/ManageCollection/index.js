@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
 import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress'
 import { useParams } from "react-router-dom";
 import TableManage from "../../component/TableManage";
 import NavBarDetailStore from "../../component/NavBarDetailStore";
@@ -16,6 +17,7 @@ const ManageCollection = () => {
   const [showAddCollection, setShowAddCollection] = useState(false);
   const [oldForm, setOldForm] = useState({});
   const [mode, setMode] = useState() // just add or edit
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const params = useParams();
   const unmounted = useRef(false);
@@ -98,12 +100,18 @@ const ManageCollection = () => {
       });
   }
   useEffect(() => {
-    if (!showAddCollection) 
-    dispatch(doGetListCollectionOfStores({
-      id: params.storeId,
-      params: {}
-    }))
-    .then((result) => setRows(result.payload));
+    
+    if (!showAddCollection) {
+      setLoading(true);
+      dispatch(doGetListCollectionOfStores({
+        id: params.storeId,
+        params: {}
+      }))
+      .then((result) => {
+        setRows(result.payload);
+        setLoading(false);
+      });
+    }
   }, [showAddCollection])
   useEffect(() => {
     let newRows = JSON.parse(JSON.stringify(collectionList));
@@ -168,7 +176,16 @@ const ManageCollection = () => {
                         }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Collection </p></button>
                       </Stack>
                       <div className="table">
-                        <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={deleteAllFunction}></TableManage>
+                        { loading ? (<>
+                          <div style={{display: 'flex', justifyContent: 'center'}}>
+                            <CircularProgress />
+                          </div>
+                        </>)
+                        : (
+                        <>
+                          <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={deleteAllFunction}></TableManage>
+                        </>
+                        )}
                       </div>
                     </>
                   : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={oldForm}></Collection>}

@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from "react";
 import { useParams } from "react-router-dom";
 import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress'
 import './index.css';
 import TableManage from "../../component/TableManage";
 
@@ -21,6 +22,7 @@ const ManageStoreProduct = () => {
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [oldForm, setOldForm] = useState({});
+  const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState() // just add or edit
   const unmounted = useRef(false);
   const params = useParams();
@@ -121,14 +123,19 @@ const ManageStoreProduct = () => {
   }
   useEffect(() => {
     unmounted.current = false;
-    if (!showAddProduct) 
+    if (!showAddProduct) {
+      setLoading(true);
       dispatch(doGetListProductsOfStores({
         id: params.storeId,
         params: {}
       }))
         .then((result) => {
-          if (!unmounted.current) setRows(result.payload);
+          if (!unmounted.current) {
+            setRows(result.payload); 
+            setLoading(false);
+          }
       });
+    }
 
       return () => {
         unmounted.current = true;
@@ -198,7 +205,15 @@ const ManageStoreProduct = () => {
                   </Stack>
                 </Stack>
                 <div className="table">
-                  <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={deleteAllFunction}></TableManage>
+                  { loading ? (<>
+                      <div style={{display: 'flex', justifyContent: 'center'}}>
+                        <CircularProgress />
+                      </div>
+                    </>)
+                    : (
+                    <>
+                      <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={deleteAllFunction}></TableManage>
+                    </>)}
                 </div>
               </>
               : <AddProduct mode={mode} returnTable={() => returnTable()} oldForm={oldForm}></AddProduct>}

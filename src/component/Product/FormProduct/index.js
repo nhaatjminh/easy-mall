@@ -658,7 +658,10 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 )}
                             >
                                 {collectionList.map((collection, index) => {
-                                    return <MenuItem value={collection.id} key={index}>{collection.name}</MenuItem>      
+                                    return <MenuItem value={collection.id} key={index}>
+                                        <Checkbox checked={collectionSelected.some(el => el.id === collection.id)} />
+                                        {collection.name}
+                                    </MenuItem>      
                                 })}
                             </Select>
                         </div>
