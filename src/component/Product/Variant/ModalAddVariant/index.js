@@ -58,7 +58,7 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
                 let update;
                 let newOption = {
                     value: newVariantName[index],
-                    id: uuid(),
+                    idTemp: uuid(),
                     update: "Add"
                 }
                 
@@ -104,8 +104,8 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
     return (
         <>
             <BaseModal
-                title={"Add Variant"}
-                titleButton={"Add Variant"}
+                title="Add Variant"
+                titleButton="Add Variant"
                 onOK={handleOk}
                 showAction={true}
                 classNameModal='add-variant-modal'

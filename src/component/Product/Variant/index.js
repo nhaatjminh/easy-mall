@@ -445,6 +445,15 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                 }
                             }
                         }
+                        form.current.variant = form.current.variant.filter(variant => {
+                            let option = variant.name.split('/');
+                            if (option[index] === oldValue) {
+                                if (variant.id) {
+                                    variant.update = "Delete";
+                                }
+                            }
+                            return true;
+                        })
                     }
                 }
             })
@@ -589,7 +598,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
                                         </div>
                                     </div>  
                                 </div>
-                                <button className="btn-option button-done text-content" onClick={() => doneOrEditOption(index)}>
+                                <button className="button-done text-content" onClick={() => doneOrEditOption(index)}>
                                     Done
                                 </button>
                                 {index !== 2 ?    

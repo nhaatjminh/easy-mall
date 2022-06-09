@@ -96,17 +96,20 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             <p className="m-0 ml-0 mb-2 mt-2 text-extend font-weight-bold">
                                 Collection
                             </p>
-                        </Typography><Typography component={'span'} className={keySelected === Key.GiftCard ? "nav-element-selected nav-extend" : " nav-extend"}
-                            onClick={() => {
-                                routeChange(`/store-detail/manage-collection/${params.storeId}`)
-                            }}
-                        >
-                            <p className="m-0 ml-0 mb-2 mt-2 text-extend font-weight-bold">
-                                Gift card
-                            </p>
                         </Typography>
 
                     </Stack>
+                    <Typography component={'span'} className={keySelected === Key.Banner ? "nav-element nav-element-selected" : "nav-element "}
+                            onClick={() => {
+                                // routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                            }}
+                        >
+                            <p className="m-0 mb-2 mt-2">
+                                <i className="fa-bookmark fa-icon fa-store-detail-nav p-0" style={{ marginRight: 17 }}></i>
+                                <span className="font-weight-bold">
+                                    Banner</span>
+                            </p>
+                        </Typography>
                     <Typography component={'span'} className={keySelected === Key.Customer ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             //routeChange(`/store-detail/manage-collection/${params.storeId}`)

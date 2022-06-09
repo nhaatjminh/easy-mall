@@ -99,12 +99,12 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                                 backdropClassName="mobile"
                                 className="mobile"
                             >
-                                <Offcanvas.Header closeButton style={{ position: 'absolute', right: 0, top: 15 }}>
+                                <Offcanvas.Header closeButton style={{position: 'absolute', right: 0, top: 15}}>
                                     <Offcanvas.Title id="offcanvasNavbarLabel"></Offcanvas.Title>
                                 </Offcanvas.Header>
                                 <Offcanvas.Body >
-
-                                    <NavBarDetailStore key={1} isDesktop={false}></NavBarDetailStore>
+                                    
+                                    <NavBarDetailStore keySelected={keySelected} isDesktop={false}></NavBarDetailStore>
                                 </Offcanvas.Body>
                             </Navbar.Offcanvas>
                         </Container>
