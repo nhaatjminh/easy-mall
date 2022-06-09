@@ -327,7 +327,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     const saveProduct = () => {
         if (form?.current?.product?.title) {
-            if (!form.current?.product?.vendor) form.current.product.vendor = nameStore;
+            if (!form.current?.product?.vendor || !form.current?.product?.vendor?.replaceAll(' ','')) form.current.product.vendor = nameStore;
             Swal.showLoading();
             new Promise((resolve) => { 
                 const data = form?.current?.product?.images;
