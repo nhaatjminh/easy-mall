@@ -217,9 +217,9 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             <div className="row  text-black">  
                 <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
+                        <InputLabel name='title' className="text-header " style={{margin: 0}}>Title</InputLabel>
                         <TextField
-                            className="text-field-input"
+                            className="text-field-input  text-content"
                             id="title-product"
                             name='title'
                             key={`collection-name`}
@@ -233,8 +233,9 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 className: 'error-text'
                             }}
                         />
-                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
+                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header">Description</InputLabel>
                         <ReactQuill
+                            className="text-content"
                             defaultValue={mode === "EDIT" && oldForm?.collection?.description ? oldForm?.collection?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
@@ -242,7 +243,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <div className="row">
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>List Banner</InputLabel>
+                                <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>List Banner</InputLabel>
                                 
                                 <ModalAddBanner></ModalAddBanner>
                             </div>
@@ -267,8 +268,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 }
                                                 <div style={{ display: `flex`, flexDirection: 'column', width: '100%'}}>
 
-                                                    <ListItemText key={`${banner.id} title`} primary={banner.caption}/>
-                                                    <ListItemText key={`${banner.id} title`} primary={banner.link}/>
+                                                    <ListItemText key={`${banner.id}-caption-title`} primary={banner.caption}/>
+                                                    <ListItemText key={`${banner.id}-link-title`} primary={banner.link}/>
                                                 </div>
                                                 <IconButton className="float-right text-extra-large" onClick={() => console.log(index)}>
                                                     <DeleteIcon/>
@@ -282,9 +283,9 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         </div>
                     </Paper> 
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                <div key={'add-banner-image'} className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <ImageInput formRef={form} oldForm={oldForm} mode={mode}></ImageInput>
+                        <ImageInput formRef={form} oldForm={oldForm} mode={mode} modal={false}></ImageInput>
                     </Paper> 
                 </div>    
             </div>

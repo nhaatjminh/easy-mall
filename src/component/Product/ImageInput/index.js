@@ -193,7 +193,7 @@ const ImageInput = ({mode, formRef, oldForm}) => {
                 <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-9">
-                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => browseclick()}></i>
+                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1 pt-2" onClick={() => browseclick()}></i>
                 <input type="file" multiple accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
               </div>
             </div>

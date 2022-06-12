@@ -1,0 +1,59 @@
+.base-dropdown-menu {
+    display: block;
+    height: 35px;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    float: left;
+    text-align: center;
+}
+
+.base-dropdown-menu li {
+    display: inline-block;
+    position: relative;
+    z-index: 1000;
+    float: left;
+    width: 200px;
+    line-height: 35px;
+    text-decoration: none;
+}
+
+
+.base-dropdown-menu li li a {
+    font-size: 12px;
+}
+
+.base-dropdown-menu li:hover {
+    background: #666666;
+}
+
+/*--- Sublist Styles ---*/
+.base-dropdown-menu ul {
+    position: absolute;
+    display: none;
+}
+
+/*--- Hide Sub Sublists ---*/
+.base-dropdown-menu li:hover ul ul {
+    display: none;
+}
+
+/*--- Sublevel UL's display and position on hover ---*/
+.base-dropdown-menu li:hover ul {
+    display: block;
+}
+.base-dropdown-menu li li:hover ul {
+    margin-left: 200px;/*This must be width of menu box*/
+    margin-top: -35px;
+    display: block;
+}
+nu-li {
+    padding: 10px;
+}
+
+.dropdown-submenu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}

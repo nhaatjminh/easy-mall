@@ -11,7 +11,7 @@ import './index.css'
 import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
 
-const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
+const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND', handleChangeCurrency= () => {}}) => {
     const initOldFormOptionValue = () => {
         const resultForm = JSON.parse(JSON.stringify(oldForm));
         if (resultForm?.option) {
@@ -280,7 +280,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                is_variant: e
+                is_variant: e,
+                price: '0'
             }
         }
         if (mode === "EDIT") {
@@ -638,7 +639,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm }) => {
             }
 
         </Paper> 
-        <TableVariant key="TableVariant" optionRef={optionRef} optionValueRef={optionValueRef} mode={mode} showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
+        <TableVariant key="TableVariant" currency={currency} handleChangeCurrency={handleChangeCurrency} optionRef={optionRef} optionValueRef={optionValueRef} mode={mode} showOpt={showOpt} oldForm={oldForm} optionTag={optionTag} optionValue={optionValue} formRef={form} columnsOfData={columns} setOptionValue={setOptionValue} setOptionTag={setOptionTag} setShowOpt={setShowOpt}>
         </TableVariant>
       </>
     );

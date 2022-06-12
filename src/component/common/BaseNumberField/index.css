@@ -1,0 +1,12 @@
+.select-currency .MuiSelect-select  {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.div-currency .MuiOutlinedInput-root {
+    padding-left: 0;
+    border: none;
+}
+.div-currency .MuiOutlinedInput-root.select-currency .MuiOutlinedInput-notchedOutline {
+    border: none;
+    border-left: 1px;
+}

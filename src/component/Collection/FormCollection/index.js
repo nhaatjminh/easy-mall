@@ -318,9 +318,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             <div className="row  text-black">  
                 <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
+                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0}}>Title</InputLabel>
                         <TextField
-                            className="text-field-input"
+                            className="text-field-input text-content"
                             id="title-product"
                             name='title'
                             key={`collection-name`}
@@ -334,8 +334,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 className: 'error-text'
                             }}
                         />
-                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
+                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header">Description</InputLabel>
                         <ReactQuill
+                            className="text-content"
                             defaultValue={mode === "EDIT" && oldForm?.collection?.description ? oldForm?.collection?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
@@ -344,7 +345,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         <div className="row">
                             <div className="col-3">
                                 
-                                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Products</InputLabel>
+                                <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Products</InputLabel>
                             </div>
                             <div className="col-9">  
                             
@@ -359,12 +360,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                     <Box sx={styleModal} 
                                     key={`box-modal`}>
                                         
-                                        <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
+                                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
                                         <FormControl sx={{ m: 1, width: 300 }}>
                                             <Select
                                             
                                             key={`collection-product`}
-                                            className="text-field-input select-modal"
+                                            className="text-field-input select-modal text-content"
                                             labelId="demo-multiple-checkbox-label"
                                             id="demo-multiple-checkbox"
                                             multiple

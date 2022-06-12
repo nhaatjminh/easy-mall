@@ -1,6 +1,9 @@
 .add-banner-modal .MuiDialog-paper {
     min-width: 700px;
 }
+.add-banner-modal textarea {
+    resize: none;
+}
 .swal2-container {
     z-index: 1500 !important;
   }

@@ -95,13 +95,13 @@ const ImageInput = ({formRef, oldForm, mode}) => {
         <>
             <div className="row">
               <div className="col-8">
-                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Media</InputLabel>
+                <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-4 p-0">
               <IconButton className="icon-color-black float-right btn-form-product p-1" onClick={() => handleDelete()}>
                 <DeleteIcon/>
               </IconButton>
-                <i className="fa fa-plus-circle icon-color-black float-right  btn " onClick={() => browseclick()}></i>
+                <i className="fa fa-plus-circle icon-color-black float-right  btn pt-2" onClick={() => browseclick()}></i>
                 <input type="file" accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
                 
               </div>

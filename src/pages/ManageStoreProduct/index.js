@@ -216,7 +216,7 @@ const ManageStoreProduct = () => {
                     </>)}
                 </div>
               </>
-              : <AddProduct mode={mode} returnTable={() => returnTable()} oldForm={oldForm}></AddProduct>}
+              : <AddProduct mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></AddProduct>}
                       
               </>
               </div>

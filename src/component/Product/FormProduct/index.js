@@ -40,6 +40,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [vendorValue, setVendorValue] = useState('');
     const [optionVendor, setOptionVendor] = useState([nameStore]);
     const [trickRerender, setTrickRerender] = useState(0);
+    const [selectCurrency, setSelectCurrency] = useState(oldForm?.product?.currency ? oldForm?.product?.currency : 'VND');
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
         return ref.option;
@@ -308,9 +309,32 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         }
     }
+    const handleChangeCurrency = (event) => {
+        setSelectCurrency(event.target.value);
+        if (mode === "EDIT") {
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    currency: event.target.value,
+                    update: "Change"
+                }
+            }
+        } else {
+            
+            form.current = {
+                ...form?.current,
+                product: {
+                    ...form?.current?.product,
+                    currency: event.target.value
+                }
+            }
+        }
+        
+    }
     const handleCheckVariantDelete = () => {
         let listVariant = form.current.variant;
-        listVariant = listVariant?.filter((element) => !element.delete || element.update);
+        listVariant = listVariant?.filter((element) => !element?.delete || element.update);
         if (!listVariant) listVariant = []
         form.current = {
             ...form?.current,
@@ -518,10 +542,9 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 setVendorValue(oldForm.product.vendor);
             }
             else {
+                form.current = {}
                 form.current = {
-                    ...form?.current,
                     product: {
-                        ...form?.current?.product,
                         store_id: params.storeId
                     }
                 }
@@ -541,7 +564,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             <div className="row  text-black">  
                 <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0}}>Title</InputLabel>
+                        <InputLabel name='title' className="text-header" style={{margin: 0}}>Title</InputLabel>
                         <TextField
                             className="text-field-input text-content"
                             id="title-product"
@@ -557,7 +580,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 className: 'error-text'
                             }}
                         />
-                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header font-weight-bold">Description</InputLabel>
+                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header">Description</InputLabel>
                         <ReactQuill
                             className="text-content"
                             defaultValue={mode === "EDIT" && oldForm?.product?.description ? oldForm?.product?.description : ""}
@@ -568,9 +591,9 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <ImageInput mode={mode} formRef={form} oldForm={oldForm}></ImageInput>
                     </Paper> 
                     
-                   <PricingComponent mode={mode} key="PricingComponent" formRef={form} isVariant={isVariant} oldForm={oldForm}></PricingComponent>
+                   <PricingComponent currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} mode={mode} key="PricingComponent" formRef={form} isVariant={isVariant} oldForm={oldForm}></PricingComponent>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
+                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: '1rem'}}>Inventory</InputLabel>
                         <div className="row">
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
 
@@ -600,7 +623,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 label="Continue selling when out of stock" />
                         </div>
                     </Paper> 
-                    <Variant key="Variant" optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
+                    <Variant key="Variant" currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
                     ></Variant>
                 </div>   
                 <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
@@ -608,6 +631,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Status</InputLabel>
                         <div key={form?.current?.product?.status || "SelectStatus"}>
                             <Select fullWidth
+                            key={"SelectStatusSelectInput"}
                             className="poper-item text-content"
                             defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "Draft"}
                             onChange={(e) => handleOnChangeStatus(e)}
@@ -622,7 +646,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <CustomType formRef={form} oldForm={oldForm} customTypeList={customTypeList} mode={mode}></CustomType>
                         
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-label">Vendor</InputLabel>
-                        <div>
+                        <div key={form?.current?.product?.vendor || "SelectVendor"}>
                             <Autocomplete
                                 className="auto-complete-vendor"
                                 value={vendorValue || ''}
@@ -653,13 +677,13 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 className="poper-item text-content"
                                 value={collectionSelected?.map((value) => value.id)}
                                 onChange={(e) => handleChangeCollection(e)}
-                                key={form?.current?.product?.collection ?? "Select-Collection"}
+                                key={"Select-Collection"}
                                 renderValue={() => (
-                                    [<></>]
+                                    [<div key={`null-collection`}></div>]
                                 )}
                             >
                                 {collectionList.map((collection, index) => {
-                                    return <MenuItem value={collection.id} key={index}>
+                                    return <MenuItem value={collection.id} key={`collection-list-${index}`}>
                                         <Checkbox checked={collectionSelected.some(el => el.id === collection.id)} />
                                         {collection.name}
                                     </MenuItem>      

@@ -187,7 +187,7 @@ const ManageBanner = () => {
                         )}
                       </div>
                     </>
-                  : <Banner mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={oldForm}></Banner>}
+                  : <Banner mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
                         
                 </>
               </div>

@@ -188,7 +188,7 @@ const ManageCollection = () => {
                         )}
                       </div>
                     </>
-                  : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={oldForm}></Collection>}
+                  : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
                         
                 </>
               </div>
