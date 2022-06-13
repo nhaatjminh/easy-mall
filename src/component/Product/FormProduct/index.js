@@ -545,7 +545,9 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 form.current = {}
                 form.current = {
                     product: {
-                        store_id: params.storeId
+                        store_id: params.storeId,
+                        status: 'Draft',
+                        vendor: nameStore
                     }
                 }
             }
@@ -633,7 +635,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             <Select fullWidth
                             key={"SelectStatusSelectInput"}
                             className="poper-item text-content"
-                            defaultValue={mode === "EDIT" && oldForm?.product?.status ? oldForm?.product?.status : "Draft"}
+                            value={form.current?.product?.status || 'Draft'}
                             onChange={(e) => handleOnChangeStatus(e)}
                             >
                                 <MenuItem value="Draft" fullWidth>Draft</MenuItem>

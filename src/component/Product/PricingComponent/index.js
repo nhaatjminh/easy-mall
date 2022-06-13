@@ -90,7 +90,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                             <>
                                 <div>
                                     <p style={{margin: 0}}>Margin(%)</p>
-                                    <p style={{margin: 0}}>{((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
+                                    <p style={{margin: 0}}>{isNaN((productPrice -costPerItem) / productPrice * 100) ? 0 : ((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
                                 </div>
                                 <div>
                                     <p style={{margin: 0}}>Profit({`${currency}`})</p>
