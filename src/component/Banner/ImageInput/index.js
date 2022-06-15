@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { doDeleteImageCollection } from "../../../redux/slice/collectionSlice";
 import { useDispatch } from "react-redux";
 
-const ImageInput = ({formRef, oldForm, mode, modal, valueToAdd = {}, setValueToAdd = () => {}}) => {
+const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd = {}, setValueToAdd = () => {}}) => {
     const form = formRef;
     const dispatch = useDispatch();
     const [images, setImages] = useState();
@@ -109,7 +109,7 @@ const ImageInput = ({formRef, oldForm, mode, modal, valueToAdd = {}, setValueToA
         <>
             <div className="row">
               <div className="col-8">
-                <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Media</InputLabel>
+                <InputLabel name='title'  className={`${boldTitle ? 'text-header' : 'text-label'} p-1`} style={{margin: 0}}>Media</InputLabel>
               </div>
               <div className="col-4 p-0">
               <IconButton className="icon-color-black float-right btn-form-product p-1" onClick={() => handleDelete()}>

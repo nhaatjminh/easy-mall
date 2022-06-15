@@ -25,7 +25,8 @@ export const listStoreSlice = createSlice({
     initialState:  {
         listStore: [],
         isLoading: false,
-        selectedName: ''
+        selectedName: '',
+        baseStoreUrl: ''
     },
     reducers: {
         doSwitchListStore(state, action) {
@@ -33,6 +34,9 @@ export const listStoreSlice = createSlice({
         },
         doSwitchSelectedStore(state, action) {
             state.selectedName = action.payload;
+        },
+        doSwitchBaseUrl(state, action) {
+            state.baseStoreUrl = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -61,5 +65,5 @@ export const listStoreSlice = createSlice({
     }
 })
 const {actions, reducer} = listStoreSlice;
-export const {doSwitchListStore, doSwitchSelectedStore } = actions;
+export const {doSwitchListStore, doSwitchSelectedStore, doSwitchBaseUrl } = actions;
 export default reducer;

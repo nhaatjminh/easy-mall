@@ -1,25 +1,16 @@
-import React, {useState, useEffect, useCallback, useRef, Fragment } from "react";
+import React, {useState, useEffect, useRef, Fragment } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
-import Stack from '@mui/material/Stack';
-import ModalAddBanner from '../ModalAddBanner'
 import {
     Paper,
     TextField,
     InputLabel,
     Box,
-    Chip,
     MenuItem,
     FormGroup,
-    FormControlLabel,
-    Select,
-    Checkbox,
-    FormHelperText,
-    CircularProgress,
-    Modal,
-    FormControl,
     ListItemText,
     IconButton,
-    ListItemAvatar
+    ListItemAvatar,
+    TextareaAutosize
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
@@ -30,6 +21,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { doUploadImageBanner, doCreateCollectionBanner, doDeleteCollectionBanner, doUpdateCollectionBanner } from "../../../redux/slice/bannerSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+
+import { useAutocomplete } from '@mui/base/AutocompleteUnstyled';
+import CheckIcon from '@mui/icons-material/Check';
+import { BackIcon } from "../../../assets/icon/svg/BackIcon";
+import { CollectionIcon } from "../../../assets/icon/svg/Collection";
+import { PagesIcon } from "../../../assets/icon/svg/Pages";
+import { ProductIcon } from "../../../assets/icon/svg/Product";
+import { Root, Listbox, InputWrapper } from './FormBanner.styled';
+import { doGetListPages } from '../../../redux/slice/pageSlice';
+import { doGetListProductsOfStores } from '../../../redux/slice/productSlice';
+import { doGetListCollectionOfStores } from '../../../redux/slice/collectionSlice';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -43,9 +45,45 @@ const MenuProps = {
 const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
+    const urlStore = useSelector((state) => state.listStore.baseStoreUrl);
     const params = useParams();
     const [errorTitle, setErrorTitle] = useState(null);
     const [listBanner, setListBanner] = useState([]);
+    const [showAddBanner, setShowAddBanner] = useState(false);
+    const [customUrl, setCustomUrl] = useState('');
+    const [valueToAdd, setValueToAdd] = useState({});
+    const [typeLink, setTypeLink] = useState('');
+    const [optionCollection, setOptionCollection] = useState([]);
+    const [optionPage, setOptionPage] = useState([]);
+    const [optionProduct, setOptionProduct] = useState([]);
+    const handleChangeCaption = (event) => {
+        const value = {...valueToAdd};
+        value.collection.caption = event.target.value;
+        setValueToAdd(value);
+    }
+    const handleChangeDescription = (event) => {
+        const value = {...valueToAdd};
+        value.collection.description = event.target.value;
+        setValueToAdd(value);
+    }
+    
+    const optionLink = [
+        {
+            title: 'Product',
+            icon: <ProductIcon />,
+            onClick: () => setTypeLink('Product')
+        },
+        {
+            title:'Collection',
+            icon: <CollectionIcon />,
+            onClick: () => setTypeLink('Collection')
+        },
+        {
+            title:'Page',
+            icon: <PagesIcon />,
+            onClick: () => setTypeLink('Page')
+        }
+    ]
     const handleChangeCollectionBannerName = (event) => {
         if (errorTitle) {
             setErrorTitle(null);
@@ -193,6 +231,56 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 store_id: params.storeId
             }
         }
+        dispatch(doGetListPages(params.storeId)).then((result) => {   
+            let exactUrlPage = result.payload.map((page) => ({
+                title: `${page.name}`,
+                icon: <PagesIcon />,
+                onClick: () => setCustomUrl(`https://www.${urlStore}${page.page_url}`)
+            }))
+            let newOptionPage = [{
+                title: 'Back',
+                icon: <BackIcon />,
+                onClick: () => setTypeLink(null)
+            }]
+            newOptionPage = newOptionPage.concat(exactUrlPage);
+            setOptionPage(newOptionPage);
+        })
+
+        dispatch(doGetListProductsOfStores({
+            id: params.storeId,
+            params: {}
+        })).then((result) => {   
+            let exactUrlProduct = result.payload.map((product) => ({
+                title: `${product.title}`,
+                icon: <ProductIcon />,
+                onClick: () => setCustomUrl(`https://www.${urlStore}/products?id=${product.id}`)
+            }))
+            let newOptionProduct = [{
+                title: 'Back',
+                icon: <BackIcon />,
+                onClick: () => setTypeLink(null)
+            }]
+            newOptionProduct = newOptionProduct.concat(exactUrlProduct);
+            setOptionProduct(newOptionProduct);
+        })
+
+        dispatch(doGetListCollectionOfStores({
+            id: params.storeId,
+            params: {}
+        })).then((result) => {   
+            let exactUrlCollection = result.payload.map((collection) => ({
+                title: `${collection.name}`,
+                icon: <CollectionIcon />,
+                onClick: () => setCustomUrl(`https://www.${urlStore}/collection?id=${collection.id}`)
+            }))
+            let newOptionCollection = [{
+                title: 'Back',
+                icon: <BackIcon />,
+                onClick: () => setTypeLink(null)
+            }]
+            newOptionCollection = newOptionCollection.concat(exactUrlCollection);
+            setOptionCollection(newOptionCollection);
+        })
     },[])
     useEffect(() => {
         if (mode) {
@@ -211,6 +299,31 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         }
     }, [oldForm, mode, params.storeId])
+    useEffect(() => {
+
+    }, [customUrl])
+    const checkType = () => {
+        if (!typeLink) return optionLink;
+        if (typeLink === 'Product') return optionProduct;
+        else if (typeLink === 'Page') return optionPage;
+        else return optionCollection;
+    }
+    const {
+        getRootProps,
+        getInputLabelProps,
+        getInputProps,
+        getTagProps,
+        getListboxProps,
+        getOptionProps,
+        groupedOptions,
+        value,
+        focused,
+        setAnchorEl,
+      } = useAutocomplete({
+        id: 'customized-hook-demo',
+        options: checkType(),
+        getOptionLabel: (option) => option.title,
+      });
     return (
         <>
         <FormGroup>
@@ -244,8 +357,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div className="row">
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>List Banner</InputLabel>
-                                
-                                <ModalAddBanner></ModalAddBanner>
+                                {showAddBanner
+                                ? <></>
+                                : <i onClick={() => setShowAddBanner(true)} className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1"></i>
+                            }
                             </div>
                             <Box style={{overflow: "auto", maxHeight: 400}}>
                                 {listBanner.length ? listBanner.map((banner, index) => {
@@ -281,7 +396,68 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 )}) : <></>}
                             </Box>
                         </div>
-                    </Paper> 
+                    </Paper>
+                    {
+                        showAddBanner ?
+                        <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', minHeight: 600, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                            <div>
+                                
+                                <InputLabel name='title' className="text-header pb-2" style={{margin: 0, padding: 0}}>Add Banner</InputLabel>
+                                <div>
+                                    <InputLabel name='title' className="text-label" style={{margin: 0, padding: 0}}>Caption</InputLabel>
+                                    <TextField
+                                        className="text-field-input text-content "
+                                        style={{marginLeft: 10, padding: 0}}
+                                        fullWidth
+                                        inputProps={{ maxLength: 255 }}
+                                        onChange={handleChangeCaption}
+                                    />
+                                </div>
+                                <div>
+                                    <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-label">Description</InputLabel>
+                                    <TextareaAutosize
+                                        aria-label="empty textarea"
+                                        minRows={5}
+                                        maxLength={255}
+                                        maxRows={5}
+                                        style={{width: '100%'}}
+                                        onChange={handleChangeDescription}
+                                    />
+                                </div>
+                                <div>
+                                    <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-label">Link</InputLabel>    
+                                    <div {...getRootProps()}>
+                                        <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl} className={focused ? 'focused' : ''}>
+                                            <input {...getInputProps()} value={customUrl} onChange={(e) => setCustomUrl(e.target.value)}/>
+                                        </InputWrapper>
+                                    </div>
+                                    {groupedOptions.length > 0 ? (
+                                        <Listbox {...getListboxProps()} style={{ maxHeight: 200}}>
+                                            {groupedOptions.map((option, index) => {
+                                                return (<li style={{}} {...getOptionProps({ option, index })} onClick={option.onClick && option.onClick}>
+                                                    <p style={{paddingRight: 15}}>{option.icon}</p>
+                                                    <p>{option.title}</p>
+                                                </li>)
+                                            })}
+                                        </Listbox>
+                                    ) : null}
+                                
+                                </div>
+                                <div key={'add-modal-banner-image'}>
+                                    <ImageInput boldTitle={false} formRef={form} oldForm={oldForm} mode={mode} modal={true} valueToAdd={valueToAdd} setValueToAdd={setValueToAdd}></ImageInput>
+                                </div>
+                            </div>
+                           
+                            <div>
+                                <Divider className="custom-devider" style={{marginTop: 15, marginBottom: 15}} />
+                                <div className="row float-right" >
+                                    <button onClick={() => setShowAddBanner(false)} style={{width: 'auto', border: '1px solid #666666', marginRight:15}} className="float-right btn btn-collection btn-light btn-form-product">Cancel</button>
+                                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                                </div>
+                            </div>
+                        </Paper>
+                        : <></>
+                    }
                 </div>   
                 <div key={'add-banner-image'} className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>

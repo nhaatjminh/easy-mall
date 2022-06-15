@@ -6,7 +6,7 @@ import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { doSwitchSelectedStore } from "../../redux/slice/storeSlice";
+import { doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 
 const NavBarDetailStore = ({ isDesktop, keySelected }) => {
@@ -36,6 +36,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                                     {listStoreInStore ? listStoreInStore.map((store, index) => (
                                         <div onClick={() => {
                                             dispatch(doSwitchSelectedStore(store.name));
+                                            dispatch(doSwitchBaseUrl(store.store_link));
                                             routeChange(`/store-detail/manage-home/${store.id}`)
                                         }}>
                                             <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
