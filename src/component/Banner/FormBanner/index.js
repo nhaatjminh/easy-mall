@@ -389,6 +389,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
+                if (form.current.collection.description) delete form.current.collection.description;
                 setListBanner(form.current.banners);
             }
             else {

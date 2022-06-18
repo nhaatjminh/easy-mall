@@ -498,11 +498,6 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         })
         
     }
-    const fetchDescription = (url) => {
-        dispatch(doGetDescription({
-            url: url
-        })).then((result) => oldForm.product.description = result.payload); 
-    }
     useEffect(() => {
         if (mode === "ADD") {
             form.current = {}
@@ -537,8 +532,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
+                if (form.current.product.description) delete form.current.product.description;
                 setCollectionSelected(oldForm.collection || []);
-                fetchDescription(oldForm.product.description)
                 setVendorValue(oldForm.product.vendor);
             }
             else {

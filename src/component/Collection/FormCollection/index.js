@@ -298,6 +298,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
+                if (form.current.collection.description) delete form.current.collection.description;
                 const listIdProduct = oldForm?.products?.map(product => product.id);
                 setListProductOfCollection(listIdProduct || [])
             }
