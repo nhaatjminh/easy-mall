@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef } from "react";
+import React, {useState, useEffect, useCallback, useRef, Fragment } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import {
@@ -18,9 +18,11 @@ import {
     FormControl,
     ListItemText,
     OutlinedInput,
+    IconButton,
     ListItemAvatar
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './index.css';
 import { Link } from "react-router-dom";
 import ImageInput from "../ImageInput"
@@ -296,6 +298,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
+                if (form.current.collection.description) delete form.current.collection.description;
                 const listIdProduct = oldForm?.products?.map(product => product.id);
                 setListProductOfCollection(listIdProduct || [])
             }
@@ -316,11 +319,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             <div className="row  text-black">  
                 <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
-                        <InputLabel name='title' className="text-medium  " style={{margin: 0}}>Title</InputLabel>
+                        <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0}}>Title</InputLabel>
                         <TextField
-                            className="text-field-input"
+                            className="text-field-input text-content"
                             id="title-product"
                             name='title'
+                            key={`collection-name`}
                             onChange={handleChangeCollectionName}
                             fullWidth
                             required
@@ -331,8 +335,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 className: 'error-text'
                             }}
                         />
-                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-medium  ">Description</InputLabel>
+                        <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-header">Description</InputLabel>
                         <ReactQuill
+                            className="text-content"
                             defaultValue={mode === "EDIT" && oldForm?.collection?.description ? oldForm?.collection?.description : ""}
                             onChange={(event) => handleChangeRichtext(event)}
                         />
@@ -341,23 +346,27 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                         <div className="row">
                             <div className="col-3">
                                 
-                                <InputLabel name='title' className="text-medium p-1" style={{margin: 0}}>Products</InputLabel>
+                                <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Products</InputLabel>
                             </div>
                             <div className="col-9">  
                             
                                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={handleOpen}></i>      
                                 <Modal
+                                    key={`modal`}
                                     open={modalShow}
                                     onClose={handleClose}
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
                                 >
-                                    <Box sx={styleModal}>
+                                    <Box sx={styleModal} 
+                                    key={`box-modal`}>
                                         
-                                        <InputLabel name='title' className="text-medium" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
+                                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
                                         <FormControl sx={{ m: 1, width: 300 }}>
                                             <Select
-                                            className="text-field-input select-modal"
+                                            
+                                            key={`collection-product`}
+                                            className="text-field-input select-modal text-content"
                                             labelId="demo-multiple-checkbox-label"
                                             id="demo-multiple-checkbox"
                                             multiple
@@ -369,7 +378,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                             MenuProps={MenuProps}
                                             >
                                                 {listProducts.map((product) => (
-                                                    <MenuItem key={product.id} value={product.id}>
+                                                    <MenuItem key={`${product.id} select-modal`} value={product.id}>
                                                         <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
                                                         {
                                                             product.thumbnail ?
@@ -395,33 +404,34 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                 </Modal>
                             </div>
                             <Box style={{overflow: "auto", maxHeight: 400}}>
-                                {listProductOfCollection.map((productId, index) => {
-                                    if (!listProducts.length) return (<></>)
+                                {listProducts.length && listProductOfCollection.map((productId, index) => {
                                     const product = listProducts.find(productTemp => productTemp.id === productId)
                                     return (
-                                        <>
-                                            <MenuItem key={product.id} value={product.id}>
+                                        <div key={productId + "item-select"}>
+                                            <MenuItem key={`${productId}-selected`} value={product.id}>
                                                 <p className="pr-2 m-0">{index}.</p>
                                                 {
                                                 product.thumbnail ?
-                                                    <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar>
+                                                    <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src={product.thumbnail}/>
                                                         </ListItemAvatar>
                                                     </Box>
-                                                :  <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar>
+                                                :  <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                        <ListItemAvatar key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 }
                                                 
-                                                <ListItemText primary={product.title}/>
-                                                <i className="fa-trash fa-icon icon-trash float-right text-extra-large" onClick={() => handleDeleteProducts(index)}></i>
+                                                <ListItemText key={`${product.id} title`} primary={product.title}/>
+                                                <IconButton className="float-right text-extra-large" onClick={() => handleDeleteProducts(index)}>
+                                                    <DeleteIcon/>
+                                                </IconButton>
                                             </MenuItem>
                                             {index !== listProductOfCollection.length - 1 && <Divider className="divider-custom" />}
                                             
-                                        </>
+                                        </div>
                                 )})}
                             </Box>
                         </div>
@@ -434,7 +444,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 </div>    
             </div>
             <Divider className="custom-devider" style={{marginTop: 15}} />
-            <div className="mt-4 mb-4 row">
+            <div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
                     {
                         mode === "EDIT" ?

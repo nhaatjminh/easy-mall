@@ -113,7 +113,7 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
                 {optionRef.current ? 
                 optionRef.current.map((option, index) => {
                     return (
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div key={`modal-add-${index}`} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                             <p style={{margin: 0}}>{option.name}: </p>
                             <TextField
                                 style={{width: 'auto'}}

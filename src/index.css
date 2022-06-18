@@ -147,3 +147,17 @@ body {
   font-size: 14px;
   color: #6d7175;
 }
+
+.text-header{
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #202223;
+}
+.text-label{
+  font-size: 15px !important;
+  color: #202223;
+}
+.text-content input{
+  font-size: 14px !important;
+  color: #202223;
+}

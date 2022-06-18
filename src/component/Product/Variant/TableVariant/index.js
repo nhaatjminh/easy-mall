@@ -112,7 +112,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt}) => {
+const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt,currency='VND', handleChangeCurrency= () => {}}) => {
     const form = formRef;
     const columns = columnsOfData;
     const [page, setPage] = useState(0);
@@ -133,19 +133,19 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
         if (newVariant[index].id) {
           newVariant[index] = {
             ...form?.current?.variant[index],
-            price: Number(valuePrice),
+            price: valuePrice,
             update: "Change"
           }
         } else {
           newVariant[index] = {
             ...form?.current?.variant[index],
-            price: Number(valuePrice)
+            price: valuePrice
           }
         }
       } else {
         newVariant[index] = {
           ...form?.current?.variant[index],
-          price: Number(valuePrice)
+          price: valuePrice
         }
       }
       form.current = {
@@ -484,7 +484,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                       }
                       newVariant = {
                         ...newVariant,
-                        price: Number(oldVariant?.price),
+                        price: oldVariant?.price,
                         quantity: Number(oldVariant?.quantity)
                       }
                       if (mode === "EDIT" && oldVariant.update) {
@@ -515,8 +515,8 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
           if (allNewVariant && !unmounted.current) {
               setVariant(allNewVariant);
               setTrickRerender(trickRerender + 1);
-              let deleteVariantList = form.current.variant.filter(variant => variant.update === "Delete")
-              allVariantAssignForm = allVariantAssignForm.concat(deleteVariantList);
+              let deleteVariantList = form.current?.variant?.filter(variant => variant?.update === "Delete")
+              if (deleteVariantList) allVariantAssignForm = allVariantAssignForm.concat(deleteVariantList);
               allNewVariant.forEach((newVariant) => {
                 allVariantAssignForm.push(newVariant)
               })
@@ -632,7 +632,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                           </TableCell>
                           <TableCell align="center">
                             
-                            <BaseNumberField key="Price" className={`${row.delete && 'disabled-text'}`} disabled={row.delete} currency="VND" placeholder="0.00" value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
+                            <BaseNumberField key="Price" className={`${row.delete && 'disabled-text'}`} disabled={row.delete} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
                           </TableCell>
                           <TableCell align="center">
                             
