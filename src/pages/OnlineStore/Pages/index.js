@@ -22,6 +22,8 @@ import { LoadingModal } from "../../../component/common/LoadingModal/LoadingModa
 
 const Page = ({ }) => {
 
+    const listDefaultPages = useSelector((state) => state.page.listDefaultPages)
+    const listCustomPages = useSelector((state) => state.page.listCustomPages)
     const listPages = useSelector((state) => state.page.listPages)
     const isLoading = useSelector((state) => state.page.isLoading)
     const dispatch = useDispatch();
@@ -109,7 +111,7 @@ const Page = ({ }) => {
             .then((res) => {
                 if (res.error) setErr(res.error.message)
             })
-        
+
         handleCloseModal()
     }
 
@@ -130,12 +132,12 @@ const Page = ({ }) => {
 
     return (
         <div>
-            <HeaderDetailStore keySelected={Key.Page}/>
+            <HeaderDetailStore keySelected={Key.Page} />
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
                     <NavBarDetailStore isDesktop={true} keySelected={Key.Page}></NavBarDetailStore>
                 </div>
-                <div className="page col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
+                <div className="page col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table">
                     <div className="page__header">
                         {/* <span 
                             onClick={() => navigate(-1)}
@@ -143,27 +145,86 @@ const Page = ({ }) => {
                             <BackIcon/>
                         </span> */}
                         <div className="page__header--title text-title-1">Pages</div>
-                        <Button
-                            className="btn btn-success"
-                            onClick={() => {
-                                setMode('ADD')
-                                handleOpenModal()
-                            }}
-                        >
-                            Add page
-                        </Button>
+
                     </div>
 
                     <CustomCard className='page__table'>
                         <div className='page__table--title text-title-2'>
-                            All pages
+                            Default pages
                         </div>
                         <div className="page__table--list">
-                            {isLoading ? <Loader className="page__loader" />
-                                :
-                                listPages?.length ? listPages.map((item) => (
+                            {
+                                listDefaultPages?.length ? listDefaultPages.map((item) => (
                                     <div key={item.id} className="page__table--list--item">
-                                        <div className="page__table--list--item--name text-normal-1">{item.name}</div>
+                                        <div className="page__table--list--item--name">
+                                            <div className="text-normal-1">{item.name}</div>
+                                            <div className="text-normal-2">{item.page_url}</div>
+                                        </div>
+                                        {/* <div className="page__table--list--item--btn">
+                                            <div
+                                                className="page__table--list--item--btn--edit text-title-3"
+                                                onClick={() => {
+                                                    setMode('EDIT')
+                                                    setName(item.name)
+                                                    setPreName(item.name)
+                                                    setUpdatePageId(item.id)
+                                                    setLink(item.page_url)
+                                                    setPreLink(item.page_url)
+                                                    handleOpenModal()
+                                                }}
+                                            >
+                                                Edit
+                                            </div>
+                                            <div
+                                                className="page__table--list--item--btn--delete text-title-3"
+                                                onClick={() => {
+                                                    setDeleteId(item.id)
+                                                    setShowDeleteModal(true)
+                                                }}
+                                            >
+                                                Delete
+                                            </div>
+                                        </div> */}
+                                    </div>
+                                )) : null}
+                        </div>
+
+                        {/* <div
+                            className="page__menu--add"
+                            onClick={() => {
+                                setMode('ADD')
+                                setShowModal(true)
+                            }}>
+                            <span className="page__menu--add--icon">
+                                <AddIcon />
+                            </span>
+                            <span className="page__menu--add--text text-normal-1">
+                                Add menu item
+                            </span>
+                        </div> */}
+                    </CustomCard>
+
+                    <CustomCard className='page__table'>
+                        <div className='page__table--title text-title-2'>
+                            Custom pages
+                            <Button
+                                className="btn btn-success"
+                                onClick={() => {
+                                    setMode('ADD')
+                                    handleOpenModal()
+                                }}
+                            >
+                                Add page
+                            </Button>
+                        </div>
+                        <div className="page__table--list">
+                            {
+                                listCustomPages?.length ? listCustomPages.map((item) => (
+                                    <div key={item.id} className="page__table--list--item">
+                                        <div className="page__table--list--item--name">
+                                            <div className="text-normal-1">{item.name}</div>
+                                            <div className="text-normal-2">{item.page_url}</div>
+                                        </div>
                                         <div className="page__table--list--item--btn">
                                             <div
                                                 className="page__table--list--item--btn--edit text-title-3"
@@ -193,19 +254,6 @@ const Page = ({ }) => {
                                 )) : null}
                         </div>
 
-                        {/* <div
-                            className="page__menu--add"
-                            onClick={() => {
-                                setMode('ADD')
-                                setShowModal(true)
-                            }}>
-                            <span className="page__menu--add--icon">
-                                <AddIcon />
-                            </span>
-                            <span className="page__menu--add--text text-normal-1">
-                                Add menu item
-                            </span>
-                        </div> */}
                     </CustomCard>
 
                 </div>

@@ -1,4 +1,6 @@
 .page {
+    max-width: 800px;
+    margin: 0 auto;
     &__header {
         margin: 20px 0;
         display: flex;
@@ -6,18 +8,24 @@
     }
     &__table {
         padding-bottom: 0;
+        margin-bottom: 30px;
         &--title {
-            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
         }
         &--list {
             &--item {
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
                 margin: 0 -20px;
                 padding: 10px 20px;
                 border-top: 1px solid #dfdfdf;
                 &--btn {
                     display: flex;
+                    align-items: center;
                     border: 1px solid #c9cccf;
                     border-radius: 7px;
                     &--edit,

@@ -25,7 +25,8 @@ export const listStoreSlice = createSlice({
     initialState:  {
         listStore: [],
         isLoading: false,
-        selectedName: ''
+        isCreating: false,
+        selectedName: '',
     },
     reducers: {
         doSwitchListStore(state, action) {
@@ -38,13 +39,14 @@ export const listStoreSlice = createSlice({
     extraReducers: (builder) => {
         // create store
         builder.addCase(doCreateStore.pending, (state) => {
-
+            state.isCreating = true
         });
         builder.addCase(doCreateStore.fulfilled, (state, action) => {
             state.listStore.push(action.payload)
+            state.isCreating = false
         });
         builder.addCase(doCreateStore.rejected, (state, action) => {
-
+            state.isCreating = false
         });
 
         // get list store

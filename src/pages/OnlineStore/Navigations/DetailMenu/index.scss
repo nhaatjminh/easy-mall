@@ -1,4 +1,6 @@
 .detail-menu {
+    max-width: 800px;
+    margin: 0 auto;
     &__header {
         margin: 20px 0;
         &--back-icon {
@@ -10,6 +12,10 @@
         margin-bottom: 20px;
         &--text {
             margin-bottom: 10px;
+        }
+        &--input {
+            display: flex;
+            align-items: center;
         }
     }
     &__menu {

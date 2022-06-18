@@ -63,7 +63,7 @@ const Navigation = () => {
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
                     <NavBarDetailStore isDesktop={true} keySelected={Key.Navigation}></NavBarDetailStore>
                 </div>
-                <div className="navigation col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
+                <div className="navigation col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table">
                     <div className="navigation__header">
                         <div className="navigation__header--title">Navigation</div>
                     </div>

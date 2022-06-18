@@ -28,6 +28,18 @@ export const doCreateMenu = createAsyncThunk(
     }
 );
 
+export const doUpdateMenu = createAsyncThunk(
+    'navigation@put/UpdateMenu',
+    async (menuObj) => {
+        const result = await NavigationApi.updateMenu(menuObj);
+        return {
+            ...menuObj,
+            ...result.data.rows[0]
+            // id: result.data.rows[0].id
+        };
+    }
+);
+
 export const doCreateMenuItem = createAsyncThunk(
     'navigation@post/CreateMenuItem',
     async (itemObj) => {
@@ -107,6 +119,24 @@ export const navigationSlice = createSlice({
             state.isLoading = false;
         });
         builder.addCase(doCreateMenu.rejected, (state, action) => {
+            state.isLoading = false
+        });
+
+        // update menu
+        builder.addCase(doUpdateMenu.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doUpdateMenu.fulfilled, (state, action) => {
+            let updateMenu = action.payload;
+            state.currentMenu.name = updateMenu.name
+
+            const index = state.listNavigation.findIndex(item => item.id === updateMenu.id)
+            if (index >= 0) {
+                state.listNavigation[index] = updateMenu;
+            }
+            state.isLoading = false
+        })
+        builder.addCase(doUpdateMenu.rejected, (state, action) => {
             state.isLoading = false
         });
 

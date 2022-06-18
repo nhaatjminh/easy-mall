@@ -44,7 +44,8 @@ export const doDeletePage = createAsyncThunk(
 export const pageSlice = createSlice({
     name: 'page',
     initialState: {
-        listPages: [],
+        listCustomPages: [],
+        listDefaultPages: [],
         isLoading: false
     },
     reducers: {
@@ -56,7 +57,18 @@ export const pageSlice = createSlice({
             state.isLoading = true
         });
         builder.addCase(doGetListPages.fulfilled, (state, action) => {
-            state.listPages = action.payload;
+            const pages = action.payload;
+            const listAllPages = pages.reduce((list, item) => {
+                if (item.is_default) list.default.push(item)
+                else list.custom.push(item)
+                return list;
+            }, 
+            {
+                default: [],
+                custom: []
+            })
+            state.listDefaultPages = listAllPages.default;
+            state.listCustomPages = listAllPages.custom;
             state.isLoading = false
         });
         builder.addCase(doGetListPages.rejected, (state, action) => {
@@ -68,7 +80,7 @@ export const pageSlice = createSlice({
             state.isLoading = true
         });
         builder.addCase(doCreatePage.fulfilled, (state, action) => {
-            state.listPages.push(action.payload)
+            state.listCustomPages.push(action.payload)
             state.isLoading = false
         })
         builder.addCase(doCreatePage.rejected, (state, action) => {
@@ -80,8 +92,8 @@ export const pageSlice = createSlice({
             state.isLoading = true
         });
         builder.addCase(doUpdatePage.fulfilled, (state, action) => {
-            const index = state.listPages.findIndex((item) => item.id === action.payload.id);
-            if (index >= 0) state.listPages[index] = action.payload;
+            const index = state.listCustomPages.findIndex((item) => item.id === action.payload.id);
+            if (index >= 0) state.listCustomPages[index] = action.payload;
 
             state.isLoading = false
         });
@@ -94,8 +106,8 @@ export const pageSlice = createSlice({
             state.isLoading = true
         });
         builder.addCase(doDeletePage.fulfilled, (state, action) => {
-            const index = state.listPages.findIndex((item) => item.id === action.payload.id);
-            if (index >= 0) state.listPages.splice(index, 1);
+            const index = state.listCustomPages.findIndex((item) => item.id === action.payload.id);
+            if (index >= 0) state.listCustomPages.splice(index, 1);
 
             state.isLoading = false
         });

@@ -13,6 +13,10 @@ export const NavigationApi = {
         const result = await callAPIWithPostMethod('menu', menuObj, true);
         return result;
     },
+    updateMenu: async (menuObj) => {
+        const result = await callAPIWithPutMethod('menu', menuObj, true);
+        return result;
+    },
     createMenuItem: async (itemObj) => {
         const result = await callAPIWithPostMethod('menu-item', itemObj, true);
         return result;

@@ -8,7 +8,7 @@ import NavBarDetailStore from "../../../../component/NavBarDetailStore";
 import { CustomInput } from "../../../../component/common/CustomInput/CustomInput";
 import { CustomCard } from './../../../../component/common/CustomCard/CustomCard';
 import { AddIcon } from "../../../../assets/icon/svg/AddIcon";
-import { doDeleteMenuItem, doGetCurrentMenu } from "../../../../redux/slice/navigationSlice";
+import { doDeleteMenuItem, doGetCurrentMenu, doUpdateMenu } from "../../../../redux/slice/navigationSlice";
 import { Button, Modal } from "react-bootstrap";
 import { doCreateMenuItem, doUpdateMenuItem } from './../../../../redux/slice/navigationSlice';
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
@@ -17,6 +17,7 @@ import { Key } from "../../../../constants/constForNavbarDetail";
 import { doGetListPages } from './../../../../redux/slice/pageSlice';
 import { ConfirmModal } from './../../../../component/common/ConfirmModal/ConfirmModal';
 import { LoadingModal } from './../../../../component/common/LoadingModal/LoadingModal';
+import { CustomButton } from "../../../../component/common/CustomButton/CustomButton";
 
 const DetailMenu = ({ }) => {
 
@@ -36,6 +37,7 @@ const DetailMenu = ({ }) => {
     const [showPageLinks, setShowPageLinks] = useState(false);
     const [linkValue, setLinkValue] = useState('');
     const [deleteId, setDeleteId] = useState('');
+    const [isEditTitle, setIsEditTitle] = useState(false);
 
     useEffect(() => {
         batch(() => {
@@ -73,6 +75,14 @@ const DetailMenu = ({ }) => {
         handleCloseModal()
     }
 
+    const handleEitMenu = () => {
+        dispatch(doUpdateMenu({
+            id: menu.id,
+            name: title,
+        }))
+        handleCloseModal()
+    }
+
     const handleDeleteMenuItem = () => {
         dispatch(doDeleteMenuItem(deleteId))
         setDeleteId('')
@@ -81,12 +91,12 @@ const DetailMenu = ({ }) => {
 
     return (
         <div>
-            <HeaderDetailStore keySelected={Key.Navigation}/>
+            <HeaderDetailStore keySelected={Key.Navigation} />
             <div className="row callpage">
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
                     <NavBarDetailStore isDesktop={true} keySelected={Key.Navigation}></NavBarDetailStore>
                 </div>
-                <div className="detail-menu col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 m-0 pt-4 desktop-table">
+                <div className="detail-menu col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table">
                     <div className="detail-menu__header">
                         <span
                             onClick={() => navigate(-1)}
@@ -101,7 +111,29 @@ const DetailMenu = ({ }) => {
                             <CustomInput
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
+                                disabled={!isEditTitle}
                             />
+                            <CustomButton 
+                                style={{
+                                    backgroundColor: 'white', 
+                                    color: 'black', 
+                                    border: '1px solid #c9cccf', 
+                                    height: 'fit-content',
+                                    marginLeft: '15px',
+                                    width: '70px',
+                                    textAlign: 'center',
+                                    "&:hover": {
+                                        background: '#f6f6f7'
+                                    }
+                                    
+                                }}
+                                onClick={() => {
+                                    setIsEditTitle((isEditTitle) => !isEditTitle)
+                                    if (isEditTitle) handleEitMenu()
+                                }}
+                            >
+                                {isEditTitle ? 'Save' : 'Edit'}
+                            </CustomButton>
                         </div>
                     </CustomCard>
 
@@ -156,7 +188,7 @@ const DetailMenu = ({ }) => {
                     </CustomCard>
 
                 </div>
-            </div>
+            </div >
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -218,15 +250,15 @@ const DetailMenu = ({ }) => {
                 </Modal.Footer>
             </Modal>
 
-            <ConfirmModal 
+            <ConfirmModal
                 show={openConfirmModal}
                 setShow={setOpenConfirmModal}
                 title='Remove menu item?'
                 content={`This will remove this menu item.`}
                 onConfirm={handleDeleteMenuItem}
             />
-            <LoadingModal show={isLoading}/>
-        </div>
+            <LoadingModal show={isLoading} />
+        </div >
 
     )
 }

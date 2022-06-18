@@ -1,0 +1,96 @@
+.mamagethemes {
+    max-width: 800px;
+    margin: 25px auto 0;
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        color: #5c5f62;
+        &--title {
+            width: fit-content;
+            font-weight: 700;
+        }
+        &--btn-to-editor {
+            width: fit-content;
+            padding: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            &:hover {
+                background-color: #ebeced;
+                border-radius: 7px;
+            }
+        }
+    }
+    &__slide-card {
+        &--left {
+            padding-right: 15px;
+            margin-bottom: 20px;
+            flex: 1 0 30%;
+            .text-title-2 {
+                margin: 10px 0 20px;
+            }
+        }
+    }
+    &__current-theme {
+        &--right {
+            &--header {
+                display: flex;
+                align-items: center;
+                &--text {
+                    margin-right: auto;
+                }
+                .btn {
+                    margin-left: 10px;
+                }
+            }
+            &__img {
+                margin-top: 20px;
+                padding: 10px;
+            }
+        }
+    }
+    &__theme-lib {
+        &--right {
+            width: 100%;
+            &__card {
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+        }
+        &__card {
+            display: flex;
+            &__line {
+                margin: 15px -20px;
+                border-bottom: 1px solid #c9cccf;
+            }
+            &__icon {
+                width: 50px;
+                min-width: 50px;
+                height: 50px;
+                margin-right: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #92e6b5;
+                svg {
+                    fill: black;
+                }
+            }
+            &__content {
+                display: flex;
+                @media (max-width: 600px) {
+                    flex-direction: column;
+                }
+                &__text {
+                    flex: 1 0 60%;
+                }
+                &__btn {
+                    width: 155px !important;
+                    height: fit-content;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}

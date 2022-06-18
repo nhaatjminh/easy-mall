@@ -21,6 +21,7 @@ import { StoreApi } from './../../service/api/storeApi';
 import { NotAllowIcon } from './../../assets/icon/svg/NotAllowIcon';
 import { logout } from "../../helpers/login";
 import { Loader } from "../../component/common/Loader/Loader";
+import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -41,6 +42,7 @@ const StoreLogin = ({ nameAccount }) => {
     const [err, setErr] = useState('');
     // const [isValid, setIsValid] = useState(false);
     const dbValue = useDebounce(newStoreName, 300);
+    const isProcessing = useSelector((state) => state.listStore.isCreating);
 
     const mounted = useRef();
 
@@ -225,6 +227,7 @@ const StoreLogin = ({ nameAccount }) => {
                     </Paper>
                 </Grid>
             </div>
+            <LoadingModal show={isProcessing} />
         </div>
     );
 }

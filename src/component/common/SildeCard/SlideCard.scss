@@ -1,0 +1,14 @@
+.slide-card {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+    }
+    // div:nth-child(1) {
+    //     flex: 1 0 30%;
+    // }
+    // div:nth-child(2) {
+    //     flex: 8;
+    // }
+}

@@ -124,8 +124,8 @@ const Login = () => {
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
                 setIsLogin(true);
+                login(result.data.token)
 
-                alert(result.message);
             })
             .catch(error => {
                 console.log('error', error)
@@ -161,8 +161,7 @@ const Login = () => {
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
                 setIsLogin(true);
-
-                alert(result.message);
+                login(result.data.token)
             })
             .catch(error => {
                 console.log('error', error)
