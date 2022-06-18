@@ -41,7 +41,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount,onRequestSort, headCells } =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount,onRequestSort, headCells, showToolbar } =
       props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -49,17 +49,23 @@ function EnhancedTableHead(props) {
     return (
       <TableHead>
         <TableRow>
-            <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={rowCount > 0 && numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                  inputProps={{
-                    'aria-label': 'select all desserts',
-                  }}
-                />
-            </TableCell>
+            {
+              showToolbar 
+              ? 
+              <TableCell padding="checkbox">
+                  <Checkbox
+                    color="primary"
+                    indeterminate={numSelected > 0 && numSelected < rowCount}
+                    checked={rowCount > 0 && numSelected === rowCount}
+                    onChange={onSelectAllClick}
+                    inputProps={{
+                      'aria-label': 'select all desserts',
+                    }}
+                  />
+              </TableCell>
+              : <></>
+
+            }
             {headCells.map((headCell, index) => (
               <TableCell
                 key={index}
@@ -154,7 +160,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => {
+const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, deleteAllFunction}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -217,12 +223,16 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
     }
     return (
       <>
-        <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
-       
+        { showToolbar 
+          ? <EnhancedTableToolbar selected={selected} setSelected={setSelected} numSelected={selected.length} onDeleteSelected={onDeleteSelected} editFunction={editFunction} deleteAllFunction={deleteAllFunction}/>
+          : <></>
+        }
+        
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           
          <TableContainer className="table-height">
             <Table stickyHeader aria-label="sticky table" className="p-0">
+              
               <EnhancedTableHead
                 numSelected={selected.length}
                 onSelectAllClick={handleSelectAllClick}
@@ -231,6 +241,7 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
                 order={order}
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
+                showToolbar={showToolbar}
               />
               <TableBody>
                   {stableSort(rows, getComparator(order, orderBy))
@@ -246,19 +257,24 @@ const TableManage = ({data, columnsOfData, editFunction, deleteAllFunction}) => 
                       tabIndex={-1}
                       key={index}
                       className='row-table-manager'>
+                        {
+                          showToolbar ?
                           <TableCell padding="checkbox">
-                              <Checkbox
-                                  color="primary"
-                                  checked={isItemSelected}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    handleClick(event, row.id)
-                                  }}
-                                  inputProps={{
-                                      'aria-labelledby': labelId,
-                                  }}
-                              />
+                            <Checkbox
+                                color="primary"
+                                checked={isItemSelected}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleClick(event, row.id)
+                                }}
+                                inputProps={{
+                                    'aria-labelledby': labelId,
+                                }}
+                            />
                           </TableCell>
+                          : <></>
+                        }
+                          
                           {columnsOfData.map((headCell, indexData) => {
                             return (
                             <TableCell

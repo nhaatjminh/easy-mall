@@ -58,6 +58,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [optionPage, setOptionPage] = useState([]);
     const [optionProduct, setOptionProduct] = useState([]);
     const [validateLink, setValidateLink] = useState(null);
+    const [openPopup, setOpenPopUp] = useState(false);
     const handleChangeCaption = (event) => {
         const value = {...valueToAdd};
         value.caption = event.target.value;
@@ -75,7 +76,14 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 text: 'You need enter caption to add',
                 icon: 'warning'
             })
-        } else {
+        } else if (validateLink) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Url is malformed',
+                icon: 'error'
+            })
+        }
+         else {
             let valueNeedPush = {...valueToAdd};
             if (mode === 'EDIT') {
                 if (valueToAdd.id) {
@@ -333,6 +341,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             let exactUrlPage = result.payload.map((page) => ({
                 title: `${page.name}`,
                 icon: <PagesIcon />,
+                url: `https://www.${urlStore}${page.page_url}`,
                 onClick: () => setCustomUrl(`https://www.${urlStore}${page.page_url}`)
             }))
             let newOptionPage = [{
@@ -351,6 +360,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             let exactUrlProduct = result.payload.map((product) => ({
                 title: `${product.title}`,
                 icon: <ProductIcon />,
+                url: `https://www.${urlStore}/products?id=${product.id}`,
                 onClick: () => setCustomUrl(`https://www.${urlStore}/products?id=${product.id}`)
             }))
             let newOptionProduct = [{
@@ -369,6 +379,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             let exactUrlCollection = result.payload.map((collection) => ({
                 title: `${collection.name}`,
                 icon: <CollectionIcon />,
+                url: `https://www.${urlStore}/collection?id=${collection.id}`,
                 onClick: () => setCustomUrl(`https://www.${urlStore}/collection?id=${collection.id}`)
             }))
             let newOptionCollection = [{
@@ -424,15 +435,13 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     const {
         getRootProps,
-        getInputLabelProps,
         getInputProps,
-        getTagProps,
         getListboxProps,
         getOptionProps,
         groupedOptions,
-        value,
         focused,
         setAnchorEl,
+        
       } = useAutocomplete({
         id: 'customized-hook-demo',
         options: checkType(),
@@ -526,7 +535,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     </Paper>
                     {
                         showAddBanner ?
-                        <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <Paper className='paper-add-banner' elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                             <div>
                                 
                                 <InputLabel name='title' className="text-header pb-2" style={{margin: 0, padding: 0}}>Add Banner</InputLabel>
@@ -570,13 +579,24 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             <input {...getInputProps()} value={customUrl} onChange={(e) => {
                                                 checkUrl(e.target.value);
                                                 setCustomUrl(e.target.value);
+                                            }}
+                                            onClick={() => {
+                                                setOpenPopUp(true);
                                             }}/>
                                         </InputWrapper>
                                     </div>
-                                    {groupedOptions.length > 0 ? (
+                                    {groupedOptions.length > 0 && openPopup ? (
                                         <Listbox {...getListboxProps()} style={{ maxHeight: 200}}>
                                             {groupedOptions.map((option, index) => {
-                                                return (<li style={{}} {...getOptionProps({ option, index })} onClick={option.onClick && option.onClick}>
+                                                return (<li className={`${option?.url && customUrl === option?.url ? 'selected-url' : ''}`} {...getOptionProps({ option, index })} onClick={(e) => {
+                                                    
+                                                    if (option.onClick) option.onClick();
+                                                    if (typeLink && option.title !== 'Back') {
+                                                        setOpenPopUp(false);
+                                                        getInputProps().ref.current.blur();
+                                                        setValidateLink(null);
+                                                    };
+                                                }}>
                                                     <p style={{paddingRight: 15}}>{option.icon}</p>
                                                     <p>{option.title}</p>
                                                 </li>)
