@@ -8,7 +8,7 @@ import {
 from '@mui/material';
 import './index.css';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { doDeleteImageCollection } from "../../../redux/slice/collectionSlice";
+import { doDeleteImageCollectionBanner } from "../../../redux/slice/bannerSlice";
 import { useDispatch } from "react-redux";
 
 const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd = {}, setValueToAdd = () => {}}) => {
@@ -17,8 +17,11 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
     const [images, setImages] = useState();
     useEffect(() => {
       if (!modal) setImages(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null)
-      else setImages(valueToAdd.thumbnail ? valueToAdd.thumbnail : null)
+      else setImages(valueToAdd.image ? valueToAdd.image : null)
     }, [modal])
+    useEffect(() => {
+      setImages(valueToAdd.image ? valueToAdd.image : null)
+    }, [valueToAdd])
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -35,6 +38,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
                 cols={1}
                 rowHeight={"auto"}
                 sx={{ width: 'auto', height: 'auto' }}
+                style={{overflowX: 'hidden'}}
             >
               {
                 images ?
@@ -42,6 +46,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
                     <div className="image-container">
                         <img
                           src={images}
+                          style={{width: 350, height: 350}}
                           alt="thumbnail"
                           loading="lazy"
                         />
@@ -69,7 +74,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
                   }
                 }
               } else {
-                valueToAdd.thumbnail = result;
+                valueToAdd.image = result;
                 setValueToAdd(valueToAdd);
               }
             });
@@ -84,7 +89,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
     const handleDelete = () => {
       if (!(images.startsWith('blob:'))) {
         new Promise(() => {
-          dispatch(doDeleteImageCollection({
+          dispatch(doDeleteImageCollectionBanner({
               data: {
                   url: images
               }
@@ -101,7 +106,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
           }
         }
       } else {
-        valueToAdd.thumbnail = null;
+        valueToAdd.image = null;
         setValueToAdd(valueToAdd);
       }
     }

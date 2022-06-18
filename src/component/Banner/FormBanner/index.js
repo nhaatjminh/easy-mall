@@ -15,6 +15,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
 import { Link } from "react-router-dom";
+import './index.css'
 import ImageInput from "../ImageInput"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
@@ -28,7 +29,7 @@ import { BackIcon } from "../../../assets/icon/svg/BackIcon";
 import { CollectionIcon } from "../../../assets/icon/svg/Collection";
 import { PagesIcon } from "../../../assets/icon/svg/Pages";
 import { ProductIcon } from "../../../assets/icon/svg/Product";
-import { Root, Listbox, InputWrapper } from './FormBanner.styled';
+import { Root, Listbox, InputWrapper, SpanError } from './FormBanner.styled';
 import { doGetListPages } from '../../../redux/slice/pageSlice';
 import { doGetListProductsOfStores } from '../../../redux/slice/productSlice';
 import { doGetListCollectionOfStores } from '../../../redux/slice/collectionSlice';
@@ -56,17 +57,78 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [optionCollection, setOptionCollection] = useState([]);
     const [optionPage, setOptionPage] = useState([]);
     const [optionProduct, setOptionProduct] = useState([]);
+    const [validateLink, setValidateLink] = useState(null);
     const handleChangeCaption = (event) => {
         const value = {...valueToAdd};
-        value.collection.caption = event.target.value;
+        value.caption = event.target.value;
         setValueToAdd(value);
     }
     const handleChangeDescription = (event) => {
         const value = {...valueToAdd};
-        value.collection.description = event.target.value;
+        value.description = event.target.value;
         setValueToAdd(value);
     }
-    
+    const handleAddBanner = () => {
+        if (!valueToAdd.caption) {
+            Swal.fire({
+                title: 'Warning',
+                text: 'You need enter caption to add',
+                icon: 'warning'
+            })
+        } else {
+            let valueNeedPush = {...valueToAdd};
+            if (mode === 'EDIT') {
+                if (valueToAdd.id) {
+                    valueNeedPush.update = 'Change';
+                    setShowAddBanner(false);
+                    const newListBanner = [...listBanner];
+                    let idxOfBannerForList = newListBanner.findIndex((banner) => banner.id === valueNeedPush.id);
+                    newListBanner[idxOfBannerForList] = valueNeedPush;
+                    setListBanner(newListBanner);
+                    let idxOfBannerForForm = newListBanner.findIndex((banner) => banner.id === valueNeedPush.id);
+                    form.current.banners[idxOfBannerForForm] = valueNeedPush;
+                    setValueToAdd({});
+                    setCustomUrl(null);
+                } else {
+                    valueNeedPush.update = 'Add';
+                    setShowAddBanner(false);
+                    const newListBanner = [...listBanner];
+                    newListBanner.push(valueNeedPush);
+                    setListBanner(newListBanner);
+                    form.current.banners.push(valueNeedPush);
+                    setValueToAdd({});
+                    setCustomUrl(null);
+                }
+            }
+        }
+    }
+    const handleDeleteBanner = (banner) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                setShowAddBanner(false);
+                const newListBanner = [...listBanner];
+                let idxOfBannerForList = newListBanner.findIndex((bannerList) => bannerList.id === banner.id);
+                newListBanner.splice(idxOfBannerForList, 1);
+                setListBanner(newListBanner);
+                let idxOfBannerForForm = form.current.banners.findIndex((bannerForm) => bannerForm.id === banner.id);
+                setValueToAdd({});
+                setCustomUrl(null);
+                if (banner.id) {
+                    form.current.banners[idxOfBannerForForm].update = 'Delete';
+                } else {
+                    form.current.banners.splice(idxOfBannerForForm,1)
+                }
+            }
+        })
+    }
     const optionLink = [
         {
             title: 'Product',
@@ -112,10 +174,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             return false;
         }
     }
-    const saveCollection = () => {
+    const saveCollection =  () => {
         if (form?.current?.collection?.name) {   
             Swal.showLoading();
-            new Promise((resolve) => { 
+            let ListPromise = [];
+            ListPromise.push(new Promise((resolve) => {
                 const data = form?.current?.collection?.thumbnail;
                 if (data) {
                     const base64result = data.substr(data.indexOf(',') + 1);
@@ -144,7 +207,44 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 } else {
                     resolve();
                 }
-            }).then(async () => {
+            }))
+            ListPromise.push(new Promise((resolve) => {
+                const banners = form?.current?.banners;
+                const listData = banners.map(banner => banner.image);
+                if (listData && listData.length) {
+                    
+                    const listPromiseForListData = [];
+                    listData.map((data, idxData) => {
+                        if (!data) return;
+                        const base64result = data.substr(data.indexOf(',') + 1);
+                        if (isBase64(base64result)) {
+                            //need delete image if u change image
+                            listPromiseForListData.push(
+                                new Promise((resolveForListData) => {
+                                    dispatch(doUploadImageBanner({
+                                        data: {
+                                            data: [data]
+                                        }
+                                    })).then((result) => {
+                                        if (result?.payload && result?.payload.length > 0) {
+                                            // payload is array data response from server, first item to link, so get payload[0] in here                  
+                                            form.current.banners[idxData].image =  Object.values(result.payload)[0];
+                                        }
+                                        resolveForListData();
+                                    })
+                                })
+                            )
+                            
+                        }
+                    }) 
+                    Promise.all(listPromiseForListData).then(() => {
+                        resolve();
+                    })       
+                } else {
+                    resolve();
+                }
+            }))
+            Promise.all(ListPromise).then(async () => {
                 if (mode !== "EDIT") {
                     const createObj = {
                         storeId: params.storeId,
@@ -163,13 +263,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     });
                 }
                 else {
-                    const listProductUpdate = []
-                    await form.current?.products?.forEach(product => {
-                        if (product.update){
-                            listProductUpdate.push(product)
-                        }
-                    })
-                    form.current.products = listProductUpdate;
+                    form.current.banners = form.current.banners.filter(banner => {
+                        if (banner.update) return true;
+                        return false;
+                    });
+                    if (form.current.banners && !form.current.banners.length) delete form.current.banners;
                     const updateObj = {
                         newCollection: form.current
                     }
@@ -283,6 +381,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         })
     },[])
     useEffect(() => {
+        const value = {...valueToAdd};
+        value.link = customUrl;
+        setValueToAdd(value);
+    }, [customUrl])
+    useEffect(() => {
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
@@ -294,14 +397,24 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     collection: {
                         ...form?.current?.collection,
                         store_id: params.storeId
-                    }
+                    },
+                    banners: []
                 }
             }
         }
     }, [oldForm, mode, params.storeId])
-    useEffect(() => {
-
-    }, [customUrl])
+    const checkUrl = (url) => {
+        if (!url.startsWith('https://www.')) {
+            setValidateLink('startsWith');
+        }
+        else {
+            let newUrl = url.slice(12);
+            let haveDot = newUrl.split('.');
+            let flagToNotEmpty = haveDot.every(urlSplit => urlSplit !== '')
+            if (haveDot.length < 2 || !flagToNotEmpty) setValidateLink('haveDot') 
+            else setValidateLink(null);
+        }
+    }
     const checkType = () => {
         if (!typeLink) return optionLink;
         if (typeLink === 'Product') return optionProduct;
@@ -359,20 +472,28 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>List Banner</InputLabel>
                                 {showAddBanner
                                 ? <></>
-                                : <i onClick={() => setShowAddBanner(true)} className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1"></i>
+                                : <i onClick={() => {
+                                    setShowAddBanner(true) 
+                                    setValueToAdd({});
+                                    setCustomUrl(null);
+                                }} className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1"></i>
                             }
                             </div>
-                            <Box style={{overflow: "auto", maxHeight: 400}}>
+                            <Box style={{overflowY: "auto", overflowX: 'hidden', maxHeight: 400}}>
                                 {listBanner.length ? listBanner.map((banner, index) => {
                                     return (
                                         <div key={banner.id + "item-select"}>
-                                            <MenuItem key={`${banner.id}-selected`} value={banner.id}>
-                                                <p className="pr-2 m-0">{index}.</p>
+                                            <MenuItem onClick={() => {
+                                                setShowAddBanner(true);
+                                                setCustomUrl(banner.link)
+                                                setValueToAdd(banner);
+                                            }} className='row p-0 m-0' key={`${banner.id}-selected`} value={banner.id}>
+                                                <p className="pr-2 m-0" style={{width: 20}}>{index}.</p>
                                                 {
-                                                banner.thumbnail ?
+                                                banner.image ?
                                                     <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
                                                         <ListItemAvatar key={`${banner.id} - avatar`}>
-                                                            <img alt="thumbnail" src={banner.thumbnail}/>
+                                                            <img alt="thumbnail" src={banner.image}/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 :  <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
@@ -381,14 +502,19 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                         </ListItemAvatar>
                                                     </Box>
                                                 }
-                                                <div style={{ display: `flex`, flexDirection: 'column', width: '100%'}}>
+                                                <div className="responsive-text" style={{ display: `flex`, flexDirection: 'column'}}>
 
-                                                    <ListItemText key={`${banner.id}-caption-title`} primary={banner.caption}/>
-                                                    <ListItemText key={`${banner.id}-link-title`} primary={banner.link}/>
+                                                    <ListItemText key={`${banner.id}-caption-title`} className='item-text-banner' primary={banner.caption}/>
+                                                    <ListItemText key={`${banner.id}-link-title`} className='item-text-banner' primary={banner.link}/>
                                                 </div>
-                                                <IconButton className="float-right text-extra-large" onClick={() => console.log(index)}>
-                                                    <DeleteIcon/>
-                                                </IconButton>
+                                                <div style={{width: 35, height: 'auto'}}>
+                                                    <IconButton className="float-right text-extra-large" onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteBanner(banner)
+                                                    }}>
+                                                        <DeleteIcon/>
+                                                    </IconButton>
+                                                </div>
                                             </MenuItem>
                                             {index !== listBanner.length - 1 && <Divider className="divider-custom" />}
                                             
@@ -399,7 +525,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     </Paper>
                     {
                         showAddBanner ?
-                        <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', minHeight: 600, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                        <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', overflow: 'auto', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                             <div>
                                 
                                 <InputLabel name='title' className="text-header pb-2" style={{margin: 0, padding: 0}}>Add Banner</InputLabel>
@@ -411,6 +537,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         fullWidth
                                         inputProps={{ maxLength: 255 }}
                                         onChange={handleChangeCaption}
+                                        value={valueToAdd?.caption || ''}
                                     />
                                 </div>
                                 <div>
@@ -422,13 +549,27 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         maxRows={5}
                                         style={{width: '100%'}}
                                         onChange={handleChangeDescription}
+                                        value={valueToAdd?.description || ''}
                                     />
                                 </div>
                                 <div>
-                                    <InputLabel style={{margin: 0, marginBottom: '0.75rem'}} className="text-label">Link</InputLabel>    
+                                    <InputLabel style={{margin: 0, marginBottom: '0.25rem'}} className="text-label">Link</InputLabel>    
                                     <div {...getRootProps()}>
+                                        
+                                        <SpanError className="text-error" hidden={!validateLink}>
+                                            {
+                                                validateLink === 'startsWith' ?
+                                                `URL must be start with https://www.
+                                                `: validateLink === 'haveDot' ? 
+                                                `Example url : https://www.abc.xyz`
+                                                : ``
+                                            }
+                                        </SpanError>
                                         <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl} className={focused ? 'focused' : ''}>
-                                            <input {...getInputProps()} value={customUrl} onChange={(e) => setCustomUrl(e.target.value)}/>
+                                            <input {...getInputProps()} value={customUrl} onChange={(e) => {
+                                                checkUrl(e.target.value);
+                                                setCustomUrl(e.target.value);
+                                            }}/>
                                         </InputWrapper>
                                     </div>
                                     {groupedOptions.length > 0 ? (
@@ -451,8 +592,14 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             <div>
                                 <Divider className="custom-devider" style={{marginTop: 15, marginBottom: 15}} />
                                 <div className="row float-right" >
-                                    <button onClick={() => setShowAddBanner(false)} style={{width: 'auto', border: '1px solid #666666', marginRight:15}} className="float-right btn btn-collection btn-light btn-form-product">Cancel</button>
-                                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                                    <button onClick={() => {
+                                        setShowAddBanner(false)
+                                        setTypeLink(null);
+                                    }} style={{width: 'auto', border: '1px solid #666666', marginRight:15}} className="float-right btn btn-collection btn-light btn-form-product">Cancel</button>
+                                    <button onClick={() => {
+                                        handleAddBanner();
+                                        setTypeLink(null);
+                                    }} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
                                 </div>
                             </div>
                         </Paper>

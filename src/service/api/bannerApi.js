@@ -64,7 +64,7 @@ export const bannerApi = {
      * @returns {object} data have link of image on s3
      */
     updateBanner: async (newBanner) => {
-        const result = await callAPIWithPutMethod(`collections/product/${newBanner.collection.id}`, newBanner, true);
+        const result = await callAPIWithPutMethod(`collections/banner/${newBanner.collection.id}`, newBanner, true);
         return result; 
     },
     /**

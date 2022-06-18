@@ -98,3 +98,9 @@ export const Listbox = styled('ul')(
     }
   `,
   );
+export const SpanError = styled('span')(`
+    margin: 0;
+    padding: 0;
+    color: red !important;
+`
+)

@@ -1,0 +1,11 @@
+.text-black .text-error {
+    color: red !important;
+}
+.item-text-banner span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.responsive-text {
+    /* minus padding, margin and width of another element */
+    width: calc(100% - 35px - 35px - 25px - 25px );
+}
