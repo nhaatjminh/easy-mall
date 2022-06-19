@@ -22,6 +22,7 @@ import Notify from "./pages/Notify/index";
 import ResetPassword from "./pages/ResetPassword";
 import ManageBanner from "./pages/ManageBanner";
 import ManageOrder from "./pages/ManageOrder";
+import ManageInventory from "./pages/ManageInventory";
 
 const App = () => {
   return(
@@ -47,6 +48,7 @@ const App = () => {
           <Route path='/store-detail/manage-banner/:storeId' element={<ManageBanner/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/store-detail/manage-order/:storeId' element={<ManageOrder/>}/>
+          <Route path='/store-detail/manage-inventory/:storeId' element={<ManageInventory/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/notify/:type/:email' element={<Notify/>}/>
           <Route path='/notify/:type' element={<Notify/>}/>

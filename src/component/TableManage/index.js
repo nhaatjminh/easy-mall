@@ -236,7 +236,7 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
               <EnhancedTableHead
                 numSelected={selected.length}
                 onSelectAllClick={handleSelectAllClick}
-                rowCount={rows.length}
+                rowCount={rows?.length || null}
                 headCells={columns}
                 order={order}
                 orderBy={orderBy}
@@ -244,7 +244,7 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
                 showToolbar={showToolbar}
               />
               <TableBody>
-                  {stableSort(rows, getComparator(order, orderBy))
+                  {rows?.length ? stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => {
                       const isItemSelected = isSelected(row.id);
@@ -301,14 +301,14 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
                           </TableCell>
                       </TableRow>
                       );
-                  })}
+                  }) : <></>}
               </TableBody>
             </Table>
         </TableContainer>
         <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length || 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

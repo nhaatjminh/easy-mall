@@ -83,7 +83,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             (keySelected === Key.GiftCard) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Inventory ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                //routeChange(`/store-detail/manage-product/${params.storeId}`)
+                                routeChange(`/store-detail/manage-inventory/${params.storeId}`)
                             }}
                         >
                             <p className="m-0 ml-0 mb-2 mt-2 text-extend font-weight-bold">

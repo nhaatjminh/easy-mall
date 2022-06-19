@@ -25,7 +25,7 @@ const ManageOrder = () => {
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300 },
+    { id: 'id', label: 'Order', minWidth: 300 },
     {
       id: 'description',
       label: 'Description',
