@@ -33,6 +33,7 @@ import { Root, Listbox, InputWrapper, SpanError } from './FormBanner.styled';
 import { doGetListPages } from '../../../redux/slice/pageSlice';
 import { doGetListProductsOfStores } from '../../../redux/slice/productSlice';
 import { doGetListCollectionOfStores } from '../../../redux/slice/collectionSlice';
+import { UrlIcon } from "../../../assets/icon/svg/UrlIcon";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -59,6 +60,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [optionProduct, setOptionProduct] = useState([]);
     const [validateLink, setValidateLink] = useState(null);
     const [openPopup, setOpenPopUp] = useState(false);
+    const [isSelectUrl, setIsSelectUrl] = useState(true);
     const handleChangeCaption = (event) => {
         const value = {...valueToAdd};
         value.caption = event.target.value;
@@ -416,21 +418,28 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
     }, [oldForm, mode, params.storeId])
     const checkUrl = (url) => {
-        if (!url.startsWith('https://www.')) {
-            setValidateLink('startsWith');
-        }
+        setTypeLink('Custom');
+        let haveDot = url.split('.');
+        let flagToNotEmpty = haveDot.every(urlSplit => urlSplit !== '')
+        if (haveDot.length < 2 || !flagToNotEmpty) {
+            setValidateLink('NeedEnoughDot')
+            return true;
+        } 
         else {
-            let newUrl = url.slice(12);
-            let haveDot = newUrl.split('.');
-            let flagToNotEmpty = haveDot.every(urlSplit => urlSplit !== '')
-            if (haveDot.length < 2 || !flagToNotEmpty) setValidateLink('haveDot') 
-            else setValidateLink(null);
+            setValidateLink(null);
+            return false;
         }
     }
     const checkType = () => {
         if (!typeLink) return optionLink;
         if (typeLink === 'Product') return optionProduct;
         else if (typeLink === 'Page') return optionPage;
+        else if (typeLink === 'Custom') return [{
+            title: `https://www.${customUrl}`,
+            icon: <UrlIcon />,
+            url: `https://www.${customUrl}`,
+            onClick: () => setCustomUrl(`https://www.${customUrl}`)
+        }];
         else return optionCollection;
     }
     const {
@@ -447,6 +456,15 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         options: checkType(),
         getOptionLabel: (option) => option.title,
       });
+    useEffect(() => {
+        if (groupedOptions.length <= 0 && !isSelectUrl) {
+            setOpenPopUp(false);
+            setCustomUrl('');
+            setTypeLink(null);
+            setValidateLink(null);
+            if (getInputProps().ref.current) getInputProps().ref.current.value = '';
+        }
+    }, [getInputProps, groupedOptions.length, isSelectUrl])
     return (
         <>
         <FormGroup>
@@ -566,23 +584,17 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <InputLabel style={{margin: 0, marginBottom: '0.25rem'}} className="text-label">Link</InputLabel>    
                                     <div {...getRootProps()}>
                                         
-                                        <SpanError className="text-error" hidden={!validateLink}>
-                                            {
-                                                validateLink === 'startsWith' ?
-                                                `URL must be start with https://www.
-                                                `: validateLink === 'haveDot' ? 
-                                                `Example url : https://www.abc.xyz`
-                                                : ``
-                                            }
-                                        </SpanError>
                                         <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl} className={focused ? 'focused' : ''}>
                                             <input {...getInputProps()} value={customUrl} onChange={(e) => {
                                                 checkUrl(e.target.value);
                                                 setCustomUrl(e.target.value);
+                                                setIsSelectUrl(false);
                                             }}
                                             onClick={() => {
                                                 setOpenPopUp(true);
-                                            }}/>
+                                                setTypeLink(null);
+                                            }}
+                                            />
                                         </InputWrapper>
                                     </div>
                                     {groupedOptions.length > 0 && openPopup ? (
@@ -591,11 +603,21 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 return (<li className={`${option?.url && customUrl === option?.url ? 'selected-url' : ''}`} {...getOptionProps({ option, index })} onClick={(e) => {
                                                     
                                                     if (option.onClick) option.onClick();
-                                                    if (typeLink && option.title !== 'Back') {
-                                                        setOpenPopUp(false);
-                                                        getInputProps().ref.current.blur();
-                                                        setValidateLink(null);
-                                                    };
+                                                    if (typeLink === 'Custom' && validateLink === 'NeedEnoughDot') {
+                                                        Swal.fire({
+                                                            title: 'Error',
+                                                            text: 'Example url: https://www.example.com',
+                                                            icon: 'error'
+                                                        })
+                                                    } else {
+                                                    
+                                                        if (typeLink && option.title !== 'Back') {
+                                                            setOpenPopUp(false);
+                                                            setIsSelectUrl(true);
+                                                            getInputProps().ref.current.blur();
+                                                            setValidateLink(null);
+                                                        };
+                                                    }
                                                 }}>
                                                     <p style={{paddingRight: 15}}>{option.icon}</p>
                                                     <p>{option.title}</p>

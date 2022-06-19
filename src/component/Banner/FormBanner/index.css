@@ -4,6 +4,10 @@
 .item-text-banner span {
     text-overflow: ellipsis;
     overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
 }
 .responsive-text {
     /* minus padding, margin and width of another element */

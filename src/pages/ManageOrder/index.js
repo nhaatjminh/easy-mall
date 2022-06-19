@@ -13,7 +13,7 @@ import { CustomSearchInput } from "../../component/common/CustomSearchInput/Cust
 import { useDebounce } from './../../hooks/useDebounce';
 import { doCreateOrder, doGetListOrderOfStores, doGetOneOrder} from '../../redux/slice/orderSlice'
 
-const ManageBanner = () => {
+const ManageOrder = () => {
   const [showAddOrder, setShowAddOrder] = useState(false);
   const [oldForm, setOldForm] = useState({});
   const [mode, setMode] = useState() // just add or edit
@@ -153,4 +153,4 @@ const ManageBanner = () => {
   );
 }
 
-export default ManageBanner;
+export default ManageOrder;

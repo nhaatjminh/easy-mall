@@ -58,7 +58,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === Key.Order ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/manage-home/${params.storeId}`);
+                            routeChange(`/store-detail/manage-order/${params.storeId}`);
                         }}
                     >
                         <p className="m-0 mb-2 mt-2 ">
