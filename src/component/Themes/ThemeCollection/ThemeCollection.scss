@@ -1,4 +1,4 @@
-.store-theme-collection {
+.theme-collection {
     &__body {
         height: calc(100vh - 200px);
         overflow-y: auto;
@@ -20,12 +20,38 @@
     }
 }
 
-.list-store-theme {
+.themes {
     -webkit-animation: swiperight 0.17s linear forwards;
     animation: swiperight 0.17s linear forwards;
+    &__list {
+        &__item {
+            &__name {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                &__current {
+                    font-size: 13px;
+                    border-radius: 1.2rem;
+                    background-color: #aee9d1;
+                    padding: 0 5px;
+                }
+            }
+            &__container {
+                width: fit-content;
+                height: fit-content;
+                overflow: hidden;
+            }
+            &__img {
+                transition: transform .2s;
+                &:hover {
+                    transform: scale(1.3);
+                }
+            }
+        }
+    }
 }
 
-.store-theme-detail {
+.theme-detail {
     -webkit-animation: swipeleft 0.17s linear forwards;
     animation: swipeleft 0.17s linear forwards;
     &__img {
