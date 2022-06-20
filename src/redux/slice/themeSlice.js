@@ -152,6 +152,12 @@ export const themeSlice = createSlice({
             if (index >= 0) {
                 state.paidTemplates[index].owned = true;
             }
+
+            const index2 = state.freeTemplates.findIndex((item) => item.id === action.payload.id);
+            if (index2 >= 0) {
+                state.freeTemplates[index].owned = true;
+            }
+
             state.storeTemplates.push(action.payload)
             state.isLoading = false
         });

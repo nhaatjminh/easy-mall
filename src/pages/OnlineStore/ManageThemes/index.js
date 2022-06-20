@@ -10,24 +10,20 @@ import { LoadingModal } from "../../../component/common/LoadingModal/LoadingModa
 import { SlideCard } from "../../../component/common/SildeCard/SlideCard";
 import { CustomCard } from './../../../component/common/CustomCard/CustomCard';
 import themeImg from '../../../assets/image/temp.png'
-import { FreeThemeCollection } from "../../../component/Themes/FreeThemeCollection/FreeThemeCollection";
 import { GridIcon } from './../../../assets/icon/svg/GridIcon';
 import { BasicButton } from "../../../component/common/BasicButton/CustomButton";
 import { CustomButton } from './../../../component/common/CustomButton/CustomButton';
-import { PaidThemeCollection } from "../../../component/Themes/PaidThemCollection/PaidThemeCollection";
-import { StoreThemeCollection } from "../../../component/Themes/StoreThemeCollection/StoreThemeCollection";
 import { useDispatch, useSelector } from "react-redux";
 import { doGetCurrentTemplate, doPublish } from "../../../redux/slice/themeSlice";
 import Swal from "sweetalert2";
+import { ThemeCollection } from "../../../component/Themes/ThemeCollection/ThemeCollection";
 
 const ManageThems = () => {
     const params = useParams();
     const [homePageId, setHomePageId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const isProcessing = useSelector((state) => state.theme.isLoading);
-    const [showFreeThemeModal, setShowFreeThemeModal] = useState(false);
-    const [showPaidThemeModal, setShowPaidThemeModal] = useState(false);
-    const [showStoreThemeModal, setShowStoreThemeModal] = useState(false);
+    const [showThemeModal, setShowThemeModal] = useState(false);
+    const [themeType, setThemeType] = useState(false);
     const currentTemplate = useSelector((state) => state.theme.currentTemplate)
     const dispatch = useDispatch()
 
@@ -37,20 +33,19 @@ const ManageThems = () => {
         }
 
         setIsLoading(true)
-        StoreApi.getPagesByStoreId(params.storeId, query)
-            .then((result) => {
-                setHomePageId(result.data[0].id)
-                setIsLoading(false)
-            })
-            .catch((err) => {
-                console.log(err)
-                setIsLoading(false)
-            });
+        Promise.all([
+            dispatch(doGetCurrentTemplate(params.storeId)),
+            StoreApi.getPagesByStoreId(params.storeId, query)
+
+        ]).then((res) => {
+            setHomePageId(res[1]?.data[0]?.id)
+            setIsLoading(false)
+        })
 
     }, [])
 
     useEffect(() => {
-        dispatch(doGetCurrentTemplate(params.storeId))
+
     }, [])
 
     const goToEditor = () => {
@@ -58,13 +53,24 @@ const ManageThems = () => {
     }
 
     const publish = () => {
-        dispatch(doPublish(params.storeId))
-        .then(() => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Publish successfully!',
-            })
+        Swal.fire({
+            icon: 'warning',
+            title: 'Do you want to publish?',
+            confirmButtonText: 'Yes',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setIsLoading(true)
+                dispatch(doPublish(params.storeId))
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Publish successfully!',
+                        })
+                        setIsLoading(false)
+                    })
+            }
         })
     }
 
@@ -78,7 +84,7 @@ const ManageThems = () => {
                 <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table mamagethemes">
                     <div className="mamagethemes__header">
                         <div className="mamagethemes__header--title">Theme</div>
-                        <div className="mamagethemes__header--btn-to-editor" onClick={() => {}}>
+                        <div className="mamagethemes__header--btn-to-editor" onClick={() => { }}>
                             <span style={{ paddingRight: '5px' }}>
                                 <ViewIcon />
                             </span>
@@ -110,8 +116,11 @@ const ManageThems = () => {
                             <div className="text-title-2">Theme library</div>
                             <div className="text-normal-2">Manage your store's themes. Add and publish themes to change your online store's appearance.</div>
                             <BasicButton
-                                style={{margin: '10px 0'}}
-                                onClick={() => setShowStoreThemeModal(true)}
+                                style={{ margin: '10px 0' }}
+                                onClick={() => {
+                                    setShowThemeModal(true)
+                                    setThemeType("STORE")
+                                }}
                             >
                                 View your store themes
                             </BasicButton>
@@ -129,7 +138,10 @@ const ManageThems = () => {
                                         </div>
                                         <BasicButton
                                             className="mamagethemes__theme-lib__card__content__btn"
-                                            onClick={() => setShowFreeThemeModal(true)}
+                                            onClick={() => {
+                                                setShowThemeModal(true)
+                                                setThemeType("FREE")
+                                            }}
                                         >
                                             Explore free themes
                                         </BasicButton>
@@ -148,7 +160,10 @@ const ManageThems = () => {
                                         </div>
                                         <BasicButton
                                             className="mamagethemes__theme-lib__card__content__btn"
-                                            onClick={() => setShowPaidThemeModal(true)}
+                                            onClick={() => {
+                                                setShowThemeModal(true)
+                                                setThemeType("PAID")
+                                            }}
                                         >
                                             Visit theme store
                                         </BasicButton>
@@ -160,25 +175,14 @@ const ManageThems = () => {
                     </SlideCard>
                 </div>
             </div>
-            <FreeThemeCollection
-                show={showFreeThemeModal}
-                setShow={setShowFreeThemeModal}
-                title='Explore free themes'
-                storeId={params.storeId}
-            />
-            <PaidThemeCollection
-                show={showPaidThemeModal}
-                setShow={setShowPaidThemeModal}
-                title='Explore paid themes'
-                storeId={params.storeId}
-            />
-            <StoreThemeCollection
-                show={showStoreThemeModal}
-                setShow={setShowStoreThemeModal}
+            <ThemeCollection
+                show={showThemeModal}
+                setShow={setShowThemeModal}
                 title="Your store's themes"
                 storeId={params.storeId}
+                type={themeType}
             />
-            <LoadingModal show={isLoading || isProcessing} />
+            <LoadingModal show={isLoading} />
         </div>
     )
 }
