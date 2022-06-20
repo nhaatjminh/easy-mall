@@ -10,7 +10,7 @@ import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
 import { useSelector, useDispatch } from "react-redux";
-import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore } from "../../redux/slice/storeSlice";
+import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import logo from '../../assets/image/Logo.png'
 import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 import { CustomInput } from "../../component/common/CustomInput/CustomInput";
@@ -165,6 +165,7 @@ const StoreLogin = ({ nameAccount }) => {
                                             listStoreShow.map((store, index) => (
                                                 <StoreLoginList shopName={store.name} shopLink={store.store_link} key={index} onClicked={() => {
                                                     dispatch(doSwitchSelectedStore(store.name));
+                                                    dispatch(doSwitchBaseUrl(store.store_link));
                                                     routeChange("/store-detail/manage-home/" + store.id);
                                                 }}></StoreLoginList>
                                             ))

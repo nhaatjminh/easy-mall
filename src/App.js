@@ -20,6 +20,7 @@ import { Profile } from "./pages/Profile";
 import ForgottenPassword from "./pages/ForgottenPassword";
 import Notify from "./pages/Notify/index";
 import ResetPassword from "./pages/ResetPassword";
+import ManageBanner from "./pages/ManageBanner";
 
 const App = () => {
   return(
@@ -42,6 +43,7 @@ const App = () => {
            
           <Route path='/store-detail/manage-home/:storeId' element={<ManageHome />}/>
           <Route path='/store-detail/manage-product/:storeId' element={<ManageStoreProduct/>}/>
+          <Route path='/store-detail/manage-banner/:storeId' element={<ManageBanner/>}/>
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/notify/:type/:email' element={<Notify/>}/>

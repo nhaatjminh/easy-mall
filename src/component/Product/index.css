@@ -15,19 +15,6 @@
 .text-black p, .text-black label, .text-black span {
     color: #333 !important;
 }
-.text-header {
-  font-size: 16px !important;
-  font-weight: bold !important;
-  color: #202223;
-}
-.text-label {
-  font-size: 15px !important;
-  color: #202223;
-}
-.text-content {
-  font-size: 14px !important;
-  color: #202223;
-}
 .disabled-text {
     background-color: #6666;
 }

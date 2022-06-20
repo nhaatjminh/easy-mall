@@ -9,7 +9,7 @@ import { Dropdown } from 'react-bootstrap';
 import NavBarDetailStore from "../NavBarDetailStore";
 
 import { useSelector, useDispatch } from "react-redux";
-import { doSwitchSelectedStore, doGetListStore } from "../../redux/slice/storeSlice";
+import { doSwitchSelectedStore, doGetListStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
 import { logout } from "../../helpers/login";
 const HeaderDetailStore = ({nameAccount, keySelected}) => {
@@ -26,6 +26,7 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                 result?.payload?.map((store) => {
                     if (store?.id && store?.id === params.storeId ) {
                         dispatch(doSwitchSelectedStore(store.name));
+                        dispatch(doSwitchBaseUrl(store.store_link));
                     }
                 })
             })
@@ -50,6 +51,7 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                                 {listStoreInStore ? listStoreInStore.map((store, index) => (
                                     <div key={index} onClick={() => {
                                         dispatch(doSwitchSelectedStore(store.name));
+                                        dispatch(doSwitchBaseUrl(store.store_link));
                                         routeChange(`/store-detail/manage-home/${store.id}`);
                                     }}>
                                         <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>

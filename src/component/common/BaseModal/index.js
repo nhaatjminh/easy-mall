@@ -48,7 +48,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function BaseModal({children, title, titleButton, showAction , onOK, styleButton, classNameModal}) {
+export default function BaseModal({children, title, titleButton, showAction , onOK, styleButton={}, classNameModal={}}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -80,9 +80,9 @@ export default function BaseModal({children, title, titleButton, showAction , on
         </DialogContent>
         {showAction ?
             <DialogActions>
-            <Button autoFocus onClick={handleOk}>
-                Save
-            </Button>
+              <Button autoFocus onClick={handleOk}>
+                  Save
+              </Button>
             </DialogActions> : ""
         }
       </BootstrapDialog>

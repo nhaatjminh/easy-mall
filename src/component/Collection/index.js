@@ -6,7 +6,7 @@ const Collection = ( {mode, oldForm, returnTable })=> {
     return (
         <>
          <div className="row">  
-            <div className="offset-1 col-1" style={{width: '5%'}}>
+            <div className="offset-1 col-1" style={{width: 50}}>
                 <button className="btn-icon mt-1" onClick={returnTable}>              
                     <i className="fa-angle-left fa-icon  float-right fa-store-login" ></i>
                 </button>

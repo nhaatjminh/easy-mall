@@ -3,7 +3,7 @@ import { Paper } from '@mui/material';
 import {InputLabel, Stack,InputAdornment, Divider, FormHelperText , TextField   } from '@mui/material';
 import { BaseNumberField } from '../../common/BaseNumberField';
 
-const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
+const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', handleChangeCurrency= () => {}}) => {
     const form = formRef;
     const [productPrice, setProductPrice] = useState(null);
     const [costPerItem, setCostPerItem] = useState(null);
@@ -13,7 +13,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    price: Number(event),
+                    price: event,
                     update: "Change"
                 }
             }
@@ -22,7 +22,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    price: Number(event)
+                    price: event
                 }
             }
         }
@@ -34,7 +34,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    cost_item: Number(event),
+                    cost_item: event,
                     update: "Change"
                 }
             }
@@ -43,7 +43,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                 ...form?.current,
                 product: {
                     ...form?.current?.product,
-                    cost_item: Number(event)
+                    cost_item: event
                 }
             }
         } 
@@ -73,7 +73,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                                 spacing={10}
                                 >
                                 <InputLabel name='title' className="text-label" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
-                                <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency="VND" placeholder="0.00" value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
+                                <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
                             </Stack>
                         </div>
                         <Divider className="divider-custom"/>
@@ -85,16 +85,16 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm}) => {
                             alignItems="center"
                             spacing={10}
                             >
-                                <BaseNumberField currency="VND" placeholder="0.00" key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
+                                <BaseNumberField currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
                             {costPerItem && productPrice ? 
                             <>
                                 <div>
                                     <p style={{margin: 0}}>Margin(%)</p>
-                                    <p style={{margin: 0}}>{((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
+                                    <p style={{margin: 0}}>{isNaN((productPrice -costPerItem) / productPrice * 100) ? 0 : ((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
                                 </div>
                                 <div>
-                                    <p style={{margin: 0}}>Profit(VND)</p>
-                                    <p style={{margin: 0}}>{(productPrice - costPerItem).toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                                    <p style={{margin: 0}}>Profit({`${currency}`})</p>
+                                    <p style={{margin: 0}}>{(productPrice - costPerItem).toFixed(2).toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
                                 </div>
                             </>: ""}
                         </Stack>

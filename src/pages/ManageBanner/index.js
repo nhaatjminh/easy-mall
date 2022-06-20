@@ -5,15 +5,15 @@ import { useParams } from "react-router-dom";
 import TableManage from "../../component/TableManage";
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
-import Collection from "../../component/Collection";
+import Banner from "../../component/Banner";
 import { useSelector, useDispatch } from "react-redux";
-import { doGetListCollectionOfStores, doGetOneCollections, doDeleteCollection } from "../../redux/slice/collectionSlice";
+import { doGetListBannerOfStores, doGetOneBanner, doDeleteCollectionBanner } from "../../redux/slice/bannerSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
 
-const ManageCollection = () => {
+const ManageBanner = () => {
   const [showAddCollection, setShowAddCollection] = useState(false);
   const [oldForm, setOldForm] = useState({});
   const [mode, setMode] = useState() // just add or edit
@@ -41,7 +41,7 @@ const ManageCollection = () => {
   ];
   const editFunction = (selected) => {
     Swal.showLoading();
-    dispatch((doGetOneCollections(selected)))
+    dispatch((doGetOneBanner(selected)))
     .then((result) => {
       setMode('EDIT');
       setOldForm(result.payload);  
@@ -65,7 +65,7 @@ const ManageCollection = () => {
         selected.map((product) => {
           listPromise.push(
             new Promise((resolve) => {
-              dispatch(doDeleteCollection({
+              dispatch(doDeleteCollectionBanner({
                 id: product
                 })).then(() => {
                     resolve();
@@ -88,7 +88,7 @@ const ManageCollection = () => {
     
   }
   const returnTable = async () => {
-    await dispatch(doGetListCollectionOfStores({
+    await dispatch(doGetListBannerOfStores({
             id: params.storeId,
             params: {}
           }))
@@ -100,10 +100,9 @@ const ManageCollection = () => {
       });
   }
   useEffect(() => {
-    
     if (!showAddCollection) {
       setLoading(true);
-      dispatch(doGetListCollectionOfStores({
+      dispatch(doGetListBannerOfStores({
         id: params.storeId,
         params: {}
       }))
@@ -129,7 +128,7 @@ const ManageCollection = () => {
     if (filterSeach) {
       search.name = filterSeach;
     }
-    dispatch(doGetListCollectionOfStores({
+    dispatch(doGetListBannerOfStores({
       id: params.storeId,
       params: search
     }))
@@ -146,10 +145,10 @@ const ManageCollection = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Collection}></HeaderDetailStore>
+      <HeaderDetailStore keySelected={Key.Banner}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Collection}></NavBarDetailStore>
+              <NavBarDetailStore  isDesktop={true} keySelected={Key.Banner}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -157,7 +156,7 @@ const ManageCollection = () => {
                   {!showAddCollection ?
                     <>
                     
-                      <p className="text-btn-login ml-1-5rem p-0-75rem"> Collection </p>
+                      <p className="text-btn-login ml-1-5rem p-0-75rem"> Banner Collection </p>
                       <Stack
                         direction="row"
                         justifyContent="space-between"
@@ -173,10 +172,10 @@ const ManageCollection = () => {
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddCollection(true);
                           setMode("ADD")
-                        }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Collection </p></button>
+                        }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Banner </p></button>
                       </Stack>
                       <div className="table">
-                        { loading ? (<>
+                      { loading ? (<>
                           <div style={{display: 'flex', justifyContent: 'center'}}>
                             <CircularProgress />
                           </div>
@@ -188,7 +187,7 @@ const ManageCollection = () => {
                         )}
                       </div>
                     </>
-                  : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
+                  : <Banner mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
                         
                 </>
               </div>
@@ -198,4 +197,4 @@ const ManageCollection = () => {
   );
 }
 
-export default ManageCollection;
+export default ManageBanner;
