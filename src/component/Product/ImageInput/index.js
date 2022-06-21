@@ -108,14 +108,14 @@ const ImageInput = ({mode, formRef, oldForm}) => {
         return (
             <ImageList
                 cols={3}
-                rowHeight={164}
                 sx={{ width: 'auto', maxHeight: 400 }}
             >
                 {images.map((url, index) => {
                     const isItemSelected = isSelected(url);
                     return <ImageListItem key={index}>
-                        <div className="image-container">
+                        <div className="image-container" style={{ height: 164}}>
                             <img
+
                                 src={url}
                                 alt={index}
                                 loading="lazy"

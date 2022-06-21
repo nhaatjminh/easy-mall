@@ -630,7 +630,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                           >
                               {row.option_value.map((option, index) => ((index !== 0 ? " / " : " ") + option.value + " "))}
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{display: 'inline-flex'}}>
                             
                             <BaseNumberField key="Price" className={`${row.delete && 'disabled-text'}`} disabled={row.delete} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
                           </TableCell>

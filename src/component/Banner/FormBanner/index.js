@@ -584,7 +584,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <InputLabel style={{margin: 0, marginBottom: '0.25rem'}} className="text-label">Link</InputLabel>    
                                     <div {...getRootProps()}>
                                         
-                                        <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl} className={focused ? 'focused' : ''}>
+                                        <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl}>
                                             <input {...getInputProps()} value={customUrl} onChange={(e) => {
                                                 checkUrl(e.target.value);
                                                 setCustomUrl(e.target.value);

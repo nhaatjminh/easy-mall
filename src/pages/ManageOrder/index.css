@@ -1,0 +1,9 @@
+.restock-order {
+    color: #d6d149 !important;
+}
+.normal-order {
+    color: #4877db !important;
+}
+.complete-order {
+    color: #42e034 !important;
+}

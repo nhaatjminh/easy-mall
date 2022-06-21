@@ -2,6 +2,11 @@
     padding-top: 0;
     padding-bottom: 0;
 }
+.text-field-input.select-currency {
+    height: 28px;
+    margin: 0.5rem 5px 0.5rem 0 !important;
+    border-radius: 5px;
+}
 .div-currency .MuiOutlinedInput-root {
     padding-left: 0;
     border: none;
@@ -9,4 +14,10 @@
 .div-currency .MuiOutlinedInput-root.select-currency .MuiOutlinedInput-notchedOutline {
     border: none;
     border-left: 1px;
+}
+.full-width {
+    width: 100%
+}
+.style-input {
+    padding: 4px 0 5px 5px !important;
 }

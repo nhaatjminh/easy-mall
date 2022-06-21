@@ -19,9 +19,6 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
       if (!modal) setImages(oldForm?.collection?.thumbnail && mode === "EDIT" ? oldForm?.collection?.thumbnail : null)
       else setImages(valueToAdd.image ? valueToAdd.image : null)
     }, [modal])
-    useEffect(() => {
-      setImages(valueToAdd.image ? valueToAdd.image : null)
-    }, [valueToAdd])
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -37,8 +34,9 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
             <ImageList
                 cols={1}
                 rowHeight={"auto"}
+                gap={10}
                 sx={{ width: 'auto', height: 'auto' }}
-                style={{overflowX: 'hidden'}}
+                style={{overflowX: 'hidden', paddingRight: 5}}
             >
               {
                 images ?

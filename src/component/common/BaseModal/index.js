@@ -63,7 +63,7 @@ export default function BaseModal({children, title, titleButton, showAction , on
   }
   return (
     <div>
-      <Button style={styleButton} onClick={handleClickOpen}>
+      <Button  style={{...styleButton, textTransform: 'none'}} onClick={handleClickOpen}>
             {titleButton}
       </Button>
       <BootstrapDialog

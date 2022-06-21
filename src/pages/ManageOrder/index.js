@@ -9,9 +9,11 @@ import Banner from "../../component/Banner";
 import { useSelector, useDispatch } from "react-redux";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
+import './index.css';
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
 import { doCreateOrder, doGetListOrderOfStores, doGetOneOrder} from '../../redux/slice/orderSlice'
+import Order from "../../component/Order";
 
 const ManageOrder = () => {
   const [showAddOrder, setShowAddOrder] = useState(false);
@@ -24,11 +26,50 @@ const ManageOrder = () => {
   const [rows, setRows] = useState();
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
+  const formatDate = (date) => {
+    let d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
   const columns = [
     { id: 'id', label: 'Order', minWidth: 300 },
     {
-      id: 'description',
-      label: 'Description',
+      id: 'status_date',
+      label: 'Date',
+      minWidth: 170,
+      align: 'right'
+    },
+    {
+      id: 'name',
+      label: 'Customer',
+      minWidth: 170,
+      align: 'right'
+    },{
+      id: 'total_with_currency',
+      label: 'Total',
+      minWidth: 170,
+      align: 'right'
+    },{
+      id: 'status',
+      label: 'Fulfillment status',
+      minWidth: 170,
+      align: 'right',
+      classNameWithData: (data) => {
+        if (data === "RESTOCK") return 'restock-order'
+        else if (data === "COMPLETED") return 'complete-order'
+        else return 'normal-order'
+      }
+    },{
+      id: 'total_item',
+      label: 'Items',
       minWidth: 170,
       align: 'right'
     },
@@ -50,7 +91,15 @@ const ManageOrder = () => {
           }))
         .then((result) => {
           if (!unmounted.current) {
-            setRows(result.payload);  
+            let newRows = result.payload?.map((order) => {
+              let date = new Date(Date.parse(order.status_date));
+              return {
+                ...order,
+                status_date: formatDate(date),
+                total_with_currency: `${order.original_price} ${order.currency}`
+              }
+            })
+            setRows(newRows);
             setShowAddOrder(false);
           }
       });
@@ -63,19 +112,19 @@ const ManageOrder = () => {
         params: {}
       }))
       .then((result) => {
-        setRows(result.payload);
+        let newRows = result.payload?.map((order) => {
+          let date = new Date(Date.parse(order.status_date));
+          return {
+            ...order,
+            status_date: formatDate(date),
+            total_with_currency: `${order.original_price} ${order.currency}`
+          }
+        })
+        setRows(newRows);
         setLoading(false);
       });
     }
   }, [showAddOrder])
-//   useEffect(() => {
-//     let newRows = JSON.parse(JSON.stringify(collectionList));
-//     newRows = newRows.map((collection) => {
-//       if (collection.description) collection.description = stringToHTML(collection?.description);
-//       return collection;
-//     })
-//     setRows(newRows);
-//   }, [collectionList])
   const handleSearch = (e) => {
     setFilterSearch(e.target.value);
   }
@@ -89,7 +138,17 @@ const ManageOrder = () => {
       params: search
     }))
       .then((result) => {
-        if (!unmounted.current) setRows(result.payload);
+        if (!unmounted.current) {
+          let newRows = result.payload?.map((order) => {
+            let date = new Date(Date.parse(order.status_date));
+            return {
+              ...order,
+              status_date: formatDate(date),
+              total_with_currency: `${order.original_price} ${order.currency}`
+            }
+          })
+          setRows(newRows);
+        }
     });
   }
   useEffect(() => {
@@ -143,7 +202,7 @@ const ManageOrder = () => {
                         )}
                       </div>
                     </>
-                  : <Banner mode={mode} returnTable={() => setShowAddOrder(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
+                  : <Order mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Order>}
                         
                 </>
               </div>
