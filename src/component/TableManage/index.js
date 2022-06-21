@@ -41,7 +41,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount,onRequestSort, headCells, showToolbar } =
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount,onRequestSort, headCells, showToolbar, showAction } =
       props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
@@ -88,10 +88,13 @@ function EnhancedTableHead(props) {
                 </TableSortLabel>
               </TableCell>
             ))}
-            
-            <TableCell>
-              Action
-            </TableCell>
+            {
+              showAction ?
+              <TableCell>
+                Action
+              </TableCell>
+               : <></>
+            }
         </TableRow>
       </TableHead>
     );
@@ -160,7 +163,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, deleteAllFunction}) => {
+const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData, editFunction, deleteAllFunction}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -242,6 +245,7 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
                 orderBy={orderBy}
                 onRequestSort={handleRequestSort}
                 showToolbar={showToolbar}
+                showAction={showAction}
               />
               <TableBody>
                   {rows?.length ? stableSort(rows, getComparator(order, orderBy))
@@ -285,7 +289,10 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
                               <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
                             </TableCell>
                           )})}
-                          <TableCell>
+                          {
+                            showAction ? 
+                            
+                            <TableCell>
                             <IconButton onClick={() => { 
                               setButtonState(!buttonState);
                               editFunction(row.id)
@@ -299,6 +306,8 @@ const TableManage = ({showToolbar = true,data, columnsOfData, editFunction, dele
                               <DeleteIcon/>
                             </IconButton>
                           </TableCell>
+                          : <></>
+                          }
                       </TableRow>
                       );
                   }) : <></>}

@@ -197,7 +197,7 @@ const ManageOrder = () => {
                         </>)
                         : (
                         <>
-                          <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={() => {}}></TableManage>
+                          <TableManage showToolbar={false} showAction={false} data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={() => {}}></TableManage>
                         </>
                         )}
                       </div>
