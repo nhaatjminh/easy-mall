@@ -1,8 +1,13 @@
 .custom-input {
+    display: flex;
+    align-items: center;
     width: 100%;
     padding: 0.5rem;
     border: 1px solid #9fa3a7;
     border-radius: 0.4rem;
+    &__icon {
+        margin: 0 0.5rem 0 0.5rem;
+    }
     input {
         width: 100%;
         border: none;

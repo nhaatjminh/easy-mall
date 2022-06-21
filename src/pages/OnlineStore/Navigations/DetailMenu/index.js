@@ -18,6 +18,11 @@ import { doGetListPages } from './../../../../redux/slice/pageSlice';
 import { ConfirmModal } from './../../../../component/common/ConfirmModal/ConfirmModal';
 import { LoadingModal } from './../../../../component/common/LoadingModal/LoadingModal';
 import { CustomButton } from "../../../../component/common/CustomButton/CustomButton";
+import { ExternalLinkIcon } from "../../../../assets/icon/svg/ExternalLinkIcon";
+import { BasicButton } from "../../../../component/common/BasicButton/CustomButton";
+import { XIcon } from "../../../../assets/icon/svg/XIcon";
+import { BlankCard } from './../../../../component/common/BlankCard/BlankCard';
+import { PageIcon } from './../../../../assets/icon/svg/PageIcon';
 
 const DetailMenu = ({ }) => {
 
@@ -205,25 +210,35 @@ const DetailMenu = ({ }) => {
                     </div>
                     <div className="detail-menu__add-item-modal--link">
                         <div className="text-normal-1">Link</div>
-                        <CustomInput
-                            placeholder='Link to your page or external link'
-                            value={link}
-                            onChange={(e) => setLink(e.target.value)}
-                            onFocus={() => setShowPageLinks(!showPageLinks)}
-                        />
+                        <div className="detail-menu__add-item-modal--link__input-group">
+                            <CustomInput
+                                placeholder='Link to your page or external link'
+                                value={link}
+                                onChange={(e) => setLink(e.target.value)}
+                                onFocus={() => setShowPageLinks(!showPageLinks)}
+                                icon={<ExternalLinkIcon />}
+                            />
+                            <BasicButton
+                                className="detail-menu__add-item-modal--link__input-group__clear-btn"
+                            >
+                                <XIcon/>
+                            </BasicButton>
+                        </div>
                         {showPageLinks ?
                             <CustomCard className='detail-menu__add-item-modal--link--list'>
                                 {listPage?.length ? listPage.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="detail-menu__add-item-modal--link--list--link-item text-normal-1"
-                                        onClick={() => {
-                                            setLink(item.name)
-                                            setLinkValue(item.page_url)
-                                            setShowPageLinks(false)
-                                        }}
-                                    >
-                                        {item.name}
+                                    <div key={item.id} className="detail-menu__add-item-modal--link--list--link-item">
+                                        <span><PageIcon/></span>
+                                        <span
+                                            className=" text-normal-1"
+                                            onClick={() => {
+                                                setLink(item.name)
+                                                setLinkValue(item.page_url)
+                                                setShowPageLinks(false)
+                                            }}
+                                        >
+                                            {item.name}
+                                        </span>
                                     </div>
                                 )) : null}
                             </CustomCard>

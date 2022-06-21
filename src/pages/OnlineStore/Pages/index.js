@@ -3,7 +3,7 @@ import './index.scss'
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { Button, Modal } from "react-bootstrap";
+import { Accordion, Button, Modal } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { doCreatePage, doDeletePage, doGetListPages, doUpdatePage } from './../../../redux/slice/pageSlice';
 import HeaderDetailStore from "../../../component/HeaderDetailStore";
@@ -148,19 +148,24 @@ const Page = ({ }) => {
 
                     </div>
 
-                    <CustomCard className='page__table'>
-                        <div className='page__table--title text-title-2'>
-                            Default pages
-                        </div>
-                        <div className="page__table--list">
-                            {
-                                listDefaultPages?.length ? listDefaultPages.map((item) => (
-                                    <div key={item.id} className="page__table--list--item">
-                                        <div className="page__table--list--item--name">
-                                            <div className="text-normal-1">{item.name}</div>
-                                            <div className="text-normal-2">{item.page_url}</div>
-                                        </div>
-                                        {/* <div className="page__table--list--item--btn">
+                    {/* <CustomCard className='page__table'> */}
+                        <Accordion className='page__table'>
+                        <Accordion.Item eventKey="0">
+                            <Accordion.Header>
+                                <div className='page__table--title text-title-2'>
+                                    Default pages
+                                </div>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                                <div className="page__table--list">
+                                    {
+                                        listDefaultPages?.length ? listDefaultPages.map((item) => (
+                                            <div key={item.id} className="page__table--list--item">
+                                                <div className="page__table--list--item--name">
+                                                    <div className="text-normal-1">{item.name}</div>
+                                                    <div className="text-normal-2">{item.page_url}</div>
+                                                </div>
+                                                {/* <div className="page__table--list--item--btn">
                                             <div
                                                 className="page__table--list--item--btn--edit text-title-3"
                                                 onClick={() => {
@@ -185,9 +190,12 @@ const Page = ({ }) => {
                                                 Delete
                                             </div>
                                         </div> */}
-                                    </div>
-                                )) : null}
-                        </div>
+                                            </div>
+                                        )) : null}
+                                </div>
+                            </Accordion.Body>
+                        </Accordion.Item>
+                        </Accordion>
 
                         {/* <div
                             className="page__menu--add"
@@ -202,7 +210,7 @@ const Page = ({ }) => {
                                 Add menu item
                             </span>
                         </div> */}
-                    </CustomCard>
+                    {/* </CustomCard> */}
 
                     <CustomCard className='page__table'>
                         <div className='page__table--title text-title-2'>
