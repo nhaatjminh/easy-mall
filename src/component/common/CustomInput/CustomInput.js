@@ -11,6 +11,7 @@ export const CustomInput = ({
     warning,
     disabled,
     onFocus,
+    onBlur,
     icon
 }) => {
 
@@ -30,6 +31,7 @@ export const CustomInput = ({
                     placeholder={placeholder}
                     onChange={onChange}
                     onFocus={onFocus}
+                    onBlur={onBlur}
                 />
             {/* </div> */}
         </div>

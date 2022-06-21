@@ -23,6 +23,9 @@ import { BasicButton } from "../../../../component/common/BasicButton/CustomButt
 import { XIcon } from "../../../../assets/icon/svg/XIcon";
 import { BlankCard } from './../../../../component/common/BlankCard/BlankCard';
 import { PageIcon } from './../../../../assets/icon/svg/PageIcon';
+import { useDebounce } from './../../../../hooks/useDebounce';
+import { removeSpace } from './../../../../helpers/common';
+import validator from "validator";
 
 const DetailMenu = ({ }) => {
 
@@ -35,6 +38,7 @@ const DetailMenu = ({ }) => {
     const [title, setTitle] = useState('');
     const [name, setName] = useState('');
     const [link, setLink] = useState('');
+    const [preLink, setPreLink] = useState('');
     const [mode, setMode] = useState('ADD');
     const [updateItemId, setUpdateItemId] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -43,6 +47,11 @@ const DetailMenu = ({ }) => {
     const [linkValue, setLinkValue] = useState('');
     const [deleteId, setDeleteId] = useState('');
     const [isEditTitle, setIsEditTitle] = useState(false);
+    const [err, setErr] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
+    const dbValue = useDebounce(link, 300);
+    const [icon, setIcon] = useState('page');
+    const [isClick, setIsClick] = useState(false);
 
     useEffect(() => {
         batch(() => {
@@ -55,6 +64,54 @@ const DetailMenu = ({ }) => {
     useEffect(() => {
         if (menu.name) setTitle(menu.name)
     }, [menu.name])
+
+    useEffect(() => {
+        let result = [];
+
+        // from external link
+        if (link.includes(".") && validator.isURL(link)) {
+            if (link.substring(0, 8) === 'https://' || link.substring(0, 7) === 'http://') {
+                result.push({
+                    id: 0,
+                    page_url: link,
+                    name: link,
+                    type: 2
+                })
+            }
+            else {
+                const url = 'https://' + link;
+                result.push({
+                    id: 0,
+                    page_url: url,
+                    name: url,
+                    type: 2
+                });
+            }
+        }
+
+        // from pages of store
+        const resultFromPage = listPage.reduce((list, item) => {
+            const s = removeSpace(link).toLowerCase();
+            if (item.name.toLowerCase().includes(s)) {
+                list.push({
+                    ...item,
+                    type: 1
+                })
+            }
+            return list;
+        }, [])
+
+        result = [...result, ...resultFromPage];
+        setSearchResult(result);
+    }, [dbValue])
+
+    const getPageNameFromUrl = (url) => {
+        const index = listPage?.findIndex((item) => item.page_url === url);
+        if (index >= 0) {
+            return listPage[index].name;
+        }
+        return '';
+    }
 
     const handleCloseModal = () => {
         setName('')
@@ -94,6 +151,10 @@ const DetailMenu = ({ }) => {
         setOpenConfirmModal(false)
     }
 
+    // useEffect(() => {
+    //     console.log(isClick)
+    // }, [isClick])
+
     return (
         <div>
             <HeaderDetailStore keySelected={Key.Navigation} />
@@ -118,11 +179,11 @@ const DetailMenu = ({ }) => {
                                 onChange={(e) => setTitle(e.target.value)}
                                 disabled={!isEditTitle}
                             />
-                            <CustomButton 
+                            <CustomButton
                                 style={{
-                                    backgroundColor: 'white', 
-                                    color: 'black', 
-                                    border: '1px solid #c9cccf', 
+                                    backgroundColor: 'white',
+                                    color: 'black',
+                                    border: '1px solid #c9cccf',
                                     height: 'fit-content',
                                     marginLeft: '15px',
                                     width: '70px',
@@ -130,7 +191,7 @@ const DetailMenu = ({ }) => {
                                     "&:hover": {
                                         background: '#f6f6f7'
                                     }
-                                    
+
                                 }}
                                 onClick={() => {
                                     setIsEditTitle((isEditTitle) => !isEditTitle)
@@ -157,8 +218,10 @@ const DetailMenu = ({ }) => {
                                                 setMode('EDIT')
                                                 setUpdateItemId(item.id)
                                                 setName(item.name)
-                                                setLink(item.link)
+                                                setLink(item.link[0] === '/' ? getPageNameFromUrl(item.link) : item.link)
+                                                setPreLink(item.link[0] === '/' ? getPageNameFromUrl(item.link) : item.link)
                                                 setShowModal(true)
+                                                setIcon(item.link[0] === '/' ? 'page' : 'external')
                                             }}
                                         >
                                             Edit
@@ -215,27 +278,58 @@ const DetailMenu = ({ }) => {
                                 placeholder='Link to your page or external link'
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
-                                onFocus={() => setShowPageLinks(!showPageLinks)}
-                                icon={<ExternalLinkIcon />}
+                                onFocus={() => setShowPageLinks(true)}
+                                onBlur={() => {
+                                    // setTimeout(() => {
+                                    //     console.log('blur')
+                                    //     console.log({isClick})
+                                    //     if (!isClick) {
+                                    //         setShowPageLinks(false)
+                                    //         setLink(preLink)
+                                    //     }
+                                    //     else {
+                                    //         setIsClick(false)
+                                    //     }
+                                    //     // if (isClick) {
+                                    //     //     setShowPageLinks(false)
+                                    //     //     setLink(preLink)
+                                    //     //     setIsClick(false)
+                                    //     // }
+                                    // }, 3000)
+                                }}
+                                icon={icon === 'page' ? <PageIcon /> : <ExternalLinkIcon />}
                             />
                             <BasicButton
                                 className="detail-menu__add-item-modal--link__input-group__clear-btn"
+                                onClick={() => {
+                                    setLink('')
+                                    setPreLink('')
+                                    setLinkValue('')
+                                }}
                             >
-                                <XIcon/>
+                                <XIcon />
                             </BasicButton>
                         </div>
                         {showPageLinks ?
                             <CustomCard className='detail-menu__add-item-modal--link--list'>
-                                {listPage?.length ? listPage.map((item) => (
-                                    <div key={item.id} className="detail-menu__add-item-modal--link--list--link-item">
-                                        <span><PageIcon/></span>
+                                {searchResult?.length ? searchResult.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="detail-menu__add-item-modal--link--list--link-item"
+                                        onClick={() => {
+                                            console.log('click')
+                                            setLink(item.name)
+                                            setLinkValue(item.page_url)
+                                            setPreLink(item.name)
+                                            setShowPageLinks(false)
+                                            setIcon(item.type === 1 ? 'page' : 'external')
+                                            setIsClick(true)
+                                        }}
+                                    >
+                                        <span>{item.type === 1 ? <PageIcon /> : <ExternalLinkIcon />}</span>
                                         <span
                                             className=" text-normal-1"
-                                            onClick={() => {
-                                                setLink(item.name)
-                                                setLinkValue(item.page_url)
-                                                setShowPageLinks(false)
-                                            }}
+
                                         >
                                             {item.name}
                                         </span>
