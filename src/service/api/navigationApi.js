@@ -17,6 +17,10 @@ export const NavigationApi = {
         const result = await callAPIWithPutMethod('menu', menuObj, true);
         return result;
     },
+    deleteMenu: async (menuId) => {
+        const result = await callAPIWithDeleteMethod(`menu/${menuId}`, true);
+        return result;
+    },
     createMenuItem: async (itemObj) => {
         const result = await callAPIWithPostMethod('menu-item', itemObj, true);
         return result;

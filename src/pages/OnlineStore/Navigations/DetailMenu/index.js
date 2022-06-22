@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import './index.scss'
 import { useParams } from 'react-router-dom';
 import { batch, useSelector } from 'react-redux';
@@ -21,11 +21,12 @@ import { CustomButton } from "../../../../component/common/CustomButton/CustomBu
 import { ExternalLinkIcon } from "../../../../assets/icon/svg/ExternalLinkIcon";
 import { BasicButton } from "../../../../component/common/BasicButton/CustomButton";
 import { XIcon } from "../../../../assets/icon/svg/XIcon";
-import { BlankCard } from './../../../../component/common/BlankCard/BlankCard';
 import { PageIcon } from './../../../../assets/icon/svg/PageIcon';
 import { useDebounce } from './../../../../hooks/useDebounce';
 import { removeSpace } from './../../../../helpers/common';
 import validator from "validator";
+import { useDidMountEffect } from './../../../../hooks/useDidMountEffct';
+import { TextError } from "../../../../component/common/TextError/TextError";
 
 const DetailMenu = ({ }) => {
 
@@ -47,11 +48,15 @@ const DetailMenu = ({ }) => {
     const [linkValue, setLinkValue] = useState('');
     const [deleteId, setDeleteId] = useState('');
     const [isEditTitle, setIsEditTitle] = useState(false);
-    const [err, setErr] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const dbValue = useDebounce(link, 300);
     const [icon, setIcon] = useState('page');
-    const [isClick, setIsClick] = useState(false);
+    const [err, setErr] = useState({})
+
+    const nameMounted = useRef(false);
+    const linkMounted = useRef(false);
+    const titleMounted = useRef(false);
+    const clicked = useRef(false);
 
     useEffect(() => {
         batch(() => {
@@ -64,6 +69,66 @@ const DetailMenu = ({ }) => {
     useEffect(() => {
         if (menu.name) setTitle(menu.name)
     }, [menu.name])
+
+    useEffect(() => {
+        if (nameMounted.current) {
+            if (removeSpace(name) === '') {
+                setErr({
+                    ...err,
+                    name: 'Name is requried'
+                })
+            }
+            else {
+                setErr({
+                    ...err,
+                    name: null
+                })
+            }
+        }
+        else {
+            nameMounted.current = true
+        }
+    }, [name])
+
+    useEffect(() => {
+        if (titleMounted.current) {
+            if (removeSpace(title) === '') {
+                setErr({
+                    ...err,
+                    title: 'Title is requried'
+                })
+            }
+            else {
+                setErr({
+                    ...err,
+                    title: null
+                })
+            }
+        }
+        else {
+            titleMounted.current = true
+        }
+    }, [title])
+
+    useEffect(() => {
+        if (linkMounted.current) {
+            if (linkValue === '') {
+                setErr({
+                    ...err,
+                    link: 'Link needs to be a URL address'
+                })
+            }
+            else {
+                setErr({
+                    ...err,
+                    link: null
+                })
+            }
+        }
+        else {
+            linkMounted.current = true
+        }
+    }, [linkValue])
 
     useEffect(() => {
         let result = [];
@@ -105,6 +170,12 @@ const DetailMenu = ({ }) => {
         setSearchResult(result);
     }, [dbValue])
 
+    // useDidMountEffect(() => {
+    //     if (showModal) {
+    //         checkErr()
+    //     }
+    // }, [showModal])
+
     const getPageNameFromUrl = (url) => {
         const index = listPage?.findIndex((item) => item.page_url === url);
         if (index >= 0) {
@@ -113,36 +184,72 @@ const DetailMenu = ({ }) => {
         return '';
     }
 
+    const checkErr = () => {
+        let error = {}
+        if (removeSpace(name) === '') {
+            error.name = 'Name is requried'
+        }
+        if (linkValue === '') {
+            error.link = 'Link needs to be a URL address'
+        }
+        if (Object.keys(error).length) {
+            setErr(error)
+        }
+        return Object.keys(error).length
+    }
+
     const handleCloseModal = () => {
         setName('')
         setLink('')
+        setLinkValue('')
+        setPreLink('')
+        setErr({})
         setShowModal(false)
+
+        nameMounted.current = false;
+        linkMounted.current = false;
     }
 
     const hanndleAddNewMenuItem = () => {
+        if (checkErr()) return
         dispatch(doCreateMenuItem({
             menu_id: menu.id,
-            name: name,
+            name: removeSpace(name),
             link: linkValue
         }))
         handleCloseModal()
     }
 
     const handleEitMenuItem = () => {
+        if (checkErr()) return
         dispatch(doUpdateMenuItem({
             id: updateItemId,
-            name: name,
+            name: removeSpace(name),
             link: linkValue
         }))
         handleCloseModal()
     }
 
     const handleEitMenu = () => {
+        if (err.title) return;
+
+        if (removeSpace(title) === '') {
+            setErr({
+                ...err,
+                title: 'Title is requried'
+            })
+            return
+        }
+
         dispatch(doUpdateMenu({
             id: menu.id,
-            name: title,
+            name: removeSpace(title),
         }))
-        handleCloseModal()
+        setIsEditTitle(false)
+    }
+
+    const handleDeleteMenu = () => {
+        
     }
 
     const handleDeleteMenuItem = () => {
@@ -178,29 +285,72 @@ const DetailMenu = ({ }) => {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 disabled={!isEditTitle}
+                                warning={err.title}
                             />
-                            <CustomButton
-                                style={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    border: '1px solid #c9cccf',
-                                    height: 'fit-content',
-                                    marginLeft: '15px',
-                                    width: '70px',
-                                    textAlign: 'center',
-                                    "&:hover": {
-                                        background: '#f6f6f7'
-                                    }
+                            {isEditTitle ?
+                                <>
+                                    <CustomButton
+                                        style={{
+                                            backgroundColor: 'white',
+                                            color: 'black',
+                                            border: '1px solid #c9cccf',
+                                            height: 'fit-content',
+                                            marginLeft: '15px',
+                                            width: '70px',
+                                            textAlign: 'center',
+                                            "&:hover": {
+                                                background: '#f6f6f7'
+                                            }
 
-                                }}
-                                onClick={() => {
-                                    setIsEditTitle((isEditTitle) => !isEditTitle)
-                                    if (isEditTitle) handleEitMenu()
-                                }}
-                            >
-                                {isEditTitle ? 'Save' : 'Edit'}
-                            </CustomButton>
+                                        }}
+                                        onClick={() => {
+                                            setIsEditTitle(false)
+                                            setErr({})
+                                            setTitle(menu.name)
+                                        }}
+                                    >
+                                        Cancel
+                                    </CustomButton>
+                                    <CustomButton
+                                        style={{
+                                            height: 'fit-content',
+                                            marginLeft: '15px',
+                                            width: '70px',
+                                            textAlign: 'center',
+
+                                        }}
+                                        onClick={() => handleEitMenu()}
+                                    >
+                                        Save
+                                    </CustomButton>
+                                </> :
+
+                                <CustomButton
+                                    style={{
+                                        backgroundColor: 'white',
+                                        color: 'black',
+                                        border: '1px solid #c9cccf',
+                                        height: 'fit-content',
+                                        marginLeft: '15px',
+                                        width: '70px',
+                                        textAlign: 'center',
+                                        "&:hover": {
+                                            background: '#f6f6f7'
+                                        }
+
+                                    }}
+                                    onClick={() => {
+                                        setIsEditTitle(true)
+                                    }}
+                                >
+                                    Edit
+                                </CustomButton>
+
+                            }
                         </div>
+                        {isEditTitle && err.title ?
+                            <TextError>{err.title}</TextError> : null
+                        }
                     </CustomCard>
 
                     <CustomCard className='detail-menu__menu'>
@@ -269,7 +419,12 @@ const DetailMenu = ({ }) => {
                             placeholder='e.g About us'
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            warning={err.name}
                         />
+                        {err.name ?
+                            <TextError>{err.name}</TextError>
+                            : null
+                        }
                     </div>
                     <div className="detail-menu__add-item-modal--link">
                         <div className="text-normal-1">Link</div>
@@ -279,23 +434,24 @@ const DetailMenu = ({ }) => {
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
                                 onFocus={() => setShowPageLinks(true)}
+                                warning={err.link}
                                 onBlur={() => {
-                                    // setTimeout(() => {
-                                    //     console.log('blur')
-                                    //     console.log({isClick})
-                                    //     if (!isClick) {
-                                    //         setShowPageLinks(false)
-                                    //         setLink(preLink)
-                                    //     }
-                                    //     else {
-                                    //         setIsClick(false)
-                                    //     }
-                                    //     // if (isClick) {
-                                    //     //     setShowPageLinks(false)
-                                    //     //     setLink(preLink)
-                                    //     //     setIsClick(false)
-                                    //     // }
-                                    // }, 3000)
+                                    setTimeout(() => {
+                                        if (!clicked.current) {
+                                            setShowPageLinks(false)
+                                            if (link !== preLink) {
+                                                setLink(preLink)
+                                            }
+                                        }
+                                        else {
+                                            clicked.current = false
+                                        }
+                                        // if (isClick) {
+                                        //     setShowPageLinks(false)
+                                        //     setLink(preLink)
+                                        //     setIsClick(false)
+                                        // }
+                                    }, 100)
                                 }}
                                 icon={icon === 'page' ? <PageIcon /> : <ExternalLinkIcon />}
                             />
@@ -310,20 +466,22 @@ const DetailMenu = ({ }) => {
                                 <XIcon />
                             </BasicButton>
                         </div>
+                        {err.link ?
+                            <TextError>{err.link}</TextError> : null
+                        }
                         {showPageLinks ?
                             <CustomCard className='detail-menu__add-item-modal--link--list'>
                                 {searchResult?.length ? searchResult.map((item) => (
                                     <div
                                         key={item.id}
                                         className="detail-menu__add-item-modal--link--list--link-item"
-                                        onClick={() => {
-                                            console.log('click')
+                                        onMouseDown={() => {
+                                            clicked.current = true
                                             setLink(item.name)
                                             setLinkValue(item.page_url)
                                             setPreLink(item.name)
                                             setShowPageLinks(false)
                                             setIcon(item.type === 1 ? 'page' : 'external')
-                                            setIsClick(true)
                                         }}
                                     >
                                         <span>{item.type === 1 ? <PageIcon /> : <ExternalLinkIcon />}</span>
@@ -334,7 +492,11 @@ const DetailMenu = ({ }) => {
                                             {item.name}
                                         </span>
                                     </div>
-                                )) : null}
+                                )) :
+                                    <div className="detail-menu__add-item-modal--link--list__not-found text-normal-2">
+                                        Not found
+                                    </div>
+                                }
                             </CustomCard>
                             :
                             null
@@ -351,7 +513,7 @@ const DetailMenu = ({ }) => {
                         </Button>
                         <Button
                             className="btn btn-success"
-                            onClick={mode === 'ADD' ? hanndleAddNewMenuItem : handleEitMenuItem}
+                            onMouseDown={mode === 'ADD' ? hanndleAddNewMenuItem : handleEitMenuItem}
                         >
                             {mode === 'ADD' ? 'Add' : 'Save'}
                         </Button>
