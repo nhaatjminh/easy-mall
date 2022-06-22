@@ -435,10 +435,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         if (typeLink === 'Product') return optionProduct;
         else if (typeLink === 'Page') return optionPage;
         else if (typeLink === 'Custom') return [{
-            title: `https://www.${customUrl}`,
+            title: `${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`,
             icon: <UrlIcon />,
-            url: `https://www.${customUrl}`,
-            onClick: () => setCustomUrl(`https://www.${customUrl}`)
+            url: `${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`,
+            onClick: () => setCustomUrl(`${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`)
         }];
         else return optionCollection;
     }
@@ -587,7 +587,13 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl}>
                                             <input {...getInputProps()} value={customUrl} onChange={(e) => {
                                                 checkUrl(e.target.value);
-                                                setCustomUrl(e.target.value);
+                                                if (e.target.value && !e.target.value.startsWith('https://') && !e.target.value.startsWith('http://')) {
+
+                                                    setCustomUrl(`https://${e.target.value}`);
+                                                } else {
+                                                    
+                                                    setCustomUrl(e.target.value);
+                                                }
                                                 setIsSelectUrl(false);
                                             }}
                                             onClick={() => {
@@ -598,9 +604,9 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         </InputWrapper>
                                     </div>
                                     {groupedOptions.length > 0 && openPopup ? (
-                                        <Listbox {...getListboxProps()} style={{ maxHeight: 200}}>
+                                        <Listbox {...getListboxProps()} style={{ width: 500, maxHeight: 200, overflowX: 'scroll', whiteSpace: 'nowrap'}}>
                                             {groupedOptions.map((option, index) => {
-                                                return (<li className={`${option?.url && customUrl === option?.url ? 'selected-url' : ''}`} {...getOptionProps({ option, index })} onClick={(e) => {
+                                                return (<li style={{paddingTop: 15}} className={`${typeLink === 'Custom' ? 'custom-link-scroll' : ''} ${option?.url && customUrl === option?.url ? 'selected-url' : ''}`} {...getOptionProps({ option, index })} onClick={(e) => {
                                                     
                                                     if (option.onClick) option.onClick();
                                                     if (typeLink === 'Custom' && validateLink === 'NeedEnoughDot') {

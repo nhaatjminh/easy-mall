@@ -7,3 +7,6 @@
 .complete-order {
     color: #42e034 !important;
 }
+.deleted-order {
+    color: #ed131e !important;
+}

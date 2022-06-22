@@ -16,3 +16,7 @@
 .selected-url {
     background-color: #e6f7ff;
 }
+.custom-link-scroll {
+    display: inline-flex !important;
+    width: auto !important;
+}

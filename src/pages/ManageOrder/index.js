@@ -65,6 +65,7 @@ const ManageOrder = () => {
       classNameWithData: (data) => {
         if (data === "RESTOCK") return 'restock-order'
         else if (data === "COMPLETED") return 'complete-order'
+        else if (data === "DELETED") return 'deleted-order'
         else return 'normal-order'
       }
     },{
@@ -96,7 +97,7 @@ const ManageOrder = () => {
               return {
                 ...order,
                 status_date: formatDate(date),
-                total_with_currency: `${order.original_price} ${order.currency}`
+                total_with_currency: `${order.currency === 'VND' ? Number(order.original_price).toFixed(0) : Number(order.original_price).toFixed(2)} ${order.currency}`
               }
             })
             setRows(newRows);
@@ -117,7 +118,7 @@ const ManageOrder = () => {
           return {
             ...order,
             status_date: formatDate(date),
-            total_with_currency: `${order.original_price} ${order.currency}`
+            total_with_currency: `${order.currency === 'VND' ? Number(order.original_price).toFixed(0) : Number(order.original_price).toFixed(2)} ${order.currency}`
           }
         })
         setRows(newRows);
@@ -144,7 +145,7 @@ const ManageOrder = () => {
             return {
               ...order,
               status_date: formatDate(date),
-              total_with_currency: `${order.original_price} ${order.currency}`
+              total_with_currency: `${order.currency === 'VND' ? Number(order.original_price).toFixed(0) : Number(order.original_price).toFixed(2)} ${order.currency}`
             }
           })
           setRows(newRows);
