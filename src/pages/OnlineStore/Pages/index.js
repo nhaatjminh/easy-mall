@@ -149,10 +149,13 @@ const Page = ({ }) => {
                     </div>
 
                     {/* <CustomCard className='page__table'> */}
-                        <Accordion className='page__table'>
+                    <Accordion className='page__table'>
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>
-                                <div className='page__table--title text-title-2'>
+                                <div
+                                    style={{ padding: '15px 0' }}
+                                    className='page__table--title text-title-2'
+                                >
                                     Default pages
                                 </div>
                             </Accordion.Header>
@@ -195,9 +198,9 @@ const Page = ({ }) => {
                                 </div>
                             </Accordion.Body>
                         </Accordion.Item>
-                        </Accordion>
+                    </Accordion>
 
-                        {/* <div
+                    {/* <div
                             className="page__menu--add"
                             onClick={() => {
                                 setMode('ADD')
