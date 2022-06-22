@@ -8,7 +8,7 @@ import NavBarDetailStore from "../../../../component/NavBarDetailStore";
 import { CustomInput } from "../../../../component/common/CustomInput/CustomInput";
 import { CustomCard } from './../../../../component/common/CustomCard/CustomCard';
 import { AddIcon } from "../../../../assets/icon/svg/AddIcon";
-import { doDeleteMenuItem, doGetCurrentMenu, doUpdateMenu } from "../../../../redux/slice/navigationSlice";
+import { doDeleteMenu, doDeleteMenuItem, doGetCurrentMenu, doUpdateMenu } from "../../../../redux/slice/navigationSlice";
 import { Button, Modal } from "react-bootstrap";
 import { doCreateMenuItem, doUpdateMenuItem } from './../../../../redux/slice/navigationSlice';
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
@@ -25,7 +25,6 @@ import { PageIcon } from './../../../../assets/icon/svg/PageIcon';
 import { useDebounce } from './../../../../hooks/useDebounce';
 import { removeSpace } from './../../../../helpers/common';
 import validator from "validator";
-import { useDidMountEffect } from './../../../../hooks/useDidMountEffct';
 import { TextError } from "../../../../component/common/TextError/TextError";
 
 const DetailMenu = ({ }) => {
@@ -44,6 +43,7 @@ const DetailMenu = ({ }) => {
     const [updateItemId, setUpdateItemId] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [openConfirmModal, setOpenConfirmModal] = useState(false);
+    const [openDeleteMenuModal, setOpenDeleteMenuModal] = useState(false);
     const [showPageLinks, setShowPageLinks] = useState(false);
     const [linkValue, setLinkValue] = useState('');
     const [deleteId, setDeleteId] = useState('');
@@ -249,7 +249,8 @@ const DetailMenu = ({ }) => {
     }
 
     const handleDeleteMenu = () => {
-        
+        dispatch(doDeleteMenu(menu.id))
+        .then(() => navigate(-1))
     }
 
     const handleDeleteMenuItem = () => {
@@ -405,6 +406,17 @@ const DetailMenu = ({ }) => {
                         </div>
                     </CustomCard>
 
+                    {!menu.is_default ?
+                    <div className="detail-menu__delete">
+                        <Button 
+                            variant="outline-danger"
+                            onClick={() => setOpenDeleteMenuModal(true)}
+                        >
+                            Delete menu
+                        </Button>
+                    </div>
+                    : null}
+
                 </div>
             </div >
 
@@ -527,6 +539,14 @@ const DetailMenu = ({ }) => {
                 title='Remove menu item?'
                 content={`This will remove this menu item.`}
                 onConfirm={handleDeleteMenuItem}
+            />
+
+            <ConfirmModal
+                show={openDeleteMenuModal}
+                setShow={setOpenDeleteMenuModal}
+                title='Delete this menu?'
+                content={`Are you sure you want to delete this menu? This can't be undone.`}
+                onConfirm={handleDeleteMenu}
             />
             <LoadingModal show={isLoading} />
         </div >
