@@ -1,8 +1,4 @@
-.text-field-input {
-    height: 28px;
-    margin: 0.5rem 0 !important;
-    border-radius: 5px;
-}
+
 .text-field-input .MuiInput-underline::before {
     border: none !important;
 }

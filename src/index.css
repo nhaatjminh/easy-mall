@@ -162,3 +162,19 @@ body {
   font-size: 14px !important;
   color: #202223;
 }
+.text-black .error-text {
+    color: red !important;
+    margin-left: 0;
+    font-size: 12px;
+}
+.text-field-input {
+  height: 28px;
+  margin: 0.5rem 0 !important;
+  border-radius: 5px;
+}
+.text-field-input fieldset legend, .poper-item fieldset legend  {
+    width: unset;
+}
+.text-field-input input {
+    padding: 4px 0 5px 5px;
+}

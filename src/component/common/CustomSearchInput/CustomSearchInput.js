@@ -3,7 +3,7 @@ import { SearchIcon } from '../../../assets/icon/svg/SearchIcon';
 import './CustomSearchInput.scss'
 
 export const CustomSearchInput = ({ value, placeholder, onChange, width, height }) => {
-
+    console.log(height);
     return (
         <div className="custom-search-input" style={{ width: `${width}`, height: `${height}` }}>
             <div className="custom-search-input__icon">

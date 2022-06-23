@@ -32,17 +32,6 @@
     color: #666;
     cursor: pointer;
 }
-.text-black .error-text {
-    color: red !important;
-    margin-left: 0;
-}
-
-.text-field-input fieldset legend, .poper-item fieldset legend  {
-    width: unset;
-}
-.text-field-input input {
-    padding: 4px 0 5px 5px;
-}
 .MuiChip-root.collection-chip {
     margin: 5px;
 }
