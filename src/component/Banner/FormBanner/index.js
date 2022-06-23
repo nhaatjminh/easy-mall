@@ -575,7 +575,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         minRows={5}
                                         maxLength={255}
                                         maxRows={5}
-                                        style={{width: '100%'}}
+                                        style={{width: '100%', resize: 'none'}}
                                         onChange={handleChangeDescription}
                                         value={valueToAdd?.description || ''}
                                     />

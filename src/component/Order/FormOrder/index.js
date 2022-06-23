@@ -7,21 +7,33 @@ import {
     Select,
     FormHelperText,
     MenuItem,
-    FormGroup,
+    Modal,
     ListItemText,
-    IconButton,
+    Box,
+    TextareaAutosize,
+    FormControl,
     ListItemAvatar,
-    TextareaAutosize
+    Checkbox
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { useSelector, useDispatch } from "react-redux";
-import { doUploadImageBanner, doCreateCollectionBanner, doDeleteCollectionBanner, doUpdateCollectionBanner } from "../../../redux/slice/bannerSlice";
+import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { doGetCity, doGetDistrict } from '../../../redux/slice/dataSlice'
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
-
+const styleModal = {
+    position: 'absolute',
+    top: '25%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 3,
+};
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -41,7 +53,17 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [listDistrict, setListDistrict] = useState([]);
     const [selectDistrict, setSelectDistrict] = useState('');
     const [currency, setCurrency] = useState('USD');
+    const [openModal, setOpenModal] = useState(false);
+    
+    const [listProducts, setListProducts] = useState([]);
+    const [listProductAddOrder, setListProductAddOrder] = useState([]);
     const params = useParams();
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    }
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    }
     const handleChangeUserName = (event) => {
         form.current = {
             ...form.current,
@@ -85,6 +107,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
         setSelectDistrict(event.target.value);
     }
+    const handleChangeAdress = (event) => {
+        form.current = {
+            ...form.current,
+            order: {
+                ...form.current.order,
+                address: event.target.value
+            }
+        }
+    }
     
     const handleChangeCurrency = (event) => {
         setCurrency(event.target.value);
@@ -104,6 +135,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         dispatch(doGetCity()).then((result) => {
             setListCity(result.payload);
         });  
+        
+        dispatch(doGetListProductsOfStores({
+            id: params.storeId,
+            params: {}
+        })).then((result) => setListProducts(result.payload)); 
     }, [])
     useEffect(() => {
         if (mode) {
@@ -134,7 +170,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         onChange={handleSearchProduct}
                                         height={'30px'}
                                     />
-                                    <Button style={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>Browser</Button>
+                                    <Button onClick={handleOpenModal} style={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>Browser</Button>
                                 </div>
                             </Paper> 
                             <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
@@ -296,6 +332,38 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         </>
                                     )}
                                 />
+                                <InputLabel style={{marginTop: "1rem"}} className="text-label">Address</InputLabel>
+                                <Controller
+                                    name={"Address-Address"}
+                                    control={control}
+                                    rules={{ required: { value: true, message: 'You need enter address to create Order'}}}
+                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
+                                        <>
+                                            <TextareaAutosize
+                                                aria-label="empty textarea"
+                                                minRows={5}
+                                                maxLength={255}
+                                                maxRows={5}
+                                                draggable={false}
+                                                style={{width: '100%', resize: 'none'}}
+                                                onChange={(e) => {
+                                                    onChange(e);
+                                                    handleChangeAdress(e);
+                                                }} 
+                                                className="text-field-input text-content"
+                                                
+                                                value={value}
+                                                disabled={!!!selectDistrict}
+                                                fullWidth
+                                                error={!!error}
+                                                helperText={error?.message}
+                                                FormHelperTextProps={{
+                                                    className: 'error-text'
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                />
                             </Paper> 
                         </div>    
                 </div>
@@ -313,7 +381,57 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 
                     </div>
                 </div>  
-            </form> 
+            </form>
+                <Modal
+                    key={`modal`}
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={styleModal} 
+                    key={`box-modal`}>
+                        
+                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
+                        <FormControl sx={{ m: 1, width: 300 }}>
+                            <Select
+                                key={`collection-product`}
+                                className="text-field-input select-modal text-content"
+                                labelId="demo-multiple-checkbox-label"
+                                id="demo-multiple-checkbox"
+                                multiple
+                                value={listProductAddOrder}
+                                renderValue={() => (
+                                    <></>
+                                )}
+                                // onChange={handleChangeProductForCollection}
+                                MenuProps={MenuProps}
+                            >
+                                {listProducts.map((product) => (
+                                    <MenuItem key={`${product.id} select-modal`} value={product.id}>
+                                        <Checkbox checked={listProductAddOrder.indexOf(product.id) > -1} />
+                                        {
+                                            product.thumbnail ?
+                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                    <ListItemAvatar>
+                                                        <img alt="thumbnail" src={product.thumbnail}/>
+                                                    </ListItemAvatar>
+                                                </Box>
+                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
+                                                    <ListItemAvatar>
+                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                    </ListItemAvatar>
+                                                </Box>
+                                        }
+                                        
+                                        <ListItemText primary={product.title}/>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Button className="float-right p-0 m-0 text-black mt-2 btn-close-modal" onClick={handleCloseModal}><p className="p-0 m-0">Close</p></Button>
+                    </Box>
+                </Modal>
         </>
     );
 }
