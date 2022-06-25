@@ -71,6 +71,7 @@ export default function BaseModal({children, title, titleButton, showAction , on
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
           {title}

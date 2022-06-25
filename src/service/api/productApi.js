@@ -57,6 +57,19 @@ export const ProductApi = {
         return result; 
     },
     /**
+     * @name getProductsOfStoreScopeFull
+     * @description get allProduct of store with have variant
+     * 
+     * @param {string} storeId: 
+     * 
+     * @returns {object} data 
+     */
+    getProductsOfStoreScopeFull: async (storeId, params) => {
+        const query = Common.queryCSV(params);
+        const result = await callAPIWithGetMethod(`stores/${storeId}/products-variant?${query}`, true);
+        return result; 
+    },
+    /**
      * @name getOneProduct
      * @description get one Product of store
      * 

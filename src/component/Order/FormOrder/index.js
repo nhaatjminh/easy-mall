@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef, Fragment } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
+import BaseModal from '../../common/BaseModal'
 import {
     Paper,
     TextField,
@@ -7,28 +8,34 @@ import {
     Select,
     FormHelperText,
     MenuItem,
-    Modal,
+    ListItem,
     ListItemText,
-    Box,
+    ListItemAvatar,
     TextareaAutosize,
     FormControl,
-    ListItemAvatar,
-    Checkbox
+    List,
+    Box,
+    ListItemIcon
 } from '@mui/material';
+import './index.css'
 import Divider from '@mui/material/Divider';
 import { useSelector, useDispatch } from "react-redux";
-import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
+import { doGetListProductsOfStores, doGetListProductsOfStoresScopeFull } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { doGetCity, doGetDistrict } from '../../../redux/slice/dataSlice'
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
+import BaseNestedList from "../../common/BaseNestedList";
+import { BaseNumberField } from "../../common/BaseNumberField";
+import Item from "./Item";
+
 const styleModal = {
     position: 'absolute',
-    top: '25%',
+    top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 600,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -53,17 +60,12 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [listDistrict, setListDistrict] = useState([]);
     const [selectDistrict, setSelectDistrict] = useState('');
     const [currency, setCurrency] = useState('USD');
-    const [openModal, setOpenModal] = useState(false);
     
     const [listProducts, setListProducts] = useState([]);
-    const [listProductAddOrder, setListProductAddOrder] = useState([]);
+    const [listValueProduct, setListValueProduct] = useState([])
+    const [listValueVariant, setListValueVariant] = useState([])
     const params = useParams();
-    const handleOpenModal = () => {
-        setOpenModal(true);
-    }
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    }
+
     const handleChangeUserName = (event) => {
         form.current = {
             ...form.current,
@@ -130,13 +132,16 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const handleSearchProduct = (event) => {
 
     }
+    const handleOKSelectVariant = () => {
+
+    }
     const saveOrder = (data) => console.log(data);
     useEffect(() => {
         dispatch(doGetCity()).then((result) => {
             setListCity(result.payload);
         });  
         
-        dispatch(doGetListProductsOfStores({
+        dispatch(doGetListProductsOfStoresScopeFull({
             id: params.storeId,
             params: {}
         })).then((result) => setListProducts(result.payload)); 
@@ -157,21 +162,70 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }, [oldForm, mode, params.storeId])
+    const data = [{title: 'Node 1', items: [{title: 'Node 1.1'}, {title: 'Node 1.2'}]}]
     return (
         <>
             <form>
                 <div className="row  text-black">  
                         <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                             <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <CustomSearchInput
-                                        placeholder='Search'
-                                        onChange={handleSearchProduct}
-                                        height={'30px'}
-                                    />
-                                    <Button onClick={handleOpenModal} style={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>Browser</Button>
+                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+
+                                    <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
+                                    <BaseModal
+                                            title="Select Variant"
+                                            titleButton="Browser"
+                                            onOK={handleOKSelectVariant}
+                                            showAction={true}
+                                            classNameModal='style-modal'
+                                            styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
+                                            <FormControl style={{width: 600}}>
+                                                <CustomSearchInput
+                                                    placeholder='Search'
+                                                    onChange={handleSearchProduct}
+                                                    height={'30px'}
+                                                />
+                                                <BaseNestedList items={listProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
+                                                valueVariant={listValueVariant}
+                                                setValueVariant={setListValueVariant}></BaseNestedList>
+                                            </FormControl>
+                                        </BaseModal>
                                 </div>
+                                {
+                                    Object.keys(listValueProduct || {}).length || Object.keys(listValueVariant || {}).length ?
+                                    <div style={{ overflowX: 'auto'}}>
+                                        <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
+                                            <div className="w-100"  style={{minWidth: 225}}>
+                                                <span className='float-left pl-5'>Products</span>
+                                            </div>
+                                            <div  style={{width: 150, minWidth: 150}}>
+                                                Quantity
+                                            </div>
+                                            <div  style={{minWidth: 175}}>
+                                                Total
+                                            </div>
+                                        </div>
+                                        
+                                        {listProducts.map((product) => {
+                                            if (listValueProduct[product.id]) {
+                                                if (!product.is_variant) {
+                                                    return (
+                                                        <Item thumbnail={product.thumbnail} parentName={product.title} id={product.id} currency={product.currency} price={product.price}></Item>
+                                                    )
+                                                } else {
+                                                    return product.variants?.map((variant) => {
+                                                        if (listValueVariant[variant.id]) {
+                                                            return (
+                                                                <Item parentName={product.title} thumbnail={product.thumbnail} name={variant.name} id={variant.id} currency={product.currency} price={variant.price}></Item>
+                                                            )
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        })}
+                                    </div>
+                                    : <></>
+                                }
                             </Paper> 
                             <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Payment</InputLabel>
@@ -382,56 +436,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     </div>
                 </div>  
             </form>
-                <Modal
-                    key={`modal`}
-                    open={openModal}
-                    onClose={handleCloseModal}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={styleModal} 
-                    key={`box-modal`}>
-                        
-                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
-                        <FormControl sx={{ m: 1, width: 300 }}>
-                            <Select
-                                key={`collection-product`}
-                                className="text-field-input select-modal text-content"
-                                labelId="demo-multiple-checkbox-label"
-                                id="demo-multiple-checkbox"
-                                multiple
-                                value={listProductAddOrder}
-                                renderValue={() => (
-                                    <></>
-                                )}
-                                // onChange={handleChangeProductForCollection}
-                                MenuProps={MenuProps}
-                            >
-                                {listProducts.map((product) => (
-                                    <MenuItem key={`${product.id} select-modal`} value={product.id}>
-                                        <Checkbox checked={listProductAddOrder.indexOf(product.id) > -1} />
-                                        {
-                                            product.thumbnail ?
-                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar>
-                                                        <img alt="thumbnail" src={product.thumbnail}/>
-                                                    </ListItemAvatar>
-                                                </Box>
-                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar>
-                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
-                                                    </ListItemAvatar>
-                                                </Box>
-                                        }
-                                        
-                                        <ListItemText primary={product.title}/>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <Button className="float-right p-0 m-0 text-black mt-2 btn-close-modal" onClick={handleCloseModal}><p className="p-0 m-0">Close</p></Button>
-                    </Box>
-                </Modal>
         </>
     );
 }

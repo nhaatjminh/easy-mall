@@ -8,6 +8,13 @@ export const doGetListProductsOfStores = createAsyncThunk(
         return result.data;
     }
 );
+export const doGetListProductsOfStoresScopeFull = createAsyncThunk(
+  'collection@get/GetListProduct',
+  async (object) => {
+      const result = await ProductApi.getProductsOfStoreScopeFull(object.id, object.params);
+      return result.data;
+  }
+);
 export const doCreateProduct = createAsyncThunk(
     'store@post/CreateProduct',
     async ({storeId,productObj}) => {
