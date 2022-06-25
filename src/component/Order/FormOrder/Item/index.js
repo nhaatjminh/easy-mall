@@ -10,13 +10,22 @@ import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
 
-const Item = ({thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
+const Item = ({setSubtotal = () => {}, subTotal = 0,thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
     useEffect(() => {
-        if (selectCurrency === productCurrency) setTotalShow(quantity * 1.0 * price || 0)
-        else if (selectCurrency === 'VND') setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(0))
-        else setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(2))
+        if (selectCurrency === productCurrency) {
+            setTotalShow(quantity * 1.0 * price || 0)
+            setSubtotal(1000)
+        }
+        else if (selectCurrency === 'VND') {
+            setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(0))
+            setSubtotal(1000)
+        }
+        else {
+            setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(2))
+            setSubtotal(1000)
+        }
     }, [quantity])
     return (
         <ListItem

@@ -64,6 +64,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [listProducts, setListProducts] = useState([]);
     const [listValueProduct, setListValueProduct] = useState({})
     const [listValueVariant, setListValueVariant] = useState({})
+    const [listProductAddToForm, setListProductAddToForm] = useState([]);
+    const [subTotal, setSubTotal] = useState([]);
     const params = useParams();
 
     const handleChangeUserName = (event) => {
@@ -132,9 +134,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const handleSearchProduct = (event) => {
 
     }
-    const handleOKSelectVariant = () => {
-
-    }
     const handleDelete = (is_variant, variant_id, product_id) => {
         let newListValueProduct = JSON.parse(JSON.stringify(listValueProduct));
         if (is_variant) {
@@ -179,6 +178,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }, [oldForm, mode, params.storeId])
+    useEffect(() => {
+        setSubTotal(subTotal)
+    }, [currency])
     return (
         <>
             <form>
@@ -191,8 +193,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <BaseModal
                                             title="Select Variant"
                                             titleButton="Browser"
-                                            onOK={handleOKSelectVariant}
-                                            showAction={true}
+                                            onOK={() => {}}
                                             classNameModal='style-modal'
                                             styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
                                             <FormControl style={{width: 600}}>
@@ -229,13 +230,13 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             if (listValueProduct[product.id]) {
                                                 if (!product.is_variant) {
                                                     return (
-                                                        <Item handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
+                                                        <Item subTotal={subTotal} setSubtotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
                                                     )
                                                 } else {
                                                     return product.variants?.map((variant) => {
                                                         if (listValueVariant[variant.id]) {
                                                             return (
-                                                                <Item handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
+                                                                <Item subTotal={subTotal} setSubtotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
                                                             )
                                                         }
                                                     })
@@ -259,7 +260,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>0.00 {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{subTotal} {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <TextField
