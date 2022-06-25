@@ -23,6 +23,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ManageBanner from "./pages/ManageBanner";
 import ManageOrder from "./pages/ManageOrder";
 import ManageInventory from "./pages/ManageInventory";
+import { Setting } from "./pages/Setting";
 
 const App = () => {
   return(
@@ -37,6 +38,7 @@ const App = () => {
           
           <Route path='/store-login' element={<StoreLogin/>}/>
           <Route path='/profile' element={<Profile/>}/>
+          <Route path='/setting/:storeId' element={<Setting/>}/>
           <Route path='/store-detail/manage-theme/:storeId' element={<ManageThems/>}/>
           <Route path='/store-detail/manage-page/:storeId' element={<Page/>}/>
           <Route path='/store-detail/manage-navigation/:storeId' element={<Navigation/>}/>

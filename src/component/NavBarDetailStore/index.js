@@ -241,7 +241,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                 <Stack direction="column" spacing={0} style={{ marginTop: 'auto' }}>
                     <Typography component={'span'} className={keySelected === Key.Setting ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                            routeChange(`/setting/${params.storeId}`);
                         }}
                     >
                         <p className="m-0 mb-2 mt-2  text-nav-detail">

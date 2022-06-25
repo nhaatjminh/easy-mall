@@ -1,4 +1,4 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod } from "../../helpers/callAPI"
+import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const StoreApi = {
     getStores: async () => {
@@ -24,6 +24,14 @@ export const StoreApi = {
             url = url + '?' + list_query;
         }
         const result = await callAPIWithGetMethod(url, true);
+        return result;
+    },
+    getStoreById: async (storeId) => {
+        const result = await callAPIWithGetMethod(`stores/${storeId}`, true);
+        return result;
+    },
+    updateStoreInfo: async (storeObj) => {
+        const result = await callAPIWithPutMethod(`stores`, storeObj,true);
         return result;
     },
 }
