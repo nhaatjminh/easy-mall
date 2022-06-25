@@ -4,19 +4,23 @@ import {
     ListItemText,
     ListItemAvatar,
     Box,
+    IconButton
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
+import Delete from "@mui/icons-material/Delete";
 
-const Item = ({thumbnail, currency, name, id, price, parentName})=> { // mode add or update
+const Item = ({thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
     useEffect(() => {
-        setTotalShow(quantity * 1.0 * price || 0)
+        if (selectCurrency === productCurrency) setTotalShow(quantity * 1.0 * price || 0)
+        else if (selectCurrency === 'VND') setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(0))
+        else setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(2))
     }, [quantity])
     return (
         <ListItem
-            key={`${id}-show-product`}
+            key={`${product_id}-${variant_id}-show-product`}
             style={{ textAlign: 'center', display: 'flex' , justifyContent: 'space-between'}}
         >
             <div className="w-100" style={{ display: 'inline-flex', minWidth: 225}}>
@@ -44,15 +48,21 @@ const Item = ({thumbnail, currency, name, id, price, parentName})=> { // mode ad
                     />
                 </div>
             </div>
-            <div  style={{width: 150, minWidth: 150}}>
+            <div  style={{width: 125, minWidth: 125}}>
                 <BaseNumberField length={8} key="Inventory" fullWidth={true} value={quantity} setValue={setQuantity} ></BaseNumberField>
             </div>
             <div style={{minWidth: 200}}>
                 <ListItemText
-                    primary={`${currency} ${totalShow}`}
+                    primary={`${selectCurrency} ${totalShow}`}
                 />
             </div>
-            <Divider key={id} absolute />
+            <div style={{width: 24}}>
+                
+                <IconButton className="p-0" onClick={() => handleDelete(is_variant, variant_id, product_id)}>
+                    <Delete/>
+                </IconButton>
+            </div>
+            <Divider absolute />
         </ListItem>
     );
 }

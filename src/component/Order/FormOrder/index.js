@@ -62,8 +62,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [currency, setCurrency] = useState('USD');
     
     const [listProducts, setListProducts] = useState([]);
-    const [listValueProduct, setListValueProduct] = useState([])
-    const [listValueVariant, setListValueVariant] = useState([])
+    const [listValueProduct, setListValueProduct] = useState({})
+    const [listValueVariant, setListValueVariant] = useState({})
     const params = useParams();
 
     const handleChangeUserName = (event) => {
@@ -135,6 +135,23 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const handleOKSelectVariant = () => {
 
     }
+    const handleDelete = (is_variant, variant_id, product_id) => {
+        let newListValueProduct = JSON.parse(JSON.stringify(listValueProduct));
+        if (is_variant) {
+            let newListValueVariant = JSON.parse(JSON.stringify(listValueVariant));
+            delete newListValueVariant[variant_id];
+            setListValueVariant(newListValueVariant);
+            let index = listProducts.findIndex((product) => product.id === product_id);
+            
+            let checkSome = listProducts[index].variants?.some(variant => newListValueVariant[variant.id])
+            if (!checkSome) {
+                delete newListValueProduct[product_id];
+            }
+        } else {
+            delete newListValueProduct[product_id]
+        }
+        setListValueProduct(newListValueProduct);
+    }
     const saveOrder = (data) => console.log(data);
     useEffect(() => {
         dispatch(doGetCity()).then((result) => {
@@ -162,7 +179,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }, [oldForm, mode, params.storeId])
-    const data = [{title: 'Node 1', items: [{title: 'Node 1.1'}, {title: 'Node 1.2'}]}]
     return (
         <>
             <form>
@@ -198,11 +214,14 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             <div className="w-100"  style={{minWidth: 225}}>
                                                 <span className='float-left pl-5'>Products</span>
                                             </div>
-                                            <div  style={{width: 150, minWidth: 150}}>
+                                            <div  style={{width: 125, minWidth: 125}} className='pr-5'>
                                                 Quantity
                                             </div>
-                                            <div  style={{minWidth: 175}}>
+                                            <div  style={{minWidth: 175}} className='pr-3'>
                                                 Total
+                                            </div>
+                                            
+                                            <div  style={{width: 24}}>
                                             </div>
                                         </div>
                                         
@@ -210,13 +229,13 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             if (listValueProduct[product.id]) {
                                                 if (!product.is_variant) {
                                                     return (
-                                                        <Item thumbnail={product.thumbnail} parentName={product.title} id={product.id} currency={product.currency} price={product.price}></Item>
+                                                        <Item handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
                                                     )
                                                 } else {
                                                     return product.variants?.map((variant) => {
                                                         if (listValueVariant[variant.id]) {
                                                             return (
-                                                                <Item parentName={product.title} thumbnail={product.thumbnail} name={variant.name} id={variant.id} currency={product.currency} price={variant.price}></Item>
+                                                                <Item handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
                                                             )
                                                         }
                                                     })
