@@ -1,4 +1,5 @@
 import React from "react";
+import FollowOrder from "./FollowOrder";
 import FormOrder from "./FormOrder";
 const Order = ( {mode, oldForm, returnTable })=> {
     // use redux to manage state
@@ -14,7 +15,9 @@ const Order = ( {mode, oldForm, returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Add"} Order</h5>
             </div>    
         </div>
-        <FormOrder key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder>
+        {mode === 'ADD'
+        ? <FormOrder key={`order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder> 
+        : <FollowOrder  key={`follow-order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FollowOrder> }
         </>
     );
 }

@@ -6,8 +6,8 @@ export const orderApi = {
         const result = await callAPIWithGetMethod(`stores/${id}/orders?${query}`, true);
         return result;
     },
-    getOneOrder: async (id) => {
-        const result = await callAPIWithGetMethod(`order/${id}`, true);
+    getOneOrder: async (id, storeId) => {
+        const result = await callAPIWithGetMethod(`stores/${storeId}/order/${id}`, true);
         return result;
     },
     createOrder: async (id, orderObj) => {

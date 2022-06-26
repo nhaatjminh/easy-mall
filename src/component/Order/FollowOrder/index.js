@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, Fragment } from "react";
+import React, {useState, useEffect, useRef } from "react";
 import { useParams } from 'react-router-dom';
 import BaseModal from '../../common/BaseModal'
 import {
@@ -11,7 +11,6 @@ import {
     TextareaAutosize,
     FormControl
 } from '@mui/material';
-import './index.css'
 import Divider from '@mui/material/Divider';
 import { useDispatch } from "react-redux";
 import { doGetListProductsOfStoresScopeFull } from "../../../redux/slice/productSlice";
@@ -21,32 +20,11 @@ import { doGetCity, doGetDistrict, doGetRate } from '../../../redux/slice/dataSl
 import { doCreateOrder } from "../../../redux/slice/orderSlice";
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
 import BaseNestedList from "../../common/BaseNestedList";
-import Item from "./Item";
+import Item from "../FormOrder/Item";
 import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 
-const styleModal = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 3,
-};
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 10 + ITEM_PADDING_TOP,
-      width: 300,
-    },
-  },
-};
-const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const { handleSubmit, reset, control, resetField } = useForm();
@@ -226,12 +204,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         
     };
     useEffect(() => {
-        dispatch(doGetCity()).then((result) => {
-            setListCity(result.payload);
-        });  
-        dispatch(doGetRate()).then((result) => {
-            setListRate(result.payload);
-        });  
         dispatch(doGetListProductsOfStoresScopeFull({
             id: params.storeId,
             params: {}
@@ -365,14 +337,14 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
-                                    <Select value={paymentMethod} onChange={handleChangePaymentMethod} className='text-field-input text-content select-currency'>
+                                    <Select value={oldForm?.order?.payment_method} className='text-field-input text-content select-currency' disabled>
                                         <MenuItem value='0'>COD</MenuItem>
                                         <MenuItem value='1'>Paypal</MenuItem>
                                     </Select>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Shipping</InputLabel>
-                                    <Select value={shippingMethod} onChange={handleChangeShippingMethod} className='text-field-input text-content select-currency'>
+                                    <Select value={oldForm?.order?.shipping_method} className='text-field-input text-content select-currency' disabled>
                                         <MenuItem value='0'>Tieu chuan</MenuItem>
                                         <MenuItem value='1'>gi gi do</MenuItem>
                                     </Select>
@@ -382,194 +354,57 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                             <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
-                                
-                                <InputLabel style={{ marginTop: "1rem"}} className="text-label">Name</InputLabel>
-                                <Controller
-                                    name={"Customer-UserName"}
-                                    control={control}
-                                    defaultValue={form.current?.order?.name}
-                                    rules={{ required: { value: true, message: 'You need enter name to create Order'}}}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <TextField
-                                                className="text-field-input text-content"
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangeUserName(e);
-                                                }}
-                                                value={value}
-                                                fullWidth
-                                                error={!!error}
-                                                helperText={error?.message}
-                                                FormHelperTextProps={{
-                                                    className: 'error-text'
-                                                }} />
-                                        </>
-                                    )}
-                                />
-                                <InputLabel style={{marginTop: "1rem"}} className="text-label">Email</InputLabel>
-                                <Controller
-                                    name={"Customer-Email"}
-                                    control={control}
-                                    defaultValue={form.current?.order?.email}
-                                    rules={{ 
-                                        required: { value: true, message: 'You need enter email to create Order'},
-                                        pattern: {
-                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                            message: "Invalid Email Address"
-                                        }
-                                    }}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <TextField
-                                                className="text-field-input text-content"
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangeUserEmail(e);
-                                                }}
-                                                value={value}
-                                                fullWidth
-                                                error={!!error}
-                                                helperText={error?.message}
-                                                FormHelperTextProps={{
-                                                    className: 'error-text'
-                                                }} />
-                                        </>
-                                    )}
-                                />
-                                <InputLabel style={{marginTop: "1rem"}} className="text-label">Phone</InputLabel>
-                                <Controller
-                                    name={"Customer-Phone"}
-                                    control={control}
-                                    defaultValue={form.current?.order?.phone}
-                                    rules={{ 
-                                        required: { value: true, message: 'You need enter phone to create Order'},
-                                        validate: (value) => validator.isMobilePhone(value) || 'Invalid Phone Number'
-                                    }}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <TextField
-                                                className="text-field-input text-content"
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangePhoneNumber(e);
-                                                }}
-                                                value={value}
-                                                fullWidth
-                                                onInput = {(e) =>{
-                                                    e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,12)
-                                                    if (isNaN(e.target.value)) e.target.value = '' 
-                                                }}
-                                                error={!!error}
-                                                helperText={error?.message}
-                                                FormHelperTextProps={{
-                                                    className: 'error-text'
-                                                }} />
-                                        </>
-                                    )}
-                                />
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Name</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.name}</InputLabel>
+                                    </div>
+                                </div>
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Email</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.email}</InputLabel>
+                                    </div>
+                                </div>
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Phone</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.phone}</InputLabel>
+                                    </div>
+                                </div>
                             </Paper> 
                             <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Address</InputLabel>
-                                
-                                <InputLabel style={{ marginTop: "1rem"}} className="text-label">City</InputLabel>
-                                <Controller
-                                    name={"Address-City"}
-                                    control={control}
-                                    rules={{ required: { value: true, message: 'You need select city to create Order'}}}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <Select
-                                                className="text-field-input text-content"
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangeAdressCity(e);
-                                                }}
-                                                fullWidth
-                                                error={!!error}
-                                                value={value || ''}>
-                                                    {listCity?.map((city) => (
-                                                        <MenuItem key={city.id} value={city.name}>
-                                                            {city.name}
-                                                        </MenuItem>
-                                                    ))}
-                                            </Select>
-                                            {!!error && <FormHelperText className='error-text text-content'>You need select city to create Order</FormHelperText>}
-                                        </>
-                                    )}
-                                />
-                                <InputLabel style={{marginTop: "1rem"}} className="text-label">District</InputLabel>
-                                <Controller
-                                    name={"Address-District"}
-                                    control={control}
-                                    rules={{ required: { value: true, message: 'You need select city to create Order'}}}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <Select
-                                                MenuProps={{
-                                                    anchorOrigin: {
-                                                        vertical: "top",
-                                                        horizontal: "left"
-                                                    },
-                                                    transformOrigin: {
-                                                        vertical: "bottom",
-                                                        horizontal: "left"
-                                                    },
-                                                    getContentAnchorEl: null,
-                                                    style: {maxHeight: 300}
-                                                }}
-                                                
-                                                className="text-field-input text-content"
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangeAdressDistrict(e);
-                                                }}
-                                                disabled={!!!selectCity}
-                                                fullWidth
-                                                error={!!error}
-                                                value={value || ''}>
-                                                    {listDistrict?.map((district) => (
-                                                        <MenuItem key={district.id} value={district.name}>
-                                                            {district.name}
-                                                        </MenuItem>
-                                                    ))}
-                                            </Select>
-                                            {!!error && <FormHelperText className='error-text text-content'>You need select district to create Order</FormHelperText>}
-                                        </>
-                                    )}
-                                />
-                                <InputLabel style={{marginTop: "1rem"}} className="text-label">Address</InputLabel>
-                                <Controller
-                                    name={"Address-Address"}
-                                    control={control}
-                                    rules={{ required: { value: true, message: 'You need enter address to create Order'}}}
-                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
-                                        <>
-                                            <TextareaAutosize
-                                                aria-label="empty textarea"
-                                                minRows={5}
-                                                maxLength={255}
-                                                maxRows={5}
-                                                draggable={false}
-                                                style={{width: '100%', resize: 'none'}}
-                                                onChange={(e) => {
-                                                    onChange(e);
-                                                    handleChangeAdress(e);
-                                                }} 
-                                                className="text-field-input text-content"
-                                                
-                                                value={value}
-                                                disabled={!!!selectDistrict}
-                                                fullWidth
-                                                error={!!error}
-                                                helperText={error?.message}
-                                                FormHelperTextProps={{
-                                                    className: 'error-text'
-                                                }}
-                                            />
-                                        </>
-                                    )}
-                                />
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>City</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.city}</InputLabel>
+                                    </div>
+                                </div>
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>District</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.district}</InputLabel>
+                                    </div>
+                                </div>
+                                <div className="pt-3 row">
+                                    <div className="col-4">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Address</InputLabel>
+                                    </div>
+                                    <div className="col-8">
+                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.address}</InputLabel>
+                                    </div>
+                                </div>
                             </Paper> 
                         </div>    
                 </div>
@@ -594,4 +429,4 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     );
 }
 
-export default FormOrder;
+export default FollowOrder;

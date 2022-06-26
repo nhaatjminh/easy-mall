@@ -77,7 +77,7 @@ const ManageOrder = () => {
   ];
   const editFunction = (selected) => {
     Swal.showLoading();
-    dispatch((doGetOneOrder(selected)))
+    dispatch((doGetOneOrder({id: selected, storeId: params.storeId})))
     .then((result) => {
       setMode('EDIT');
       setOldForm(result.payload);  
@@ -118,7 +118,7 @@ const ManageOrder = () => {
           return {
             ...order,
             status_date: formatDate(date),
-            total_with_currency: `${order.currency === 'VND' ? Number(order.original_price).toFixed(0) : Number(order.original_price).toFixed(2)} ${order.currency}`
+            total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
           }
         })
         setRows(newRows);
@@ -145,7 +145,7 @@ const ManageOrder = () => {
             return {
               ...order,
               status_date: formatDate(date),
-              total_with_currency: `${order.currency === 'VND' ? Number(order.original_price).toFixed(0) : Number(order.original_price).toFixed(2)} ${order.currency}`
+              total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
             }
           })
           setRows(newRows);

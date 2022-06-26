@@ -10,8 +10,8 @@ export const doGetListOrderOfStores = createAsyncThunk(
 );
 export const doGetOneOrder = createAsyncThunk(
     'order@get/doGetOneOrder',
-    async (id) => {
-      const result = await orderApi.getOneOrder(id);
+    async ({storeId,id}) => {
+      const result = await orderApi.getOneOrder(id, storeId);
       return result.data;
     }
 );
