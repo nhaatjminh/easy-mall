@@ -48,4 +48,25 @@
             margin-bottom: 10px;
         }
     }
+    &__setup {
+        .modal-body {
+            height: calc(100vh - 200px);
+            overflow: auto;
+        }
+        &__img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            margin-top: 10px;
+        }
+        .b-green {
+            color: #5FAD2F;
+        }
+        .text-title-2 {
+            margin: 30px 0;
+        }
+        .text-normal-1 {
+            margin-top: 20px;
+        }
+    } 
 }
