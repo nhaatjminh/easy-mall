@@ -7,5 +7,9 @@ export const dataApi = {
     getDistrict: async (idCity) => {
         const result = await callAPIWithGetMethod(`data/city/${idCity}/district`, true);
         return result;
+    },
+    getValueCurrency: async () => {
+        const result = await callAPIWithGetMethod(`data/rate`, true);
+        return result;
     }
 }

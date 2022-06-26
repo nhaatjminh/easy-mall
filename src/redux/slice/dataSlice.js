@@ -16,3 +16,11 @@ export const doGetDistrict = createAsyncThunk(
         return result.data;
     }
 );
+
+export const doGetRate = createAsyncThunk(
+    'data@get/getValueCurrency',
+    async () => {
+        const result = await dataApi.getValueCurrency();
+        return result.data;
+    }
+);

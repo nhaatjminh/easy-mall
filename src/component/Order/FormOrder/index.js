@@ -24,7 +24,7 @@ import { doGetListProductsOfStores, doGetListProductsOfStoresScopeFull } from ".
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
-import { doGetCity, doGetDistrict } from '../../../redux/slice/dataSlice'
+import { doGetCity, doGetDistrict, doGetRate } from '../../../redux/slice/dataSlice'
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
 import BaseNestedList from "../../common/BaseNestedList";
 import { BaseNumberField } from "../../common/BaseNumberField";
@@ -59,12 +59,12 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [selectCity, setSelectCity] = useState('');
     const [listDistrict, setListDistrict] = useState([]);
     const [selectDistrict, setSelectDistrict] = useState('');
+    const [listRate, setListRate] = useState([]);
     const [currency, setCurrency] = useState('USD');
     
     const [listProducts, setListProducts] = useState([]);
     const [listValueProduct, setListValueProduct] = useState({})
     const [listValueVariant, setListValueVariant] = useState({})
-    const [listProductAddToForm, setListProductAddToForm] = useState([]);
     const [subTotal, setSubTotal] = useState([]);
     const params = useParams();
 
@@ -156,7 +156,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         dispatch(doGetCity()).then((result) => {
             setListCity(result.payload);
         });  
-        
+        dispatch(doGetRate()).then((result) => {
+            setListRate(result.payload);
+        });  
         dispatch(doGetListProductsOfStoresScopeFull({
             id: params.storeId,
             params: {}
@@ -178,9 +180,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
 
     }, [oldForm, mode, params.storeId])
-    useEffect(() => {
-        setSubTotal(subTotal)
-    }, [currency])
     return (
         <>
             <form>
@@ -230,13 +229,13 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             if (listValueProduct[product.id]) {
                                                 if (!product.is_variant) {
                                                     return (
-                                                        <Item subTotal={subTotal} setSubtotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
+                                                        <Item formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
                                                     )
                                                 } else {
                                                     return product.variants?.map((variant) => {
                                                         if (listValueVariant[variant.id]) {
                                                             return (
-                                                                <Item subTotal={subTotal} setSubtotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
+                                                                <Item  formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
                                                             )
                                                         }
                                                     })

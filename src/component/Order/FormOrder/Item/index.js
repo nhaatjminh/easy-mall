@@ -10,23 +10,63 @@ import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
 
-const Item = ({setSubtotal = () => {}, subTotal = 0,thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
+const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
     useEffect(() => {
+        let total;
         if (selectCurrency === productCurrency) {
-            setTotalShow(quantity * 1.0 * price || 0)
-            setSubtotal(1000)
+            total = quantity * 1.0 * price ?? 0;
+            setTotalShow(total)
+        } else {
+            let rate;
+            if (productCurrency === 'USD') {
+                rate = listRate?.find(rate => rate.currency === selectCurrency)?.amount ?? 0;
+                total = (Number(quantity * 1.0 * price || 0) * rate);
+            } else {
+                rate = listRate?.find(rate => rate.currency === productCurrency)?.amount ?? 0;
+                total = (Number(quantity * 1.0 * price || 0) / rate);
+            } 
+            if (selectCurrency === 'USD') total = total.toFixed(2);
+            else total = total.toFixed(0);
+            setTotalShow(total);
         }
-        else if (selectCurrency === 'VND') {
-            setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(0))
-            setSubtotal(1000)
+        let newObj = {
+            id: product_id,
+            quantity: quantity ? Number(quantity) : 0,
+            price: price,
+            currency: productCurrency,
+            product_name: parentName,
+            is_variant: is_variant,
+            total_to_show: total // need delete when save
         }
+        if (is_variant) {
+            newObj = {
+                ...newObj,
+                variant_id: variant_id,
+                variant_name: name
+            }
+        }
+        if (formRef.current.products) {
+            let index;
+            if (is_variant) index = formRef.current.products.findIndex(product => product.variant_id === variant_id)
+            else index = formRef.current.products.findIndex(product => product.id === product_id);
+            if (index >= 0) {
+                formRef.current.products[index] = newObj;
+            } else {
+                formRef.current.products.push(newObj)
+            }
+        }
+        else formRef.current.products = [newObj];
+        if (!formRef.current.products) setSubTotal(0)
         else {
-            setTotalShow(Number(quantity * 1.0 * price || 0).toFixed(2))
-            setSubtotal(1000)
+            let totalPlus = 0;
+            formRef.current.products.map((product) => {
+                totalPlus += Number(product.total_to_show);
+            })
+            setSubTotal(totalPlus)
         }
-    }, [quantity])
+    }, [quantity, selectCurrency])
     return (
         <ListItem
             key={`${product_id}-${variant_id}-show-product`}
