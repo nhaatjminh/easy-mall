@@ -285,10 +285,10 @@ const DetailMenu = ({ }) => {
                             <CustomInput
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                disabled={!isEditTitle}
+                                disabled={!isEditTitle || menu.is_default}
                                 warning={err.title}
                             />
-                            {isEditTitle ?
+                            {menu.is_default ? null : isEditTitle ?
                                 <>
                                     <CustomButton
                                         style={{
