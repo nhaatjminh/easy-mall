@@ -63,6 +63,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [currency, setCurrency] = useState('USD');
     
     const [listProducts, setListProducts] = useState([]);
+    
+    const [listFilterProducts, setListFilterProducts] = useState([]);
     const [listValueProduct, setListValueProduct] = useState({})
     const [listValueVariant, setListValueVariant] = useState({})
     const [subTotal, setSubTotal] = useState([]);
@@ -132,7 +134,16 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
     }
     const handleSearchProduct = (event) => {
-
+        if (!event.target.value) setListFilterProducts(listProducts);
+        else {
+            let newFilterList = listProducts.map((product) => {
+                let newProduct = JSON.parse(JSON.stringify(product));
+                newProduct.variants = newProduct.variants.filter(variant => variant.name.includes(event.target.value))
+                return newProduct
+            })
+            newFilterList = newFilterList.filter((product) => product.title.includes(event.target.value) || product.variants.length)
+            setListFilterProducts(newFilterList);
+        }
     }
     const handleDelete = (is_variant, variant_id, product_id) => {
         let newListValueProduct = JSON.parse(JSON.stringify(listValueProduct));
@@ -150,6 +161,17 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             delete newListValueProduct[product_id]
         }
         setListValueProduct(newListValueProduct);
+        if (is_variant) form.current.products = form.current.products.filter(product => product.variant_id !== variant_id)
+        else form.current.products = form.current.products.filter(product => product.id !== product_id)
+
+        if (!form.current.products) setSubTotal(0)
+        else {
+            let totalPlus = 0;
+            form.current.products.map((product) => {
+                totalPlus += Number(product.total_to_show);
+            })
+            setSubTotal(totalPlus)
+        }
     }
     const saveOrder = (data) => console.log(data);
     useEffect(() => {
@@ -162,7 +184,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         dispatch(doGetListProductsOfStoresScopeFull({
             id: params.storeId,
             params: {}
-        })).then((result) => setListProducts(result.payload)); 
+        })).then((result) => {
+            setListProducts(result.payload)
+            setListFilterProducts(result.payload);
+        });
+             
     }, [])
     useEffect(() => {
         if (mode) {
@@ -201,7 +227,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                     onChange={handleSearchProduct}
                                                     height={'30px'}
                                                 />
-                                                <BaseNestedList items={listProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
+                                                <BaseNestedList items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
                                                 valueVariant={listValueVariant}
                                                 setValueVariant={setListValueVariant}></BaseNestedList>
                                             </FormControl>
@@ -262,13 +288,13 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <InputLabel name='title' className="text-content" style={{margin: 0}}>{subTotal} {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <TextField
-                                        placeholder='Discount'
+                                    <Select placeholder='Discount'
                                         className="text-field-input text-content"
-                                        onChange={handleSearchProduct}
+                                        onChange={() => {}}
                                         height={'30px'}
-                                        width={'auto'}
-                                    />
+                                        width={'auto'}>
+
+                                    </Select>
                                     <InputLabel name='title' className="text-content" style={{margin: 0}}>0.00 {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
