@@ -25,6 +25,7 @@ import { doCreateProduct, doUploadImageProduct, doUploadProduct, doGetDescriptio
 import Swal from "sweetalert2";
 import CustomType from "../CustomType";
 import { BaseNumberField } from '../../common/BaseNumberField';
+import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 
 const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [customTypeList, setCustomTypeList] = useState([]);
     const [vendorList, setVendorList] = useState([]);
     const nameStore = useSelector((state) => state.listStore.selectedName);
+    const [isLoading, setIsLoading] = useState(false);
     const [vendorValue, setVendorValue] = useState('');
     const [optionVendor, setOptionVendor] = useState([nameStore]);
     const [trickRerender, setTrickRerender] = useState(0);
@@ -352,7 +354,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const saveProduct = () => {
         if (form?.current?.product?.title) {
             if (!form.current?.product?.vendor || !form.current?.product?.vendor?.replaceAll(' ','')) form.current.product.vendor = nameStore;
-            Swal.showLoading();
+            setIsLoading(true);
             new Promise((resolve) => { 
                 const data = form?.current?.product?.images;
                 if (data) {
@@ -434,7 +436,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         id: id
                     }))
                     .then(() => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -453,7 +455,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     }
                     dispatch(doCreateProduct(createObj))
                     .then((res) => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -480,18 +482,11 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Please Wait !',
-                    html: 'Deleting product',// add html attribute if you want or remove
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    },
-                });
+                setIsLoading(true);
                 dispatch(doDeleteProduct({
                     id: form.current.product.id
                 })).then((result) => {
-                    Swal.close();
+                    setIsLoading(false);
                     returnAfterAdd();
                 })
             }
@@ -709,6 +704,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 </div>
             </div> 
         </FormGroup> 
+        <LoadingModal show={isLoading} />
         </>
     );
 }

@@ -98,11 +98,11 @@ const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurre
                 </div>
             </div>
             <div  style={{width: 125, minWidth: 125}}>
-                <BaseNumberField length={8} key="Inventory" fullWidth={true} value={quantity} setValue={setQuantity} ></BaseNumberField>
+                <BaseNumberField length={4} key="Inventory" fullWidth={true} value={quantity} setValue={setQuantity} ></BaseNumberField>
             </div>
             <div style={{minWidth: 200}}>
                 <ListItemText
-                    primary={`${selectCurrency} ${totalShow}`}
+                    primary={`${selectCurrency} ${selectCurrency === 'USD' ? Intl.NumberFormat('en-US').format(totalShow) : Intl.NumberFormat('vi-VN').format(totalShow)}`}
                 />
             </div>
             <div style={{width: 24}}>

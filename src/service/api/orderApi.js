@@ -10,8 +10,8 @@ export const orderApi = {
         const result = await callAPIWithGetMethod(`order/${id}`, true);
         return result;
     },
-     createOrder: async (id, bannerObj) => {
-        const result = await callAPIWithPostMethod(`stores/${id}/order`, bannerObj, true);
+    createOrder: async (id, orderObj) => {
+        const result = await callAPIWithPostMethod(`stores/${id}/order`, orderObj, true);
         return result;
     }
 }

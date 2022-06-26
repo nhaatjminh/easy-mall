@@ -34,6 +34,7 @@ import { doGetListPages } from '../../../redux/slice/pageSlice';
 import { doGetListProductsOfStores } from '../../../redux/slice/productSlice';
 import { doGetListCollectionOfStores } from '../../../redux/slice/collectionSlice';
 import { UrlIcon } from "../../../assets/icon/svg/UrlIcon";
+import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -61,6 +62,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [validateLink, setValidateLink] = useState(null);
     const [openPopup, setOpenPopUp] = useState(false);
     const [isSelectUrl, setIsSelectUrl] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const handleChangeCaption = (event) => {
         const value = {...valueToAdd};
         value.caption = event.target.value;
@@ -185,8 +187,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
     }
     const saveCollection =  () => {
-        if (form?.current?.collection?.name) {   
-            Swal.showLoading();
+        if (form?.current?.collection?.name) {
+            setIsLoading(true);
             let ListPromise = [];
             ListPromise.push(new Promise((resolve) => {
                 const data = form?.current?.collection?.thumbnail;
@@ -262,7 +264,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     }
                     dispatch(doCreateCollectionBanner(createObj))
                     .then((res) => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -283,7 +285,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     }
                     dispatch(doUpdateCollectionBanner(updateObj))
                     .then((res) => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -310,18 +312,12 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Please Wait !',
-                    html: 'Deleting Collection',// add html attribute if you want or remove
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    },
-                });
+                
+                setIsLoading(true);
                 dispatch(doDeleteCollectionBanner({
                     id: form.current.collection.id
                 })).then((result) => {
-                    Swal.close();
+                    setIsLoading(false);
                     returnAfterAdd();
                 })
             }
@@ -676,6 +672,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 </div>
             </div>  
         </FormGroup> 
+        
+        <LoadingModal show={isLoading} />
         </>
     );
 }

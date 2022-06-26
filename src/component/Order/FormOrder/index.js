@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef, Fragment } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import BaseModal from '../../common/BaseModal'
 import {
     Paper,
@@ -8,27 +8,22 @@ import {
     Select,
     FormHelperText,
     MenuItem,
-    ListItem,
-    ListItemText,
-    ListItemAvatar,
     TextareaAutosize,
-    FormControl,
-    List,
-    Box,
-    ListItemIcon
+    FormControl
 } from '@mui/material';
 import './index.css'
 import Divider from '@mui/material/Divider';
-import { useSelector, useDispatch } from "react-redux";
-import { doGetListProductsOfStores, doGetListProductsOfStoresScopeFull } from "../../../redux/slice/productSlice";
-import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { doGetListProductsOfStoresScopeFull } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { doGetCity, doGetDistrict, doGetRate } from '../../../redux/slice/dataSlice'
+import { doCreateOrder } from "../../../redux/slice/orderSlice";
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
 import BaseNestedList from "../../common/BaseNestedList";
-import { BaseNumberField } from "../../common/BaseNumberField";
 import Item from "./Item";
+import validator from "validator";
+import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 
 const styleModal = {
     position: 'absolute',
@@ -61,13 +56,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [selectDistrict, setSelectDistrict] = useState('');
     const [listRate, setListRate] = useState([]);
     const [currency, setCurrency] = useState('USD');
-    
+    const [isLoading, setIsLoading] = useState(false);
     const [listProducts, setListProducts] = useState([]);
     
     const [listFilterProducts, setListFilterProducts] = useState([]);
     const [listValueProduct, setListValueProduct] = useState({})
     const [listValueVariant, setListValueVariant] = useState({})
-    const [subTotal, setSubTotal] = useState([]);
+    const [subTotal, setSubTotal] = useState(0);
+    const [discountTotal, setDiscountTotal] = useState(0);
+    const [total, setTotal] = useState(0);
     const params = useParams();
 
     const handleChangeUserName = (event) => {
@@ -123,6 +120,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         }
     }
     
+    const handleChangePhoneNumber = (event) => {
+        form.current = {
+            ...form.current,
+            order: {
+                ...form.current.order,
+                phone: event.target.value
+            }
+        }
+    }
     const handleChangeCurrency = (event) => {
         setCurrency(event.target.value);
         form.current = {
@@ -173,7 +179,29 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             setSubTotal(totalPlus)
         }
     }
-    const saveOrder = (data) => console.log(data);
+    const saveOrder = () => {
+        setIsLoading(true);
+        form.current.products.map((product) => {
+            delete product.total_to_show;
+            return product
+        })
+        const createObj = {
+            storeId: params.storeId,
+            orderObj: form.current
+        }
+        dispatch(doCreateOrder(createObj))
+        .then((res) => {
+            setIsLoading(false);
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Create successful Order!',
+            }).then((result) => {
+                returnAfterAdd();
+            })
+        });
+        
+    };
     useEffect(() => {
         dispatch(doGetCity()).then((result) => {
             setListCity(result.payload);
@@ -199,13 +227,21 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 form.current = {}
                 form.current = {
                     order: {
-                        store_id: params.storeId
+                        store_id: params.storeId,
+                        currency: 'USD',
+                        shipping_method: 1,
+                        payment_method: 1
                     }
                 }
             }
         }
 
     }, [oldForm, mode, params.storeId])
+    useEffect(() => {
+        const newTotal = subTotal - discountTotal;
+        if (newTotal <= 0) setTotal(0);
+        else setTotal(newTotal);
+    }, [subTotal, discountTotal])
     return (
         <>
             <form>
@@ -285,7 +321,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{subTotal} {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(subTotal) : Intl.NumberFormat('vi-VN').format(subTotal)} {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <Select placeholder='Discount'
@@ -295,11 +331,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         width={'auto'}>
 
                                     </Select>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>0.00 {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(discountTotal) : Intl.NumberFormat('vi-VN').format(discountTotal)} {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>0.00 {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(total) : Intl.NumberFormat('vi-VN').format(total)} {currency}</InputLabel>
                                 </div>
                             </Paper>
                         </div>   
@@ -361,6 +397,37 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                         </>
                                     )}
                                 />
+                                <InputLabel style={{marginTop: "1rem"}} className="text-label">Phone</InputLabel>
+                                <Controller
+                                    name={"Customer-Phone"}
+                                    control={control}
+                                    defaultValue={form.current?.order?.phone}
+                                    rules={{ 
+                                        required: { value: true, message: 'You need enter phone to create Order'},
+                                        validate: (value) => validator.isMobilePhone(value) || 'Invalid Phone Number'
+                                    }}
+                                    render={({ field: { onChange, value }, fieldState: {error} }) => (
+                                        <>
+                                            <TextField
+                                                className="text-field-input text-content"
+                                                onChange={(e) => {
+                                                    onChange(e);
+                                                    handleChangePhoneNumber(e);
+                                                }}
+                                                value={value}
+                                                fullWidth
+                                                onInput = {(e) =>{
+                                                    e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,12)
+                                                    if (isNaN(e.target.value)) e.target.value = '' 
+                                                }}
+                                                error={!!error}
+                                                helperText={error?.message}
+                                                FormHelperTextProps={{
+                                                    className: 'error-text'
+                                                }} />
+                                        </>
+                                    )}
+                                />
                             </Paper> 
                             <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Address</InputLabel>
@@ -382,7 +449,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 error={!!error}
                                                 value={value || ''}>
                                                     {listCity?.map((city) => (
-                                                        <MenuItem key={city.id} value={city.id}>
+                                                        <MenuItem key={city.id} value={city.name}>
                                                             {city.name}
                                                         </MenuItem>
                                                     ))}
@@ -422,7 +489,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 error={!!error}
                                                 value={value || ''}>
                                                     {listDistrict?.map((district) => (
-                                                        <MenuItem key={district.id} value={district.id}>
+                                                        <MenuItem key={district.id} value={district.name}>
                                                             {district.name}
                                                         </MenuItem>
                                                     ))}
@@ -481,6 +548,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     </div>
                 </div>  
             </form>
+            
+            <LoadingModal show={isLoading} />
         </>
     );
 }

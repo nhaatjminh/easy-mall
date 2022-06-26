@@ -32,6 +32,7 @@ import { doUploadImageCollection, doCreateCollection, doDeleteCollection, doUpda
 import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 const styleModal = {
     position: 'absolute',
     top: '25%',
@@ -61,6 +62,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
     const [modalShow, setModalShow] = useState(false);
     const [listProducts, setListProducts] = useState([]);
     const [listProductOfCollection, setListProductOfCollection] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const handleChangeCollectionName = (event) => {
         if (errorTitle) {
             setErrorTitle(null);
@@ -90,8 +92,8 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
         }
     }
     const saveCollection = () => {
-        if (form?.current?.collection?.name) {   
-            Swal.showLoading();
+        if (form?.current?.collection?.name) {
+            setIsLoading(true);
             new Promise((resolve) => { 
                 const data = form?.current?.collection?.thumbnail;
                 if (data) {
@@ -129,7 +131,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     }
                     dispatch(doCreateCollection(createObj))
                     .then((res) => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -152,7 +154,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     }
                     dispatch(doUpdateCollection(updateObj))
                     .then((res) => {
-                        Swal.close();
+                        setIsLoading(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -252,18 +254,11 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Please Wait !',
-                    html: 'Deleting Collection',// add html attribute if you want or remove
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    },
-                });
+                setIsLoading(true);
                 dispatch(doDeleteCollection({
                     id: form.current.collection.id
                 })).then((result) => {
-                    Swal.close();
+                    setIsLoading(true);
                     returnAfterAdd();
                 })
             }
@@ -458,6 +453,8 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                 </div>
             </div>  
         </FormGroup> 
+        
+        <LoadingModal show={isLoading} />
         </>
     );
 }
