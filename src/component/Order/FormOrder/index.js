@@ -90,11 +90,12 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     
     const handleChangeAdressCity = (event) => {
+        let selectCity = listCity.find((city) => city.id === event.target.value)
         form.current = {
             ...form.current,
             order: {
                 ...form.current.order,
-                city: event.target.value
+                city: selectCity.name
             }
         }
         setSelectCity(event.target.value);
@@ -104,11 +105,12 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         });  
     }
     const handleChangeAdressDistrict = (event) => {
+        let selectDistrict = listDistrict.find((district) => district.id === event.target.value)
         form.current = {
             ...form.current,
             order: {
                 ...form.current.order,
-                district: event.target.value
+                district: selectDistrict.name
             }
         }
         setSelectDistrict(event.target.value);
@@ -489,7 +491,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 error={!!error}
                                                 value={value || ''}>
                                                     {listCity?.map((city) => (
-                                                        <MenuItem key={city.id} value={city.name}>
+                                                        <MenuItem key={city.id} value={city.id}>
                                                             {city.name}
                                                         </MenuItem>
                                                     ))}
@@ -529,7 +531,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 error={!!error}
                                                 value={value || ''}>
                                                     {listDistrict?.map((district) => (
-                                                        <MenuItem key={district.id} value={district.name}>
+                                                        <MenuItem key={district.id} value={district.id}>
                                                             {district.name}
                                                         </MenuItem>
                                                     ))}

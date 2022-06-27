@@ -132,7 +132,7 @@ const ManageOrder = () => {
   const fetchOrderWithFilter = async () => {
     let search = {};
     if (filterSeach) {
-      search.name = filterSeach;
+      search.id = filterSeach;
     }
     dispatch(doGetListOrderOfStores({
       id: params.storeId,

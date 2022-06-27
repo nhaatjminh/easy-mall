@@ -638,7 +638,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <CustomType formRef={form} oldForm={oldForm} customTypeList={customTypeList} mode={mode}></CustomType>
                         
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-label">Vendor</InputLabel>
-                        <div key={form?.current?.product?.vendor || "SelectVendor"}>
+                        <div key={ "SelectVendor"}>
                             <Autocomplete
                                 className="auto-complete-vendor"
                                 value={vendorValue || ''}
@@ -663,13 +663,13 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         
 
                         <InputLabel style={{marginBottom: '1rem', marginTop: "1rem"}} className="text-label" name='title'>Collection</InputLabel>
-                        <div key={form?.current?.product?.collection ?? "SelectCollection"}>
+                        <div key={"SelectCollection"}>
                             <Select
                                 fullWidth multiple
                                 className="poper-item text-content"
                                 value={collectionSelected?.map((value) => value.id)}
                                 onChange={(e) => handleChangeCollection(e)}
-                                key={"Select-Collection"}
+                                key={"Select-Collection-Select"}
                                 renderValue={() => (
                                     [<div key={`null-collection`}></div>]
                                 )}
