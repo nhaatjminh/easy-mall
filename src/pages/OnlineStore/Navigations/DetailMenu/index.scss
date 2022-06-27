@@ -88,6 +88,9 @@
             display: flex;
             justify-content: space-between;
         }
+        &__back-btn {
+            cursor: pointer;
+        }
         &--link {
             &__input-group {
                 display: flex;

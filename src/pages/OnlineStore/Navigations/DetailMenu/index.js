@@ -26,6 +26,21 @@ import { useDebounce } from './../../../../hooks/useDebounce';
 import { removeSpace } from './../../../../helpers/common';
 import validator from "validator";
 import { TextError } from "../../../../component/common/TextError/TextError";
+import { HomeIcon } from "../../../../assets/icon/svg/HomeIcon";
+import { TagIcon } from './../../../../assets/icon/svg/TagIcon';
+import { CartIcon } from "../../../../assets/icon/svg/CartIcon";
+import { CollectionIcon } from "../../../../assets/icon/svg/CollectionIcon";
+import { PaymentIcon } from "../../../../assets/icon/svg/PaymentIcon";
+import { PolocyIcon } from "../../../../assets/icon/svg/PolocyIcon";
+import { GoIcon } from './../../../../assets/icon/svg/GoIcon';
+
+const DefaultPage = {
+    'Home': <HomeIcon />,
+    'Products': <TagIcon />,
+    'Collections': <CollectionIcon />,
+    'Cart': <CartIcon />,
+    'Payment': <PaymentIcon />
+}
 
 const DetailMenu = ({ }) => {
 
@@ -35,6 +50,7 @@ const DetailMenu = ({ }) => {
     const dispatch = useDispatch();
     const params = useParams();
     const navigate = useNavigate();
+    const [displayPages, setDisplayPages] = useState({ default: [], pages: [], other: [], external: [] });
     const [title, setTitle] = useState('');
     const [name, setName] = useState('');
     const [link, setLink] = useState('');
@@ -51,7 +67,8 @@ const DetailMenu = ({ }) => {
     const [searchResult, setSearchResult] = useState([]);
     const dbValue = useDebounce(link, 300);
     const [icon, setIcon] = useState('page');
-    const [err, setErr] = useState({})
+    const [err, setErr] = useState({});
+    const [groupItem, setGroupItem] = useState(null);
 
     const nameMounted = useRef(false);
     const linkMounted = useRef(false);
@@ -69,6 +86,28 @@ const DetailMenu = ({ }) => {
     useEffect(() => {
         if (menu.name) setTitle(menu.name)
     }, [menu.name])
+
+    useEffect(() => {
+        if (listPage && listPage.length > 0) {
+            const result = listPage.reduce((list, item) => {
+                if (item.is_default) {
+                    if (DefaultPage[item.name]) list.default.push(item)
+                    else list.other.push(item)
+                }
+                else list.pages.push(item)
+
+                return list;
+            },
+                {
+                    default: [],
+                    pages: [],
+                    other: [],
+                    external: []
+                })
+
+            setDisplayPages(result)
+        }
+    }, [listPage])
 
     useEffect(() => {
         if (nameMounted.current) {
@@ -131,43 +170,58 @@ const DetailMenu = ({ }) => {
     }, [linkValue])
 
     useEffect(() => {
-        let result = [];
+        let externalResult = [];
 
         // from external link
         if (link.includes(".") && validator.isURL(link)) {
             if (link.substring(0, 8) === 'https://' || link.substring(0, 7) === 'http://') {
-                result.push({
+                externalResult.push({
                     id: 0,
                     page_url: link,
-                    name: link,
-                    type: 2
+                    name: link
                 })
             }
             else {
                 const url = 'https://' + link;
-                result.push({
+                externalResult.push({
                     id: 0,
                     page_url: url,
                     name: url,
-                    type: 2
                 });
             }
         }
 
         // from pages of store
-        const resultFromPage = listPage.reduce((list, item) => {
+        const defaultResult = displayPages.default.reduce((list, item) => {
             const s = removeSpace(link).toLowerCase();
             if (item.name.toLowerCase().includes(s)) {
-                list.push({
-                    ...item,
-                    type: 1
-                })
+                list.push(item)
             }
             return list;
         }, [])
 
-        result = [...result, ...resultFromPage];
-        setSearchResult(result);
+        const pagesResult = displayPages.pages.reduce((list, item) => {
+            const s = removeSpace(link).toLowerCase();
+            if (item.name.toLowerCase().includes(s)) {
+                list.push(item)
+            }
+            return list;
+        }, [])
+
+        const otherResult = displayPages.other.reduce((list, item) => {
+            const s = removeSpace(link).toLowerCase();
+            if (item.name.toLowerCase().includes(s)) {
+                list.push(item)
+            }
+            return list;
+        }, [])
+
+        setSearchResult({
+            default: defaultResult,
+            pages: pagesResult,
+            other: otherResult,
+            external: externalResult
+        });
     }, [dbValue])
 
     // useDidMountEffect(() => {
@@ -175,6 +229,64 @@ const DetailMenu = ({ }) => {
     //         checkErr()
     //     }
     // }, [showModal])
+
+    const getIcon = ({ name, link }) => {
+        if (link === '') return null
+        if (DefaultPage[name]) return DefaultPage[name]
+        if (link[0] === '/') {
+            console.log(link.substring(1, 7))
+            if (link.substring(1, 7) === 'pages/') return <PageIcon />
+            else return <PolocyIcon />
+        }
+        else return <ExternalLinkIcon />
+    }
+
+    const renderItem = (item) => {
+        return (
+            <div
+                key={item.id}
+                className="detail-menu__add-item-modal--link--list--link-item"
+                onMouseDown={() => {
+                    clicked.current = true
+                    setLink(item.name)
+                    setLinkValue(item.page_url)
+                    setPreLink(item.name)
+                    setShowPageLinks(false)
+                    setIcon(item.type === 1 ? 'page' : 'external')
+                }}
+            >
+                <span>{DefaultPage[item.name] ? DefaultPage[item.name] : null}</span>
+                <span
+                    className=" text-normal-1"
+
+                >
+                    {item.name}
+                </span>
+            </div>
+        )
+    }
+
+    const renderGroupItem = (group, type) => {
+        return (
+            <div
+                // key={item.id}
+                className="detail-menu__add-item-modal--link--list--link-item"
+                style={{ display: 'flex' }}
+                onMouseDown={() => {
+                    clicked.current = true
+                    setGroupItem(group)
+                }}
+            >
+                <span>{type === 'Pages' ? <PageIcon /> : type === 'Other' ? <PolocyIcon /> : null}</span>
+                <span
+                    className=" text-normal-1"
+                >
+                    {type}
+                </span>
+                <span style={{ marginLeft: 'auto' }} ><GoIcon /></span>
+            </div>
+        )
+    }
 
     const getPageNameFromUrl = (url) => {
         const index = listPage?.findIndex((item) => item.page_url === url);
@@ -250,7 +362,7 @@ const DetailMenu = ({ }) => {
 
     const handleDeleteMenu = () => {
         dispatch(doDeleteMenu(menu.id))
-        .then(() => navigate(-1))
+            .then(() => navigate(-1))
     }
 
     const handleDeleteMenuItem = () => {
@@ -371,8 +483,9 @@ const DetailMenu = ({ }) => {
                                                 setName(item.name)
                                                 setLink(item.link[0] === '/' ? getPageNameFromUrl(item.link) : item.link)
                                                 setPreLink(item.link[0] === '/' ? getPageNameFromUrl(item.link) : item.link)
+                                                setLinkValue(item.link)
                                                 setShowModal(true)
-                                                setIcon(item.link[0] === '/' ? 'page' : 'external')
+                                                // setIcon(item.link[0] === '/' ? 'page' : 'external')
                                             }}
                                         >
                                             Edit
@@ -407,15 +520,15 @@ const DetailMenu = ({ }) => {
                     </CustomCard>
 
                     {!menu.is_default ?
-                    <div className="detail-menu__delete">
-                        <Button 
-                            variant="outline-danger"
-                            onClick={() => setOpenDeleteMenuModal(true)}
-                        >
-                            Delete menu
-                        </Button>
-                    </div>
-                    : null}
+                        <div className="detail-menu__delete">
+                            <Button
+                                variant="outline-danger"
+                                onClick={() => setOpenDeleteMenuModal(true)}
+                            >
+                                Delete menu
+                            </Button>
+                        </div>
+                        : null}
 
                 </div>
             </div >
@@ -451,6 +564,7 @@ const DetailMenu = ({ }) => {
                                     setTimeout(() => {
                                         if (!clicked.current) {
                                             setShowPageLinks(false)
+                                            setGroupItem(null)
                                             if (link !== preLink) {
                                                 setLink(preLink)
                                             }
@@ -465,7 +579,7 @@ const DetailMenu = ({ }) => {
                                         // }
                                     }, 100)
                                 }}
-                                icon={icon === 'page' ? <PageIcon /> : <ExternalLinkIcon />}
+                                icon={getIcon({ name: link, link: linkValue })}
                             />
                             <BasicButton
                                 className="detail-menu__add-item-modal--link__input-group__clear-btn"
@@ -483,7 +597,27 @@ const DetailMenu = ({ }) => {
                         }
                         {showPageLinks ?
                             <CustomCard className='detail-menu__add-item-modal--link--list'>
-                                {searchResult?.length ? searchResult.map((item) => (
+                                {groupItem ?
+                                    <>
+                                        <div
+                                            className="detail-menu__add-item-modal--link--list--link-item"
+                                            onClick={() => setGroupItem(null)}
+                                        >
+                                            <span>
+                                                <BackIcon />
+                                            </span>
+                                            <span className="text-normal-1">Back</span>
+                                        </div>
+                                        {groupItem?.map((item) => renderItem(item))}
+                                    </> :
+                                    <>
+                                        {searchResult.default?.map((item) => renderItem(item))}
+                                        {searchResult.pages.length ? renderGroupItem(searchResult.pages, 'Pages') : null}
+                                        {searchResult.other.length ? renderGroupItem(searchResult.other, 'Other') : null}
+                                        {searchResult.external?.map((item) => renderItem(item))}
+                                    </>
+                                }
+                                {/* {searchResult?.length ? searchResult.map((item) => (
                                     <div
                                         key={item.id}
                                         className="detail-menu__add-item-modal--link--list--link-item"
@@ -508,7 +642,7 @@ const DetailMenu = ({ }) => {
                                     <div className="detail-menu__add-item-modal--link--list__not-found text-normal-2">
                                         Not found
                                     </div>
-                                }
+                                } */}
                             </CustomCard>
                             :
                             null
