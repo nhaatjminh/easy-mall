@@ -50,12 +50,12 @@ const HomePage = () => {
                     }}>
                         <div className="d-none d-lg-flex col-3 d-flex justify-content-center flex-column align-items-end">
                             <p className="text-end hightlight" style={{
-                                fontSize: '40px',
-                                fontFamily: 'serif'
+                                fontSize: '30px',
+                                
                             }}>Easy to use</p>
                             <p className="text-end hightlight" style={{
-                                fontSize: '40px',
-                                fontFamily: 'serif'
+                                fontSize: '30px',
+    
                             }}>Free to use</p>
 
                         </div>
@@ -67,8 +67,8 @@ const HomePage = () => {
                         </div>
                         <div className="d-none d-lg-flex col-3 d-flex justify-content-center flex-column align-items-start">
                             <p className="text-start hightlight" style={{
-                                fontSize: '40px',
-                                fontFamily: 'serif'
+                                fontSize: '30px',
+                        
                             }}>Support responsive</p>
                             <img alt="img" src="/img/phone.png" style={{ width: '30%' }} />
                         </div>
@@ -77,7 +77,7 @@ const HomePage = () => {
 
                 </div>
                 <div className="second-slide">
-                    <div className=" row p-0 m-0 pt-4 pb-4">
+                    <div className=" row p-0 m-0 pt-4 pb-4" style ={{backgroundColor: 'white'}}>
                         <div className="row">
                             <img alt="img" src="/img/Second Slide.png" />
 
@@ -94,7 +94,7 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="third-slide mt-5">
+                <div className="slide-show third-slide mt-5" style ={{marginLeft : '3rem!important',marginRight : '3rem!important'}}>
                     <div className="row">
                         <div className="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 order-third-slide-2">
                             <img alt="img" src="/img/third-slide-3.png" className="third-slide-3-left" />
