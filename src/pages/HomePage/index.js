@@ -51,11 +51,11 @@ const HomePage = () => {
                         <div className="d-none d-lg-flex col-3 d-flex justify-content-center flex-column align-items-end">
                             <p className="text-end hightlight" style={{
                                 fontSize: '30px',
-                                
+
                             }}>Easy to use</p>
                             <p className="text-end hightlight" style={{
                                 fontSize: '30px',
-    
+
                             }}>Free to use</p>
 
                         </div>
@@ -68,7 +68,7 @@ const HomePage = () => {
                         <div className="d-none d-lg-flex col-3 d-flex justify-content-center flex-column align-items-start">
                             <p className="text-start hightlight" style={{
                                 fontSize: '30px',
-                        
+
                             }}>Support responsive</p>
                             <img alt="img" src="/img/phone.png" style={{ width: '30%' }} />
                         </div>
@@ -76,13 +76,48 @@ const HomePage = () => {
                     </div>
 
                 </div>
-                <div className="second-slide">
-                    <div className=" row p-0 m-0 pt-4 pb-4" style ={{backgroundColor: 'white'}}>
+
+                <div className="second-slide" style={{ backgroundColor: 'white' }} >
+                
+                    <div className="row p-0 m-0 pt-4 pb-0" style={{ backgroundColor: 'white' }}>
+                      
                         <div className="row">
-                            <img alt="img" src="/img/Second Slide.png" />
+                            <div >
+                                <img alt="img" src="/img/Website.png" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div className="row  text-align-center pb-1 pt-2 p-12" style={{background: '#7DBC9E',marginLeft : '12px',marginRight : '36px'}}>
+                        <h5 className="font-weight-bold text-second-slide-2">Giving you the best choices</h5>
+
+                    </div>
+                    <div className=" row  column4-second-slide" style={{background: '#7DBC9E', marginLeft : '12px',marginRight : '36px'}}>
+                        <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+                            <i className="fab fa-shopping-bag fa-icon ml-0"></i>
+                            <h5 className="font-weight-bold text-second-slide-1">Online shopping</h5>
+                            <h5 className=" text-second-slide-3">Create a business, whether you've just had a creative idea or are looking for a new way to make a profit</h5>
+                        </div>
+                        <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+
+                            <i className="fab fa-globe fa-icon ml-0"></i>
+                            <h5 className="font-weight-bold text-second-slide-1">Hosting your webite</h5>
+                            <h5 className="text-second-slide-3">Turn your retail store into an online store and continue serving customers without interruption</h5>
 
                         </div>
-                        
+                        <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+                            <i className="fab fa-refresh fa-icon ml-0"></i>
+                            <h5 className="font-weight-bold text-second-slide-1">Switch to Easymall</h5>
+                            <h5 className="text-second-slide-3">Get your business on Easy Mall system, no matter what e-commerce platform you're currently on</h5>
+
+                        </div>
+                        <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+                            <i className="fab fa-users fa-icon ml-0"></i>
+                            <h5 className="font-weight-bold text-second-slide-1">Profressional Designer</h5>
+                            <h5 className="text-second-slide-3">Set up shop with the help of our impressive designs</h5>
+
+                        </div>
                     </div>
                 </div>
 
@@ -94,7 +129,7 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="slide-show third-slide mt-5" style ={{marginLeft : '3rem!important',marginRight : '3rem!important'}}>
+                <div className="slide-show third-slide mt-5" style={{ marginLeft: '3rem!important', marginRight: '3rem!important' }}>
                     <div className="row">
                         <div className="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 order-third-slide-2">
                             <img alt="img" src="/img/third-slide-3.png" className="third-slide-3-left" />
