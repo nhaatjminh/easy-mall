@@ -23,12 +23,17 @@ const HomePage = () => {
                         }}></img>
                     </div>
                     <div className=" col-12 Description">
-                        <div style={{ fontSize: '96px', fontWeight: '500', textAlign: 'center' }}>
-                            Create a website
-                        </div>
-                        <div style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>
+                        <div style={{ fontSize: '96px', fontWeight: '500', textAlign: 'center', maxWidth: '1000px' }}>
+                            <div className="Home-title">
+                                Create a website
+                            </div>
+                            <div className="Home-title" style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>
                             of your dreams
                         </div>
+                        </div>
+                        {/* <div style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>
+                            of your dreams
+                        </div> */}
                         <div className="_Descript" >
                             Discover the platform that gives you the freedom to create, design, manage and develop your web presence exactly the way you want.
                         </div>
@@ -78,9 +83,9 @@ const HomePage = () => {
                 </div>
 
                 <div className="second-slide" style={{ backgroundColor: 'white' }} >
-                
+
                     <div className="row p-0 m-0 pt-4 pb-0" style={{ backgroundColor: 'white' }}>
-                      
+
                         <div className="row">
                             <div >
                                 <img alt="img" src="/img/Website.png" />
@@ -89,11 +94,11 @@ const HomePage = () => {
 
                     </div>
 
-                    <div className="row  text-align-center pb-1 pt-2 p-12" style={{background: '#7DBC9E',marginLeft : '12px',marginRight : '36px'}}>
+                    <div className="row  text-align-center pb-1 pt-2 p-12" style={{ background: '#7DBC9E', marginLeft: '12px', marginRight: '36px' }}>
                         <h5 className="font-weight-bold text-second-slide-2">Giving you the best choices</h5>
 
                     </div>
-                    <div className=" row  column4-second-slide" style={{background: '#7DBC9E', marginLeft : '12px',marginRight : '36px'}}>
+                    <div className=" row  column4-second-slide" style={{ background: '#7DBC9E', marginLeft: '12px', marginRight: '36px' }}>
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
                             <i className="fab fa-shopping-bag fa-icon ml-0"></i>
                             <h5 className="font-weight-bold text-second-slide-1">Online shopping</h5>

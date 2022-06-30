@@ -207,7 +207,7 @@ img {
   color: white;
 }
 .second-slide {
-  background-color: #7DBC9E;
+  background-color: #7dbc9e;
   text-align: center;
   color: white;
 }
@@ -316,6 +316,7 @@ img {
   font-size: 20px;
   width: 700px;
   text-align: center;
+  font-family: "Merriweather";
 }
 
 button.GetStart {
@@ -352,6 +353,7 @@ button.GetStart:hover {
 p.hightlight {
   position: relative;
   z-index: 1;
+  font-family: "Merriweather", serif;
 }
 
 p.hightlight::before {
@@ -366,6 +368,34 @@ p.hightlight::before {
   transform-origin: center right;
   transform: scaleX(0);
   transition: transform 0.2s ease-in-out;
+}
+
+div.Home-title {
+  color: black;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  display: inline-block;
+  position: relative;
+  font-family: "Merriweather", serif;
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    rgba(0, 0, 0, 0.6) 30%,
+    #000 50%,
+    rgba(0, 0, 0, 0.6) 70%
+  );
+  -webkit-mask-size: 200%;
+  animation: shine 2s linear infinite;
+}
+
+/* animation */
+@keyframes shine {
+  from {
+    -webkit-mask-position: 150%;
+  }
+  to {
+    -webkit-mask-position: -50%;
+  }
 }
 
 p.hightlight:hover::before {
@@ -410,6 +440,6 @@ button.end-slide__btn:hover::before {
 }
 
 .slide-show {
-  margin-right: 3rem!important;
-  margin-left: 3rem!important;
+  margin-right: 3rem !important;
+  margin-left: 3rem !important;
 }
