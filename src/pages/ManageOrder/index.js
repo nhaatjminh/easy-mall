@@ -97,7 +97,7 @@ const ManageOrder = () => {
               return {
                 ...order,
                 status_date: formatDate(date),
-                total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
+                total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
               }
             })
             setRows(newRows);
@@ -118,7 +118,9 @@ const ManageOrder = () => {
           return {
             ...order,
             status_date: formatDate(date),
-            total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
+            total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
+            // total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
+         
           }
         })
         setRows(newRows);
@@ -145,7 +147,7 @@ const ManageOrder = () => {
             return {
               ...order,
               status_date: formatDate(date),
-              total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
+              total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
             }
           })
           setRows(newRows);
@@ -158,7 +160,17 @@ const ManageOrder = () => {
     return () => {
       unmounted.current = true;
     };
-}, [dbValue])
+  }, [dbValue])
+  const parseLocaleNumber = (stringNumber, locale) => {
+    const number = Number(stringNumber).toFixed(2);
+    return Intl.NumberFormat(locale).formatToParts(number).map(({type, value}) => {
+      switch (type) {
+        case 'group': return `,`;
+        case 'decimal': return `.`;
+        default : return value;
+      }
+    }).reduce((string, part) => string + part);
+  }
   return (
     <>
       <HeaderDetailStore keySelected={Key.Order}></HeaderDetailStore>

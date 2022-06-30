@@ -26,6 +26,14 @@ export const doCreateOrder = createAsyncThunk(
     }
 );
 
+export const doGetActiveDiscount = createAsyncThunk(
+  'discount@post/doGetActiveDiscount',
+  async ({storeId,params}) => {
+    const result = await orderApi.getActiveDiscount(storeId,params);
+    return result.data;
+  }
+);
+
 export const collectionStore = createSlice({
     name: 'Order',
     initialState:  {

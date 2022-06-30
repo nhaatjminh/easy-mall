@@ -13,103 +13,26 @@ import {
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { useDispatch } from "react-redux";
-import { doGetListProductsOfStoresScopeFull } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
-import { useForm, Controller } from "react-hook-form";
-import { doGetCity, doGetDistrict, doGetRate } from '../../../redux/slice/dataSlice'
 import { doCreateOrder } from "../../../redux/slice/orderSlice";
-import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
-import BaseNestedList from "../../common/BaseNestedList";
-import Item from "../FormOrder/Item";
-import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
+import ItemFollow from "./ItemFollow";
 
 const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
-    const { handleSubmit, reset, control, resetField } = useForm();
-    const [listCity, setListCity] = useState([]);
-    const [selectCity, setSelectCity] = useState('');
-    const [listDistrict, setListDistrict] = useState([]);
-    const [selectDistrict, setSelectDistrict] = useState('');
     const [listRate, setListRate] = useState([]);
     const [currency, setCurrency] = useState('USD');
     const [isLoading, setIsLoading] = useState(false);
     const [listProducts, setListProducts] = useState([]);
     
-    const [listFilterProducts, setListFilterProducts] = useState([]);
     const [listValueProduct, setListValueProduct] = useState({})
     const [listValueVariant, setListValueVariant] = useState({})
     const [subTotal, setSubTotal] = useState(0);
     const [discountTotal, setDiscountTotal] = useState(0);
     const [total, setTotal] = useState(0);
-    
-    const [paymentMethod, setPaymentMethod] = useState(0);
-    const [shippingMethod, setShippingMethod] = useState(0);
-    const params = useParams();
 
-    const handleChangeUserName = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                name: event.target.value
-            }
-        }
-    }
-    const handleChangeUserEmail = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                email: event.target.value
-            }
-        }
-    }
-    
-    const handleChangeAdressCity = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                city: event.target.value
-            }
-        }
-        setSelectCity(event.target.value);
-        dispatch(doGetDistrict( event.target.value)).then((result) => {
-            setListDistrict(result.payload);
-            resetField('Address-District')
-        });  
-    }
-    const handleChangeAdressDistrict = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                district: event.target.value
-            }
-        }
-        setSelectDistrict(event.target.value);
-    }
-    const handleChangeAdress = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                address: event.target.value
-            }
-        }
-    }
-    
-    const handleChangePhoneNumber = (event) => {
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                phone: event.target.value
-            }
-        }
-    }
+    const params = useParams();
     const handleChangeCurrency = (event) => {
         setCurrency(event.target.value);
         form.current = {
@@ -118,38 +41,6 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 ...form.current.order,
                 currency: event.target.value
             }
-        }
-    }
-    const handleChangePaymentMethod = (event) => {
-        setPaymentMethod(event.target.value);
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                payment_method: event.target.value
-            }
-        }
-    }
-    const handleChangeShippingMethod = (event) => {
-        setShippingMethod(event.target.value);
-        form.current = {
-            ...form.current,
-            order: {
-                ...form.current.order,
-                shipping_method: event.target.value
-            }
-        }
-    }
-    const handleSearchProduct = (event) => {
-        if (!event.target.value) setListFilterProducts(listProducts);
-        else {
-            let newFilterList = listProducts.map((product) => {
-                let newProduct = JSON.parse(JSON.stringify(product));
-                newProduct.variants = newProduct.variants.filter(variant => variant.name.includes(event.target.value))
-                return newProduct
-            })
-            newFilterList = newFilterList.filter((product) => product.title.includes(event.target.value) || product.variants.length)
-            setListFilterProducts(newFilterList);
         }
     }
     const handleDelete = (is_variant, variant_id, product_id) => {
@@ -204,16 +95,6 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         
     };
     useEffect(() => {
-        dispatch(doGetListProductsOfStoresScopeFull({
-            id: params.storeId,
-            params: {}
-        })).then((result) => {
-            setListProducts(result.payload)
-            setListFilterProducts(result.payload);
-        });
-             
-    }, [])
-    useEffect(() => {
         if (mode) {
             if (oldForm && mode === 'EDIT') {
                 form.current = oldForm;
@@ -243,29 +124,9 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 <div className="row  text-black">  
                         <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
                             <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-
-                                    <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
-                                    <BaseModal
-                                            title="Select Variant"
-                                            titleButton="Browser"
-                                            onOK={() => {}}
-                                            classNameModal='style-modal'
-                                            styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
-                                            <FormControl style={{width: 600}}>
-                                                <CustomSearchInput
-                                                    placeholder='Search'
-                                                    onChange={handleSearchProduct}
-                                                    height={'30px'}
-                                                />
-                                                <BaseNestedList items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
-                                                valueVariant={listValueVariant}
-                                                setValueVariant={setListValueVariant}></BaseNestedList>
-                                            </FormControl>
-                                        </BaseModal>
-                                </div>
+                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
                                 {
-                                    Object.keys(listValueProduct || {}).length || Object.keys(listValueVariant || {}).length ?
+                                    Object.keys(oldForm.products || {}).length ?
                                     <div style={{ overflowX: 'auto'}}>
                                         <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
                                             <div className="w-100"  style={{minWidth: 225}}>
@@ -277,28 +138,13 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             <div  style={{minWidth: 175}} className='pr-3'>
                                                 Total
                                             </div>
-                                            
-                                            <div  style={{width: 24}}>
-                                            </div>
                                         </div>
                                         
-                                        {listProducts.map((product) => {
-                                            if (listValueProduct[product.id]) {
-                                                if (!product.is_variant) {
-                                                    return (
-                                                        <Item formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
-                                                    )
-                                                } else {
-                                                    return product.variants?.map((variant) => {
-                                                        if (listValueVariant[variant.id]) {
-                                                            return (
-                                                                <Item  formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
-                                                            )
-                                                        }
-                                                    })
-                                                }
-                                            }
-                                        })}
+                                        {oldForm.products.map((product) => 
+                                            (
+                                                <ItemFollow  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></ItemFollow>
+                                            )
+                                        )}
                                     </div>
                                     : <></>
                                 }
@@ -418,7 +264,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         }
                     </div>
                     <div className="col-6">
-                        <button onClick={handleSubmit(saveOrder)}  style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                        <button style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
                 
                     </div>
                 </div>  

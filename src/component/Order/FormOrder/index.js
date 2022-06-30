@@ -18,12 +18,13 @@ import { doGetListProductsOfStoresScopeFull } from "../../../redux/slice/product
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { doGetCity, doGetDistrict, doGetRate } from '../../../redux/slice/dataSlice'
-import { doCreateOrder } from "../../../redux/slice/orderSlice";
+import { doCreateOrder, doGetActiveDiscount } from "../../../redux/slice/orderSlice";
 import { CustomSearchInput } from "../../common/CustomSearchInput/CustomSearchInput";
 import BaseNestedList from "../../common/BaseNestedList";
 import Item from "./Item";
 import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
+import { cloneDeep } from "lodash";
 
 const styleModal = {
     position: 'absolute',
@@ -68,6 +69,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     
     const [paymentMethod, setPaymentMethod] = useState(0);
     const [shippingMethod, setShippingMethod] = useState(0);
+    const [listDiscount, setListDiscount] = useState([]);
     const params = useParams();
 
     const handleChangeUserName = (event) => {
@@ -164,6 +166,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         }
     }
+    const handleChangeDiscountSelect = (event) => {
+        
+        setDiscountTotal(event.target.value);
+
+    }
     const handleSearchProduct = (event) => {
         if (!event.target.value) setListFilterProducts(listProducts);
         else {
@@ -236,7 +243,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         });  
         dispatch(doGetListProductsOfStoresScopeFull({
             id: params.storeId,
-            params: {}
+            params: {
+                status: 'Active'
+            }
         })).then((result) => {
             setListProducts(result.payload)
             setListFilterProducts(result.payload);
@@ -267,6 +276,28 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         if (newTotal <= 0) setTotal(0);
         else setTotal(newTotal);
     }, [subTotal, discountTotal])
+    useEffect(() => {
+        const newListValueProduct = cloneDeep(listValueProduct);
+        Object.keys(listValueProduct ?? {}).forEach((id) => {
+            const product = listProducts.find(product => product.id === id);
+            if (newListValueProduct[id] === false || (product && product.is_variant)) delete newListValueProduct[id]
+        })
+        const newListValueVariant = cloneDeep(listValueVariant);
+        Object.keys(listValueVariant ?? {}).forEach((id) => {
+            if (newListValueVariant[id] === false) delete newListValueProduct[id]
+        })
+        const totalProducts = Object.keys(newListValueProduct ?? {}).length + Object.keys(newListValueVariant  ?? {}).length;
+        dispatch(doGetActiveDiscount({
+            storeId: params.storeId,
+            params: {
+                total_price: Number(subTotal),
+                currency: currency,
+                total_products: totalProducts
+            }
+        })).then((result) => {
+            setListDiscount(result.payload)
+        });
+    }, [listValueVariant, listValueProduct, subTotal])
     return (
         <>
             <form>
@@ -352,9 +383,19 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <Select placeholder='Discount'
                                         className="text-field-input text-content"
                                         onChange={() => {}}
+                                        style={{ width: 200}}
                                         height={'30px'}
-                                        width={'auto'}>
-
+                                        displayEmpty={true}
+                                        renderValue={(value) => {
+                                            if (!value) {
+                                                return <div className="text-content">---- Select Code ----</div>
+                                            } else {
+                                                return <div className="text-content">{value}</div>
+                                            }
+                                        }}>
+                                        {listDiscount.map((discount) => 
+                                            <MenuItem value={`${discount.code}`}>{discount.code}</MenuItem>
+                                        )}
                                     </Select>
                                     <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(discountTotal) : Intl.NumberFormat('vi-VN').format(discountTotal)} {currency}</InputLabel>
                                 </div>
@@ -456,12 +497,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                     onChange(e);
                                                     handleChangePhoneNumber(e);
                                                 }}
+                                                type='tel'
                                                 value={value}
                                                 fullWidth
-                                                onInput = {(e) =>{
-                                                    e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,12)
-                                                    if (isNaN(e.target.value)) e.target.value = '' 
-                                                }}
                                                 error={!!error}
                                                 helperText={error?.message}
                                                 FormHelperTextProps={{
@@ -563,12 +601,10 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 value={value}
                                                 disabled={!!!selectDistrict}
                                                 fullWidth
-                                                error={!!error}
-                                                helperText={error?.message}
-                                                FormHelperTextProps={{
-                                                    className: 'error-text'
-                                                }}
-                                            />
+                                            />    
+                                            {!!error && <FormHelperText className='error-text text-content'>You need enter address to create Order</FormHelperText>}
+                                       
+                                            
                                         </>
                                     )}
                                 />

@@ -13,5 +13,9 @@ export const orderApi = {
     createOrder: async (id, orderObj) => {
         const result = await callAPIWithPostMethod(`stores/${id}/order`, orderObj, true);
         return result;
+    },
+    getActiveDiscount: async (id, params) => {
+        const result = await callAPIWithPostMethod(`stores/${id}/active-discounts`, params, true);
+        return result;
     }
 }
