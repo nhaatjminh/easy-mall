@@ -25,6 +25,7 @@ import Item from "./Item";
 import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import { cloneDeep } from "lodash";
+import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 
 const styleModal = {
     position: 'absolute',
@@ -65,6 +66,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [listValueVariant, setListValueVariant] = useState({})
     const [subTotal, setSubTotal] = useState(0);
     const [discountTotal, setDiscountTotal] = useState(0);
+    const [discountCode, setDiscountCode] = useState('');
     const [total, setTotal] = useState(0);
     
     const [paymentMethod, setPaymentMethod] = useState(0);
@@ -166,10 +168,30 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             }
         }
     }
-    const handleChangeDiscountSelect = (event) => {
-        
-        setDiscountTotal(event.target.value);
-
+    const handleChangeDiscountSelect = (code) => {
+        if (code) {
+            const selectDiscount = listDiscount.find(discount => discount.code === code);
+            setDiscountCode(code);
+            let totalAccept = 0;
+            if (selectDiscount.type === 0) {
+                totalAccept = selectDiscount.amount * subTotal;
+            } else {
+                if (currency === selectDiscount.currency) {
+                    totalAccept = selectDiscount.amount;    
+                }
+                else {
+                    let rate;
+                    if (selectDiscount.currency === 'USD') {
+                        rate = listRate?.find(rate => rate.currency === currency)?.amount ?? 0;
+                        totalAccept = (Number(selectDiscount.amount * 1.0 * rate));
+                    } else {
+                        rate = listRate?.find(rate => rate.currency === selectDiscount.currency)?.amount ?? 0;
+                        totalAccept = (Number(selectDiscount.amount * 1.0 / rate));
+                    } 
+                }
+            }
+            setDiscountTotal(totalAccept);
+        }
     }
     const handleSearchProduct = (event) => {
         if (!event.target.value) setListFilterProducts(listProducts);
@@ -213,6 +235,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     }
     const saveOrder = () => {
         setIsLoading(true);
+        
+        const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
+        form.current.order.discount_id = selectDiscount.id;
         form.current.products.map((product) => {
             delete product.total_to_show;
             return product
@@ -276,6 +301,12 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         if (newTotal <= 0) setTotal(0);
         else setTotal(newTotal);
     }, [subTotal, discountTotal])
+    useEffect(() => {
+        handleChangeDiscountSelect(discountCode);
+    }, [currency])
+    useEffect(() => {
+        if(discountTotal >= subTotal) setDiscountTotal(subTotal);
+    }, [discountTotal, subTotal])
     useEffect(() => {
         const newListValueProduct = cloneDeep(listValueProduct);
         Object.keys(listValueProduct ?? {}).forEach((id) => {
@@ -377,12 +408,14 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(subTotal) : Intl.NumberFormat('vi-VN').format(subTotal)} {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>
+                                    {currency === 'USD' ? parseLocaleNumber(subTotal,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(subTotal,'vi-VN')} {currency}
+                                   </InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <Select placeholder='Discount'
                                         className="text-field-input text-content"
-                                        onChange={() => {}}
+                                        onChange={(e) => handleChangeDiscountSelect(e.target.value)}
                                         style={{ width: 200}}
                                         height={'30px'}
                                         displayEmpty={true}
@@ -397,11 +430,13 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             <MenuItem value={`${discount.code}`}>{discount.code}</MenuItem>
                                         )}
                                     </Select>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(discountTotal) : Intl.NumberFormat('vi-VN').format(discountTotal)} {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>
+                                    {currency === 'USD' ? parseLocaleNumber(discountTotal,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(discountTotal,'vi-VN')} {currency}</InputLabel>
                                 </div>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(total) : Intl.NumberFormat('vi-VN').format(total)} {currency}</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>
+                                    {currency === 'USD' ? parseLocaleNumber(total,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(total,'vi-VN')} {currency}</InputLabel>
                                 </div>
                             </Paper>
                             <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>

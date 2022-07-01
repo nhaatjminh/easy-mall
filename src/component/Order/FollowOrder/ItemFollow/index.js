@@ -6,6 +6,7 @@ import {
     Box
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 
 const ItemFollow = ({thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
     return (
@@ -45,7 +46,7 @@ const ItemFollow = ({thumbnail, productCurrency, name, price,quantity, parentNam
             </div>
             <div style={{minWidth: 200}}>
                 <ListItemText
-                    primary={`${price} ${productCurrency}`}
+                    primary={`${productCurrency === 'USD' ? parseLocaleNumber(price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(price,'vi-VN')}`}
                 />
             </div>
             <Divider absolute />

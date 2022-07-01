@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import { doCreateOrder } from "../../../redux/slice/orderSlice";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import ItemFollow from "./ItemFollow";
+import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 
 const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
@@ -149,36 +150,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     : <></>
                                 }
                             </Paper> 
-                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Payment</InputLabel>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Currency</InputLabel>
-                                    <Select value={currency} onChange={handleChangeCurrency} className='text-field-input text-content select-currency'>
-                                        <MenuItem value='VND'>VND</MenuItem>
-                                        <MenuItem value='USD'>USD</MenuItem>
-                                    </Select>
-                                </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(subTotal) : Intl.NumberFormat('vi-VN').format(subTotal)} {currency}</InputLabel>
-                                </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <Select placeholder='Discount'
-                                        className="text-field-input text-content"
-                                        onChange={() => {}}
-                                        height={'30px'}
-                                        width={'auto'}>
-
-                                    </Select>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(discountTotal) : Intl.NumberFormat('vi-VN').format(discountTotal)} {currency}</InputLabel>
-                                </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{currency === 'USD' ? Intl.NumberFormat('en-US').format(total) : Intl.NumberFormat('vi-VN').format(total)} {currency}</InputLabel>
-                                </div>
-                            </Paper>
+                            
                             <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -252,6 +224,31 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     </div>
                                 </div>
                             </Paper> 
+                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Payment</InputLabel>
+                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Currency</InputLabel>
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.currency ?? ''}</InputLabel>
+                                    
+                                </div>
+                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{oldForm?.order?.currency === 'USD' ? parseLocaleNumber(oldForm?.order?.original_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(oldForm?.order?.original_price,'vi-VN')} {oldForm?.order?.currency}</InputLabel>
+                                </div>
+                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>Discount</InputLabel>
+                                
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{oldForm?.order?.currency === 'USD' ? parseLocaleNumber(oldForm?.order?.discount_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(oldForm?.order?.discount_price,'vi-VN')} {oldForm?.order?.currency}</InputLabel>
+                                </div>
+                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
+                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>
+                                    {oldForm?.order?.currency === 'USD' ? parseLocaleNumber(oldForm?.order?.discount_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(oldForm?.order?.discount_price,'vi-VN')} {oldForm?.order?.currency}
+                                    </InputLabel>
+                                </div>
+                            </Paper>
                         </div>    
                 </div>
                 <Divider className="custom-devider" style={{marginTop: 15}} />

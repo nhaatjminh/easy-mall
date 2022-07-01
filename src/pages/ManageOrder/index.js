@@ -14,6 +14,7 @@ import { CustomSearchInput } from "../../component/common/CustomSearchInput/Cust
 import { useDebounce } from './../../hooks/useDebounce';
 import { doCreateOrder, doGetListOrderOfStores, doGetOneOrder} from '../../redux/slice/orderSlice'
 import Order from "../../component/Order";
+import { parseLocaleNumber } from "../../utils/parseLocaleNumber";
 
 const ManageOrder = () => {
   const [showAddOrder, setShowAddOrder] = useState(false);
@@ -94,10 +95,11 @@ const ManageOrder = () => {
           if (!unmounted.current) {
             let newRows = result.payload?.map((order) => {
               let date = new Date(Date.parse(order.status_date));
+              let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
               return {
                 ...order,
                 status_date: formatDate(date),
-                total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
+                total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
               }
             })
             setRows(newRows);
@@ -115,12 +117,11 @@ const ManageOrder = () => {
       .then((result) => {
         let newRows = result.payload?.map((order) => {
           let date = new Date(Date.parse(order.status_date));
+          let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
           return {
             ...order,
             status_date: formatDate(date),
-            total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
-            // total_with_currency: `${order.currency === 'USD' ? Intl.NumberFormat('en-US').format(order.original_price) : Intl.NumberFormat('vi-VN').format(order.original_price)} ${order.currency}`
-         
+            total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
           }
         })
         setRows(newRows);
@@ -144,10 +145,11 @@ const ManageOrder = () => {
         if (!unmounted.current) {
           let newRows = result.payload?.map((order) => {
             let date = new Date(Date.parse(order.status_date));
+            let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
             return {
               ...order,
               status_date: formatDate(date),
-              total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(order.original_price, 'en-US') : parseLocaleNumber(order.original_price, 'vi-VN')} ${order.currency}`
+              total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
             }
           })
           setRows(newRows);
@@ -161,16 +163,7 @@ const ManageOrder = () => {
       unmounted.current = true;
     };
   }, [dbValue])
-  const parseLocaleNumber = (stringNumber, locale) => {
-    const number = Number(stringNumber).toFixed(2);
-    return Intl.NumberFormat(locale).formatToParts(number).map(({type, value}) => {
-      switch (type) {
-        case 'group': return `,`;
-        case 'decimal': return `.`;
-        default : return value;
-      }
-    }).reduce((string, part) => string + part);
-  }
+  
   return (
     <>
       <HeaderDetailStore keySelected={Key.Order}></HeaderDetailStore>

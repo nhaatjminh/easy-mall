@@ -9,6 +9,7 @@ import {
 import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
+import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 
 const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
@@ -102,7 +103,7 @@ const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurre
             </div>
             <div style={{minWidth: 200}}>
                 <ListItemText
-                    primary={`${selectCurrency} ${selectCurrency === 'USD' ? Intl.NumberFormat('en-US').format(totalShow) : Intl.NumberFormat('vi-VN').format(totalShow)}`}
+                    primary={`${selectCurrency} ${selectCurrency === 'USD' ? parseLocaleNumber(totalShow,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(totalShow,'vi-VN')}`}
                 />
             </div>
             <div style={{width: 24}}>
