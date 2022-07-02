@@ -242,6 +242,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             delete product.total_to_show;
             return product
         })
+        form.current.products = form.current.products.filter(product => product.quantity > 0);
         const createObj = {
             storeId: params.storeId,
             orderObj: form.current

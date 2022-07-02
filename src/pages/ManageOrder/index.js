@@ -38,7 +38,7 @@ const ManageOrder = () => {
     if (day.length < 2) 
         day = '0' + day;
 
-    return [year, month, day].join('-');
+    return [day, month, year].join('/');
 }
   const columns = [
     { id: 'id', label: 'Order', minWidth: 300 },
@@ -87,6 +87,8 @@ const ManageOrder = () => {
     })
   }
   const returnTable = async () => {
+    
+    setShowAddOrder(false);
     await dispatch(doGetListOrderOfStores({
             id: params.storeId,
             params: {}
@@ -103,7 +105,6 @@ const ManageOrder = () => {
               }
             })
             setRows(newRows);
-            setShowAddOrder(false);
           }
       });
   }
