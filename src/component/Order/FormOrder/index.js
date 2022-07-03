@@ -237,7 +237,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         setIsLoading(true);
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
-        form.current.order.discount_id = selectDiscount.id;
+        if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
         form.current.products.map((product) => {
             delete product.total_to_show;
             return product
@@ -250,13 +250,22 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         dispatch(doCreateOrder(createObj))
         .then((res) => {
             setIsLoading(false);
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Create successful Order!',
-            }).then((result) => {
-                returnAfterAdd();
-            })
+            if (res.payload.id) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Create successful Order!',
+                }).then((result) => {
+                    returnAfterAdd();
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Can not create this order. Please check again!',
+                }).then((result) => {
+                })
+            }
         });
         
     };

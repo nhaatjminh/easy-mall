@@ -121,22 +121,13 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                         <button type='button' onClick={() => handleCallRestoreStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Restore</button>
                     </div>
                 </div> )
-        } else if (curStatus === 'RESTOCK') {
-            return (<div className="mt-4 mb-4 row form-group-button">
-                <div className="col-6">
-                    <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
-                </div>
-                <div className="col-6">
-                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Refill</button>
-                </div>
-            </div> )
         } else {
             return (<div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
                     <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
                 </div>
                 <div className="col-6">
-                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Change Status</button>
+                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">{curStatus === 'RESTOCK' ? `Refill` : `Change Status`}</button>
                 </div>
             </div> )
         }
