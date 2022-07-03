@@ -8,7 +8,6 @@ import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ModalAddVariant from '../ModalAddVariant';
 import { Dropdown } from 'react-bootstrap';
-import BaseModal from "../../../common/BaseModal";
 
 import { BaseNumberField } from '../../../common/BaseNumberField';
 

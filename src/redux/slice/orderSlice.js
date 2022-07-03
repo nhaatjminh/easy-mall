@@ -34,6 +34,35 @@ export const doGetActiveDiscount = createAsyncThunk(
   }
 );
 
+export const doChangeStatus = createAsyncThunk(
+  'order@post/doChangeStatus',
+  async ({orderId,params}) => {
+    const result = await orderApi.changeStatus(orderId,params);
+    return result.data;
+  }
+);
+export const doRestoreStatus = createAsyncThunk(
+  'order@post/doRestoreStatus',
+  async ({orderId,params}) => {
+    const result = await orderApi.restoreStatus(orderId,params);
+    return result.data;
+  }
+);
+export const doDeleteStatus = createAsyncThunk(
+  'order@post/doDeleteStatus',
+  async ({orderId,params}) => {
+    const result = await orderApi.deleteStatus(orderId,params);
+    return result.data;
+  }
+);
+export const doRemoveStatus = createAsyncThunk(
+  'order@delete/deRemoveStatus',
+  async ({orderId,params}) => {
+    const result = await orderApi.removeStatus(orderId,params);
+    return result.data;
+  }
+);
+
 export const collectionStore = createSlice({
     name: 'Order',
     initialState:  {

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import {
     Paper,
     InputLabel,
+    TextareaAutosize,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { useDispatch } from "react-redux";
@@ -10,52 +11,146 @@ import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import ItemFollow from "./ItemFollow";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 import TimeLine from "./TimeLine";
+import { doChangeStatus, doRemoveStatus, doDeleteStatus, doRestoreStatus } from "../../../redux/slice/orderSlice";
+import BaseModal from "../../common/BaseModal";
+import Swal from "sweetalert2";
 
 const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const dispatch = useDispatch();
-    let form = useRef({});
     const [isLoading, setIsLoading] = useState(false);
-
+    const [note, setNote] = useState('');
+    const [openModal, setOpenModal] = useState(false);
+    const [callFunction, setCallFunction] = useState(null);
     const params = useParams();
+    const handleCallChangeStatus = () => {
+        setOpenModal(true);
+        setCallFunction('ChangeStatus');
+    }
+    const handleChangeStatus = () => {
+        setIsLoading(true);
+        dispatch(doChangeStatus({
+            orderId: oldForm.order.id,
+            params: {
+                status: oldForm.status?.[0].status,
+                store_id: oldForm.order.store_id,
+                note: note
+            }
+          })).then(() => {
+              returnAfterAdd();
+              setIsLoading(false);
+          });
+    }
+    const handleCallDeleteStatus = () => {
+        setOpenModal(true);
+        setCallFunction('DeleteStatus');
+    }
+    const handleDeleteStatus = () => {
+        setIsLoading(true);
+        dispatch(doDeleteStatus({
+            orderId: oldForm.order.id,
+            params: {
+                status: oldForm.status?.[0].status,
+                store_id: oldForm.order.store_id,
+                note: note
+            }
+          })).then(() => {
+              returnAfterAdd();
+              setIsLoading(false);
+          });
+    }
+    const handleCallRestoreStatus = () => {
+        setOpenModal(true);
+        setCallFunction('RestoreStatus');
+    }
+    const handleRestoreStatus = () => {
+        setIsLoading(true);
+        dispatch(doRestoreStatus({
+            orderId: oldForm.order.id,
+            params: {
+                status: oldForm.status?.[0].status,
+                store_id: oldForm.order.store_id,
+                note: note
+            }
+          })).then(() => {
+              returnAfterAdd();
+              setIsLoading(false);
+          });
+    }
+    const handleRemoveStatus = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setIsLoading(true);
+                dispatch(doRemoveStatus({
+                    orderId: oldForm.order.id,
+                    params: {
+                        store_id: oldForm.order.store_id
+                    }
+                })).then(() => {
+                    returnAfterAdd();
+                    setIsLoading(false);
+                });
+            }
+        })
+    }
     const renderFormButton = () => {
-        let newStatus = oldForm.status?.[0].status;
-        if (newStatus === 'COMPLETED') {
+        let curStatus = oldForm.status?.[0].status;
+        if (curStatus === 'COMPLETED') {
             return (
                 <div className="mt-4 mb-4 row form-group-button">
                     <div className="col-6">
-                        <button  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Remove</button>
+                        <button type='button' onClick={() => handleRemoveStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Remove</button>
                     </div>
                     <div className="col-6">
                     </div>
                 </div>  
             )
-        } else if (newStatus === 'DELETED') {
+        } else if (curStatus === 'DELETED') {
             return (<div className="mt-4 mb-4 row form-group-button">
                     <div className="col-6">
-                        <button  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Remove</button>
+                        <button type='button' onClick={() => handleRemoveStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Remove</button>
                     </div>
                     <div className="col-6">
-                        <button style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Restore</button>
+                        <button type='button' onClick={() => handleCallRestoreStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Restore</button>
                     </div>
                 </div> )
-        } else if (newStatus === 'RESTOCK') {
+        } else if (curStatus === 'RESTOCK') {
             return (<div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
-                    <button  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
+                    <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
                 </div>
                 <div className="col-6">
-                    <button style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Refill</button>
+                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Refill</button>
                 </div>
             </div> )
         } else {
             return (<div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
-                    <button  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
+                    <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
                 </div>
                 <div className="col-6">
-                    <button style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Change Status</button>
+                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Change Status</button>
                 </div>
             </div> )
+        }
+    }
+    const handleChangeNote = (e) => {
+        setNote(e.target.value);
+    }
+    const handleOK = () => {
+        if (callFunction === 'ChangeStatus') {
+            handleChangeStatus()
+        } else if (callFunction === 'DeleteStatus') {
+            handleDeleteStatus()
+        } else if (callFunction === 'RestoreStatus') {
+            handleRestoreStatus()
         }
     }
     return (
@@ -89,7 +184,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     : <></>
                                 }
                             </Paper> 
-                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', maxHeight: 500, overflowY: 'auto'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Timeline</InputLabel>
                                 <TimeLine listStatus={oldForm.status}></TimeLine>
                             </Paper>
@@ -194,6 +289,29 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             </form>
             
             <LoadingModal show={isLoading} />
+            <BaseModal
+                title="Note"
+                boolOpen={openModal}
+                setBoolOpen={(bool) => setOpenModal(bool)}
+                showButton={false}
+                showAction={true}
+                onOK={() => handleOK()}
+                classNameModal='style-modal'
+                styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
+                    <TextareaAutosize
+                        aria-label="empty textarea"
+                        minRows={3}
+                        maxLength={255}
+                        maxRows={3}
+                        draggable={false}
+                        style={{width: '500px', resize: 'none'}}
+                        onChange={(e) => {
+                            handleChangeNote(e);
+                        }} 
+                        className="text-field-input text-content"
+                        
+                    />   
+            </BaseModal>
         </>
     );
 }

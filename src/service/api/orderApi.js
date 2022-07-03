@@ -17,5 +17,21 @@ export const orderApi = {
     getActiveDiscount: async (id, params) => {
         const result = await callAPIWithPostMethod(`stores/${id}/active-discounts`, params, true);
         return result;
+    },
+    changeStatus: async (order_id, params) => {
+        const result = await callAPIWithPostMethod(`order/${order_id}/change-status`, params, true);
+        return result;
+    },
+    restoreStatus: async (order_id, params) => {
+        const result = await callAPIWithPostMethod(`order/${order_id}/restore-order`, params, true);
+        return result;
+    },
+    deleteStatus: async (order_id, params) => {
+        const result = await callAPIWithPostMethod(`order/${order_id}/delete-status`, params, true);
+        return result;
+    },
+    removeStatus: async (order_id, params) => {
+        const result = await callAPIWithDeleteMethod(`order/${order_id}`, params, true);
+        return result;
     }
 }
