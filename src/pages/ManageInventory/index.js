@@ -7,12 +7,13 @@ import TableManage from "../../component/TableManage";
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import { useDispatch } from "react-redux";
-import { doDeleteProduct, doGetListProductsOfStores, doGetOneProductOfStores } from "../../redux/slice/productSlice";
+import { doDeleteProduct, doGetListProductsOfStores, doGetOneProductOfStores, doGetListProductsOfStoresScopeFull, doUpdateInventory } from "../../redux/slice/productSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
 import { ProductApi } from "../../service/api";
+import TableInventory from "../../component/TableInventory";
 
 const ManageInventory = () => {
  
@@ -26,105 +27,28 @@ const ManageInventory = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170, align: 'center' },
+    { id: 'title', label: 'Product', minWidth: 170, align: 'left' },
     {
-      id: 'status',
-      label: 'Status',
-      minWidth: 100,
+      id: 'sku',
+      label: 'SKU',
+      minWidth: 170,
       align: 'center',
-      classNameWithData: (data) => {
-        if (data === "Active") return 'active-product'
-        return 'draft-product'
-      }
     },
     {
       id: 'inventory',
-      label: 'Inventory',
+      label: 'Available',
       minWidth: 170,
       align: 'center',
-    },
-    {
-      id: 'type',
-      label: 'Type',
-      minWidth: 170,
-      align: 'center',
-    },
-    {
-      id: 'vendor',
-      label: 'Vendor',
-      minWidth: 170,
-      align: 'center'
-    },
+    }
   ];
   const [filterSeach, setFilterSearch] = useState();
   const dbValue = useDebounce(filterSeach, 300);
-  const editFunction = (selected) => {
-    Swal.showLoading();
-    dispatch((doGetOneProductOfStores(selected)))
-    .then((result) => {    
-      // info of product receive from server is array. get first element. into form, need this is object not array
-      if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 
-      setMode('EDIT');
-      setOldForm(result.payload);  
-      setShowAddProduct(true);
-      Swal.close();
-    })
-  }
-  const deleteAllFunction = async (selected) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.showLoading();
-        const listPromise = [];
-        selected.map((product) => {
-          listPromise.push(
-            new Promise((resolve) => {
-              dispatch(doDeleteProduct({
-                id: product
-                })).then(() => {
-                    resolve();
-                })
-            })
-          )
-        })
-        Promise.all(listPromise).then(() => {
-          Swal.close();
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Delete successful products!',
-          }).then((result) => {   
-            returnTable();
-          })
-        })
-      }
-    })
-   
-  }
-  const returnTable = async () => {
-    await dispatch(doGetListProductsOfStores({
-          id: params.storeId,
-          params: {}
-        }))
-        .then((result) => {
-          if (!unmounted.current) {
-            setRows(result.payload);  
-            setShowAddProduct(false);
-          }
-      });
-  }
+  
   useEffect(() => {
     unmounted.current = false;
     if (!showAddProduct) {
       setLoading(true);
-      dispatch(doGetListProductsOfStores({
+      dispatch(doGetListProductsOfStoresScopeFull({
         id: params.storeId,
         params: {}
       }))
@@ -148,7 +72,7 @@ const ManageInventory = () => {
     if (filterSeach) {
       search.title = filterSeach;
     }
-    dispatch(doGetListProductsOfStores({
+    dispatch(doGetListProductsOfStoresScopeFull({
       id: params.storeId,
       params: search
     }))
@@ -163,6 +87,18 @@ const ManageInventory = () => {
       unmounted.current = true;
     };
 }, [dbValue])
+  const editItem = async (object) => {
+    setLoading(true);
+    await dispatch(doUpdateInventory({productObj: object}))
+    await dispatch(doGetListProductsOfStoresScopeFull({
+      id: params.storeId,
+      params: {}
+    }))
+    .then((result) => {
+      setRows(result.payload);
+      setLoading(false)
+    });
+  }
   return (
     <>
       <HeaderDetailStore keySelected={Key.Inventory}></HeaderDetailStore>
@@ -202,14 +138,13 @@ const ManageInventory = () => {
                         </>)
                         : (
                         <>
-                          <TableManage data={rows} columnsOfData={columns} editFunction={editFunction} deleteAllFunction={deleteAllFunction}></TableManage>
+                          <TableInventory editItem={editItem} data={rows} columnsOfData={columns}></TableInventory>
                         </>
                         )}
                       </div>
                     </>
-                  : <></>}
-                 {/* <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>} */}
-                        
+                  : <></>
+                  }        
                 </>
               </div>
           </div> 

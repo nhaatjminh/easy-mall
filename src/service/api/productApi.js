@@ -25,7 +25,6 @@ export const ProductApi = {
      * @returns {object} data have link of image on s3
      */
     uploadImageProduct: async (data) => {
-        console.log(data);
         const result = await callAPIWithPostMethod(`files/upload-product-image`, data, true);
         return result; 
     },
@@ -137,6 +136,25 @@ export const ProductApi = {
         .then(res => res.json())
         .then(out => result = out)
         .catch(err => console.log(err));
+        return result; 
+    },
+    /**
+     * @name updateInventory
+     * @description Update Inventory
+     * @body {productObj}
+     * {
+     * id: productId;
+     * variant_id: variantId;
+     * store_id: storeId;
+     * is_variant: boolean;
+     * quantity: number;
+     * sku: string;
+     * }
+     * 
+     * @returns {object} 
+     */
+     updateInventory: async (productObj) => {
+        const result = await callAPIWithPostMethod(`products/update-inventory`, productObj, true);
         return result; 
     }
 }

@@ -1,0 +1,33 @@
+.table-manager-pagination .MuiTablePagination-selectLabel {
+    padding-top: 1rem;
+}
+.table-manager-pagination .MuiTablePagination-select {
+    padding-bottom: 0;
+}
+
+.table-manager-pagination .MuiTablePagination-displayedRows {
+    margin-bottom: 0;
+}
+.table td, .table th {
+    text-align: center;
+    vertical-align: middle;
+}
+.table thead th, .table tbody th {
+    vertical-align: middle;
+}
+.btn-product {
+    border: 1px solid gray;
+}
+.table .btn-delete-item {
+    background-color: #f07067;
+}
+.row-table-manager:hover {
+    cursor: pointer;
+}
+.btn-manager {
+    border: 1px solid #6666;
+}
+
+.table-height {
+    max-height: calc(100vh - 350px);
+}

@@ -21,7 +21,7 @@ import PricingComponent from "../PricingComponent"
 import ReactQuill from 'react-quill'
 import { useSelector, useDispatch } from "react-redux";
 import { doGetListCollectionOfStores } from "../../../redux/slice/collectionSlice";
-import { doCreateProduct, doUploadImageProduct, doUploadProduct, doGetDescription, doDeleteProduct, doGetAllType, doGetAllVendor } from "../../../redux/slice/productSlice";
+import { doCreateProduct, doUploadImageProduct, doUploadProduct, doDeleteProduct, doGetAllType, doGetAllVendor } from "../../../redux/slice/productSlice";
 import Swal from "sweetalert2";
 import CustomType from "../CustomType";
 import { BaseNumberField } from '../../common/BaseNumberField';

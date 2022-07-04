@@ -82,6 +82,14 @@ export const doGetDescription = createAsyncThunk(
       return result.data
     }
 );
+
+export const doUpdateInventory = createAsyncThunk(
+  'products@post/doUpdateInventory',
+  async ({productObj}) => {
+    const result = await ProductApi.updateInventory(productObj);
+    return result.data
+  }
+);
 export const productSlice = createSlice({
     name: 'productSlice',
     initialState:  {
