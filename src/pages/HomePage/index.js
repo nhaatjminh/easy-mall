@@ -12,8 +12,6 @@ const HomePage = () => {
         <>
             <NavBar />
             <div className="homepage">
-
-
                 <div className="row first-slide p-0 mx-0 position-relative"  >
                     <div className="background-img">
                         <img src="/img/bg.jpg" style={{
@@ -28,8 +26,8 @@ const HomePage = () => {
                                 Create a website
                             </div>
                             <div className="Home-title" style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>
-                            of your dreams
-                        </div>
+                                of your dreams
+                            </div>
                         </div>
                         {/* <div style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>
                             of your dreams
@@ -81,7 +79,92 @@ const HomePage = () => {
                     </div>
 
                 </div>
+                <div className="slide-middle ">
+                    <div className="row d-none d-lg-flex">
+                        <div className="_card col-3 arrow" >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/template.png" />
 
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Customize your site</h5>
+                                    <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p></div>
+                            </div>
+                        </div>
+                        <div className="_card col-3 arrow" >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/products.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Add products</h5>
+                                    <p className="_card-text text-center">After choosing the perfect template, you can post your very first product to your site.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="_card col-3 arrow" >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/hosting.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Hosting</h5>
+                                    <p className="_card-text text-center">You can customize your very own domain. Or we will provide you one</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="_card col-3 arrow" >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/shopping-cart.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Ready to go</h5>
+                                    <p className="_card-text text-center">After all that you are all set to start your website.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div className="row d-flex d-lg-none">
+                        <div className="_card col-6 " >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/template.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Customize your site</h5>
+                                    <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="_card col-6 " >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/products.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Add products</h5>
+                                    <p className="_card-text text-center">After choosing the perfect template, you can post your very first product to your site.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="_card col-6 " >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/hosting.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Hosting</h5>
+                                    <p className="_card-text text-center">You can customize your very own domain. Or we will provide you one</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="_card col-6 " >
+                            <div className="item">
+                                <img className="_Card_img" alt="img" src="/img/shopping-cart.png" />
+
+                                <div className="_card-body">
+                                    <h5 className="_card-title text-center">Ready to go</h5>
+                                    <p className="_card-text text-center">After all that you are all set to start your website.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="second-slide" style={{ backgroundColor: 'white' }} >
 
                     <div className="row p-0 m-0 pt-4 pb-0" style={{ backgroundColor: 'white' }}>
