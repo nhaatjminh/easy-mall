@@ -57,7 +57,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [listDistrict, setListDistrict] = useState([]);
     const [selectDistrict, setSelectDistrict] = useState('');
     const [listRate, setListRate] = useState([]);
-    const [currency, setCurrency] = useState('USD');
+    const [currency, setCurrency] = useState('VND');
     const [isLoading, setIsLoading] = useState(false);
     const [listProducts, setListProducts] = useState([]);
     
