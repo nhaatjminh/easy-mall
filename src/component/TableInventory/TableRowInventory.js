@@ -64,12 +64,12 @@ const TableRowInventory = ({columnsOfData, index, row, productId, variantId, is_
                     {
                         row.thumbnail ?
                             <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                <ListItemAvatar>
+                                <ListItemAvatar className="image-container m-0">
                                     <img alt="thumbnail" src={row.thumbnail}/>
                                 </ListItemAvatar>
                             </Box>
                             : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                <ListItemAvatar>
+                                <ListItemAvatar className="image-container m-0">
                                     <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                 </ListItemAvatar>
                             </Box>

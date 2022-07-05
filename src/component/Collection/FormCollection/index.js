@@ -378,12 +378,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                                         {
                                                             product.thumbnail ?
                                                                 <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                                    <ListItemAvatar>
+                                                                    <ListItemAvatar className="image-container m-0">
                                                                         <img alt="thumbnail" src={product.thumbnail}/>
                                                                     </ListItemAvatar>
                                                                 </Box>
                                                             : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                                    <ListItemAvatar>
+                                                                    <ListItemAvatar className="image-container m-0">
                                                                         <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                                     </ListItemAvatar>
                                                                 </Box>
@@ -408,12 +408,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                                                 {
                                                 product.thumbnail ?
                                                     <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${productId} - avatar`}>
+                                                        <ListItemAvatar className="image-container m-0" key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src={product.thumbnail}/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 :  <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${productId} - avatar`}>
+                                                        <ListItemAvatar className="image-container m-0" key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>

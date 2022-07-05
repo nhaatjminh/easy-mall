@@ -516,12 +516,12 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                                 {
                                                 banner.image ?
                                                     <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
                                                             <img alt="thumbnail" src={banner.image}/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 :  <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
