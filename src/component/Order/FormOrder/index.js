@@ -354,7 +354,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             onOK={() => {}}
                                             classNameModal='style-modal'
                                             styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
-                                            <FormControl style={{width: 600}}>
+                                            <FormControl style={{width: 700}}>
                                                 <CustomSearchInput
                                                     placeholder='Search'
                                                     onChange={handleSearchProduct}
@@ -461,8 +461,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                 <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <InputLabel name='title' className="text-label" style={{margin: 0}}>Shipping</InputLabel>
                                     <Select value={shippingMethod} onChange={handleChangeShippingMethod} className='text-field-input text-content select-currency'>
-                                        <MenuItem value='0'>Tieu chuan</MenuItem>
-                                        <MenuItem value='1'>gi gi do</MenuItem>
+                                        <MenuItem value='0'>Take it at store</MenuItem>
+                                        <MenuItem value='1'>Standard shipping</MenuItem>
                                     </Select>
                                 </div>
                             </Paper>

@@ -602,7 +602,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">  
                                 <InputLabel className="text-label" name='title' style={{margin: 0}}>Quantity</InputLabel>
-                                <BaseNumberField length={8} className={`${isVariant && 'disabled-text'}`} key="Inventory" disabled={isVariant}  value={oldForm?.product?.inventory} fullWidth={true} setValue={(value) => handleOnChangeInventory(value)}></BaseNumberField>
+                                <BaseNumberField length={8} className={`${isVariant && 'disabled-text'}`} key="Inventory" disabled={isVariant}  defaultValue={oldForm?.product?.inventory} fullWidth={true} setValue={(value) => handleOnChangeInventory(value)}></BaseNumberField>
                             </div>
                         </div>
                         <div>

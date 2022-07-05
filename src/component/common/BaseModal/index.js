@@ -57,7 +57,7 @@ export default function BaseModal({children, showButton=true, boolOpen=false, se
     setOpen(true);
   };
   const handleClose = () => {
-    if (!showButton) setOpen(false);
+    if (!showButton) setBoolOpen(false);
     setOpen(false);
   };
   const handleOk = async () => {

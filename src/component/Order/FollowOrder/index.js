@@ -11,7 +11,7 @@ import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import ItemFollow from "./ItemFollow";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 import TimeLine from "./TimeLine";
-import { doChangeStatus, doRemoveStatus, doDeleteStatus, doRestoreStatus } from "../../../redux/slice/orderSlice";
+import { doChangeStatus, doRemoveStatus, doDeleteStatus, doRestoreStatus, doGetOneOrder } from "../../../redux/slice/orderSlice";
 import BaseModal from "../../common/BaseModal";
 import Swal from "sweetalert2";
 
@@ -21,60 +21,49 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const [note, setNote] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [callFunction, setCallFunction] = useState(null);
+    const [formToShow, setFormToShow] = useState(oldForm);
     const params = useParams();
     const handleCallChangeStatus = () => {
         setOpenModal(true);
         setCallFunction('ChangeStatus');
     }
     const handleChangeStatus = () => {
-        setIsLoading(true);
         dispatch(doChangeStatus({
-            orderId: oldForm.order.id,
+            orderId: formToShow.order.id,
             params: {
-                status: oldForm.status?.[0].status,
-                store_id: oldForm.order.store_id,
+                status: formToShow.status?.[0].status,
+                store_id: formToShow.order.store_id,
                 note: note
             }
-          })).then(() => {
-              returnAfterAdd();
-              setIsLoading(false);
-          });
+          }))
     }
     const handleCallDeleteStatus = () => {
         setOpenModal(true);
         setCallFunction('DeleteStatus');
     }
     const handleDeleteStatus = () => {
-        setIsLoading(true);
         dispatch(doDeleteStatus({
-            orderId: oldForm.order.id,
+            orderId: formToShow.order.id,
             params: {
-                status: oldForm.status?.[0].status,
-                store_id: oldForm.order.store_id,
+                status: formToShow.status?.[0].status,
+                store_id: formToShow.order.store_id,
                 note: note
             }
-          })).then(() => {
-              returnAfterAdd();
-              setIsLoading(false);
-          });
+          }))
     }
     const handleCallRestoreStatus = () => {
         setOpenModal(true);
         setCallFunction('RestoreStatus');
     }
     const handleRestoreStatus = () => {
-        setIsLoading(true);
         dispatch(doRestoreStatus({
-            orderId: oldForm.order.id,
+            orderId: formToShow.order.id,
             params: {
-                status: oldForm.status?.[0].status,
-                store_id: oldForm.order.store_id,
+                status: formToShow.status?.[0].status,
+                store_id: formToShow.order.store_id,
                 note: note
             }
-          })).then(() => {
-              returnAfterAdd();
-              setIsLoading(false);
-          });
+          }))
     }
     const handleRemoveStatus = () => {
         Swal.fire({
@@ -87,21 +76,17 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                setIsLoading(true);
                 dispatch(doRemoveStatus({
-                    orderId: oldForm.order.id,
+                    orderId: formToShow.order.id,
                     params: {
-                        store_id: oldForm.order.store_id
+                        store_id: formToShow.order.store_id
                     }
-                })).then(() => {
-                    returnAfterAdd();
-                    setIsLoading(false);
-                });
+                }))
             }
         })
     }
     const renderFormButton = () => {
-        let curStatus = oldForm.status?.[0].status;
+        let curStatus = formToShow.status?.[0].status;
         if (curStatus === 'COMPLETED') {
             return (
                 <div className="mt-4 mb-4 row form-group-button">
@@ -135,150 +120,158 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
     const handleChangeNote = (e) => {
         setNote(e.target.value);
     }
-    const handleOK = () => {
+    const handleOK = async () => {
+        setIsLoading(true);
         if (callFunction === 'ChangeStatus') {
-            handleChangeStatus()
+            await handleChangeStatus()
         } else if (callFunction === 'DeleteStatus') {
-            handleDeleteStatus()
+            await handleDeleteStatus()
         } else if (callFunction === 'RestoreStatus') {
-            handleRestoreStatus()
+            await handleRestoreStatus()
         }
+        await dispatch((doGetOneOrder({id: formToShow.order.id, storeId: params.storeId})))
+        .then((result) => {
+            setFormToShow(result.payload);
+            setOpenModal(false)
+            setIsLoading(false);
+            setNote('');
+            window.scrollTo(0, 0); 
+        })
     }
     return (
         <>
-            <form>
-                <div className="row  text-black">  
-                        <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
-                            <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
-                                {
-                                    Object.keys(oldForm.products || {}).length ?
-                                    <div style={{ overflowX: 'auto'}}>
-                                        <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
-                                            <div className="w-100"  style={{minWidth: 225}}>
-                                                <span className='float-left pl-5'>Products</span>
-                                            </div>
-                                            <div  style={{width: 125, minWidth: 125}} className='pr-5'>
-                                                Quantity
-                                            </div>
-                                            <div  style={{minWidth: 175}} className='pr-3'>
-                                                Total
-                                            </div>
+            <div className="row  text-black">  
+                    <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
+                        <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
+                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
+                            {
+                                Object.keys(formToShow.products || {}).length ?
+                                <div style={{ overflowX: 'auto'}}>
+                                    <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
+                                        <div className="w-100"  style={{minWidth: 225}}>
+                                            <span className='float-left pl-5'>Products</span>
                                         </div>
-                                        
-                                        {oldForm.products.map((product) => 
-                                            (
-                                                <ItemFollow  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
-                                            )
-                                        )}
+                                        <div  style={{width: 125, minWidth: 125}} className='pr-5'>
+                                            Quantity
+                                        </div>
+                                        <div  style={{minWidth: 175}} className='pr-3'>
+                                            Total
+                                        </div>
                                     </div>
-                                    : <></>
-                                }
-                            </Paper> 
-                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem', maxHeight: 500, overflowY: 'auto'}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Timeline</InputLabel>
-                                <TimeLine listStatus={oldForm.status}></TimeLine>
-                            </Paper>
-                        </div>   
-                        <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
-                            <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Name</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.name}</InputLabel>
-                                    </div>
-                                </div>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Email</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.email}</InputLabel>
-                                    </div>
-                                </div>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Phone</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.phone}</InputLabel>
-                                    </div>
-                                </div>
-                            </Paper> 
-                            <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Address</InputLabel>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>City</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.city}</InputLabel>
-                                    </div>
-                                </div>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>District</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.district}</InputLabel>
-                                    </div>
-                                </div>
-                                <div className="pt-3 row">
-                                    <div className="col-4">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>Address</InputLabel>
-                                    </div>
-                                    <div className="col-8">
-                                        <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.address}</InputLabel>
-                                    </div>
-                                </div>
-                            </Paper> 
-                            <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Payment</InputLabel>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Currency</InputLabel>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm?.order?.currency ?? ''}</InputLabel>
-                                    
+                                    {formToShow.products.map((product, index) => 
+                                        (
+                                            <ItemFollow key={`${index}-item-follow`}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
+                                        )
+                                    )}
                                 </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{oldForm?.order?.currency === 'USD' ? parseLocaleNumber(oldForm?.order?.original_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(oldForm?.order?.original_price,'vi-VN')} {oldForm?.order?.currency}</InputLabel>
+                                : <></>
+                            }
+                        </Paper> 
+                        <Paper elevation={5} style={{padding: '1rem 1rem 1rem 2rem', marginTop: '2rem'}}>
+                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Timeline</InputLabel>
+                            <div style={{overflowY: 'auto',  maxHeight: 500, padding: 0, margin: 0}}>
+                                <TimeLine listStatus={formToShow.status}></TimeLine>
+                            </div>
+                        </Paper>
+                    </div>   
+                    <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                        <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
+                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Name</InputLabel>
                                 </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>Discount</InputLabel>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.name}</InputLabel>
+                                </div>
+                            </div>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Email</InputLabel>
+                                </div>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.email}</InputLabel>
+                                </div>
+                            </div>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Phone</InputLabel>
+                                </div>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.phone}</InputLabel>
+                                </div>
+                            </div>
+                        </Paper> 
+                        <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
+                        <InputLabel name='title' className="text-header" style={{margin: 0}}>Address</InputLabel>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>City</InputLabel>
+                                </div>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.city}</InputLabel>
+                                </div>
+                            </div>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>District</InputLabel>
+                                </div>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.district}</InputLabel>
+                                </div>
+                            </div>
+                            <div className="pt-3 row">
+                                <div className="col-4">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Address</InputLabel>
+                                </div>
+                                <div className="col-8">
+                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.address}</InputLabel>
+                                </div>
+                            </div>
+                        </Paper> 
+                        <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
+                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Payment</InputLabel>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>{oldForm?.order?.currency === 'USD' ? parseLocaleNumber(oldForm?.order?.discount_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(oldForm?.order?.discount_price,'vi-VN')} {oldForm?.order?.currency}</InputLabel>
-                                </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
-                                    <InputLabel name='title' className="text-content" style={{margin: 0}}>
-                                    {oldForm?.order?.currency === 'USD' ? parseLocaleNumber(Number(oldForm?.order?.original_price) - Number(oldForm?.order?.discount_price),'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(Number(oldForm?.order?.original_price) - Number(oldForm?.order?.discount_price),'vi-VN')} {oldForm?.order?.currency}
-                                    </InputLabel>
-                                </div>
-                            </Paper>
-                            <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
-                                <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm.order.payment_method === 0 ? `COD` : `PayPal`}</InputLabel>
-                                     
-                                </div>
-                                <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>Shipping</InputLabel>
-                                    <InputLabel name='title' className="text-label" style={{margin: 0}}>{oldForm.order.shipping_method === 0 ? `Tieu chuan` : `gi gi do`}</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>Currency</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.currency ?? ''}</InputLabel>
+                                
+                            </div>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>Subtotal</InputLabel>
+                                <InputLabel name='title' className="text-content" style={{margin: 0}}>{formToShow?.order?.currency === 'USD' ? parseLocaleNumber(formToShow?.order?.original_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(formToShow?.order?.original_price,'vi-VN')} {formToShow?.order?.currency}</InputLabel>
+                            </div>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <InputLabel name='title' className="text-content" style={{margin: 0}}>Discount</InputLabel>
+                            
+                                <InputLabel name='title' className="text-content" style={{margin: 0}}>{formToShow?.order?.currency === 'USD' ? parseLocaleNumber(formToShow?.order?.discount_price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(formToShow?.order?.discount_price,'vi-VN')} {formToShow?.order?.currency}</InputLabel>
+                            </div>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>Total</InputLabel>
+                                <InputLabel name='title' className="text-content" style={{margin: 0}}>
+                                {formToShow?.order?.currency === 'USD' ? parseLocaleNumber(Number(formToShow?.order?.original_price) - Number(formToShow?.order?.discount_price),'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(Number(formToShow?.order?.original_price) - Number(formToShow?.order?.discount_price),'vi-VN')} {formToShow?.order?.currency}
+                                </InputLabel>
+                            </div>
+                        </Paper>
+                        <Paper elevation={5}  style={{padding: '1rem 2rem', marginTop: "2rem"}}>
+                            <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow.order.payment_method === 0 ? `COD` : `PayPal`}</InputLabel>
                                     
-                                </div>
-                            </Paper>
-                        </div>    
-                </div>
-                <Divider className="custom-devider" style={{marginTop: 15}} />
-                {renderFormButton()}
-            </form>
-            
+                            </div>
+                            <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>Shipping</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow.order.shipping_method === 0 ? `Take it at store` : `Standard shipping`}</InputLabel>
+                                
+                            </div>
+                        </Paper>
+                    </div>    
+            </div>
+            <Divider className="custom-devider" style={{marginTop: 15}} />
+            {renderFormButton()}
             <LoadingModal show={isLoading} />
             <BaseModal
                 title="Note"

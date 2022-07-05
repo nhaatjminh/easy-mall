@@ -10,8 +10,7 @@ import { useDebounce } from '../../../hooks/useDebounce'
 import CurrencyInput from 'react-currency-input-field';
 
 
-export const BaseNumberField = ({value, length=12, setValue, fullWidth, disabled = false, className = '', placeholder='', currency='', handleChangeCurrency= () => {} }) => {
-
+export const BaseNumberField = ({defaultValue, value, length=12, setValue, fullWidth, disabled = false, className = '', placeholder='', currency='', handleChangeCurrency= () => {} }) => {
     return (
         <>
             {currency ?
@@ -35,6 +34,7 @@ export const BaseNumberField = ({value, length=12, setValue, fullWidth, disabled
                 fullWidth={fullWidth}
                 disabled={disabled}
                 maxLength={length}
+                defaultValue={defaultValue}
                 decimalsLimit={2}
                 allowDecimals={currency === 'USD' ? true : false}
                 allowNegativeValue={false}

@@ -1,5 +1,6 @@
 import React, {useEffect, useState } from "react";
 import {List, ListItem, ListItemText, Collapse, Divider, ListItemIcon, Checkbox, Box, ListItemAvatar} from "@mui/material";
+import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 
 
 export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], setValueProduct = (e) => {} ,valueVariant = [], setValueVariant = (e) => {}}) => {
@@ -180,10 +181,9 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                                     />
                                                                 </div>
                                                                 <div className="col-4">
-                                                                    <ListItemText
-                                                                        className="float-right"
-                                                                        primary={`${item.currency} ${sitem.price}`}
-                                                                    />
+                                                                <ListItemText
+                                                                    primary={`${item.currency === 'USD' ? parseLocaleNumber(sitem.price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(sitem.price,'vi-VN')} ${item.currency}`}
+                                                                />
                                                                 </div>
                                                             </div>
                                                             
@@ -239,7 +239,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                             </div>
                                             <div className="col-4">
                                                 <ListItemText
-                                                    primary={`${item.currency} ${item.price}`}
+                                                    primary={`${item.currency === 'USD' ? parseLocaleNumber(item.price,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(item.price,'vi-VN')} ${item.currency}`}
                                                 />
                                             </div>
                                         </div>
