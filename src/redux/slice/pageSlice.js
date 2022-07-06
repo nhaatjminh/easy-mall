@@ -15,7 +15,7 @@ export const doCreatePage = createAsyncThunk(
         const result = await PageApi.createPage(pageObj);
         return {
             ...pageObj,
-            id: result.data.rows[0].id
+            ...result.data.rows[0]
         };
     }
 );

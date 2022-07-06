@@ -14,27 +14,27 @@ const SellGuide = () => {
                 <div className="sg-first-slide p-0 mt-5">
                 <div className="row">
                     <div className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 slide-part align-self-center order-mobile-2">
-                        <h1 className="title1">Bán hàng</h1>
-                        <h1 className="title2">Khắp mọi nơi</h1>
-                        <h3 className="content">Nền tảng cho phép bán hàng dù khách hàng đang ở bất kì hơi đâu -  trực tuyến, trực  tiếp.</h3>
+                        <h1 className="title1">Selling</h1>
+                        <h1 className="title2">Everywhere you want to</h1>
+                        <h3 className="content">The platform allows selling wherever the customer is - online or in person.</h3>
                         <div className="row">
                             <div className="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-6">
-                                <h5 className="sub-title">Cửa hàng trực tuyến</h5>
-                                <h5 className="sub-content">Bán hàng trực tuyến bằng một trang web thương mại điện tử</h5>
+                                <h5 className="sub-title">Your Online Store</h5>
+                                <h5 className="sub-content">Selling products online with an e-commerce website</h5>
                             </div>
                             <div className="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-6">
-                                <h5 className="sub-title">Nút mua</h5>
-                                <h5 className="sub-content">Thêm tính năng thương mại điện tử vào bất kì trang web hay blog nào</h5>
+                                <h5 className="sub-title">Customize by your style</h5>
+                                <h5 className="sub-content">Add e-commerce functionality to any website or blog</h5>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-6">
-                                <h5 className="sub-title">Địa điểm bán hàng</h5>
-                                <h5 className="sub-content">Bán hàng trực tiếp tại các địa điểm bán lẻ, cửa hàng pop-up và nhiều lựa chọn khác</h5>
+                                <h5 className="sub-title">Stores Locations</h5>
+                                <h5 className="sub-content">Direct sales at retail locations, pop-up stores and more. </h5>
                             </div>
                             <div className="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-6">
-                                <h5 className="sub-title">Kênh bán hàng</h5>
-                                <h5 className="sub-content">Bán hàng trên mạng truyền thông và xã hội, thị trường trực tuyến và nhiều lựa chọn khác</h5>
+                                <h5 className="sub-title">Store retails</h5>
+                                <h5 className="sub-content">Selling on social and media networks, online marketplaces and more</h5>
                             </div>
                         </div>
                     </div>
@@ -56,18 +56,17 @@ const SellGuide = () => {
                 <div className="sg-second-slide p-0 mt-5">
                     <div className="row">
                         <div className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 slide-part align-self-center order-mobile-2">
-                            <h4 className="sub-title-2 mb-5">Cửa hàng trực tuyến theo yêu cầu</h4>
-                            <h2 className="title2">Thương hiệu của bạn -</h2>
-                            <h2 className="title2 mb-5">cách làm của bạn</h2>
+                            <h4 className="sub-title-2 mb-5">Your custom online store</h4>
+                            <h2 className="title2">Your own professional style</h2>
 
-                            <h5 className="sub-title-2">Hơn 50 chủ đề</h5>
-                            <h5 className="sub-content">Mang thương  hiệu vào cuộc sống nhờ các chủ đề đáp ứng, có thể tùy chỉnh</h5>
+                            <h5 className="sub-title-2">More than 50 themes</h5>
+                            <h5 className="sub-content">Bringing brands to life with responsive, customizable themes</h5>
 
-                            <h5 className="sub-title-2">Trình tạo cửa hàng kéo và thả</h5>
-                            <h5 className="sub-content">Tạo các cửa hàng mà không cần kỹ năng lập trình hay thiết kế</h5>
+                            <h5 className="sub-title-2">Easy to use with Drag and drop</h5>
+                            <h5 className="sub-content">Create stores without programming or design skills</h5>
 
-                            <h5 className="sub-title-2">Miền tùy chỉnh</h5>
-                            <h5 className="sub-content">Dùng miền của bản hoặc mua miền qua Shopify</h5>
+                            <h5 className="sub-title-2">Domain</h5>
+                            <h5 className="sub-content">Use your own domain or buy a domain through Easy Mall</h5>
                         </div>
                         <div className="col-12 col-sm-12  col-md-6 col-lg-6 col-xl-6 slide-part align-self-center order-mobile-1">
                             <div className="row">
@@ -87,19 +86,19 @@ const SellGuide = () => {
 
                         </div>
                         <div className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 p-0 pb-4 slide-part align-self-center order-mobile-2">
-                            <h4 className="sub-title-2 mb-4">Điểm bán hàng</h4>
-                            <h2 className="title1">Trải nghiệm bán lẻ</h2>
-                            <h2 className="title1 mb-4">Khác biệt</h2>
-                            <h5 className="sub-content">Tăng doanh thu bán hàng trực tiếp</h5>
+                            <h4 className="sub-title-2 mb-4">Store Location</h4>
+                            <h2 className="title1">Retail experience </h2>
+                            <h2 className="title1 mb-4">Distinctive</h2>
+                            <h5 className="sub-content">Increase direct sales revenue</h5>
 
-                            <h5 className="sub-title-2">Mua sắm thú vị hơn</h5>
-                            <h5 className="sub-content">Cung cấp cho khách hàng dịch vụ được cá nhân hóa, khả năng mua sắm linh hoạt và trả lại dễ hàng</h5>
+                            <h5 className="sub-title-2">Shopping is more enjoyable</h5>
+                            <h5 className="sub-content">Offer customers personalized service, flexible shopping, and easy returns</h5>
 
-                            <h5 className="sub-title-2">Phần mềm sử dụng</h5>
-                            <h5 className="sub-content">Đơn giản hóa thiết lập cửa hàng và đào tạo nhân viênế</h5>
+                            <h5 className="sub-title-2">Software helps</h5>
+                            <h5 className="sub-content">Simplify store setup and employee training</h5>
 
-                            <h5 className="sub-title-2">Công cụ quản lí hành chính tích hợp</h5>
-                            <h5 className="sub-content">Dùng một công cụ quản lí toàn bộ sản phẩm, kho hàng và khách hàng</h5>
+                            <h5 className="sub-title-2">Integrated administrative management tool</h5>
+                            <h5 className="sub-content">Manage your storages, products with ease</h5>
                         </div>
                         
                     </div>
@@ -108,15 +107,15 @@ const SellGuide = () => {
                 <div className="sg-second-slide p-0 mt-5">
                     <div className="row">
                         <div className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 slide-part align-self-center order-mobile-2">
-                            <h4 className="sub-title-2 mb-5">Nút mua linh hoạt</h4>
-                            <h2 className="title2">Thương hiệu điện tử</h2>
-                            <h2 className="title2 mb-5">trong tầm tay</h2>
 
-                            <h5 className="sub-title-2">Thanh toán an toàn</h5>
-                            <h5 className="sub-content">Thêm trải nghiệm thanh toán an toàn, dễ sử dụng trên thiết bị di động vao trang của bạn</h5>
+                            <h2 className="title2">Your very own brand</h2>
+                            <h2 className="title2 mb-5">Within your reach</h2>
 
-                            <h5 className="sub-title-2">Nút có thể tùy chỉnh</h5>
-                            <h5 className="sub-content">Tạo trải nghiệm mua sắm theo yêu cầu cho trang web hay blog hiện có</h5>
+                            <h5 className="sub-title-2">Secure payment</h5>
+                            <h5 className="sub-content">Add a secure, easy-to-use mobile payment experience to your site</h5>
+
+                            <h5 className="sub-title-2">Customizable pages and content</h5>
+                            <h5 className="sub-content">Create an on-demand shopping experience for an existing website or blog</h5>
                         </div>
                         <div className="col-12 col-sm-12  col-md-6 col-lg-6 col-xl-6 slide-part align-self-center order-mobile-1">
                             <img alt="img" src="/img/sellguide/slide4-1.png" className="img-second-slide-2" />
@@ -125,12 +124,12 @@ const SellGuide = () => {
                 </div>
 
                 <div className="end-slide mt-5">
-                    <h5 className="font-weight-bold text-end-slide-1">Bắt đầu hành trình kinh doanh của bạn với EasyMall</h5>
+                    <h5 className="font-weight-bold text-end-slide-1">Start your business journey with EasyMall</h5>
 
                     <h5 className="text-end-slide-2">
-                        Dùng thử EasyMall miễn phí, khám phá tất cả các công cụ và dịch vụ để khởi động, vận hành và phát triển doanh nghiệp của riêng mình.
+                    Try EasyMall for free, discover all the tools and services to start, run and grow your own business..
                     </h5>
-                    <button className="btn btn-success btn-end-slide mt-5" > <p className="text-btn-end-slide"> Bắt đầu dùng thử miễn phí </p></button>
+                    <button className="btn btn-success btn-end-slide mt-5" > <p className="text-btn-end-slide"> Start your free trial </p></button>
                 </div>
             </div>
 
