@@ -141,13 +141,36 @@ img {
 }
 .service-pack {
     background-color: #fffafa;
-    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     padding: 1rem;
 }
 
 .service-pack-title {
-    color: #2b9361;
     font-weight: 900 !important;
+    padding: 4px 8px;
+    font-size: 17px;
+    width: fit-content;
+}
+.service-pack .free{
+    background-color: #2b9361;
+    color: white;
+}
+.service-pack .basic{
+    background-color: rgb(200, 204, 208);
+    color: rgb(47, 51, 55);
+}
+.service-pack .intermediate{
+    background-color: rgb(59, 64, 69);
+    color: white;
+}
+.service-pack .advanced{
+    background-color: rgb(43, 45, 110);
+    color: white;
+}
+.service-pack .sub-title-price{
+    margin-top: 0px;
+    color: rgb(145, 153, 161)
+
 }
 
 .price-second-slide {
@@ -227,4 +250,10 @@ img {
 }
 .pb-5rem {
     padding-bottom: 5rem;
+}
+.end-slide{
+    margin-top: 100px !important;
+    background-color: #edf8f4;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    padding-bottom: 100px;
 }

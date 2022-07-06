@@ -23,7 +23,7 @@ const NavBar = () => {
                 </div>
                 <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 " style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
                     <Stack direction="row" spacing={5} className="navigation-menu">
-                        <Link to={'#'} className="text-nav"> Pricing </Link>
+                        <Link to={'/pricing-scene'} className="text-nav"> Pricing </Link>
                         <Link to={'#'} className="text-nav"> Learn more </Link>
                         <Link to={'/login'}>
                             <button className="btn btn-success btn-login"> <p className="text-btn-login"> Login </p></button>

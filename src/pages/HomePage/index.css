@@ -456,10 +456,10 @@ button.end-slide__btn:hover::before {
 .item{
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  max-width: 200px;
+  max-width: 250px;
 }
 .slide-middle .row{
   margin-left: 10%; 
@@ -502,4 +502,6 @@ button.end-slide__btn:hover::before {
 }
 ._card-title {
   margin-top: 20px;
+  font-weight: bold;
+  font-family: "Merriweather", serif;
 }

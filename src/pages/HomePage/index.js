@@ -6,8 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from "../../component/NavBar";
 import FooterHomePage from "../../component/FooterHomepage";
 import { EndSlide } from "../../component/EndSlide";
+import { useNavigate } from "react-router-dom";
 const HomePage = () => {
-
+    const routeChange = useNavigate();
     return (
         <>
             <NavBar />
@@ -42,7 +43,9 @@ const HomePage = () => {
                             height: '50px',
                             marginTop: '40px',
                             color: 'white'
+                            
                         }}
+                            onClick={() => routeChange('/store-login')}
                             className="btn GetStart" > Get Started </button>
 
                     </div>
@@ -86,16 +89,18 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/template.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Customize your site</h5>
-                                    <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p></div>
+                                    <h2 className="_card-title text-center">1. Customize</h2>
+                                    <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p>
+                                </div>
                             </div>
+                            
                         </div>
                         <div className="_card col-3 arrow" >
                             <div className="item">
                                 <img className="_Card_img" alt="img" src="/img/products.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Add products</h5>
+                                    <h2 className="_card-title text-center">2. Add products</h2>
                                     <p className="_card-text text-center">After choosing the perfect template, you can post your very first product to your site.</p>
                                 </div>
                             </div>
@@ -105,7 +110,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/hosting.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Hosting</h5>
+                                    <h2 className="_card-title text-center">3. Hosting</h2>
                                     <p className="_card-text text-center">You can customize your very own domain. Or we will provide you one</p>
                                 </div>
                             </div>
@@ -115,7 +120,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/shopping-cart.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Ready to go</h5>
+                                    <h2 className="_card-title text-center">4. Ready to go</h2>
                                     <p className="_card-text text-center">After all that you are all set to start your website.</p>
                                 </div>
                             </div>
@@ -128,7 +133,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/template.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Customize your site</h5>
+                                    <h2 className="_card-title text-center">1. Customize your site</h2>
                                     <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p>
                                 </div>
                             </div>
@@ -138,7 +143,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/products.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Add products</h5>
+                                    <h2 className="_card-title text-center">2. Add products</h2>
                                     <p className="_card-text text-center">After choosing the perfect template, you can post your very first product to your site.</p>
                                 </div>
                             </div>
@@ -148,7 +153,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/hosting.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Hosting</h5>
+                                    <h2 className="_card-title text-center">3. Hosting</h2>
                                     <p className="_card-text text-center">You can customize your very own domain. Or we will provide you one</p>
                                 </div>
                             </div>
@@ -158,7 +163,7 @@ const HomePage = () => {
                                 <img className="_Card_img" alt="img" src="/img/shopping-cart.png" />
 
                                 <div className="_card-body">
-                                    <h5 className="_card-title text-center">Ready to go</h5>
+                                    <h2 className="_card-title text-center">4. Ready to go</h2>
                                     <p className="_card-text text-center">After all that you are all set to start your website.</p>
                                 </div>
                             </div>
@@ -190,7 +195,7 @@ const HomePage = () => {
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 
                             <i className="fab fa-globe fa-icon ml-0"></i>
-                            <h5 className="font-weight-bold text-second-slide-1">Hosting your webite</h5>
+                            <h5 className="font-weight-bold text-second-slide-1">3. Hosting your webite</h5>
                             <h5 className="text-second-slide-3">Turn your retail store into an online store and continue serving customers without interruption</h5>
 
                         </div>

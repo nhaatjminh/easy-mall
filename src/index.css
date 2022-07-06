@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap');
 body {
   color: black;
 
@@ -7,7 +7,7 @@ body {
   overflow-y: scroll;
 }
 * {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Roboto Slab', serif;
 }
 
 .fa-icon {
