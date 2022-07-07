@@ -238,11 +238,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
         if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
-        form.current.products.map((product) => {
-            delete product.total_to_show;
-            return product
-        })
-        form.current.products = form.current.products.filter(product => product.quantity > 0);
+        if (form.current.products) {
+            form.current.products?.map((product) => {
+                delete product.total_to_show;
+                return product
+            })
+            form.current.products = form.current.products?.filter(product => product.quantity > 0);
+        } else {
+            form.current.products = [];
+        }
         const createObj = {
             storeId: params.storeId,
             orderObj: form.current
