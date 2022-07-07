@@ -177,7 +177,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === Key.Discount ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                            routeChange(`/store-detail/manage-discount/${params.storeId}`)
                         }}
                     >
                         <p className="m-0 mb-2 mt-2 ">
@@ -285,7 +285,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                 <Stack direction="column" spacing={0} style={{ marginTop: 'auto' }}>
                     <Typography component={'span'} className={keySelected === Key.Setting ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                            routeChange(`/setting/${params.storeId}`);
                         }}
                     >
                         <p className="m-0 mb-2 mt-2  text-nav-detail">

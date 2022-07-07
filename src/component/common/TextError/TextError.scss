@@ -1,0 +1,10 @@
+.text-error {
+    margin-top: 10px;
+    &__icon {
+        margin-right: 10px;
+    }
+    &__content {
+        color: #d72c0d;
+        font-size: 14px;
+    }
+}
