@@ -26,7 +26,45 @@ const TimeLine = ({listStatus})=> {
                         key={`key-timeline-${index}`}
                         createdAt={`${pgFormatDate(status.create_at)}`}
                         icon={status.status === "DELETED" ? <CompleteDelete></CompleteDelete> :<CheckIcon></CheckIcon>}
-                        titleStyle={{ fontWeight: 'bold'}}
+                        titleStyle={ status.status === "DELETED" ? {
+                            backgroundColor: `#f7454d`,
+                            color: `#202223`,
+                            fontSize: `13px`,
+                            borderRadius: `50px`,
+                            height: `fit-content`,
+                            width: `100px`,
+                            fontWeight: `bold`,
+                            textAlign: `center`
+                        } : status.status === "COMPLETED" ? {
+                            backgroundColor: `#42e034`,
+                            color: `#202223`,
+                            fontSize: `13px`,
+                            borderRadius: `50px`,
+                            height: `fit-content`,
+                            width: `100px`,
+                            fontWeight: `bold`,
+                            textAlign: `center`
+                        } : status.status === "RESTOCK" ? {
+                            backgroundColor: `#d6d149`,
+                            color: `#202223`,
+                            fontSize: `13px`,
+                            borderRadius: `50px`,
+                            height: `fit-content`,
+                            width: `100px`,
+                            fontWeight: `bold`,
+                            textAlign: `center`
+                        } : {
+                            backgroundColor: `#84a4ea`,
+                            color: `#202223`,
+                            fontSize: `13px`,
+                            borderRadius: `50px`,
+                            height: `fit-content`,
+                            width: `100px`,
+                            fontWeight: `bold`,
+                            textAlign: `center`
+                        }
+                    }
+                        
                         contentStyle={{ boxShadow: 'rgb(0 0 0 / 50%) 0px 1px 3px 0px'}}
                     >
                         {`${status.note ? status.note : ''}`}
