@@ -21,9 +21,9 @@ const NavBar = () => {
                         <img src={logo} className="nav-bar__logo__img" />
                     </Link>
                 </div>
-                <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 ">
-                    <Stack direction="row" spacing={5} className="navigation-menu ">
-                        <Link to={'#'} className="text-nav"> Pricing </Link>
+                <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 " style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
+                    <Stack direction="row" spacing={5} className="navigation-menu">
+                        <Link to={'/pricing-scene'} className="text-nav"> Pricing </Link>
                         <Link to={'#'} className="text-nav"> Learn more </Link>
                         <Link to={'/login'}>
                             <button className="btn btn-success btn-login"> <p className="text-btn-login"> Login </p></button>
@@ -38,9 +38,9 @@ const NavBar = () => {
                         <img src={logo} className="nav-bar__logo__img" />
                     </Link>
                 </div>
-                <div className="col-6 col-sm-6 col-md-5 col-lg-4 col-xl-4 offset-md-3 offset-lg-5 offset-xl-5 p-0">
+                <div className="col-6 col-sm-6 col-md-5 col-lg-4 col-xl-4 offset-md-3 offset-lg-5 offset-xl-5 p-0" style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
                     <Stack direction="row" spacing={3} className="navigation-menu ">
-                        <button className="btn btn-success btn-login" onClick={() => routeChange("/login")}> <p className="text-btn-login"> Đăng nhập </p></button>
+                        <button className="btn btn-success btn-login" onClick={() => routeChange("/login")}> <p className="text-btn-login"> Login </p></button>
                         <Dropdown>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
                                 <i className="fa fa-icon fa-bars"></i>
