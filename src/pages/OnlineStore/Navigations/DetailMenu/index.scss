@@ -74,6 +74,11 @@
             }
         }
     }
+    &__delete {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #c9cccf;
+    }
     &__add-item-modal {
         &--name {
             margin-bottom: 20px;
@@ -83,15 +88,42 @@
             display: flex;
             justify-content: space-between;
         }
+        &__back-btn {
+            cursor: pointer;
+        }
         &--link {
+            &__input-group {
+                display: flex;
+                justify-content: center;
+                &__clear-btn {
+                    margin-left: 7px;
+                }
+            }
             &--list {
+                margin: 5px 49px 0 calc(1.5rem + 20px);
                 &--link-item {
                     margin: 0 -20px;
-                    padding: 5px 20px;
+                    padding: 8px 20px;
                     cursor: pointer;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    .text-normal-1 {
+                        margin-left: 10px;
+                    }
                     &:hover {
                         background-color: #F5F6F8;
                     }
+                    &:first-child {
+                        margin-top: -20px;
+                    }
+                    &:last-child {
+                        margin-bottom: -20px;
+                    }
+                }
+                &__not-found {
+                    margin: -20px 0;
+                    padding: 8px 0;
                 }
             }
         }

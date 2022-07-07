@@ -44,6 +44,7 @@ export const doDeletePage = createAsyncThunk(
 export const pageSlice = createSlice({
     name: 'page',
     initialState: {
+        listPages: [],
         listCustomPages: [],
         listDefaultPages: [],
         isLoading: false
@@ -58,6 +59,7 @@ export const pageSlice = createSlice({
         });
         builder.addCase(doGetListPages.fulfilled, (state, action) => {
             const pages = action.payload;
+            state.listPages = pages;
             const listAllPages = pages.reduce((list, item) => {
                 if (item.is_default) list.default.push(item)
                 else list.custom.push(item)

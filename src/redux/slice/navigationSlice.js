@@ -40,6 +40,16 @@ export const doUpdateMenu = createAsyncThunk(
     }
 );
 
+export const doDeleteMenu = createAsyncThunk(
+    'navigation@delete/DeleteMenu',
+    async (menuId) => {
+        const result = await NavigationApi.deleteMenu(menuId);
+        return {
+            id: menuId
+        };
+    }
+);
+
 export const doCreateMenuItem = createAsyncThunk(
     'navigation@post/CreateMenuItem',
     async (itemObj) => {
@@ -137,6 +147,23 @@ export const navigationSlice = createSlice({
             state.isLoading = false
         })
         builder.addCase(doUpdateMenu.rejected, (state, action) => {
+            state.isLoading = false
+        });
+
+        // delete menu
+        builder.addCase(doDeleteMenu.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doDeleteMenu.fulfilled, (state, action) => {
+            const menuId = action.payload.id;
+
+            const index = state.listNavigation.findIndex(item => item.id === menuId)
+            if (index >= 0) {
+                state.listNavigation.splice(index, 1);
+            }
+            state.isLoading = false
+        })
+        builder.addCase(doDeleteMenu.rejected, (state, action) => {
             state.isLoading = false
         });
 

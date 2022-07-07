@@ -1,0 +1,113 @@
+.create-discount {
+    max-width: 1200px;
+    margin: 30px auto;
+    &__header {
+        margin-bottom: 30px;
+    }
+    .blank-card {
+        margin-bottom: 30px;
+    }
+    &__code-card {
+        &__header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eaeaec;
+        }
+        &__body {
+            &__code-input {
+                display: flex;
+                align-items: center;
+            }
+            .text-normal-2 {
+                margin-top: 20px;
+            }
+        }
+        &__loader {
+            margin-right: 10px;
+            svg {
+                width: 16px !important;
+            }
+            circle {
+                // stroke: #ffffff !important;
+                stroke-width: 7 !important;
+            }
+        }
+        &__currency {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            .text-normal-1 {
+                margin-right: 10px;
+            }
+        }
+    }
+    &__value-card {
+        .text-title-2 {
+            margin-bottom: 20px;
+        }
+        &__tabs {
+            display: flex;
+            // border: 1px solid #c9cccf;
+            // border-radius: 6px;
+            align-items: center;
+            width: fit-content;
+            height: fit-content;
+            &--item {
+                width: 130px;
+                height: 36px;
+                padding: 7px 0;
+                text-align: center;
+                font-size: 14px;
+                color: #202223;
+                cursor: pointer;
+                font-weight: bold;
+                border: 1px solid #c9cccf;
+                &:first-child {
+                    border-right: none;
+                    border-top-left-radius: 6px;
+                    border-bottom-left-radius: 6px;
+                }
+                &:last-child {
+                    border-top-right-radius: 6px;
+                    border-bottom-right-radius: 6px;
+                }
+                &--active {
+                    background-color: #6d7175;
+                    color: white;
+                }
+            }
+        }
+    }
+    &__condition-card {
+        .text-title-2 {
+            margin-bottom: 20px;
+        }
+    }
+    &__date-card {
+        .text-title-2 {
+            margin-bottom: 20px;
+        }
+        &__check-box {
+            margin-top: 20px;
+        }
+    }
+    &__limit-card {
+        .text-title-2 {
+            margin-bottom: 20px;
+        }
+    }
+    &__summary {
+        &__code {
+            margin: 20px 0;
+        }
+        &__title {
+            font-size: 12px !important;
+        }
+    }
+    &__save {
+        padding-top: 20px;
+        border-top: 1px solid #d7d7d7;
+        display: flex;
+        justify-content: end;
+    }
+}
