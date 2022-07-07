@@ -12,7 +12,10 @@ export const CustomInput = ({
     disabled,
     onFocus,
     onBlur,
-    icon
+    icon,
+    type,
+    step,
+    unit
 }) => {
 
     return (
@@ -32,8 +35,14 @@ export const CustomInput = ({
                     onChange={onChange}
                     onFocus={onFocus}
                     onBlur={onBlur}
+                    type={type}
+                    step={step}
                 />
             {/* </div> */}
+            {unit &&
+            <div className='custom-input__unit'>
+                {unit}
+            </div>}
         </div>
     )
 }

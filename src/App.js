@@ -24,6 +24,9 @@ import ManageBanner from "./pages/ManageBanner";
 import ManageOrder from "./pages/ManageOrder";
 import ManageInventory from "./pages/ManageInventory";
 import { Setting } from "./pages/Setting";
+import { Discount } from "./pages/Discount";
+import { CreateDiscount } from "./pages/Discount/CreateDiscount";
+import { DetailDiscount } from "./pages/Discount/DetailDiscount";
 
 const App = () => {
   return(
@@ -51,6 +54,9 @@ const App = () => {
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/store-detail/manage-order/:storeId' element={<ManageOrder/>}/>
           <Route path='/store-detail/manage-inventory/:storeId' element={<ManageInventory/>}/>
+          <Route path='/store-detail/manage-discount/:storeId' element={<Discount/>}/>
+          <Route path='/store-detail/manage-discount/:storeId/new' element={<CreateDiscount/>}/>
+          <Route path='/store-detail/manage-discount/:storeId/:discountId' element={<DetailDiscount/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/notify/:type/:email' element={<Notify/>}/>
           <Route path='/notify/:type' element={<Notify/>}/>

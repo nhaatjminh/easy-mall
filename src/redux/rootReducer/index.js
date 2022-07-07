@@ -7,6 +7,7 @@ import navigation from '../slice/navigationSlice';
 import page from '../slice/pageSlice';
 import user from '../slice/userSlice';
 import theme from '../slice/themeSlice';
+import discount from '../slice/discountSlice';
 
 export const rootReducer = combineReducers ({
     listStore,
@@ -16,5 +17,6 @@ export const rootReducer = combineReducers ({
     navigation,
     page,
     user,
-    theme
+    theme,
+    discount
 })
