@@ -31,7 +31,7 @@ const ManageBanner = () => {
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300 },
+    { id: 'name', label: 'Title', minWidth: 300, sort: 'string' },
     {
       id: 'description',
       label: 'Description',

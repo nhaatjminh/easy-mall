@@ -41,18 +41,20 @@ const ManageOrder = () => {
     return [day, month, year].join('/');
 }
   const columns = [
-    { id: 'id', label: 'Order', minWidth: 300 },
+    { id: 'id', label: 'Order', minWidth: 300, sort: 'string' },
     {
-      id: 'status_date',
+      id: 'show_date',
       label: 'Date',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'date'
     },
     {
       id: 'name',
       label: 'Customer',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'string'
     },{
       id: 'total_with_currency',
       label: 'Total',
@@ -63,6 +65,7 @@ const ManageOrder = () => {
       label: 'Fulfillment status',
       minWidth: 170,
       align: 'right',
+      sort: 'string',
       classNameWithData: (data) => {
         if (data === "RESTOCK") return 'restock-order'
         else if (data === "COMPLETED") return 'complete-order'
@@ -73,7 +76,8 @@ const ManageOrder = () => {
       id: 'total_item',
       label: 'Items',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'number'
     },
   ];
   const editFunction = (selected) => {
@@ -100,7 +104,7 @@ const ManageOrder = () => {
               let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
               return {
                 ...order,
-                status_date: formatDate(date),
+                show_date: formatDate(date),
                 total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
               }
             })
@@ -121,7 +125,7 @@ const ManageOrder = () => {
           let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
           return {
             ...order,
-            status_date: formatDate(date),
+            show_date: formatDate(date),
             total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
           }
         })
@@ -149,7 +153,7 @@ const ManageOrder = () => {
             let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
             return {
               ...order,
-              status_date: formatDate(date),
+              show_date: formatDate(date),
               total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
             }
           })

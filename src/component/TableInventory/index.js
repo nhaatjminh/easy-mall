@@ -7,28 +7,45 @@ import { visuallyHidden } from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TableRowInventory from "./TableRowInventory";
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
+function descendingComparator(a, b, orderBy, typeSort) {
+  if (typeSort === 'number') {
+    if (Number(b[orderBy]) < Number(a[orderBy])) {
+      return -1;
+    }
+    if (Number(b[orderBy]) > Number(a[orderBy])) {
+      return 1;
+    }
+    return 0;
+  } else if (typeSort === 'string') {
+    if (b[orderBy] && a[orderBy]) {
+      if (b[orderBy].localeCompare(a[orderBy]) <= -1) {
+        return -1;
+      }
+      if (b[orderBy].localeCompare(a[orderBy]) >= 1) {
+        return 1;
+      }
+      return 0;
+    } else if (b[orderBy] && !a[orderBy]) {
+      return 1
+    } else if (!b[orderBy] && a[orderBy]) {
+      return -1
+    } else return 0;
   }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
 }
 
-function getComparator(order, orderBy) {
+function getComparator(order, orderBy, columnsOfData) {
+  let typeSort = columnsOfData.find((column) => column?.id === orderBy)?.sort;
   return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a, b) => descendingComparator(a, b, orderBy, typeSort)
+    : (a, b) => -descendingComparator(a, b, orderBy, typeSort);
 }
 
 // This method is created for cross-browser compatibility, if you don't
 // need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
+function stableSort(array, comparator, columnsOfData) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
+    const order = comparator(a[0], b[0], columnsOfData);
     if (order !== 0) {
       return order;
     }
@@ -49,23 +66,28 @@ function EnhancedTableHead(props) {
             {headCells.map((headCell, index) => (
               <TableCell
                 key={index}
-                align={headCell.numeric ? 'right' : 'left'}
+                align={headCell?.align || 'center'}
                 padding={headCell.disablePadding ? 'none' : 'normal'}
                 sortDirection={orderBy === headCell.id ? order : false}
               >
-                <TableSortLabel
-                  active={orderBy === headCell.id}
-                  direction={orderBy === headCell.id ? order : 'asc'}
-                  onClick={createSortHandler(headCell.id)}
-                  hideSortIcon
-                >
-                  {headCell.label}
-                  {orderBy === headCell.id ? (
-                    <Box component="span" sx={visuallyHidden}>
-                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                    </Box>
-                  ) : null}
-                </TableSortLabel>
+                {
+                  headCell.sort ? 
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={orderBy === headCell.id ? order : 'asc'}
+                    onClick={createSortHandler(headCell.id)}
+                    hideSortIcon
+                  >
+                    {headCell.label}
+                    {orderBy === headCell.id ? (
+                      <Box component="span" sx={visuallyHidden}>
+                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                      </Box>
+                    ) : null}
+                  </TableSortLabel>
+                  : <>{headCell.label}</>
+                }
+                
               </TableCell>
             ))}
             
@@ -111,7 +133,7 @@ const TableInventory = ({data, columnsOfData, editItem}) => {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                  {rows?.length ? stableSort(rows, getComparator(order, orderBy))
+                  {rows?.length ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => {
                     if (row.is_variant) {
