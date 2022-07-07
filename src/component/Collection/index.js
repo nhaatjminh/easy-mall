@@ -1,7 +1,7 @@
 import React from "react";
 import FormCollection from './FormCollection'
 import './index.css';
-const Collection = ( {mode, oldForm, returnTable })=> {
+const Collection = ( {mode, oldForm, returnTable, setIsEdit })=> {
     // use redux to manage state
     return (
         <>
@@ -15,7 +15,7 @@ const Collection = ( {mode, oldForm, returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Add"} Collection</h5>
             </div>    
         </div>
-        <FormCollection key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormCollection>
+        <FormCollection setIsEdit={setIsEdit} key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormCollection>
         </>
     );
 }

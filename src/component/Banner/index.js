@@ -1,7 +1,7 @@
 import React from "react";
 import FormBanner from "./FormBanner";
 import './index.css';
-const Banner = ( {mode, oldForm, returnTable })=> {
+const Banner = ( {mode, oldForm, returnTable, setIsEdit })=> {
     // use redux to manage state
     return (
         <>
@@ -15,7 +15,7 @@ const Banner = ( {mode, oldForm, returnTable })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Add"} Banner</h5>
             </div>    
         </div>
-        <FormBanner key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormBanner>
+        <FormBanner setIsEdit={setIsEdit} key={`collection-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormBanner>
         </>
     );
 }

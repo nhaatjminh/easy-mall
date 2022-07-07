@@ -12,7 +12,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { doSwitchSelectedStore, doGetListStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
 import { logout } from "../../helpers/login";
-const HeaderDetailStore = ({nameAccount, keySelected}) => {
+import Swal from "sweetalert2";
+const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
     //use redux to manage state
     const dispatch = useDispatch();
     let routeChange = useNavigate();
@@ -32,6 +33,25 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
             })
         }
     }, [])
+    const warningWhenLeave = (applyFunction) => {
+        if (isEdit) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "If you leave page. All new data will be reverted",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    applyFunction()
+                }
+              })
+        } else {
+            applyFunction()
+        }
+    }
     return (
         <>
 
@@ -50,9 +70,12 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                             <Dropdown.Menu>
                                 {listStoreInStore ? listStoreInStore.map((store, index) => (
                                     <div key={index} onClick={() => {
-                                        dispatch(doSwitchSelectedStore(store.name));
-                                        dispatch(doSwitchBaseUrl(store.store_link));
-                                        routeChange(`/store-detail/manage-home/${store.id}`);
+                                        
+                                        warningWhenLeave(() => {
+                                            dispatch(doSwitchSelectedStore(store.name));
+                                            dispatch(doSwitchBaseUrl(store.store_link));
+                                            routeChange(`/store-detail/manage-home/${store.id}`);
+                                        })
                                     }}>
                                         <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                     </div>
@@ -76,9 +99,21 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile`)}> <p className="text-nav">Profile</p></Dropdown.Item>
-                                <Dropdown.Item href="#" onClick={() => routeChange('/store-login')}> <p className="text-nav">Stores</p></Dropdown.Item>
-                                <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        routeChange(`/profile`)
+                                    })
+                                }}> <p className="text-nav">Profile</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        routeChange('/store-login')
+                                    })
+                                }}> <p className="text-nav">Stores</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        logout()
+                                    })
+                                }}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                         <div className="circle  float-right">
@@ -106,7 +141,7 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                                 </Offcanvas.Header>
                                 <Offcanvas.Body >
                                     
-                                    <NavBarDetailStore keySelected={keySelected} isDesktop={false}></NavBarDetailStore>
+                                    <NavBarDetailStore isEdit={isEdit} keySelected={keySelected} isDesktop={false}></NavBarDetailStore>
                                 </Offcanvas.Body>
                             </Navbar.Offcanvas>
                         </Container>
@@ -126,9 +161,22 @@ const HeaderDetailStore = ({nameAccount, keySelected}) => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#" onClick={() => routeChange(`/profile`)}> <p className="text-nav">Profile</p></Dropdown.Item>
-                                <Dropdown.Item href="#" onClick={() => routeChange('/store-login')}> <p className="text-nav">Stores</p></Dropdown.Item>
-                                <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
+                                
+                            <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        routeChange(`/profile`)
+                                    })
+                                }}> <p className="text-nav">Profile</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        routeChange('/store-login')
+                                    })
+                                }}> <p className="text-nav">Stores</p></Dropdown.Item>
+                                <Dropdown.Item href="#" onClick={() => {
+                                    warningWhenLeave(() => {
+                                        logout()
+                                    })
+                                }}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                         <div className="circle  float-right">

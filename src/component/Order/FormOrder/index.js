@@ -48,7 +48,7 @@ const MenuProps = {
     },
   },
 };
-const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const { handleSubmit, reset, control, resetField } = useForm();
@@ -256,6 +256,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     title: 'Success!',
                     text: 'Create successful Order!',
                 }).then((result) => {
+                    setIsEdit(false);
                     returnAfterAdd();
                 })
             } else {

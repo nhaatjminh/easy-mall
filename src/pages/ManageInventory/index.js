@@ -23,6 +23,7 @@ const ManageInventory = () => {
   const [loading, setLoading] = useState(false);
   const unmounted = useRef(false);
   const params = useParams();
+  const [isEdit, setIsEdit] = useState(false);
   const columns = [
     { id: 'title', label: 'Product', minWidth: 170, align: 'left', sort: 'string' },
     {
@@ -91,15 +92,16 @@ const ManageInventory = () => {
     }))
     .then((result) => {
       setRows(result.payload);
-      setLoading(false)
+      setLoading(false);
+      setIsEdit(false);
     });
   }
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Inventory}></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Inventory}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Inventory}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Inventory}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -131,7 +133,7 @@ const ManageInventory = () => {
                       </>)
                       : (
                       <>
-                        <TableInventory editItem={editItem} data={rows} columnsOfData={columns}></TableInventory>
+                        <TableInventory  setIsEdit={(bool) => setIsEdit(bool)} editItem={editItem} data={rows} columnsOfData={columns}></TableInventory>
                       </>
                       )}
                     </div>

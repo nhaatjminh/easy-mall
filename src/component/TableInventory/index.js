@@ -99,7 +99,7 @@ function EnhancedTableHead(props) {
     );
 }
 
-const TableInventory = ({data, columnsOfData, editItem}) => {
+const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -138,9 +138,9 @@ const TableInventory = ({data, columnsOfData, editItem}) => {
                   .map((row,index) => {
                     if (row.is_variant) {
                         return row.variants?.map((variant) => {
-                            return <TableRowInventory editItem={editItem} variantId={variant.id} variant={variant} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
+                            return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} variantId={variant.id} variant={variant} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
                         })
-                    } else return <TableRowInventory editItem={editItem} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
+                    } else return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
                   }) : <></>}
               </TableBody>
             </Table>

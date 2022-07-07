@@ -30,6 +30,7 @@ const ManageCollection = () => {
   const [rows, setRows] = useState(collectionList);
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
+  const [isEdit, setIsEdit] = useState(false);
   const columns = [
     { id: 'name', label: 'Title', minWidth: 300, sort: 'string' },
     {
@@ -44,6 +45,7 @@ const ManageCollection = () => {
     dispatch((doGetOneCollections(selected)))
     .then((result) => {
       setMode('EDIT');
+      setIsEdit(true);
       setOldForm(result.payload);  
       setShowAddCollection(true);
       Swal.close();
@@ -146,10 +148,10 @@ const ManageCollection = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Collection}></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Collection}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Collection}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Collection}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -173,6 +175,7 @@ const ManageCollection = () => {
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddCollection(true);
                           setMode("ADD")
+                          setIsEdit(true);
                         }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Collection </p></button>
                       </Stack>
                       <div className="table">
@@ -188,7 +191,7 @@ const ManageCollection = () => {
                         )}
                       </div>
                     </>
-                  : <Collection mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
+                  : <Collection  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
                         
                 </>
               </div>

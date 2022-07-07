@@ -1,7 +1,7 @@
 import React from "react";
 import FormProduct from './FormProduct'
 import './index.css';
-const Product = ( {mode, returnTable, oldForm })=> {
+const Product = ( {mode, returnTable, oldForm,  setIsEdit })=> {
     // use redux to manage state
     return (
         <>
@@ -15,7 +15,7 @@ const Product = ( {mode, returnTable, oldForm })=> {
                 <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Add"} Product</h5>
             </div>    
         </div>
-        <FormProduct mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormProduct>
+        <FormProduct setIsEdit={setIsEdit} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormProduct>
         </>
     );
 }

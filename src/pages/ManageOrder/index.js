@@ -27,6 +27,7 @@ const ManageOrder = () => {
   const [rows, setRows] = useState();
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
+  const [isEdit, setIsEdit] = useState(false);
   const formatDate = (date) => {
     let d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -171,10 +172,10 @@ const ManageOrder = () => {
   
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Order}></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Order}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -197,7 +198,8 @@ const ManageOrder = () => {
                         />          
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddOrder(true);
-                          setMode("ADD")
+                          setMode("ADD");
+                          setIsEdit(true);
                         }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Order </p></button>
                       </Stack>
                       <div className="table">
@@ -213,7 +215,7 @@ const ManageOrder = () => {
                         )}
                       </div>
                     </>
-                  : <Order mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Order>}
+                  : <Order  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Order>}
                         
                 </>
               </div>

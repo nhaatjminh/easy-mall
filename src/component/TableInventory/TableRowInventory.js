@@ -15,7 +15,7 @@ from '@mui/material';
 import './index.css';
 import { useParams } from "react-router-dom";
 
-const TableRowInventory = ({columnsOfData, index, row, productId, variantId, is_variant, variant, editItem}) => {
+const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, variantId, is_variant, variant, editItem}) => {
     
   const params = useParams();
   const [updateSKUState, setUpdateSKUState] = useState(false);
@@ -32,6 +32,8 @@ const TableRowInventory = ({columnsOfData, index, row, productId, variantId, is_
     if (updateSKUState) object.sku = valueSku;
     if (updateQuantityState) object.quantity = valueQuantity;
     editItem(object);
+    
+
   }
   return (
     <TableRow
@@ -51,12 +53,14 @@ const TableRowInventory = ({columnsOfData, index, row, productId, variantId, is_
                 ? <TextField onChange={(e) => {
                   setUpdateQuantityState(true);
                   setValueQuantity(e.target.value);
+                  setIsEdit(true);
                 }} 
                  type='number' value={valueQuantity} className="text-field-input  text-content" inputProps={{ maxLength: 12}} /> 
                 : headCell.id === 'sku'
                 ? <TextField onChange={(e) => {
                   setUpdateSKUState(true);
-                  setValueSku(e.target.value);
+                  setValueSku(e.target.value);                  
+                  setIsEdit(true);
                 }} value={valueSku} className="text-field-input  text-content"/>
                 : 
                 <>
