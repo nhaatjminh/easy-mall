@@ -25,15 +25,29 @@
     margin-left: 1.5rem;
     width: 300px;
 }
-.active-product {
-    color:green !important;
+.active-product div{
+    margin: 5px auto;
+    background-color: #aee9d1;
+    color: #202223;
+    font-size: 13px;
+    border-radius: 50px;
+    padding: 1px 10px;
+    height: fit-content;
+    width: 75px;
 }
-.draft-product {
-    color:red !important;
+.draft-product div{
+    margin: 5px auto;
+    background-color: #E4E5E7;
+    color: #202223;
+    font-size: 13px;
+    border-radius: 50px;
+    padding: 1px 10px;
+    height: fit-content;
+    width: 75px;
 }
 @media (max-width: 1065px) {    
     .desktop-table {
-        width: 100%;
+        width: 92%;
     }
 }
 @media (max-width: 500px) {    

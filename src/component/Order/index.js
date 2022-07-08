@@ -1,7 +1,7 @@
 import React from "react";
 import FollowOrder from "./FollowOrder";
 import FormOrder from "./FormOrder";
-const Order = ( {mode, oldForm, returnTable })=> {
+const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
     // use redux to manage state
     return (
         <>
@@ -16,7 +16,7 @@ const Order = ( {mode, oldForm, returnTable })=> {
             </div>    
         </div>
         {mode === 'ADD'
-        ? <FormOrder key={`order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder> 
+        ? <FormOrder setIsEdit={setIsEdit} key={`order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder> 
         : <FollowOrder  key={`follow-order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FollowOrder> }
         </>
     );

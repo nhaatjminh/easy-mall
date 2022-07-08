@@ -45,7 +45,7 @@ const MenuProps = {
     },
   },
 };
-const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const urlStore = useSelector((state) => state.listStore.baseStoreUrl);
@@ -270,6 +270,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             title: 'Success!',
                             text: 'Create successful collection!',
                         }).then((result) => {
+                            setIsEdit(false)
                             returnAfterAdd();
                         })
                     });
@@ -286,6 +287,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     dispatch(doUpdateCollectionBanner(updateObj))
                     .then((res) => {
                         setIsLoading(false);
+                        setIsEdit(false)
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -319,6 +321,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                 })).then((result) => {
                     setIsLoading(false);
                     returnAfterAdd();
+                    setIsEdit(false)
                 })
             }
         })

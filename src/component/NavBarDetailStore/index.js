@@ -8,14 +8,34 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import { Key } from "../../constants/constForNavbarDetail";
+import Swal from "sweetalert2";
 
-const NavBarDetailStore = ({ isDesktop, keySelected }) => {
+const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
     const params = useParams();
     let routeChange = useNavigate();
     //use redux to manage state
     const dispatch = useDispatch();
     const nameStore = useSelector((state) => state.listStore.selectedName);
     const listStoreInStore = useSelector((state) => state.listStore.listStore);
+    const warningWhenLeave = (applyFunction) => {
+        if (isEdit) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "If you leave page. All new data will be reverted",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    applyFunction()
+                }
+              })
+        } else {
+            applyFunction()
+        }
+    }
     return (
         <>
             <Stack direction="column" spacing={3} alignItems="stretch" className={`all-nav-detail   ${isDesktop ? "desktop" : "mobile"}`} >
@@ -35,9 +55,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                                 <Dropdown.Menu>
                                     {listStoreInStore ? listStoreInStore.map((store, index) => (
                                         <div onClick={() => {
-                                            dispatch(doSwitchSelectedStore(store.name));
-                                            dispatch(doSwitchBaseUrl(store.store_link));
-                                            routeChange(`/store-detail/manage-home/${store.id}`)
+                                            warningWhenLeave(() => {
+                                                dispatch(doSwitchSelectedStore(store.name));
+                                                dispatch(doSwitchBaseUrl(store.store_link));
+                                                routeChange(`/store-detail/manage-home/${store.id}`)
+                                            })
                                         }}>
                                             <Dropdown.Item href="#" key={index}> <p className="text-nav m-0">{store.name}</p> <p >{store.storeLink}</p> </Dropdown.Item>
                                         </div>
@@ -48,7 +70,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Stack>}
                     <Typography component={'span'} className={keySelected === Key.Home ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            routeChange(`/store-detail/manage-home/${params.storeId}`);
+                            warningWhenLeave(() => {
+                                routeChange(`/store-detail/manage-home/${params.storeId}`);
+                            })
                         }}
                     >
                         <p className="m-0 mb-2 mt-2  text-nav-detail">
@@ -58,7 +82,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === Key.Order ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            routeChange(`/store-detail/manage-order/${params.storeId}`);
+                            warningWhenLeave(() => {
+                                routeChange(`/store-detail/manage-order/${params.storeId}`);
+                            })
                         }}
                     >
                         <p className="m-0 mb-2 mt-2 ">
@@ -68,7 +94,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </Typography>
                     <Typography component={'span'} className={keySelected === Key.Product ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            routeChange(`/store-detail/manage-product/${params.storeId}`)
+                            warningWhenLeave(() => {
+                                routeChange(`/store-detail/manage-product/${params.storeId}`)
+                            })
                         }}
                     >
                         <p className="m-0 mb-2 mt-2 ">
@@ -83,7 +111,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             (keySelected === Key.GiftCard) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Inventory ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-inventory/${params.storeId}`)
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-inventory/${params.storeId}`)
+                                })
                             }}
                         >
                             <p className="m-0 ml-0 mb-2 mt-2 text-extend font-weight-bold">
@@ -91,7 +121,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             </p>
                         </Typography><Typography component={'span'} className={keySelected === Key.Collection ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                                })
                             }}
                         >
                             <p className="m-0 ml-0 mb-2 mt-2 text-extend font-weight-bold">
@@ -102,7 +134,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </Stack>
                     <Typography component={'span'} className={keySelected === Key.Banner ? "nav-element nav-element-selected" : "nav-element "}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-banner/${params.storeId}`)
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-banner/${params.storeId}`)
+                                })
                             }}
                         >
                             <p className="m-0 mb-2 mt-2">
@@ -163,7 +197,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                     </p>
                     <Typography component={'span'} className={keySelected === Key.OnlineStore ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                            warningWhenLeave(() => {
+                                routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                            })
                         }}
                     >
                         <p className="m-0 mb-2 ">
@@ -184,7 +220,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             (keySelected === Key.Page) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                })
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -193,7 +231,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Domain ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-domain/${params.storeId}`);
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-domain/${params.storeId}`);
+                                })
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -210,7 +250,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                             </p>
                         </Typography><Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-page/${params.storeId}`);
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-page/${params.storeId}`);
+                                })
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
@@ -219,7 +261,9 @@ const NavBarDetailStore = ({ isDesktop, keySelected }) => {
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
-                                routeChange(`/store-detail/manage-navigation/${params.storeId}`);
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-navigation/${params.storeId}`);
+                                })
                             }}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">

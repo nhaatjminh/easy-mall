@@ -30,8 +30,9 @@ const ManageBanner = () => {
   const [rows, setRows] = useState(collectionList);
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
+  const [isEdit, setIsEdit] = useState(false);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300 },
+    { id: 'name', label: 'Title', minWidth: 300, sort: 'string' },
     {
       id: 'description',
       label: 'Description',
@@ -44,6 +45,7 @@ const ManageBanner = () => {
     dispatch((doGetOneBanner(selected)))
     .then((result) => {
       setMode('EDIT');
+      setIsEdit(true);
       setOldForm(result.payload);  
       setShowAddCollection(true);
       Swal.close();
@@ -145,10 +147,10 @@ const ManageBanner = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Banner}></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Banner}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Banner}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Banner}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -171,7 +173,8 @@ const ManageBanner = () => {
                         />          
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddCollection(true);
-                          setMode("ADD")
+                          setMode("ADD");
+                          setIsEdit(true);
                         }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Banner </p></button>
                       </Stack>
                       <div className="table">
@@ -187,7 +190,9 @@ const ManageBanner = () => {
                         )}
                       </div>
                     </>
-                  : <Banner mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
+                  : <Banner setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => {
+                    setShowAddCollection(false)
+                  }} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
                         
                 </>
               </div>

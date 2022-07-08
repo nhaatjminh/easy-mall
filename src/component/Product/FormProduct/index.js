@@ -27,7 +27,7 @@ import CustomType from "../CustomType";
 import { BaseNumberField } from '../../common/BaseNumberField';
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 
-const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     const collectionList = useSelector((state) => state.collectionSlice.listCollection);
     let form = useRef(oldForm);
@@ -437,6 +437,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     }))
                     .then(() => {
                         setIsLoading(false);
+                        setIsEdit(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -456,6 +457,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     dispatch(doCreateProduct(createObj))
                     .then((res) => {
                         setIsLoading(false);
+                        setIsEdit(false);
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -487,6 +489,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     id: form.current.product.id
                 })).then((result) => {
                     setIsLoading(false);
+                    setIsEdit(false);
                     returnAfterAdd();
                 })
             }

@@ -31,3 +31,7 @@
 .table-height {
     max-height: calc(100vh - 350px);
 }
+.table-height table {
+    overflow-x: auto;
+    min-width: 750px;
+}

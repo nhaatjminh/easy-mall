@@ -48,7 +48,7 @@ const MenuProps = {
     },
   },
 };
-const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const { handleSubmit, reset, control, resetField } = useForm();
@@ -238,11 +238,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
         if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
-        form.current.products.map((product) => {
-            delete product.total_to_show;
-            return product
-        })
-        form.current.products = form.current.products.filter(product => product.quantity > 0);
+        if (form.current.products) {
+            form.current.products?.map((product) => {
+                delete product.total_to_show;
+                return product
+            })
+            form.current.products = form.current.products?.filter(product => product.quantity > 0);
+        } else {
+            form.current.products = [];
+        }
         const createObj = {
             storeId: params.storeId,
             orderObj: form.current
@@ -256,6 +260,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     title: 'Success!',
                     text: 'Create successful Order!',
                 }).then((result) => {
+                    setIsEdit(false);
                     returnAfterAdd();
                 })
             } else {

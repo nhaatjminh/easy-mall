@@ -27,6 +27,7 @@ const ManageOrder = () => {
   const [rows, setRows] = useState();
   const [filterSeach, setFilterSearch] = useState(null);
   const dbValue = useDebounce(filterSeach, 300);
+  const [isEdit, setIsEdit] = useState(false);
   const formatDate = (date) => {
     let d = new Date(date);
     let month = '' + (d.getMonth() + 1);
@@ -41,18 +42,20 @@ const ManageOrder = () => {
     return [day, month, year].join('/');
 }
   const columns = [
-    { id: 'id', label: 'Order', minWidth: 300 },
+    { id: 'id', label: 'Order', minWidth: 300, sort: 'string' },
     {
-      id: 'status_date',
+      id: 'show_date',
       label: 'Date',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'date'
     },
     {
       id: 'name',
       label: 'Customer',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'string'
     },{
       id: 'total_with_currency',
       label: 'Total',
@@ -63,6 +66,7 @@ const ManageOrder = () => {
       label: 'Fulfillment status',
       minWidth: 170,
       align: 'right',
+      sort: 'string',
       classNameWithData: (data) => {
         if (data === "RESTOCK") return 'restock-order'
         else if (data === "COMPLETED") return 'complete-order'
@@ -73,7 +77,8 @@ const ManageOrder = () => {
       id: 'total_item',
       label: 'Items',
       minWidth: 170,
-      align: 'right'
+      align: 'right',
+      sort: 'number'
     },
   ];
   const editFunction = (selected) => {
@@ -100,7 +105,7 @@ const ManageOrder = () => {
               let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
               return {
                 ...order,
-                status_date: formatDate(date),
+                show_date: formatDate(date),
                 total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
               }
             })
@@ -121,7 +126,7 @@ const ManageOrder = () => {
           let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
           return {
             ...order,
-            status_date: formatDate(date),
+            show_date: formatDate(date),
             total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
           }
         })
@@ -149,7 +154,7 @@ const ManageOrder = () => {
             let price = order.discount_price ? order.original_price - order.discount_price  : order.original_price
             return {
               ...order,
-              status_date: formatDate(date),
+              show_date: formatDate(date),
               total_with_currency: `${order.currency === 'USD' ? parseLocaleNumber(price, 'en-US') : parseLocaleNumber(price, 'vi-VN')} ${order.currency}`
             }
           })
@@ -167,10 +172,10 @@ const ManageOrder = () => {
   
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Order}></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Order}></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">   
@@ -193,7 +198,8 @@ const ManageOrder = () => {
                         />          
                         <button className="btn btn-success btn-form-product" onClick={() => {
                           setShowAddOrder(true);
-                          setMode("ADD")
+                          setMode("ADD");
+                          setIsEdit(true);
                         }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Order </p></button>
                       </Stack>
                       <div className="table">
@@ -209,7 +215,7 @@ const ManageOrder = () => {
                         )}
                       </div>
                     </>
-                  : <Order mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Order>}
+                  : <Order  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Order>}
                         
                 </>
               </div>

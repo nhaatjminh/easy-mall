@@ -14,8 +14,6 @@ import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
-import { ProductApi } from "../../service/api";
-
 const ManageStoreProduct = () => {
   
   const dispatch = useDispatch();
@@ -24,10 +22,11 @@ const ManageStoreProduct = () => {
   const [oldForm, setOldForm] = useState({});
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState() // just add or edit
+  const [isEdit, setIsEdit] = useState(false);
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170, align: 'center' },
+    { id: 'title', label: 'Title', minWidth: 170, align: 'center', sort: 'string' },
     {
       id: 'status',
       label: 'Status',
@@ -36,25 +35,29 @@ const ManageStoreProduct = () => {
       classNameWithData: (data) => {
         if (data === "Active") return 'active-product'
         return 'draft-product'
-      }
+      },
+      sort: 'string'
     },
     {
       id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
       align: 'center',
+      sort: 'number'
     },
     {
       id: 'type',
       label: 'Type',
       minWidth: 170,
       align: 'center',
+      sort: 'string'
     },
     {
       id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
-      align: 'center'
+      align: 'center',
+      sort: 'string'
     },
   ];
   const [filterSeach, setFilterSearch] = useState();
@@ -68,6 +71,7 @@ const ManageStoreProduct = () => {
       setMode('EDIT');
       setOldForm(result.payload);  
       setShowAddProduct(true);
+      setIsEdit(true);
       Swal.close();
     })
   }
@@ -166,10 +170,10 @@ const ManageStoreProduct = () => {
 }, [dbValue])
   return (
     <>
-      <HeaderDetailStore keySelected={Key.Product} ></HeaderDetailStore>
+      <HeaderDetailStore isEdit={isEdit} keySelected={Key.Product} ></HeaderDetailStore>
       <div className="row callpage" >
           <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4  navbar-detail">
-              <NavBarDetailStore  isDesktop={true} keySelected={Key.Product}></NavBarDetailStore>
+              <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Product}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
               <div className="row ">
@@ -201,6 +205,7 @@ const ManageStoreProduct = () => {
                     <button className="btn btn-success btn-form-product" onClick={() => {
                       setShowAddProduct(true);
                       setMode('ADD');
+                      setIsEdit(true);
                     }} ><p className="text-btn-form-product font-size-0-85-rem-max500"> Add Product </p></button>
                   </Stack>
                 </Stack>
@@ -216,7 +221,7 @@ const ManageStoreProduct = () => {
                     </>)}
                 </div>
               </>
-              : <AddProduct mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></AddProduct>}
+              : <AddProduct  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></AddProduct>}
                       
               </>
               </div>

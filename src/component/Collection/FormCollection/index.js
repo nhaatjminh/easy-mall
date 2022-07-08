@@ -54,7 +54,7 @@ const MenuProps = {
     },
   },
 };
-const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const params = useParams();
@@ -132,6 +132,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     dispatch(doCreateCollection(createObj))
                     .then((res) => {
                         setIsLoading(false);
+                        setIsEdit(false)
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -155,6 +156,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
                     dispatch(doUpdateCollection(updateObj))
                     .then((res) => {
                         setIsLoading(false);
+                        setIsEdit(false)
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -255,6 +257,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd})=> { // mode add or upda
           }).then((result) => {
             if (result.isConfirmed) {
                 setIsLoading(true);
+                setIsEdit(false)
                 dispatch(doDeleteCollection({
                     id: form.current.collection.id
                 })).then((result) => {
