@@ -9,6 +9,27 @@
     &__table {
         padding-bottom: 0;
         margin-bottom: 30px;
+        .accordion-body {
+            padding: 0 20px;
+        }
+        .accordion-item {
+            &:last-of-type {
+                border-bottom-right-radius: 8px;
+                border-bottom-left-radius: 8px;
+                .accordion-button.collapsed {
+                    border-bottom-right-radius: 8px;
+                    border-bottom-left-radius: 8px;
+                }
+            }
+            &:first-of-type {
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                .accordion-button {
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
+            }
+        }
         &--title {
             display: flex;
             justify-content: space-between;
