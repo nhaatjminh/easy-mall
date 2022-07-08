@@ -66,7 +66,7 @@ const Page = ({ }) => {
 
     useEffect(() => {
         if (showModal) {
-            const isValid = checkValidURL(link);
+            const isValid = checkValidURL('/pages/' + link);
             if (isValid) setLinkErr('')
             else setLinkErr('Invalid link!')
         }
@@ -94,8 +94,8 @@ const Page = ({ }) => {
     const handleOnchangeLink = (e) => {
         const value = e.target.value;
 
-        if (value.length === 0) setLink('/');
-        else setLink(value)
+        // if (value.length === 0) setLink('/');
+        setLink(value)
     }
 
     const handleAddNewPage = () => {
@@ -119,7 +119,7 @@ const Page = ({ }) => {
         dispatch(doUpdatePage({
             id: updatePageId,
             name: name,
-            page_url: link !== '/' ? link : ''
+            page_url: '/' + link
         }))
         handleCloseModal()
     }
@@ -244,8 +244,8 @@ const Page = ({ }) => {
                                                     setName(item.name)
                                                     setPreName(item.name)
                                                     setUpdatePageId(item.id)
-                                                    setLink(item.page_url)
-                                                    setPreLink(item.page_url)
+                                                    setLink(item.page_url.substr(7))
+                                                    setPreLink(item.page_url.substr(7))
                                                     handleOpenModal()
                                                 }}
                                             >
@@ -298,6 +298,7 @@ const Page = ({ }) => {
                                 value={link}
                                 warning={linkErr !== ''}
                                 onChange={handleOnchangeLink}
+                                icon={<div className="text-normal-2">/pages/</div>}
                             />
                         </div>
                     }
