@@ -90,6 +90,7 @@ const ManageCollection = () => {
     
   }
   const returnTable = async () => {
+    setIsEdit(false)
     await dispatch(doGetListCollectionOfStores({
             id: params.storeId,
             params: {}
@@ -191,7 +192,7 @@ const ManageCollection = () => {
                         )}
                       </div>
                     </>
-                  : <Collection  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
+                  : <Collection  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
                         
                 </>
               </div>

@@ -71,7 +71,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     <Typography component={'span'} className={keySelected === Key.Home ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             warningWhenLeave(() => {
-                                routeChange(`/store-detail/manage-home/${params.storeId}`);
+                                if (keySelected === Key.Home) {
+                                    window.location.reload();
+                                } else {
+                                    routeChange(`/store-detail/manage-home/${params.storeId}`);
+                                }
                             })
                         }}
                     >
@@ -83,7 +87,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     <Typography component={'span'} className={keySelected === Key.Order ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             warningWhenLeave(() => {
-                                routeChange(`/store-detail/manage-order/${params.storeId}`);
+                                if (keySelected === Key.Order) {
+                                    window.location.reload();
+                                } else {
+                                    routeChange(`/store-detail/manage-order/${params.storeId}`);
+                                }
                             })
                         }}
                     >
@@ -95,7 +103,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     <Typography component={'span'} className={keySelected === Key.Product ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             warningWhenLeave(() => {
-                                routeChange(`/store-detail/manage-product/${params.storeId}`)
+                                if (keySelected === Key.Product) {
+                                    window.location.reload();
+                                } else {
+                                    routeChange(`/store-detail/manage-product/${params.storeId}`)
+                                }
                             })
                         }}
                     >
@@ -112,7 +124,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         <Typography component={'span'} className={keySelected === Key.Inventory ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-inventory/${params.storeId}`)
+                                    if (keySelected === Key.Inventory) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-inventory/${params.storeId}`)
+                                    }
                                 })
                             }}
                         >
@@ -122,7 +138,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         </Typography><Typography component={'span'} className={keySelected === Key.Collection ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                                    if (keySelected === Key.Collection) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                                    }
                                 })
                             }}
                         >
@@ -135,7 +155,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     <Typography component={'span'} className={keySelected === Key.Banner ? "nav-element nav-element-selected" : "nav-element "}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-banner/${params.storeId}`)
+                                    if (keySelected === Key.Banner) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-banner/${params.storeId}`)
+                                    }
                                 })
                             }}
                         >
@@ -198,7 +222,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                     <Typography component={'span'} className={keySelected === Key.OnlineStore ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             warningWhenLeave(() => {
-                                routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                if (keySelected === Key.OnlineStore) {
+                                    window.location.reload();
+                                } else {
+                                    routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                }
                             })
                         }}
                     >
@@ -221,7 +249,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                    if (keySelected === Key.Theme) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-theme/${params.storeId}`);
+                                    }
                                 })
                             }}
                         >
@@ -232,7 +264,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         <Typography component={'span'} className={keySelected === Key.Domain ? "nav-element-selected nav-extend" : "nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-domain/${params.storeId}`);
+                                    if (keySelected === Key.Domain) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-domain/${params.storeId}`);
+                                    }
                                 })
                             }}
                         >
@@ -251,7 +287,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         </Typography><Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-page/${params.storeId}`);
+                                    if (keySelected === Key.Page) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-page/${params.storeId}`);
+                                    }
                                 })
                             }}
                         >
@@ -262,7 +302,11 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
                             onClick={() => {
                                 warningWhenLeave(() => {
-                                    routeChange(`/store-detail/manage-navigation/${params.storeId}`);
+                                    if (keySelected === Key.Navigation) {
+                                        window.location.reload();
+                                    } else {
+                                        routeChange(`/store-detail/manage-navigation/${params.storeId}`);
+                                    }
                                 })
                             }}
                         >

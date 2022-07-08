@@ -93,6 +93,7 @@ const ManageOrder = () => {
   }
   const returnTable = async () => {
     
+    setIsEdit(false);
     setShowAddOrder(false);
     await dispatch(doGetListOrderOfStores({
             id: params.storeId,

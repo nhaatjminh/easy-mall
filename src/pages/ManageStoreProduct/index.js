@@ -114,6 +114,7 @@ const ManageStoreProduct = () => {
    
   }
   const returnTable = async () => {
+    setIsEdit(false);
     await dispatch(doGetListProductsOfStores({
           id: params.storeId,
           params: {}

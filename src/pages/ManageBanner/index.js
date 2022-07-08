@@ -90,6 +90,7 @@ const ManageBanner = () => {
     
   }
   const returnTable = async () => {
+    setIsEdit(false);
     await dispatch(doGetListBannerOfStores({
             id: params.storeId,
             params: {}
@@ -191,7 +192,7 @@ const ManageBanner = () => {
                       </div>
                     </>
                   : <Banner setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => {
-                    setShowAddCollection(false)
+                    returnTable()
                   }} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
                         
                 </>
