@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from "react";
-import { Paper, TextField } from '@mui/material';
+import React, {useState} from "react";
+import { Paper } from '@mui/material';
 import './index.css';
-import {IconButton, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar   } from '@mui/material';
+import {Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar   } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import TableRowInventory from "./TableRowInventory";
 import BaseEmpty from "../common/BaseEmpty";
 function descendingComparator(a, b, orderBy, typeSort) {
@@ -115,7 +113,6 @@ const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
-
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);

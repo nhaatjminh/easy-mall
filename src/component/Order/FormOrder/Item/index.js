@@ -10,10 +10,14 @@ import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
+    
+    const params = useParams();
+    const routeChange = useNavigate();
     useEffect(() => {
         let total;
         if (selectCurrency === productCurrency) {
@@ -89,8 +93,12 @@ const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurre
                 }
                 <div>
                     <ListItemText
-                        className="title-label"
+                        className="title-label text-hyper-link"
                         primary={parentName}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: product_id }})
+                        }}
                     />
                     <ListItemText
                         className="title-product"
