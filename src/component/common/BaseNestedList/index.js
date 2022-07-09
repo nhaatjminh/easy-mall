@@ -177,7 +177,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                                 </div>
                                                                 <div className="col-4">
                                                                     <ListItemText
-                                                                        className="float-right"
+                                                                        style={{paddingLeft: 15}}
                                                                         primary={`${sitem.quantity} available`}
                                                                     />
                                                                 </div>

@@ -362,7 +362,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                             onClose={() => setListFilterProducts(listProducts)}
                                             classNameModal='style-modal'
                                             styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
-                                            <FormControl style={{width: 700}}>
+                                            <FormControl style={{width: 900}}>
                                                 <CustomSearchInput
                                                     placeholder='Search'
                                                     onChange={handleSearchProduct}
