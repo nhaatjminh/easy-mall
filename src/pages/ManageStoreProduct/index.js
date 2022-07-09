@@ -14,7 +14,7 @@ import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
-const ManageStoreProduct = () => {
+const ManageStoreProduct = ({fromAnotherPage, idProductAnother}) => {
   
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
@@ -26,7 +26,7 @@ const ManageStoreProduct = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 150, align: 'left', sort: 'string' },
+    { id: 'title', label: 'Title', minWidth: 150, align: 'left', sort: 'string', haveImage: true },
     {
       id: 'status',
       label: 'Status',
@@ -60,6 +60,9 @@ const ManageStoreProduct = () => {
       sort: 'string'
     },
   ];
+  useEffect(() => {
+
+  }, [fromAnotherPage, idProductAnother])
   const [filterSeach, setFilterSearch] = useState();
   const dbValue = useDebounce(filterSeach, 300);
   const editFunction = (selected) => {

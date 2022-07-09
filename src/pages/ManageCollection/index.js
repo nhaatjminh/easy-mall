@@ -32,7 +32,7 @@ const ManageCollection = () => {
   const dbValue = useDebounce(filterSeach, 300);
   const [isEdit, setIsEdit] = useState(false);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300, align: 'left', sort: 'string' },
+    { id: 'name', label: 'Title', minWidth: 300, align: 'left', sort: 'string', haveImage: true },
     {
       id: 'description',
       label: 'Description',
