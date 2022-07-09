@@ -42,7 +42,7 @@ const ManageOrder = () => {
     return [day, month, year].join('/');
 }
   const columns = [
-    { id: 'id', label: 'Order', minWidth: 300, align:'center' ,sort: 'string' },
+    { id: 'id', label: 'Order', minWidth: 300, align:'left' ,sort: 'string' },
     {
       id: 'show_date',
       label: 'Date',
