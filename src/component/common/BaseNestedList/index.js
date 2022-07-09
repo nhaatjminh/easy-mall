@@ -1,6 +1,7 @@
 import React, {useEffect, useState } from "react";
 import {List, ListItem, ListItemText, Collapse, Divider, ListItemIcon, Checkbox, Box, ListItemAvatar} from "@mui/material";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
+import BaseEmpty from "../BaseEmpty";
 
 
 export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], setValueProduct = (e) => {} ,valueVariant = [], setValueVariant = (e) => {}}) => {
@@ -100,7 +101,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
     }, [])
     return (
         <div>
-            {items?.map(item => {
+            {items?.length ? items?.map(item => {
                 return (
                     <List
                         key={item.id}
@@ -125,18 +126,19 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                         </ListItemIcon>
                                         {
                                             item.thumbnail ?
-                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar className="image-container m-0">
+                                                <Box style={{width: 80, height: 'auto'}}>
+                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                         <img alt="thumbnail" src={item.thumbnail}/>
                                                     </ListItemAvatar>
                                                 </Box>
-                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar className="image-container m-0">
+                                            : <Box style={{width: 80, height: 'auto'}}>
+                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                         <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                     </ListItemAvatar>
                                                 </Box>
                                         }
                                         <ListItemText
+                                            className="text-label-span"
                                             primary={item.title}
                                         />
                                         <Divider key={item.id} absolute />
@@ -171,12 +173,13 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                                 <div className="col-4">
                                                                     <ListItemText
                                                                         key={sitem.id}
+                                                                        className="text-content-span"
                                                                         primary={sitem.name}
                                                                     />
                                                                 </div>
                                                                 <div className="col-4">
                                                                     <ListItemText
-                                                                        className="float-right"
+                                                                        style={{paddingLeft: 15}}
                                                                         primary={`${sitem.quantity} available`}
                                                                     />
                                                                 </div>
@@ -214,13 +217,13 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                         </ListItemIcon>
                                         {
                                             item.thumbnail ?
-                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar className="image-container m-0">
+                                                <Box style={{width: 80, height: 'auto'}}>
+                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                         <img alt="thumbnail" src={item.thumbnail}/>
                                                     </ListItemAvatar>
                                                 </Box>
-                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                    <ListItemAvatar className="image-container m-0">
+                                            : <Box style={{width: 80, height: 'auto' }}>
+                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                         <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                     </ListItemAvatar>
                                                 </Box>
@@ -230,6 +233,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                 
                                                 <ListItemText
                                                     primary={item.title}
+                                                    className="text-label-span"
                                                 />
                                             </div>
                                             <div className="col-4">
@@ -252,7 +256,9 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                         </div>
                     </List>
                 );
-            })}
+            }) : <div style={{ paddingTop: 10}}>
+                <BaseEmpty></BaseEmpty>
+            </div>}
         </div>
     );
 }

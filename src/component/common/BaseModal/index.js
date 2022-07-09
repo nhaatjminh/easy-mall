@@ -48,7 +48,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function BaseModal({children, showButton=true, boolOpen=false, setBoolOpen = () => {}, title, titleButton, showAction , onOK, styleButton={}, classNameModal={}}) {
+export default function BaseModal({children, showButton=true, boolOpen=false, setBoolOpen = () => {}, title, titleButton, showAction , onOK, onClose=() => {}, styleButton={}, classNameModal={}}) {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
     if (!showButton) setOpen(boolOpen);
@@ -57,8 +57,9 @@ export default function BaseModal({children, showButton=true, boolOpen=false, se
     setOpen(true);
   };
   const handleClose = () => {
-    if (!showButton) setBoolOpen(false);
     setOpen(false);
+    if (!showButton) setBoolOpen(false);
+    onClose();
   };
   const handleOk = async () => {
     await onOK();

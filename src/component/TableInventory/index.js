@@ -7,6 +7,7 @@ import { visuallyHidden } from '@mui/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import TableRowInventory from "./TableRowInventory";
+import BaseEmpty from "../common/BaseEmpty";
 function descendingComparator(a, b, orderBy, typeSort) {
   if (typeSort === 'number') {
     if (Number(b[orderBy]) < Number(a[orderBy])) {
@@ -133,7 +134,7 @@ const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                  {rows?.length ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
+                  {rows?.length > 0 ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => {
                     if (row.is_variant) {
@@ -141,7 +142,12 @@ const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
                             return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} variantId={variant.id} variant={variant} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
                         })
                     } else return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
-                  }) : <></>}
+                  }) : <TableRow>
+                  <TableCell colSpan={columnsOfData?.length + 2 ?? 2}>
+
+                    <BaseEmpty></BaseEmpty>
+                  </TableCell>
+              </TableRow>}
               </TableBody>
             </Table>
         </TableContainer>

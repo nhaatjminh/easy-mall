@@ -26,6 +26,7 @@ import Swal from "sweetalert2";
 import CustomType from "../CustomType";
 import { BaseNumberField } from '../../common/BaseNumberField';
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
+import BaseEmpty from "../../common/BaseEmpty";
 
 const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
@@ -557,7 +558,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
         <>
         <FormGroup key={mode === 'EDIT' ? '1' : '2'}>
             <div className="row  text-black">  
-                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
+                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-header" style={{margin: 0}}>Title</InputLabel>
                         <TextField
@@ -621,7 +622,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     <Variant key="Variant" currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
                     ></Variant>
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Status</InputLabel>
                         <div key={form?.current?.product?.status || "SelectStatus"}>
@@ -677,12 +678,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                                     [<div key={`null-collection`}></div>]
                                 )}
                             >
-                                {collectionList.map((collection, index) => {
+                                { collectionList.length > 0 ? collectionList.map((collection, index) => {
                                     return <MenuItem value={collection.id} key={`collection-list-${index}`}>
                                         <Checkbox checked={collectionSelected.some(el => el.id === collection.id)} />
                                         {collection.name}
                                     </MenuItem>      
-                                })}
+                                }) : <BaseEmpty></BaseEmpty>}
                             </Select>
                         </div>
                         {collectionSelected?.length > 0 ?

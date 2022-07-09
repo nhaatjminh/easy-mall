@@ -12,7 +12,7 @@ const Product = ( {mode, returnTable, oldForm,  setIsEdit })=> {
                 </button>
             </div>   
             <div className="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 pt-3 ">                      
-                <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Add"} Product</h5>
+                <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Create"} Product</h5>
             </div>    
         </div>
         <FormProduct setIsEdit={setIsEdit} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormProduct>

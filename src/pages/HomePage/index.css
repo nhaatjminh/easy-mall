@@ -505,3 +505,53 @@ button.end-slide__btn:hover::before {
   font-weight: bold;
   font-family: "Merriweather", serif;
 }
+
+@media only screen and (max-width: 600px) {
+  #HeaderIdea{
+    font-size: 3rem!important;
+  }
+}
+.ImageText-Home{
+  width: 30%;
+  margin-left: 200px;
+  margin-right: 200px;
+}
+@media only screen and (max-width: 1300px) {
+  .ImageText-Home{
+    width: 30%;
+    margin-left: 100px;
+    margin-right: 100px;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .ImageText-Home{
+    width: 100%;
+    margin-left: 100px;
+    margin-right: 100px;
+  }
+}
+.nav-link1{
+  position: relative;
+  width: fit-content;
+  padding: 0!important;
+}
+.nav-link1:hover{
+  color: #2b9361!important;
+  text-decoration: none!important;
+}
+.nav-link1::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #02aa02;
+  transform-origin: center;
+  transform: translate(-50%, 0) scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.nav-link1:hover::before {
+  transform: translate(-50%, 0) scaleX(1);
+}

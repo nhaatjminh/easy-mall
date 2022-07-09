@@ -33,6 +33,7 @@ import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
+import BaseEmpty from "../../common/BaseEmpty";
 const styleModal = {
     position: 'absolute',
     top: '25%',
@@ -315,7 +316,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
         <>
         <FormGroup>
             <div className="row  text-black">  
-                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
+                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-header font-weight-bold" style={{margin: 0}}>Title</InputLabel>
                         <TextField
@@ -375,18 +376,18 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                             onChange={handleChangeProductForCollection}
                                             MenuProps={MenuProps}
                                             >
-                                                {listProducts.map((product) => (
+                                                { listProducts?.length > 0 ? listProducts.map((product) => (
                                                     <MenuItem key={`${product.id} select-modal`} value={product.id}>
                                                         <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
                                                         {
                                                             product.thumbnail ?
-                                                                <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                                    <ListItemAvatar className="image-container m-0">
+                                                                <Box style={{width: 80, height: 'auto'}}>
+                                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                                         <img alt="thumbnail" src={product.thumbnail}/>
                                                                     </ListItemAvatar>
                                                                 </Box>
-                                                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                                    <ListItemAvatar className="image-container m-0">
+                                                            : <Box style={{width: 80, height: 'auto' }}>
+                                                                    <ListItemAvatar className="image-container-item-list m-0">
                                                                         <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                                     </ListItemAvatar>
                                                                 </Box>
@@ -394,7 +395,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                                         
                                                         <ListItemText primary={product.title}/>
                                                     </MenuItem>
-                                                ))}
+                                                )) : <BaseEmpty></BaseEmpty>}
                                             </Select>
                                         </FormControl>
                                         <Button className="float-right p-0 m-0 text-black mt-2 btn-close-modal" onClick={handleClose}><p className="p-0 m-0">Close</p></Button>
@@ -410,13 +411,13 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                                 <p className="pr-2 m-0">{index}.</p>
                                                 {
                                                 product.thumbnail ?
-                                                    <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar className="image-container m-0" key={`${productId} - avatar`}>
+                                                    <Box key={`${productId} - box`} style={{width: 80, height: 'auto'}}>
+                                                        <ListItemAvatar className="image-container-item-list m-0" key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src={product.thumbnail}/>
                                                         </ListItemAvatar>
                                                     </Box>
-                                                :  <Box key={`${productId} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar className="image-container m-0" key={`${productId} - avatar`}>
+                                                :  <Box key={`${productId} - box`} style={{width: 80, height: 'auto' }}>
+                                                        <ListItemAvatar className="image-container-item-list m-0" key={`${productId} - avatar`}>
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
@@ -435,7 +436,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                         </div>
                     </Paper> 
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <ImageInput formRef={form} oldForm={oldForm} mode={mode}></ImageInput>
                     </Paper> 
@@ -451,7 +452,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                     }
                 </div>
                 <div className="col-6">
-                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                    <button onClick={saveCollection} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
             
                 </div>
             </div>  

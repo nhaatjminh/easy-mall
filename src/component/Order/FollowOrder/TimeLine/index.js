@@ -11,7 +11,7 @@ const TimeLine = ({listStatus})=> {
         }
     
         const parsed = new Date(date);
-        parsed.setHours( parsed.getHours() + 10 )
+        parsed.setHours( parsed.getHours())
         return zeroPad(parsed.getDate()) + '/' + zeroPad(parsed.getMonth() + 1) + '/' + parsed.getUTCFullYear()
             + " " + zeroPad(parsed.getHours()) + ":" + zeroPad(parsed.getMinutes()) + ":" + zeroPad(parsed.getSeconds());
     }
@@ -25,10 +25,11 @@ const TimeLine = ({listStatus})=> {
                         title={`${status.status}`}
                         key={`key-timeline-${index}`}
                         createdAt={`${pgFormatDate(status.create_at)}`}
+                        style={{ paddingBottom: 20 }}
                         icon={status.status === "DELETED" ? <CompleteDelete></CompleteDelete> :<CheckIcon></CheckIcon>}
                         titleStyle={ status.status === "DELETED" ? {
                             backgroundColor: `#f7454d`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -37,7 +38,7 @@ const TimeLine = ({listStatus})=> {
                             textAlign: `center`
                         } : status.status === "COMPLETED" ? {
                             backgroundColor: `#42e034`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -46,7 +47,7 @@ const TimeLine = ({listStatus})=> {
                             textAlign: `center`
                         } : status.status === "RESTOCK" ? {
                             backgroundColor: `#d6d149`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -54,8 +55,8 @@ const TimeLine = ({listStatus})=> {
                             fontWeight: `bold`,
                             textAlign: `center`
                         } : {
-                            backgroundColor: `#84a4ea`,
-                            color: `#202223`,
+                            backgroundColor: `rgb(32,183,246)`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,

@@ -43,7 +43,7 @@ const HomePage = () => {
                             height: '50px',
                             marginTop: '40px',
                             color: 'white'
-                            
+
                         }}
                             onClick={() => routeChange('/store-login')}
                             className="btn GetStart" > Get Started </button>
@@ -82,6 +82,138 @@ const HomePage = () => {
                     </div>
 
                 </div>
+
+                {/* Bg1 */}
+                <div className="row p-0 mx-0 position-relative" style={{ height: '766px' }}>
+                    <div className="background-img">
+                        <img src="/img/bg1.jpg" style={{
+                            objectFit: 'cover',
+                            objectPosition: '50% 50%',
+                            height: '100%'
+                        }}></img>
+                    </div>
+                    <div className="col-12 d-flex align-items-center justify-content-start">
+                        <div className="ImageText-Home">
+                            <h1>
+                                Build with the world’s most intuitive platform
+                            </h1>
+                            <p>
+                                Create better websites with mobile-responsive templates, seamless drag & drop and unlimited customization.
+                            </p>
+                            <button style={{
+                                background: 'rgba(17, 109, 255, 0.85)',
+                                width: '200px',
+                                borderRadius: '36px',
+                                height: '50px',
+                                marginTop: '40px',
+                                color: 'white'
+
+                            }}
+                                onClick={() => routeChange('/store-login')}
+                                className="btn GetStart" >  Start Now </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div className="row p-0 mx-0 position-relative" style={{ height: '770px' }}>
+                    <div className="background-img">
+                        <img src="/img/bg2.jpg" style={{
+                            objectFit: 'cover',
+                            objectPosition: '50% 50%',
+                            height: '100%'
+                        }}></img>
+                    </div>
+                    <div className="col-12 d-flex align-items-center justify-content-end">
+                        <div className="ImageText-Home">
+                            <h1>
+                                Manage your brand from one place
+                            </h1>
+                            <p>
+
+                                Manage your brand from one place
+                                Sell your products or services, start a blog and make smart decisions with clear analytics.
+                            </p>
+                            <button style={{
+                                background: 'rgba(17, 109, 255, 0.85)',
+                                width: '200px',
+                                borderRadius: '36px',
+                                height: '50px',
+                                marginTop: '40px',
+                                color: 'white'
+
+                            }}
+                                onClick={() => routeChange('/store-login')}
+                                className="btn GetStart" >  Start Now </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div className="row p-0 mx-0 position-relative" style={{ height: '776px' }}>
+                    <div className="background-img">
+                        <img src="/img/bg3.jpg" style={{
+                            objectFit: 'cover',
+                            objectPosition: '50% 50%',
+                            height: '100%'
+                        }}></img>
+                    </div>
+                    <div className="col-12 d-flex align-items-center justify-content-start">
+                        <div className="ImageText-Home">
+                            <h1>
+                                Grow your online presence
+
+                            </h1>
+                            <p>
+                                Boost traffic and increase engagement with built-in SEO tools, Facebook ads, email marketing and social posts.
+                            </p>
+                            <button style={{
+                                background: 'rgba(17, 109, 255, 0.85)',
+                                width: '200px',
+                                borderRadius: '36px',
+                                height: '50px',
+                                marginTop: '40px',
+                                color: 'white'
+
+                            }}
+                                onClick={() => routeChange('/store-login')}
+                                className="btn GetStart" >  Start Now </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div className="row p-0 mx-0 position-relative" style={{ height: '545px' }}>
+                    <div className="background-img">
+                        <img src="/img/bg4.jpg" style={{
+                            objectFit: 'cover',
+                            objectPosition: '50% 50%',
+                            height: '100%'
+                        }}></img>
+                    </div>
+                    <div className="col-12 d-flex align-items-center justify-content-center">
+                        <div className="d-flex justify-content-center flex-column align-items-center">
+                            <h1 id="HeaderIdea" style={{
+                                fontSize: "5rem",
+                                maxWidth: "80%",
+                                textAlign: "center",
+                                fontWeight: "400"
+
+                            }}>
+                                Make your ideas come to life with EasyMall
+                            </h1>
+                            <button style={{
+                                background: 'rgba(17, 109, 255, 0.85)',
+                                width: '200px',
+                                borderRadius: '36px',
+                                height: '50px',
+                                marginTop: '40px',
+                                color: 'white'
+
+                            }}
+                                onClick={() => routeChange('/store-login')}
+                                className="btn GetStart" >  Start Now </button>
+                        </div>
+
+                    </div>
+                </div>
                 <div className="slide-middle ">
                     <div className="row d-none d-lg-flex">
                         <div className="_card col-3 arrow" >
@@ -93,7 +225,7 @@ const HomePage = () => {
                                     <p className="_card-text text-center">Pick a template and customize anything, or answer a few questions and get a free website designed just for you.</p>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div className="_card col-3 arrow" >
                             <div className="item">
@@ -195,7 +327,7 @@ const HomePage = () => {
                         <div className="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
 
                             <i className="fab fa-globe fa-icon ml-0"></i>
-                            <h5 className="font-weight-bold text-second-slide-1">3. Hosting your webite</h5>
+                            <h5 className="font-weight-bold text-second-slide-1">Hosting your webite</h5>
                             <h5 className="text-second-slide-3">Turn your retail store into an online store and continue serving customers without interruption</h5>
 
                         </div>
@@ -230,14 +362,14 @@ const HomePage = () => {
                         <div className="col-12 col-sm-12  col-md-12 col-lg-7 col-xl-7 order-third-slide-1 pt-3 part-2-third-slide pl-4rem">
                             <h5 className="header-text-third-slide">Multiple application accessible way </h5>
                             <h5 className="text-1rem pb-3">Use one platform to sell products anywhere, to any audience, and on any device. Sell ​​products in person and online via website, social media and online marketplace</h5>
-                            <Link to={"#"} className="link-third-slide">Explore</Link>
+                            <Link to={"/store-login"} className="link-third-slide nav-link1">Explore</Link>
                         </div>
                     </div>
                     <div className="row  third-slide-middle">
                         <div className="col-12 col-sm-12  col-md-12 col-lg-7 col-xl-7 part-2-third-slide pt-4rem pl-4rem" >
                             <h5 className="header-text-third-slide">Supporting your website</h5>
                             <h5 className="text-1rem pb-3">Take the guesswork out of marketing with built-in tools that help you create, execute, and analyze digital marketing campaigns.</h5>
-                            <Link to={"#"} className="link-third-slide ">Explore how our business work </Link>
+                            <Link to={"/market-guide"} className="link-third-slide nav-link1">Explore how our business work </Link>
                         </div>
                         <div className="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 order-third-slide-2 third-slide-3-right-parent">
                             <img alt="img" src="/img/third-slide-2.png" />
@@ -250,7 +382,7 @@ const HomePage = () => {
                         <div className="col-12 col-sm-12  col-md-12 col-lg-7 col-xl-7 part-2-third-slide pl-4rem">
                             <h5 className="header-text-third-slide">Control everything in your store</h5>
                             <h5 className="text-1rem pb-3">Capture the insights you need to grow - use a single admin page to manage orders, shipping and payments, wherever you are</h5>
-                            <Link to={"#"} className="link-third-slide ">Explore ways to manage your store  </Link>
+                            <Link to={"/manage-guide"} className="link-third-slide nav-link1">Explore ways to manage your store  </Link>
                         </div>
                     </div>
                 </div>
