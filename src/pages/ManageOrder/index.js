@@ -42,7 +42,7 @@ const ManageOrder = () => {
     return [day, month, year].join('/');
 }
   const columns = [
-    { id: 'id', label: 'Order', minWidth: 300, align:'left' ,sort: 'string' },
+    { id: 'id', label: 'Order', minWidth: 300, align:'center' ,sort: 'string' },
     {
       id: 'show_date',
       label: 'Date',
@@ -65,7 +65,7 @@ const ManageOrder = () => {
       id: 'status',
       label: 'Fulfillment status',
       minWidth: 170,
-      align: 'left',
+      align: 'center',
       sort: 'string',
       classNameWithData: (data) => {
         if (data === "RESTOCK") return 'restock-order'

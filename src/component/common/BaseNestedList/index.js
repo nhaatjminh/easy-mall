@@ -1,6 +1,7 @@
 import React, {useEffect, useState } from "react";
 import {List, ListItem, ListItemText, Collapse, Divider, ListItemIcon, Checkbox, Box, ListItemAvatar} from "@mui/material";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
+import BaseEmpty from "../BaseEmpty";
 
 
 export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], setValueProduct = (e) => {} ,valueVariant = [], setValueVariant = (e) => {}}) => {
@@ -100,7 +101,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
     }, [])
     return (
         <div>
-            {items?.map(item => {
+            {items?.length ? items?.map(item => {
                 return (
                     <List
                         key={item.id}
@@ -252,7 +253,9 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                         </div>
                     </List>
                 );
-            })}
+            }) : <div style={{ paddingTop: 10}}>
+                <BaseEmpty></BaseEmpty>
+            </div>}
         </div>
     );
 }

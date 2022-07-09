@@ -26,12 +26,12 @@ const ManageStoreProduct = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170, align: 'left', sort: 'string' },
+    { id: 'title', label: 'Title', minWidth: 150, align: 'left', sort: 'string' },
     {
       id: 'status',
       label: 'Status',
-      minWidth: 100,
-      align: 'left',
+      minWidth: 150,
+      align: 'center',
       classNameWithData: (data) => {
         if (data === "Active") return 'active-product'
         return 'draft-product'

@@ -199,10 +199,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
         else {
             let newFilterList = listProducts.map((product) => {
                 let newProduct = JSON.parse(JSON.stringify(product));
-                newProduct.variants = newProduct.variants.filter(variant => variant.name.includes(event.target.value))
+                if (newProduct.title?.toLowerCase().includes(event.target.value?.toLowerCase())) return newProduct
+                newProduct.variants = newProduct.variants.filter(variant => variant.name?.toLowerCase().includes(event.target.value?.toLowerCase()))
                 return newProduct
             })
-            newFilterList = newFilterList.filter((product) => product.title.includes(event.target.value) || product.variants.length)
+            newFilterList = newFilterList.filter((product) => product.title?.toLowerCase().includes(event.target.value?.toLowerCase()) || product.variants.length)
             setListFilterProducts(newFilterList);
         }
     }
@@ -358,6 +359,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                             title="Select Variant"
                                             titleButton="Browser"
                                             onOK={() => {}}
+                                            onClose={() => setListFilterProducts(listProducts)}
                                             classNameModal='style-modal'
                                             styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
                                             <FormControl style={{width: 700}}>
@@ -365,6 +367,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                                     placeholder='Search'
                                                     onChange={handleSearchProduct}
                                                     height={'30px'}
+                                                    
                                                 />
                                                 <BaseNestedList items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
                                                 valueVariant={listValueVariant}
@@ -373,7 +376,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                         </BaseModal>
                                 </div>
                                 {
-                                    Object.keys(listValueProduct || {}).length || Object.keys(listValueVariant || {}).length ?
+                                    Object.values(listValueProduct || {})?.filter(o => o)?.length || Object.values(listValueVariant || {})?.filter(o => o)?.length ?
                                     <div style={{ overflowX: 'auto'}}>
                                         <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
                                             <div className="w-100"  style={{minWidth: 225}}>
