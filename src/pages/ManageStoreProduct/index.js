@@ -26,12 +26,12 @@ const ManageStoreProduct = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170, align: 'center', sort: 'string' },
+    { id: 'title', label: 'Title', minWidth: 170, align: 'left', sort: 'string' },
     {
       id: 'status',
       label: 'Status',
       minWidth: 100,
-      align: 'center',
+      align: 'left',
       classNameWithData: (data) => {
         if (data === "Active") return 'active-product'
         return 'draft-product'
@@ -42,21 +42,21 @@ const ManageStoreProduct = () => {
       id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'number'
     },
     {
       id: 'type',
       label: 'Type',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'string'
     },
     {
       id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'string'
     },
   ];

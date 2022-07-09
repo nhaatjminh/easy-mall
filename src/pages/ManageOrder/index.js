@@ -42,30 +42,30 @@ const ManageOrder = () => {
     return [day, month, year].join('/');
 }
   const columns = [
-    { id: 'id', label: 'Order', minWidth: 300, sort: 'string' },
+    { id: 'id', label: 'Order', minWidth: 300, align:'left' ,sort: 'string' },
     {
       id: 'show_date',
       label: 'Date',
       minWidth: 170,
-      align: 'right',
+      align: 'left',
       sort: 'date'
     },
     {
       id: 'name',
       label: 'Customer',
       minWidth: 170,
-      align: 'right',
+      align: 'left',
       sort: 'string'
     },{
       id: 'total_with_currency',
       label: 'Total',
       minWidth: 170,
-      align: 'right'
+      align: 'left'
     },{
       id: 'status',
       label: 'Fulfillment status',
       minWidth: 170,
-      align: 'right',
+      align: 'left',
       sort: 'string',
       classNameWithData: (data) => {
         if (data === "RESTOCK") return 'restock-order'
@@ -77,7 +77,7 @@ const ManageOrder = () => {
       id: 'total_item',
       label: 'Items',
       minWidth: 170,
-      align: 'right',
+      align: 'left',
       sort: 'number'
     },
   ];
