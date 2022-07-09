@@ -1,7 +1,7 @@
 .restock-order div {
     margin: 5px auto;
     background-color: #d6d149;
-    color: #202223;
+    color: #fff;
     font-size: 13px;
     border-radius: 50px;
     padding: 1px 10px;
@@ -12,7 +12,7 @@
 .normal-order div{
     margin: 5px auto;
     background-color: rgb(32,183,246);
-    color: #202223;
+    color: #fff;
     font-size: 13px;
     border-radius: 50px;
     padding: 1px 10px;
@@ -23,7 +23,7 @@
 .complete-order div {
     margin: 5px auto;
     background-color: #42e034;
-    color: #202223;
+    color: #fff;
     font-size: 13px;
     border-radius: 50px;
     padding: 1px 10px;
@@ -34,7 +34,7 @@
 .deleted-order div {
     margin: 5px auto;
     background-color: #f7454d;
-    color: #202223;
+    color: #fff;
     font-size: 13px;
     border-radius: 50px;
     padding: 1px 10px;

@@ -29,7 +29,7 @@ const TimeLine = ({listStatus})=> {
                         icon={status.status === "DELETED" ? <CompleteDelete></CompleteDelete> :<CheckIcon></CheckIcon>}
                         titleStyle={ status.status === "DELETED" ? {
                             backgroundColor: `#f7454d`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -38,7 +38,7 @@ const TimeLine = ({listStatus})=> {
                             textAlign: `center`
                         } : status.status === "COMPLETED" ? {
                             backgroundColor: `#42e034`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -47,7 +47,7 @@ const TimeLine = ({listStatus})=> {
                             textAlign: `center`
                         } : status.status === "RESTOCK" ? {
                             backgroundColor: `#d6d149`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
@@ -56,7 +56,7 @@ const TimeLine = ({listStatus})=> {
                             textAlign: `center`
                         } : {
                             backgroundColor: `rgb(32,183,246)`,
-                            color: `#202223`,
+                            color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
