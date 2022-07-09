@@ -55,7 +55,7 @@ const TimeLine = ({listStatus})=> {
                             fontWeight: `bold`,
                             textAlign: `center`
                         } : {
-                            backgroundColor: `#84a4ea`,
+                            backgroundColor: `rgb(32,183,246)`,
                             color: `#202223`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
