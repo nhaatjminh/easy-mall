@@ -518,13 +518,13 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 <p className="pr-2 m-0" style={{width: 20}}>{index}.</p>
                                                 {
                                                 banner.image ?
-                                                    <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
+                                                    <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
                                                             <img alt="thumbnail" src={banner.image}/>
                                                         </ListItemAvatar>
                                                     </Box>
-                                                :  <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
+                                                :  <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
@@ -670,7 +670,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     }
                 </div>
                 <div className="col-6">
-                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                    <button onClick={saveCollection} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
             
                 </div>
             </div>  

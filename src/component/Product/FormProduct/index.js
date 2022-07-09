@@ -26,6 +26,7 @@ import Swal from "sweetalert2";
 import CustomType from "../CustomType";
 import { BaseNumberField } from '../../common/BaseNumberField';
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
+import BaseEmpty from "../../common/BaseEmpty";
 
 const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
@@ -677,12 +678,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                                     [<div key={`null-collection`}></div>]
                                 )}
                             >
-                                {collectionList.map((collection, index) => {
+                                { collectionList.length > 0 ? collectionList.map((collection, index) => {
                                     return <MenuItem value={collection.id} key={`collection-list-${index}`}>
                                         <Checkbox checked={collectionSelected.some(el => el.id === collection.id)} />
                                         {collection.name}
                                     </MenuItem>      
-                                })}
+                                }) : <BaseEmpty></BaseEmpty>}
                             </Select>
                         </div>
                         {collectionSelected?.length > 0 ?

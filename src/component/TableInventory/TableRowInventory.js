@@ -67,13 +67,13 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                   <div className="w-100" style={{ display: 'inline-flex', minWidth: 225, alignItems: 'center'}}>
                     {
                         row.thumbnail ?
-                            <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                <ListItemAvatar className="image-container m-0">
+                            <Box style={{width: 80, height: 'auto'}}>
+                                <ListItemAvatar className="image-container-item-list m-0">
                                     <img alt="thumbnail" src={row.thumbnail}/>
                                 </ListItemAvatar>
                             </Box>
-                            : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                                <ListItemAvatar className="image-container m-0">
+                            : <Box style={{width: 80, height: 'auto'}}>
+                                <ListItemAvatar className="image-container-item-list m-0">
                                     <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                 </ListItemAvatar>
                             </Box>

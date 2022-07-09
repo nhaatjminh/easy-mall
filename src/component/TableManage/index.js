@@ -9,6 +9,7 @@ import { visuallyHidden } from '@mui/utils';
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import BaseEmpty from "../common/BaseEmpty";
 function descendingComparator(a, b, orderBy, typeSort) {
   if (typeSort === 'number') {
     if (Number(b[orderBy]) < Number(a[orderBy])) {
@@ -277,8 +278,8 @@ const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData,
                 showToolbar={showToolbar}
                 showAction={showAction}
               />
-              <TableBody>
-                  {rows?.length ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
+              <TableBody >
+                  {rows?.length > 0 ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => {
                       const isItemSelected = isSelected(row.id);
@@ -341,7 +342,12 @@ const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData,
                           }
                       </TableRow>
                       );
-                  }) : <></>}
+                  }) : <TableRow>
+                      <TableCell colSpan={columnsOfData?.length + 2 ?? 2}>
+
+                        <BaseEmpty></BaseEmpty>
+                      </TableCell>
+                  </TableRow>}
               </TableBody>
             </Table>
         </TableContainer>

@@ -11,7 +11,7 @@ const TimeLine = ({listStatus})=> {
         }
     
         const parsed = new Date(date);
-        parsed.setHours( parsed.getHours() + 10 )
+        parsed.setHours( parsed.getHours())
         return zeroPad(parsed.getDate()) + '/' + zeroPad(parsed.getMonth() + 1) + '/' + parsed.getUTCFullYear()
             + " " + zeroPad(parsed.getHours()) + ":" + zeroPad(parsed.getMinutes()) + ":" + zeroPad(parsed.getSeconds());
     }
@@ -25,6 +25,7 @@ const TimeLine = ({listStatus})=> {
                         title={`${status.status}`}
                         key={`key-timeline-${index}`}
                         createdAt={`${pgFormatDate(status.create_at)}`}
+                        style={{ paddingBottom: 20 }}
                         icon={status.status === "DELETED" ? <CompleteDelete></CompleteDelete> :<CheckIcon></CheckIcon>}
                         titleStyle={ status.status === "DELETED" ? {
                             backgroundColor: `#f7454d`,

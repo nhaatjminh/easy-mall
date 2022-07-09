@@ -26,6 +26,7 @@ import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import { cloneDeep } from "lodash";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
+import BaseEmpty from "../../common/BaseEmpty";
 
 const styleModal = {
     position: 'absolute',
@@ -441,9 +442,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                                 return <div className="text-content">{value}</div>
                                             }
                                         }}>
-                                        {listDiscount.map((discount) => 
+                                        {listDiscount.length > 0
+                                        ? listDiscount.map((discount) => 
                                             <MenuItem value={`${discount.code}`}>{discount.code}</MenuItem>
-                                        )}
+                                        ) : <BaseEmpty></BaseEmpty>
+                                        }
                                     </Select>
                                     <InputLabel name='title' className="text-content" style={{margin: 0}}>
                                     {currency === 'USD' ? parseLocaleNumber(discountTotal,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(discountTotal,'vi-VN')} {currency}</InputLabel>

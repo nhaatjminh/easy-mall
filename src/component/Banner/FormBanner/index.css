@@ -11,7 +11,7 @@
 }
 .responsive-text {
     /* minus padding, margin and width of another element */
-    width: calc(100% - 35px - 35px - 25px - 25px );
+    width: calc(100% - 35px - 35px - 45px - 25px );
 }
 .selected-url {
     background-color: #e6f7ff;
