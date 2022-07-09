@@ -26,6 +26,7 @@ export const doUpdatePage = createAsyncThunk(
         const result = await PageApi.updatePage(pageObj);
         return {
             ...pageObj,
+            page_url: '/pages' + pageObj.page_url,
             ...result.data.rows[0]
         };
     }
