@@ -138,6 +138,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                 </Box>
                                         }
                                         <ListItemText
+                                            className="text-label-span"
                                             primary={item.title}
                                         />
                                         <Divider key={item.id} absolute />
@@ -172,6 +173,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                                 <div className="col-4">
                                                                     <ListItemText
                                                                         key={sitem.id}
+                                                                        className="text-content-span"
                                                                         primary={sitem.name}
                                                                     />
                                                                 </div>
@@ -231,6 +233,7 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                 
                                                 <ListItemText
                                                     primary={item.title}
+                                                    className="text-label-span"
                                                 />
                                             </div>
                                             <div className="col-4">
