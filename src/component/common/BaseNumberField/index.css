@@ -7,6 +7,9 @@
     margin: 0.5rem 5px 0.5rem 0 !important;
     border-radius: 5px;
 }
+.text-min-width {
+    min-width: 80px;
+}
 .div-currency .MuiOutlinedInput-root {
     padding-left: 0;
     border: none;

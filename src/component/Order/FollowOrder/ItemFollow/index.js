@@ -9,7 +9,7 @@ import Divider from '@mui/material/Divider';
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import { useNavigate, useParams } from "react-router-dom";
 
-const ItemFollow = ({thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
+const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
     
     const params = useParams();
     const routeChange = useNavigate();
@@ -35,11 +35,11 @@ const ItemFollow = ({thumbnail, productCurrency, name, price,quantity, parentNam
                 <div>
                     
                     <ListItemText
-                        className="title-label text-hyper-link"
+                        className={`title-label ${existed ? 'text-hyper-link': ''}`}
                         primary={parentName}
                         onClick={(e) => {
                             e.stopPropagation();
-                            routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: product_id }})
+                            if (existed) routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: product_id }})
                         }}
                     />
                     <ListItemText

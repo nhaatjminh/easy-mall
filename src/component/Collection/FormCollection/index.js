@@ -436,7 +436,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                         </div>
                     </Paper> 
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                <div className="pt-md  offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <ImageInput formRef={form} oldForm={oldForm} mode={mode}></ImageInput>
                     </Paper> 

@@ -161,7 +161,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     
                                     {formToShow.products.map((product, index) => 
                                         (
-                                            <ItemFollow key={`${index}-item-follow`}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
+                                            <ItemFollow key={`${index}-item-follow`} existed={product.existed}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
                                         )
                                     )}
                                 </div>
@@ -175,7 +175,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             </div>
                         </Paper>
                     </div>   
-                    <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                    <div className="pt-md offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                         <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
                             <div className="pt-3 row">
