@@ -19,8 +19,8 @@
   }
 
   .logo {
-    margin-left: 0.25rem !important;
-    width: 98%;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
 

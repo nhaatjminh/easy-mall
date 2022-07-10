@@ -30,7 +30,7 @@ import { DetailDiscount } from "./pages/Discount/DetailDiscount";
 
 const App = () => {
   return(
-    <div style={{overflowX: 'hidden'}}>
+    <div style={{overflowX: 'hidden', backgroundColor:  '#f6f6f7'}}>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>

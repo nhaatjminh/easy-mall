@@ -216,3 +216,9 @@ body {
     padding-top: 2rem !important
   }
 }
+
+@media (max-width: 1200px) {   
+  .pt-lg {
+    padding-left: 1.25rem !important
+  }
+}
