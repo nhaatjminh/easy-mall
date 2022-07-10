@@ -209,3 +209,10 @@ body {
   padding: 10px;
   object-fit: cover;
 }
+
+/* md ~ 768*/
+@media (max-width: 768px) {   
+  .pt-md {
+    padding-top: 2rem !important
+  }
+}
