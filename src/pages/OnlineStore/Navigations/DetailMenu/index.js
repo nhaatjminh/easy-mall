@@ -33,6 +33,7 @@ import { CollectionIcon } from "../../../../assets/icon/svg/CollectionIcon";
 import { PaymentIcon } from "../../../../assets/icon/svg/PaymentIcon";
 import { PolocyIcon } from "../../../../assets/icon/svg/PolocyIcon";
 import { GoIcon } from './../../../../assets/icon/svg/GoIcon';
+import CustomSortableTree from "../../../../component/CustomSortableTree";
 
 const DefaultPage = {
     'Home': <HomeIcon />,
@@ -470,6 +471,8 @@ const DetailMenu = ({ }) => {
                         <div className='detail-menu__menu--title text-title-2'>
                             Menu items
                         </div>
+                        {/* Menu List */}
+                        <CustomSortableTree maxDepth={3}/>
                         <div className="detail-menu__menu--list">
                             {menu?.listMenuItem?.length ? menu.listMenuItem.map((item) => (
                                 <div key={item.id} className="detail-menu__menu--list--item">
