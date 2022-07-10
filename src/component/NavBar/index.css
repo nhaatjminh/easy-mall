@@ -22,6 +22,10 @@
     padding-left: 15px;
     padding-right: 15px;
   }
+  
+  .callpage .custom-devider {
+    margin-left: 8.3333% !important;
+  }
 }
 
 @media (max-width: 650px) {
@@ -38,6 +42,7 @@
     font-size: 0.85rem;
     padding: 0 !important;
   }
+  
 }
 @media (min-width: 1065px) {
   .desktop {

@@ -209,7 +209,9 @@ body {
   padding: 10px;
   object-fit: cover;
 }
-
+.custom-devider {
+  margin-left: 45px !important;
+}
 /* md ~ 768*/
 @media (max-width: 768px) {   
   .pt-md {

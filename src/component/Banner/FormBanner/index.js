@@ -646,7 +646,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                             </div>
                            
                             <div>
-                                <Divider className="custom-devider" style={{marginTop: 15, marginBottom: 15}} />
+                                <Divider style={{marginTop: 15, marginBottom: 15}} />
                                 <div className="row float-right" >
                                     <button onClick={() => {
                                         setShowAddBanner(false)

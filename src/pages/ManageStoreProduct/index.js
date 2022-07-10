@@ -206,8 +206,6 @@ const ManageStoreProduct = () => {
                     alignItems="center"
                     spacing={1}
                   >
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Export </p></button>
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Import </p></button>
                     <button className="btn btn-success btn-form-product" onClick={() => {
                       setShowAddProduct(true);
                       setMode('ADD');
