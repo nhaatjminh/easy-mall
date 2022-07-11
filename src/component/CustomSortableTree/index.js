@@ -9,21 +9,15 @@ const CustomSortableTree = ({
   innerStyle = {},
   maxDepth = 2,
   toolBarMarginRight = 20,
+  data,
+  setData,
+  deleteFunc,
+  editFunc,
 }) => {
-  const [data, setData] = useState([
-    {
-      title: "Chicken",
-      expanded: true,
-      children: [{ title: "Egg" }, { title: "Egg1" }],
-    },
-    // { title: "Fish", children: [{ title: "fingerline" }] },
-    // { title: "Fish1", children: [{ title: "fingerline1" }] },
-    // { title: "Fish2", children: [{ title: "fingerline2" }] },
-  ]);
+ 
   //=======================STATES===========================
-
   return (
-    <div style={{ height: 400, overflow: "hidden" }}>
+    <div style={{ overflow: "hidden" }}>
       <SortableTree
         isVirtualized={false}
         treeData={data}
@@ -78,18 +72,15 @@ const CustomSortableTree = ({
               <div className="rst__custom__rowToolbar" style={{right:`${offSet}px`,marginRight:`${toolBarMarginRight}px`}}>
                 <div
                   className="detail-menu__menu--list--item--btn--edit text-title-3"
-                  onClick={() => {
-                    console.log("edit");
-                  }}
+                  onClick={(event) => editFunc(rowInfo)}
                 >
                   Edit
                 </div>
                 
                 <div
                   className="detail-menu__menu--list--item--btn--delete text-title-3"
-                  onClick={() => {
-                    console.log("delete")
-                  }}
+                  onClick={(event) => deleteFunc(rowInfo)}
+                 
                 >
                   Delete
                 </div>

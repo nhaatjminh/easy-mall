@@ -123,6 +123,7 @@
   max-width: 515px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 14px;
 }
 .rst__rtl.rst__rowLabel {
   padding-left: 20px;

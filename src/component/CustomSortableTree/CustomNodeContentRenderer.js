@@ -66,7 +66,7 @@ class NodeRendererDefault extends Component {
               className="Polaris-Icon__Svg_375hu"
               focusable="false"
               aria-hidden="true"
-              style={{fill:'rgb(92, 95, 98)',width:'20px',height:'20px'}}
+              style={{fill:'rgb(92, 95, 98)',width:'15px',height:'15px'}}
             >
               <path d="M7 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm6-8a2 2 0 1 0-.001-4.001 2 2 0 0 0 .001 4.001zm0 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001z"></path>
             </svg>

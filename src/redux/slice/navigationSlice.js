@@ -72,6 +72,17 @@ export const doUpdateMenuItem = createAsyncThunk(
         };
     }
 );
+export const doUpdateSubMenu = createAsyncThunk(
+    'navigation@put/UpdateSubMenu',
+    async (itemObj) => {
+        const result = await NavigationApi.updateSubMenu(itemObj);
+        return {
+            ...itemObj,
+            ...result.data.rows[0]
+            // id: result.data.rows[0].id
+        };
+    }
+);
 
 export const doDeleteMenuItem = createAsyncThunk(
     'navigation@delete/DeleteMenuItem',
