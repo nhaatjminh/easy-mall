@@ -10,16 +10,12 @@ import { CustomCard } from "./../../../../component/common/CustomCard/CustomCard
 import { AddIcon } from "../../../../assets/icon/svg/AddIcon";
 import {
   doDeleteMenu,
-  doDeleteMenuItem,
   doGetCurrentMenu,
   doUpdateMenu,
   doUpdateSubMenu,
 } from "../../../../redux/slice/navigationSlice";
 import { Button, Modal } from "react-bootstrap";
-import {
-  doCreateMenuItem,
-  doUpdateMenuItem,
-} from "./../../../../redux/slice/navigationSlice";
+
 import { BackIcon } from "../../../../assets/icon/svg/BackIcon";
 import { useNavigate } from "react-router-dom";
 import { Key } from "../../../../constants/constForNavbarDetail";
@@ -89,19 +85,6 @@ const DetailMenu = ({}) => {
   const [err, setErr] = useState({});
   const [groupItem, setGroupItem] = useState(null);
 
-  //   const [treeData, setTreeData] = useState([
-  //     {
-  //       title: "Chicken",
-  //       expanded: true,
-  //       children: [
-  //         { title: "Egg", id: "HEHEHE" },
-  //         { title: "Egg1", id: "HEHEHE" },
-  //       ],
-  //     },
-  //     { title: "Fish", id: "HEHEHE", children: [{ title: "fingerline" }] },
-  //     { title: "Fish1", id: "HEHEHE", children: [{ title: "fingerline1" }] },
-  //     { title: "Fish2", id: "HEHEHE", children: [{ title: "fingerline2" }] },
-  //   ]);
   const [treeData, setTreeData] = useState([]);
   const nameMounted = useRef(false);
   const linkMounted = useRef(false);
@@ -111,7 +94,11 @@ const DetailMenu = ({}) => {
   useEffect(() => {
     batch(() => {
       dispatch(doGetCurrentMenu(params.id)).then((res) => {
-        setTreeData(res.payload.listMenuItem);
+        let listMenuItem = [];
+        if (res.payload.listMenuItem) {
+          listMenuItem = res.payload.listMenuItem;
+        }
+        setTreeData(listMenuItem);
       });
       dispatch(doGetListPages(params.storeId));
     });
@@ -255,12 +242,6 @@ const DetailMenu = ({}) => {
     });
   }, [dbValue]);
 
-  // useDidMountEffect(() => {
-  //     if (showModal) {
-  //         checkErr()
-  //     }
-  // }, [showModal])
-
   const getIcon = ({ name, link }) => {
     if (link === "") return null;
     if (DefaultPage[name]) return DefaultPage[name];
@@ -351,48 +332,6 @@ const DetailMenu = ({}) => {
     linkMounted.current = false;
   };
 
-  const hanndleAddNewMenuItem = () => {
-    if (checkErr()) return;
-    dispatch(
-      doCreateMenuItem({
-        menu_id: menu.id,
-        name: removeSpace(name),
-        link: linkValue,
-      })
-    ).then((res) => {
-      addMenuItem(res.payload);
-    });
-    handleCloseModal();
-  };
-
-  const handleEitMenuItem = () => {
-    if (checkErr()) return;
-    dispatch(
-      doUpdateMenuItem({
-        id: updateItemId,
-        name: removeSpace(name),
-        link: linkValue,
-      })
-    );
-    handleCloseModal();
-    const { node, path } = __rowInfo.current;
-    const { children } = node;
-
-    let newTree = changeNodeAtPath({
-      treeData,
-      path,
-      getNodeKey,
-      newNode: {
-        children,
-        title: removeSpace(name),
-        link: linkValue,
-      },
-    });
-
-    setTreeData(newTree);
-    __rowInfo.current = {};
-  };
-
   const handleEitMenu = () => {
     if (err.title) return;
 
@@ -416,32 +355,92 @@ const DetailMenu = ({}) => {
   const handleDeleteMenu = () => {
     dispatch(doDeleteMenu(menu.id)).then(() => navigate(-1));
   };
+  // Menu items
+  const hanndleAddNewMenuItem = () => {
+    if (checkErr()) return;
+    const newTree = addNodeUnderParent({
+      treeData: treeData,
+      parentKey: null,
+      expandParent: true,
+      getNodeKey,
+      newNode: {
+        title: removeSpace(name),
+        link: linkValue,
+      },
+    });
 
-  const handleDeleteMenuItem = () => {
-    dispatch(doDeleteMenuItem(deleteId));
-    setDeleteId("");
-    setOpenConfirmModal(false);
-    const { path } = __rowInfo.current;
-    setTreeData(
-      removeNodeAtPath({
-        treeData,
-        path,
-        getNodeKey,
+    dispatch(
+      doUpdateSubMenu({
+        menu_id: menu.id,
+        data: {
+          listMenuItem: newTree.treeData,
+        },
       })
-    );
+    ).then((res) => {
+      setTreeData(newTree.treeData);
+      handleCloseModal();
+    });
+  };
+
+  const handleEitMenuItem = () => {
+    if (checkErr()) return;
+    const { node, path } = __rowInfo.current;
+    const { children } = node;
+    const newTree = changeNodeAtPath({
+      treeData,
+      path,
+      getNodeKey,
+      newNode: {
+        children,
+        title: removeSpace(name),
+        link: linkValue,
+      },
+    });
+
+    dispatch(
+      doUpdateSubMenu({
+        menu_id: menu.id,
+        data: {
+          listMenuItem: newTree,
+        },
+      })
+    ).then((res) => {
+      setTreeData(newTree);
+      handleCloseModal();
+    });
+    __rowInfo.current = {};
+  };
+  const handleDeleteMenuItem = () => {
+    const { path } = __rowInfo.current;
+    const newNode = removeNodeAtPath({
+      treeData,
+      path,
+      getNodeKey,
+    });
+    dispatch(
+      doUpdateSubMenu({
+        menu_id: menu.id,
+        data: {
+          listMenuItem: newNode,
+        },
+      })
+    ).then((res) => {
+      setDeleteId("");
+      setOpenConfirmModal(false);
+      setTreeData(newNode);
+    });
     __rowInfo.current = {};
   };
   const updateSubMenu = () => {
     dispatch(
       doUpdateSubMenu({
-        listMenuItem: treeData,
+        menu_id: menu.id,
+        data: {
+          listMenuItem: treeData,
+        },
       })
     );
   };
-  // useEffect(() => {
-  //     console.log(isClick)
-  // }, [isClick])
-  //
 
   const _handleEditMenuItem = (rowInfo) => {
     setMode("EDIT");
@@ -468,22 +467,6 @@ const DetailMenu = ({}) => {
   };
 
   const getNodeKey = ({ treeIndex }) => treeIndex;
-  const addMenuItem = (props) => {
-    const { id, name, link } = props;
-    let newTree = addNodeUnderParent({
-      treeData: treeData,
-      parentKey: null,
-      expandParent: true,
-      getNodeKey,
-      newNode: {
-        id: id,
-        title: name,
-        link: link,
-      },
-    });
-
-    setTreeData(newTree.treeData);
-  };
   return (
     <div>
       <HeaderDetailStore keySelected={Key.Navigation} />
@@ -666,7 +649,21 @@ const DetailMenu = ({}) => {
               </Button>
             </div>
           ) : null}
-          <button onClick={updateSubMenu}>Save</button>
+          <CustomButton
+            disabled = {false}
+            className = "SaveSubMenu-btn"
+            style={{
+              height: "fit-content",
+              marginLeft: "auto",
+              marginTop: "40px",
+              width: "70px",
+              textAlign: "center",
+            }}
+            onClick={updateSubMenu}
+          >
+            Save
+          </CustomButton>
+          {/* <button onClick={updateSubMenu}>Save</button> */}
         </div>
       </div>
 
@@ -755,32 +752,6 @@ const DetailMenu = ({}) => {
                     {searchResult.external?.map((item) => renderItem(item))}
                   </>
                 )}
-                {/* {searchResult?.length ? searchResult.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="detail-menu__add-item-modal--link--list--link-item"
-                                        onMouseDown={() => {
-                                            clicked.current = true
-                                            setLink(item.name)
-                                            setLinkValue(item.page_url)
-                                            setPreLink(item.name)
-                                            setShowPageLinks(false)
-                                            setIcon(item.type === 1 ? 'page' : 'external')
-                                        }}
-                                    >
-                                        <span>{item.type === 1 ? <PageIcon /> : <ExternalLinkIcon />}</span>
-                                        <span
-                                            className=" text-normal-1"
-
-                                        >
-                                            {item.name}
-                                        </span>
-                                    </div>
-                                )) :
-                                    <div className="detail-menu__add-item-modal--link--list__not-found text-normal-2">
-                                        Not found
-                                    </div>
-                                } */}
               </CustomCard>
             ) : null}
           </div>
