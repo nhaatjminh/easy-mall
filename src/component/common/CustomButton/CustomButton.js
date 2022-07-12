@@ -1,7 +1,7 @@
 import React from "react";
 import './CustomButton.scss'
 
-export const CustomButton = ({ children, className, content, style ,onClick }) => {
+export const CustomButton = ({ children, className, content, style ,onClick,disabled=false }) => {
 
 
     return (
@@ -9,6 +9,7 @@ export const CustomButton = ({ children, className, content, style ,onClick }) =
             className={`custom-button ${className}`}
             style={style}
             onClick={onClick}
+            disabled = {disabled}
         >
             {content}
             {children}
