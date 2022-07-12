@@ -7,6 +7,7 @@ import SellGuide from "./pages/SellGuide";
 import MarketGuide from "./pages/MarketGuide";
 import ManageGuide from "./pages/ManageGuide";
 import StoreLogin from "./pages/StoreLogin";
+import CustomSortableTree from "./component/CustomSortableTree";
 import PricingScene from "./pages/PricingScene";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageCollection from "./pages/ManageCollection";

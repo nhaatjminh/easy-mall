@@ -24,7 +24,7 @@ const NavBar = () => {
                 <div className="col-md-5 col-lg-5 col-xl-4 offset-lg-4 offset-lg-4 offset-xl-5 " style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
                     <Stack direction="row" spacing={5} className="navigation-menu">
                         <Link to={'/pricing-scene'} className="text-nav"> Pricing </Link>
-                        <Link to={'#'} className="text-nav"> Learn more </Link>
+                        <Link to={'/manage-guide'} className="text-nav"> Learn more </Link>
                         <Link to={'/login'}>
                             <button className="btn btn-success btn-login"> <p className="text-btn-login"> Login </p></button>
                         </Link>
@@ -47,8 +47,8 @@ const NavBar = () => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#"> <p className="text-nav">Pricing</p></Dropdown.Item>
-                                <Dropdown.Item href="#"><p className="text-nav">Learn more</p></Dropdown.Item>
+                                <Dropdown.Item href="/pricing-scene"> <p className="text-nav">Pricing</p></Dropdown.Item>
+                                <Dropdown.Item href="/manage-guide"><p className="text-nav">Learn more</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Stack>
