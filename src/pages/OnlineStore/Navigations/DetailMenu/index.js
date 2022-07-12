@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./index.scss";
+import _ from "lodash";
+
 import { useParams } from "react-router-dom";
 import { batch, useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -39,6 +41,7 @@ import { PaymentIcon } from "../../../../assets/icon/svg/PaymentIcon";
 import { PolocyIcon } from "../../../../assets/icon/svg/PolocyIcon";
 import { GoIcon } from "./../../../../assets/icon/svg/GoIcon";
 import CustomSortableTree from "../../../../component/CustomSortableTree";
+
 import {
   addNodeUnderParent,
   removeNodeAtPath,
@@ -83,13 +86,19 @@ const DetailMenu = ({}) => {
   const [icon, setIcon] = useState("page");
   const [err, setErr] = useState({});
   const [groupItem, setGroupItem] = useState(null);
-  const [isDisable,setIsDisable] = useState(false)
+  const [isDisable, setIsDisable] = useState(false);
   const [treeData, setTreeData] = useState([]);
+  const [oldTree, setOldTree] = useState({});
   const nameMounted = useRef(false);
   const linkMounted = useRef(false);
   const titleMounted = useRef(false);
   const clicked = useRef(false);
   const __rowInfo = useRef({});
+  window.onbeforeunload = function () {
+    if (!_.isEqual(treeData, oldTree)) {
+       return '';
+     }
+   }.bind(this);
   useEffect(() => {
     batch(() => {
       dispatch(doGetCurrentMenu(params.id)).then((res) => {
@@ -98,6 +107,7 @@ const DetailMenu = ({}) => {
           listMenuItem = res.payload.listMenuItem;
         }
         setTreeData(listMenuItem);
+        setOldTree(listMenuItem)
       });
       dispatch(doGetListPages(params.storeId));
     });
@@ -331,7 +341,7 @@ const DetailMenu = ({}) => {
     linkMounted.current = false;
   };
 
-  const handleEitMenu = () => {
+  const handleEditMenu = () => {
     if (err.title) return;
 
     if (removeSpace(title) === "") {
@@ -367,19 +377,20 @@ const DetailMenu = ({}) => {
         link: linkValue,
       },
     });
-
-    dispatch(
-      doUpdateSubMenu({
-        menu_id: menu.id,
-        data: {
-          listMenuItem: newTree.treeData,
-        },
-      })
-    ).then((res) => {
-      setTreeData(newTree.treeData);
-      setIsDisable(true)
-      handleCloseModal();
-    });
+    setTreeData(newTree.treeData);
+    handleCloseModal();
+    // dispatch(
+    //   doUpdateSubMenu({
+    //     menu_id: menu.id,
+    //     data: {
+    //       listMenuItem: newTree.treeData,
+    //     },
+    //   })
+    // ).then((res) => {
+    //   setTreeData(newTree.treeData);
+    //   setIsDisable(true)
+    //   handleCloseModal();
+    // });
   };
 
   const handleEitMenuItem = () => {
@@ -396,19 +407,20 @@ const DetailMenu = ({}) => {
         link: linkValue,
       },
     });
-
-    dispatch(
-      doUpdateSubMenu({
-        menu_id: menu.id,
-        data: {
-          listMenuItem: newTree,
-        },
-      })
-    ).then((res) => {
-      setTreeData(newTree);
-      setIsDisable(true)
-      handleCloseModal();
-    });
+    setTreeData(newTree);
+    handleCloseModal();
+    // dispatch(
+    //   doUpdateSubMenu({
+    //     menu_id: menu.id,
+    //     data: {
+    //       listMenuItem: newTree,
+    //     },
+    //   })
+    // ).then((res) => {
+    //   setTreeData(newTree);
+    //   setIsDisable(true)
+    //   handleCloseModal();
+    // });
     __rowInfo.current = {};
   };
   const handleDeleteMenuItem = () => {
@@ -418,18 +430,20 @@ const DetailMenu = ({}) => {
       path,
       getNodeKey,
     });
-    dispatch(
-      doUpdateSubMenu({
-        menu_id: menu.id,
-        data: {
-          listMenuItem: newNode,
-        },
-      })
-    ).then((res) => {
-      setIsDisable(true)
-      setOpenConfirmModal(false);
-      setTreeData(newNode);
-    });
+    setOpenConfirmModal(false);
+    setTreeData(newNode);
+    // dispatch(
+    //   doUpdateSubMenu({
+    //     menu_id: menu.id,
+    //     data: {
+    //       listMenuItem: newNode,
+    //     },
+    //   })
+    // ).then((res) => {
+    //   setIsDisable(true)
+    //   setOpenConfirmModal(false);
+    //   setTreeData(newNode);
+    // });
     __rowInfo.current = {};
   };
   const updateSubMenu = () => {
@@ -440,9 +454,10 @@ const DetailMenu = ({}) => {
           listMenuItem: treeData,
         },
       })
-    ).then(()=>{
-      setIsDisable(true)
+    ).then(() => {
+      setOldTree(treeData);
     });
+
   };
 
   const _handleEditMenuItem = (rowInfo) => {
@@ -532,7 +547,7 @@ const DetailMenu = ({}) => {
                       width: "70px",
                       textAlign: "center",
                     }}
-                    onClick={() => handleEitMenu()}
+                    onClick={() => handleEditMenu()}
                   >
                     Save
                   </CustomButton>
@@ -575,14 +590,10 @@ const DetailMenu = ({}) => {
               setData={setTreeData}
               deleteFunc={_handleDeleteMenuItem}
               editFunc={_handleEditMenuItem}
-              setIsDisable = {setIsDisable}
-              onChange = {(treeData) => {
-                setIsDisable(false)
+              onChange={(treeData) => {
                 setTreeData(treeData);
               }}
-
             />
-           
 
             <div
               className="detail-menu__menu--add"
@@ -611,8 +622,8 @@ const DetailMenu = ({}) => {
             </div>
           ) : null}
           <CustomButton
-            disabled = {isDisable}
-            className = "SaveSubMenu-btn"
+            disabled={_.isEqual(treeData, oldTree)}
+            className="SaveSubMenu-btn"
             style={{
               height: "fit-content",
               marginLeft: "auto",

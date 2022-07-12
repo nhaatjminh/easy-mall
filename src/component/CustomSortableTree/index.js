@@ -66,6 +66,7 @@ const CustomSortableTree = ({
           }
           const offSet = (rowInfo.path.length-1)* offset 
           return {
+            maxWidth: offSet + toolBarMarginRight,
             style: { ...style },
             buttons: [
               <div className="rst__custom__rowToolbar" style={{right:`${offSet}px`,marginRight:`${toolBarMarginRight}px`}}>

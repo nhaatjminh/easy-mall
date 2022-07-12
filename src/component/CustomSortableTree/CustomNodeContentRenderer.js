@@ -29,12 +29,13 @@ class NodeRendererDefault extends Component {
       isOver, // Not needed, but preserved for other renderers
       parentNode, // Needed for dndManager
       rowDirection,
+      maxWidth,
       ...otherProps
     } = this.props;
+
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
     const rowDirectionClass = rowDirection === "rtl" ? "rst__rtl" : null;
-
     let handle;
     if (canDrag) {
       if (typeof node.children === "function" && node.expanded) {
@@ -186,18 +187,20 @@ class NodeRendererDefault extends Component {
                   {/* Custom [End]*/}
 
                   <span
+                    style = {{maxWidth: `calc(500px - ${maxWidth - Number(`${node.expanded === undefined ? 25:0}`)}px)`}}
                     className={classnames(
                       "rst__rowTitle",
                       node.subtitle && "rst__rowTitleWithSubtitle"
                     )}
                   >
+                    
                     {typeof nodeTitle === "function"
                       ? nodeTitle({
                           node,
                           path,
                           treeIndex,
                         })
-                      : nodeTitle}
+                      : nodeTitle.toString()}
                   </span>
 
                   {nodeSubtitle && (

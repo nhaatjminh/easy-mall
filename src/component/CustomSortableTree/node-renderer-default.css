@@ -120,10 +120,9 @@
 .rst__rowLabel {
   flex: 0 1 auto;
   padding-right: 20px;
-  max-width: 515px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 14px;
+  width: 100%;
+  display: flex;
 }
 .rst__rtl.rst__rowLabel {
   padding-left: 20px;
@@ -287,6 +286,9 @@
 
 .rst__rowTitle {
   font-weight: normal;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rst__rowTitleWithSubtitle {
