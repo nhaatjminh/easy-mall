@@ -147,7 +147,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             {
                                 Object.keys(formToShow.products || {}).length ?
                                 <div style={{ overflowX: 'auto'}}>
-                                    <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
+                                    <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
                                         <div className="w-100"  style={{minWidth: 225}}>
                                             <span className='float-left pl-5'>Products</span>
                                         </div>
@@ -158,7 +158,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                             Total
                                         </div>
                                     </div>
-                                    
+                                    <Divider />
                                     {formToShow.products.map((product, index) => 
                                         (
                                             <ItemFollow key={`${index}-item-follow`} existed={product.existed}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>

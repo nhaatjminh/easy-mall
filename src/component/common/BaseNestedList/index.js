@@ -141,12 +141,8 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                                 </Box>
                                         }
                                         <ListItemText
-                                            className="text-label-span text-hyper-link"
+                                            className="text-label-span"
                                             primary={item.title}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: item.id }})
-                                            }}
                                         />
                                         <Divider key={item.id} absolute />
                                     </ListItem>
@@ -239,12 +235,8 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                             <div className="col-4">
                                                 
                                                 <ListItemText
-                                                    className="text-label-span text-hyper-link"
+                                                    className="text-label-span"
                                                     primary={item.title}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: item.id }})
-                                                    }}
                                                 />
                                             </div>
                                             <div className="col-4">
