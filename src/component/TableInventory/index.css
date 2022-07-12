@@ -8,13 +8,6 @@
 .table-manager-pagination .MuiTablePagination-displayedRows {
     margin-bottom: 0;
 }
-.table td, .table th {
-    text-align: center;
-    vertical-align: middle;
-}
-.table thead th, .table tbody th {
-    vertical-align: middle;
-}
 .btn-product {
     border: 1px solid gray;
 }

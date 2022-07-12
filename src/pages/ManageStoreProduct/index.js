@@ -14,7 +14,7 @@ import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
-const ManageStoreProduct = () => {
+const ManageStoreProduct = ({fromAnotherPage, idProductAnother}) => {
   
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
@@ -26,11 +26,11 @@ const ManageStoreProduct = () => {
   const unmounted = useRef(false);
   const params = useParams();
   const columns = [
-    { id: 'title', label: 'Title', minWidth: 170, align: 'center', sort: 'string' },
+    { id: 'title', label: 'Title', minWidth: 150, align: 'left', sort: 'string', haveImage: true },
     {
       id: 'status',
       label: 'Status',
-      minWidth: 100,
+      minWidth: 150,
       align: 'center',
       classNameWithData: (data) => {
         if (data === "Active") return 'active-product'
@@ -42,24 +42,27 @@ const ManageStoreProduct = () => {
       id: 'inventory',
       label: 'Inventory',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'number'
     },
     {
       id: 'type',
       label: 'Type',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'string'
     },
     {
       id: 'vendor',
       label: 'Vendor',
       minWidth: 170,
-      align: 'center',
+      align: 'left',
       sort: 'string'
     },
   ];
+  useEffect(() => {
+
+  }, [fromAnotherPage, idProductAnother])
   const [filterSeach, setFilterSearch] = useState();
   const dbValue = useDebounce(filterSeach, 300);
   const editFunction = (selected) => {
@@ -114,6 +117,7 @@ const ManageStoreProduct = () => {
    
   }
   const returnTable = async () => {
+    setIsEdit(false);
     await dispatch(doGetListProductsOfStores({
           id: params.storeId,
           params: {}

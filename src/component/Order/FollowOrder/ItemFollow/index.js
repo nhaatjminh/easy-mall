@@ -17,13 +17,13 @@ const ItemFollow = ({thumbnail, productCurrency, name, price,quantity, parentNam
             <div className="w-100" style={{ display: 'inline-flex', minWidth: 225}}>
                 {
                     thumbnail ?
-                        <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                            <ListItemAvatar className="image-container m-0">
+                        <Box style={{width: 80, height: 'auto'}}>
+                            <ListItemAvatar className="image-container-item-list m-0">
                                 <img alt="thumbnail" src={thumbnail}/>
                             </ListItemAvatar>
                         </Box>
-                        : <Box style={{width: 35, height: 'auto', marginRight: 30}}>
-                            <ListItemAvatar className="image-container m-0">
+                        : <Box style={{width: 80, height: 'auto'}}>
+                            <ListItemAvatar className="image-container-item-list m-0">
                                 <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                             </ListItemAvatar>
                         </Box>

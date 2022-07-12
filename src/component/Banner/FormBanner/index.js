@@ -111,6 +111,14 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     setValueToAdd({});
                     setCustomUrl(null);
                 }
+            } else {
+                setShowAddBanner(false);
+                const newListBanner = [...listBanner];
+                newListBanner.push(valueNeedPush);
+                setListBanner(newListBanner);
+                form.current.banners.push(valueNeedPush);
+                setValueToAdd({});
+                setCustomUrl(null);
             }
         }
     }
@@ -468,7 +476,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
         <>
         <FormGroup>
             <div className="row  text-black">  
-                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
+                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-header " style={{margin: 0}}>Title</InputLabel>
                         <TextField
@@ -518,13 +526,13 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 <p className="pr-2 m-0" style={{width: 20}}>{index}.</p>
                                                 {
                                                 banner.image ?
-                                                    <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
+                                                    <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
                                                             <img alt="thumbnail" src={banner.image}/>
                                                         </ListItemAvatar>
                                                     </Box>
-                                                :  <Box key={`${banner.id} - box`} style={{width: 35, height: 'auto', marginRight: 30}}>
-                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container m-0">
+                                                :  <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
+                                                        <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
                                                             <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
@@ -654,7 +662,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                         : <></>
                     }
                 </div>   
-                <div key={'add-banner-image'} className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                <div key={'add-banner-image'} className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <ImageInput formRef={form} oldForm={oldForm} mode={mode} modal={false}></ImageInput>
                     </Paper> 
@@ -670,7 +678,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     }
                 </div>
                 <div className="col-6">
-                    <button onClick={saveCollection} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                    <button onClick={saveCollection} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
             
                 </div>
             </div>  

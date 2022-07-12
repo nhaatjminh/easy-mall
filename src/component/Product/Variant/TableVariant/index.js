@@ -631,7 +631,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                           </TableCell>
                           <TableCell align="center" style={{display: 'inline-flex'}}>
                             
-                            <BaseNumberField key="Price" className={`${row.delete && 'disabled-text'}`} disabled={row.delete} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
+                            <BaseNumberField key="Price" className={`w-100 ${row.delete && 'disabled-text'}`} disabled={row.delete} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} value={row.price} fullWidth={false} setValue={(value) => handleChangePriceVariant(index, value)}></BaseNumberField>
                           </TableCell>
                           <TableCell align="center">
                             

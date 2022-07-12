@@ -32,12 +32,12 @@ const ManageCollection = () => {
   const dbValue = useDebounce(filterSeach, 300);
   const [isEdit, setIsEdit] = useState(false);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300, sort: 'string' },
+    { id: 'name', label: 'Title', minWidth: 300, align: 'left', sort: 'string', haveImage: true },
     {
       id: 'description',
       label: 'Description',
       minWidth: 170,
-      align: 'right'
+      align: 'left'
     },
   ];
   const editFunction = (selected) => {
@@ -90,6 +90,7 @@ const ManageCollection = () => {
     
   }
   const returnTable = async () => {
+    setIsEdit(false)
     await dispatch(doGetListCollectionOfStores({
             id: params.storeId,
             params: {}
@@ -191,7 +192,7 @@ const ManageCollection = () => {
                         )}
                       </div>
                     </>
-                  : <Collection  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => setShowAddCollection(false)} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
+                  : <Collection  setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => returnTable()} oldForm={mode === "EDIT" ? oldForm : {}}></Collection>}
                         
                 </>
               </div>

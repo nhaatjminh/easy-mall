@@ -26,6 +26,7 @@ import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import { cloneDeep } from "lodash";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
+import BaseEmpty from "../../common/BaseEmpty";
 
 const styleModal = {
     position: 'absolute',
@@ -198,10 +199,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
         else {
             let newFilterList = listProducts.map((product) => {
                 let newProduct = JSON.parse(JSON.stringify(product));
-                newProduct.variants = newProduct.variants.filter(variant => variant.name.includes(event.target.value))
+                if (newProduct.title?.toLowerCase().includes(event.target.value?.toLowerCase())) return newProduct
+                newProduct.variants = newProduct.variants.filter(variant => variant.name?.toLowerCase().includes(event.target.value?.toLowerCase()))
                 return newProduct
             })
-            newFilterList = newFilterList.filter((product) => product.title.includes(event.target.value) || product.variants.length)
+            newFilterList = newFilterList.filter((product) => product.title?.toLowerCase().includes(event.target.value?.toLowerCase()) || product.variants.length)
             setListFilterProducts(newFilterList);
         }
     }
@@ -348,7 +350,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
         <>
             <form>
                 <div className="row  text-black">  
-                        <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-7 col-lg-7 col-xl-7">   
+                        <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6">   
                             <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between'}}>
 
@@ -357,13 +359,15 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                             title="Select Variant"
                                             titleButton="Browser"
                                             onOK={() => {}}
+                                            onClose={() => setListFilterProducts(listProducts)}
                                             classNameModal='style-modal'
                                             styleButton={{ width: 100 ,border: '1px solid #9fa3a7', borderRadius: 5, marginLeft: 10, height: 30, color: '#333', textTransform: 'none'}}>
-                                            <FormControl style={{width: 700}}>
+                                            <FormControl style={{width: 900}}>
                                                 <CustomSearchInput
                                                     placeholder='Search'
                                                     onChange={handleSearchProduct}
                                                     height={'30px'}
+                                                    
                                                 />
                                                 <BaseNestedList items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
                                                 valueVariant={listValueVariant}
@@ -372,7 +376,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                         </BaseModal>
                                 </div>
                                 {
-                                    Object.keys(listValueProduct || {}).length || Object.keys(listValueVariant || {}).length ?
+                                    Object.values(listValueProduct || {})?.filter(o => o)?.length || Object.values(listValueVariant || {})?.filter(o => o)?.length ?
                                     <div style={{ overflowX: 'auto'}}>
                                         <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
                                             <div className="w-100"  style={{minWidth: 225}}>
@@ -441,9 +445,11 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                                 return <div className="text-content">{value}</div>
                                             }
                                         }}>
-                                        {listDiscount.map((discount) => 
+                                        {listDiscount.length > 0
+                                        ? listDiscount.map((discount) => 
                                             <MenuItem value={`${discount.code}`}>{discount.code}</MenuItem>
-                                        )}
+                                        ) : <BaseEmpty></BaseEmpty>
+                                        }
                                     </Select>
                                     <InputLabel name='title' className="text-content" style={{margin: 0}}>
                                     {currency === 'USD' ? parseLocaleNumber(discountTotal,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(discountTotal,'vi-VN')} {currency}</InputLabel>
@@ -472,7 +478,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                 </div>
                             </Paper>
                         </div>   
-                        <div className="offset-1 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                        <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                             <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
                                 

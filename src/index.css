@@ -158,6 +158,14 @@ body {
   font-size: 15px !important;
   color: #202223;
 }
+.text-label-span span{
+  font-size: 16px !important;
+  color: #202223;
+}
+.text-content-span span{
+  font-size: 14px !important;
+  color: #202223;
+}
 .text-content input{
   font-size: 14px !important;
   color: #202223;
@@ -177,4 +185,22 @@ body {
 }
 .text-field-input input {
     padding: 4px 0 5px 5px;
+}
+.image-container-item-list {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  width: 64px;
+  height: 64px;
+
+}
+.image-container-item-list img {
+  z-index: 0;
+  width: 64px;
+  height: 64px;
+  padding: 10px;
+  object-fit: cover;
 }

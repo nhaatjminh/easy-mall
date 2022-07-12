@@ -32,12 +32,12 @@ const ManageBanner = () => {
   const dbValue = useDebounce(filterSeach, 300);
   const [isEdit, setIsEdit] = useState(false);
   const columns = [
-    { id: 'name', label: 'Title', minWidth: 300, sort: 'string' },
+    { id: 'name', label: 'Title', minWidth: 300, align: 'left', sort: 'string', haveImage: true },
     {
       id: 'description',
       label: 'Description',
       minWidth: 170,
-      align: 'right'
+      align: 'left'
     },
   ];
   const editFunction = (selected) => {
@@ -90,6 +90,7 @@ const ManageBanner = () => {
     
   }
   const returnTable = async () => {
+    setIsEdit(false);
     await dispatch(doGetListBannerOfStores({
             id: params.storeId,
             params: {}
@@ -191,7 +192,7 @@ const ManageBanner = () => {
                       </div>
                     </>
                   : <Banner setIsEdit={(bool) => setIsEdit(bool)} mode={mode} returnTable={() => {
-                    setShowAddCollection(false)
+                    returnTable()
                   }} oldForm={mode === "EDIT" ? oldForm : {}}></Banner>}
                         
                 </>

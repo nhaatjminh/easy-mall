@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Paper, Typography } from '@mui/material';
+import { ListItemAvatar, ListItemText, Paper, Typography } from '@mui/material';
 
 import PropTypes from 'prop-types';
 import './index.css';
@@ -9,6 +9,7 @@ import { visuallyHidden } from '@mui/utils';
 import { alpha } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import BaseEmpty from "../common/BaseEmpty";
 function descendingComparator(a, b, orderBy, typeSort) {
   if (typeSort === 'number') {
     if (Number(b[orderBy]) < Number(a[orderBy])) {
@@ -277,8 +278,8 @@ const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData,
                 showToolbar={showToolbar}
                 showAction={showAction}
               />
-              <TableBody>
-                  {rows?.length ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
+              <TableBody >
+                  {rows?.length > 0 ? stableSort(rows, getComparator(order, orderBy, columnsOfData), columnsOfData)
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => {
                       const isItemSelected = isSelected(row.id);
@@ -316,7 +317,32 @@ const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData,
                               align={headCell?.align || 'center'}
                               className={`${headCell?.classNameBody} ${headCell.classNameWithData && headCell?.classNameWithData(row[`${headCell.id}`])}`}
                             >
-                              <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
+                              {headCell.haveImage 
+                              ? 
+                                <div className="w-100" style={{ display: 'inline-flex', minWidth: 225, alignItems: 'center'}}>
+                                  {
+                                      row.thumbnail ?
+                                          <Box style={{width: 80, height: 'auto'}}>
+                                              <ListItemAvatar className="image-container-item-list m-0">
+                                                  <img alt="thumbnail" src={row.thumbnail}/>
+                                              </ListItemAvatar>
+                                          </Box>
+                                          : <Box style={{width: 80, height: 'auto'}}>
+                                              <ListItemAvatar className="image-container-item-list m-0">
+                                                  <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                              </ListItemAvatar>
+                                          </Box>
+                                  }
+                                  <div>
+                                      <ListItemText
+                                          className="title-label"
+                                          primary={row[`${headCell.id}`]}
+                                      />
+                                  </div>
+                              </div> 
+                            : 
+                            <div dangerouslySetInnerHTML={{__html: row[`${headCell.id}`]}} />
+                          }
                             </TableCell>
                           )})}
                           {
@@ -341,7 +367,12 @@ const TableManage = ({showToolbar = true, showAction = true,data, columnsOfData,
                           }
                       </TableRow>
                       );
-                  }) : <></>}
+                  }) : <TableRow>
+                      <TableCell colSpan={columnsOfData?.length + 2 ?? 2}>
+
+                        <BaseEmpty></BaseEmpty>
+                      </TableCell>
+                  </TableRow>}
               </TableBody>
             </Table>
         </TableContainer>

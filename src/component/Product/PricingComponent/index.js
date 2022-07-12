@@ -73,7 +73,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                                 spacing={10}
                                 >
                                 <InputLabel name='title' className="text-label" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
-                                <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
+                                <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
                             </Stack>
                         </div>
                         <Divider className="divider-custom"/>
@@ -85,7 +85,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                             alignItems="center"
                             spacing={10}
                             >
-                                <BaseNumberField currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder="0.00" key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
+                                <BaseNumberField currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
                             {costPerItem && productPrice ? 
                             <>
                                 <div>
