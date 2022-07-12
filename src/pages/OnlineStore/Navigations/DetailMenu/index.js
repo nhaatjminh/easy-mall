@@ -77,14 +77,13 @@ const DetailMenu = ({}) => {
   const [openDeleteMenuModal, setOpenDeleteMenuModal] = useState(false);
   const [showPageLinks, setShowPageLinks] = useState(false);
   const [linkValue, setLinkValue] = useState("");
-  const [deleteId, setDeleteId] = useState("");
   const [isEditTitle, setIsEditTitle] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const dbValue = useDebounce(link, 300);
   const [icon, setIcon] = useState("page");
   const [err, setErr] = useState({});
   const [groupItem, setGroupItem] = useState(null);
-
+  const [isDisable,setIsDisable] = useState(false)
   const [treeData, setTreeData] = useState([]);
   const nameMounted = useRef(false);
   const linkMounted = useRef(false);
@@ -378,6 +377,7 @@ const DetailMenu = ({}) => {
       })
     ).then((res) => {
       setTreeData(newTree.treeData);
+      setIsDisable(true)
       handleCloseModal();
     });
   };
@@ -406,6 +406,7 @@ const DetailMenu = ({}) => {
       })
     ).then((res) => {
       setTreeData(newTree);
+      setIsDisable(true)
       handleCloseModal();
     });
     __rowInfo.current = {};
@@ -425,7 +426,7 @@ const DetailMenu = ({}) => {
         },
       })
     ).then((res) => {
-      setDeleteId("");
+      setIsDisable(true)
       setOpenConfirmModal(false);
       setTreeData(newNode);
     });
@@ -439,7 +440,9 @@ const DetailMenu = ({}) => {
           listMenuItem: treeData,
         },
       })
-    );
+    ).then(()=>{
+      setIsDisable(true)
+    });
   };
 
   const _handleEditMenuItem = (rowInfo) => {
@@ -462,7 +465,6 @@ const DetailMenu = ({}) => {
   };
   const _handleDeleteMenuItem = (rowInfo) => {
     setOpenConfirmModal(true);
-    setDeleteId(rowInfo.node.id);
     __rowInfo.current = rowInfo;
   };
 
@@ -573,55 +575,14 @@ const DetailMenu = ({}) => {
               setData={setTreeData}
               deleteFunc={_handleDeleteMenuItem}
               editFunc={_handleEditMenuItem}
+              setIsDisable = {setIsDisable}
+              onChange = {(treeData) => {
+                setIsDisable(false)
+                setTreeData(treeData);
+              }}
+
             />
-            {/* <div className="detail-menu__menu--list">
-              {menu?.listMenuItem?.length
-                ? menu.listMenuItem.map((item) => (
-                    <div
-                      key={item.id}
-                      className="detail-menu__menu--list--item"
-                    >
-                      <div className="detail-menu__menu--list--item--name text-normal-1">
-                        {item.name}
-                      </div>
-                      <div className="detail-menu__menu--list--item--btn">
-                        <div
-                          className="detail-menu__menu--list--item--btn--edit text-title-3"
-                          onClick={() => {
-                            setMode("EDIT");
-                            setUpdateItemId(item.id);
-                            setName(item.name);
-                            setLink(
-                              item.link[0] === "/"
-                                ? getPageNameFromUrl(item.link)
-                                : item.link
-                            );
-                            setPreLink(
-                              item.link[0] === "/"
-                                ? getPageNameFromUrl(item.link)
-                                : item.link
-                            );
-                            setLinkValue(item.link);
-                            setShowModal(true);
-                            // setIcon(item.link[0] === '/' ? 'page' : 'external')
-                          }}
-                        >
-                          Edit
-                        </div>
-                        <div
-                          className="detail-menu__menu--list--item--btn--delete text-title-3"
-                          onClick={() => {
-                            setOpenConfirmModal(true);
-                            setDeleteId(item.id);
-                          }}
-                        >
-                          Delete
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                : null}
-            </div> */}
+           
 
             <div
               className="detail-menu__menu--add"
@@ -650,7 +611,7 @@ const DetailMenu = ({}) => {
             </div>
           ) : null}
           <CustomButton
-            disabled = {false}
+            disabled = {isDisable}
             className = "SaveSubMenu-btn"
             style={{
               height: "fit-content",

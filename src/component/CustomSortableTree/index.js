@@ -10,9 +10,10 @@ const CustomSortableTree = ({
   maxDepth = 2,
   toolBarMarginRight = 20,
   data,
-  setData,
+  onChange,
   deleteFunc,
   editFunc,
+  
 }) => {
  
   //=======================STATES===========================
@@ -22,9 +23,7 @@ const CustomSortableTree = ({
         isVirtualized={false}
         treeData={data}
         maxDepth={maxDepth}
-        onChange={(treeData) => {
-          setData(treeData);
-        }}
+        onChange = {onChange}
         scaffoldBlockPxWidth={offset}
         style={{ ...innerStyle, left: `-${offset}px`, position: "relative" }}
         nodeContentRenderer={CustomNodeContentRenderer}
