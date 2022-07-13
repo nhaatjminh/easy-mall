@@ -444,7 +444,7 @@ button.end-slide__btn:hover::before {
   margin-left: 3rem !important;
 }
 .slide-middle{
-  background: linear-gradient(0deg, rgba(255,255,255,0.4), rgba(255,255,255,0.4)),radial-gradient(183.99% 174.7% at -14.27% -20.86%, rgba(19,15,215,0.3) 0%, rgba(33,201,171,0.3) 42.82%, rgba(206,241,65,0.3) 91.54%);;
+  /* background: linear-gradient(0deg, rgba(255,255,255,0.4), rgba(255,255,255,0.4)),radial-gradient(183.99% 174.7% at -14.27% -20.86%, rgba(19,15,215,0.3) 0%, rgba(33,201,171,0.3) 42.82%, rgba(206,241,65,0.3) 91.54%);; */
   width: 100%;
   padding-top: 100px;
   padding-bottom: 100px;

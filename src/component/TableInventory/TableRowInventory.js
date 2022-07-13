@@ -1,9 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {
-    InputLabel,
-    ImageList,
-    ImageListItem, 
-    IconButton,
     TableCell,
     TextField,
     TableRow,
@@ -13,7 +9,7 @@ import {
 }
 from '@mui/material';
 import './index.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, variantId, is_variant, variant, editItem}) => {
     
@@ -32,9 +28,8 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
     if (updateSKUState) object.sku = valueSku;
     if (updateQuantityState) object.quantity = valueQuantity;
     editItem(object);
-    
-
   }
+  const routeChange = useNavigate();
   return (
     <TableRow
       tabIndex={-1}
@@ -80,8 +75,12 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                     }
                     <div>
                         <ListItemText
-                            className="title-label"
+                            className="title-label text-hyper-link"
                             primary={row.title}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              routeChange(`/store-detail/manage-product/${params.storeId}`, { state: {idProduct: row.id }})
+                            }}
                         />
                         <ListItemText
                             className="title-product"

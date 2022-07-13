@@ -169,19 +169,15 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                                     Banner</span>
                             </p>
                         </Typography>
-                    {/* <Typography component={'span'} className={keySelected === Key.Customer ? "nav-element nav-element-selected" : "nav-element "}
-                        onClick={() => {
-                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
-                        }}
-                    >
-                        <p className="m-0 mb-2 mt-2">
-                            <i className="fa-user fa-icon fa-store-detail-nav p-0" style={{ marginRight: 17 }}></i>
-                            <span className="font-weight-bold">Customer</span>
-                        </p>
-                    </Typography> */}
                     <Typography component={'span'} className={keySelected === Key.Analysis ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
-                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
+                            warningWhenLeave(() => {
+                                if (keySelected === Key.Analysis) {
+                                    window.location.reload();
+                                } else {
+                                    routeChange(`/store-detail/manage-analysis/${params.storeId}`)
+                                }
+                            })
                         }}
                     >
                         <p className="m-0 mb-2 mt-2 ">
@@ -189,16 +185,6 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                             <span className="font-weight-bold">Analysis</span>
                         </p>
                     </Typography>
-                    {/* <Typography component={'span'} className={keySelected === Key.Marketing ? "nav-element nav-element-selected" : "nav-element "}
-                        onClick={() => {
-                            //routeChange(`/store-detail/manage-collection/${params.storeId}`)
-                        }}
-                    >
-                        <p className="m-0 mb-2 mt-2 ">
-                            <i className="fa-bullhorn fa-icon fa-store-detail-nav "></i>
-                            <span className="font-weight-bold"> Marketing </span>
-                        </p>
-                    </Typography> */}
                     <Typography component={'span'} className={keySelected === Key.Discount ? "nav-element nav-element-selected" : "nav-element "}
                         onClick={() => {
                             warningWhenLeave(() => {

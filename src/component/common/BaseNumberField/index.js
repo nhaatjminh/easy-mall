@@ -24,7 +24,7 @@ export const BaseNumberField = ({defaultValue, value, length=12, setValue, fullW
             <CurrencyInput
                 id="input-example"
                 decimalSeparator="." groupSeparator=","
-                className={`m-0 p-0 style-input text-field-input text-content ${className} ${fullWidth ? 'full-width' : ''}`}
+                className={`m-0 p-0 style-input text-min-width text-field-input text-content ${className} ${fullWidth ? 'full-width' : ''}`}
                 name="input-name"
                 placeholder={placeholder}
                 value={value}

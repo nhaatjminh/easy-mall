@@ -7,6 +7,7 @@ import SellGuide from "./pages/SellGuide";
 import MarketGuide from "./pages/MarketGuide";
 import ManageGuide from "./pages/ManageGuide";
 import StoreLogin from "./pages/StoreLogin";
+import CustomSortableTree from "./component/CustomSortableTree";
 import PricingScene from "./pages/PricingScene";
 import ManageStoreProduct from "./pages/ManageStoreProduct";
 import ManageCollection from "./pages/ManageCollection";
@@ -27,10 +28,11 @@ import { Setting } from "./pages/Setting";
 import { Discount } from "./pages/Discount";
 import { CreateDiscount } from "./pages/Discount/CreateDiscount";
 import { DetailDiscount } from "./pages/Discount/DetailDiscount";
+import ManageAnalysis from "./pages/ManageAnalysis";
 
 const App = () => {
   return(
-    <div style={{overflowX: 'hidden'}}>
+    <div style={{overflowX: 'hidden', backgroundColor:  '#f6f6f7'}}>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<HomePage/>}/>
@@ -54,6 +56,7 @@ const App = () => {
           <Route path='/store-detail/manage-collection/:storeId' element={<ManageCollection/>}/>
           <Route path='/store-detail/manage-order/:storeId' element={<ManageOrder/>}/>
           <Route path='/store-detail/manage-inventory/:storeId' element={<ManageInventory/>}/>
+          <Route path='/store-detail/manage-analysis/:storeId' element={<ManageAnalysis/>}/>
           <Route path='/store-detail/manage-discount/:storeId' element={<Discount/>}/>
           <Route path='/store-detail/manage-discount/:storeId/new' element={<CreateDiscount/>}/>
           <Route path='/store-detail/manage-discount/:storeId/:discountId' element={<DetailDiscount/>}/>

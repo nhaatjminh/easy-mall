@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress'
 import './index.css';
@@ -14,8 +14,8 @@ import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
-const ManageStoreProduct = ({fromAnotherPage, idProductAnother}) => {
-  
+const ManageStoreProduct = () => {
+  const { state } = useLocation();
   const dispatch = useDispatch();
   const [rows, setRows] = useState([]);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -61,8 +61,10 @@ const ManageStoreProduct = ({fromAnotherPage, idProductAnother}) => {
     },
   ];
   useEffect(() => {
-
-  }, [fromAnotherPage, idProductAnother])
+    if (state?.idProduct) {
+      editFunction(state.idProduct);
+    }
+  }, [state])
   const [filterSeach, setFilterSearch] = useState();
   const dbValue = useDebounce(filterSeach, 300);
   const editFunction = (selected) => {
@@ -204,8 +206,6 @@ const ManageStoreProduct = ({fromAnotherPage, idProductAnother}) => {
                     alignItems="center"
                     spacing={1}
                   >
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Export </p></button>
-                    <button className="btn  btn-form-product" > <p className="text-btn-form-product"> Import </p></button>
                     <button className="btn btn-success btn-form-product" onClick={() => {
                       setShowAddProduct(true);
                       setMode('ADD');
