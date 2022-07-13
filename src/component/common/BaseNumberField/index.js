@@ -7,7 +7,7 @@ import {
 import CurrencyInput from 'react-currency-input-field';
 
 
-export const BaseNumberField = ({defaultValue, value, length=12, setValue, fullWidth, disabled = false, className = '', placeholder='', currency='', handleChangeCurrency= () => {} }) => {
+export const BaseNumberField = ({defaultValue, value, length=9, setValue, fullWidth, disabled = false, className = '', placeholder='', currency='', handleChangeCurrency= () => {} }) => {
     return (
         <>
             {currency ?

@@ -8,6 +8,7 @@ import { doGetAnalysis } from "../../redux/slice/analysisSlice";
 import { MenuItem, Select } from "@mui/material";
 import Item from "./Item";
 import {parseLocaleNumber} from '../../utils/parseLocaleNumber'
+import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
 
 const ManageAnalysis = () => {
     const DAY_IN_MS = 24 * 60 * 60 * 1000
@@ -15,25 +16,26 @@ const ManageAnalysis = () => {
     const params = useParams();
     const [currency, setCurrency] = useState('VND');
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(false);
     const [exactTotalSale, setExactTotalSale] = useState({
         data: [],
         labelX: '',
         labelY: '',
-        labelPaper: '',
+        labelPaper: 'Total',
         total: 0
     })
     const [exactTotalProduct, setExactTotalProduct] = useState({
         data: [],
         labelX: '',
         labelY: '',
-        labelPaper: '',
+        labelPaper: 'Total',
         total: 0
     })
     const [exactTotalOrder, setExactTotalOrder] = useState({
         data: [],
         labelX: '',
         labelY: '',
-        labelPaper: '',
+        labelPaper: 'Total',
         total: 0
     })
     const handleChangeCurrency = (e) => {
@@ -50,6 +52,7 @@ const ManageAnalysis = () => {
         return new Date(dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]); 
     }
     useEffect(() => {
+        setLoading(true);
         dispatch(doGetAnalysis({
             id: params.storeId,
             params: {
@@ -87,6 +90,8 @@ const ManageAnalysis = () => {
             })
             result.payload.orders = finalAllOrder;
             setData(result.payload)
+            
+            setLoading(false);
         });
     }, [currency])
     const getExactTotalSales = () => {
@@ -101,7 +106,9 @@ const ManageAnalysis = () => {
             labelX: 'Date',
             labelY: 'Sale',
             total: `${parseLocaleNumber(Number(Number(data.total_sales).toFixed(currency === 'USD' ? 2 : 0)))} ${currency}` ,
-            data: dataForTotalSales
+            data: dataForTotalSales,
+            currency: currency,
+            format: true
         })
     }
     
@@ -117,7 +124,8 @@ const ManageAnalysis = () => {
             labelX: 'Date',
             labelY: 'Product',
             total: `${parseLocaleNumber(Number(Number(data.total_products).toFixed(currency === 'USD' ? 2 : 0)))}` ,
-            data: dataForTotalProducts
+            data: dataForTotalProducts,
+            currency: currency
         })
     }
     const getExactTotalOrder = () => {
@@ -132,7 +140,8 @@ const ManageAnalysis = () => {
             labelX: 'Date',
             labelY: 'Order',
             total: `${parseLocaleNumber(Number(data.total_order))}` ,
-            data: dataForTotalOrder
+            data: dataForTotalOrder,
+            currency: currency
         })
     }
     useEffect(() => {
@@ -167,7 +176,9 @@ const ManageAnalysis = () => {
                     <Item exactData={exactTotalProduct}></Item> 
                 </div>
             </div> 
-        </div>   
+        </div>  
+        
+        <LoadingModal show={loading} /> 
         </>    
     );
 }
