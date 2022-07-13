@@ -164,7 +164,8 @@ export const DetailDiscount = () => {
             end_at: isEnd ? getDateTime(endDate, endTime) : undefined
         }))
             .then(() => {
-
+                if (code !== preCode)
+                setPreCode(code)
             })
     }
 

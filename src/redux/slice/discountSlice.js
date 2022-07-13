@@ -138,14 +138,14 @@ export const discountSlice = createSlice({
         });
         builder.addCase(doDeleteSelectedDiscounts.fulfilled, (state, action) => {
             const listDelete = action.payload;
-            let data = state.listDiscounts;
-            
+            let dataList = [...state.listDiscounts];
+
             listDelete.forEach((id) => {
-                const index = data.findIndex((item) => item.id === id)
-                if (index >= 0) data.splice(index, 1)
+                const index = dataList.findIndex((item) => item.id === id)
+                if (index >= 0) dataList.splice(index, 1)
             });
             
-            state.listDiscounts = data
+            state.listDiscounts = [...dataList]
             state.isLoading = false;
         });
         builder.addCase(doDeleteSelectedDiscounts.rejected, (state, action) => {

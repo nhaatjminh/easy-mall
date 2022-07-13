@@ -66,7 +66,7 @@ export const Discount = () => {
     }, [])
 
     useEffect(() => {
-        if (listDiscounts?.length) {
+        if (listDiscounts.length >= 0) {
             const list = listDiscounts?.map((item) => {
                 return {
                     id: item.id,

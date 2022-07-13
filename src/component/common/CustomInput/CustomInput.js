@@ -15,7 +15,8 @@ export const CustomInput = ({
     icon,
     type,
     step,
-    unit
+    unit,
+    autoComplete,
 }) => {
 
     return (
@@ -37,6 +38,7 @@ export const CustomInput = ({
                     onBlur={onBlur}
                     type={type}
                     step={step}
+                    autoComplete={autoComplete}
                 />
             {/* </div> */}
             {unit &&
