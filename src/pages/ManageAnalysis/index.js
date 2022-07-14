@@ -49,7 +49,7 @@ const ManageAnalysis = () => {
     }
     const convertNewDateFromLocaleString = (date) => {
         let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '-' + dateSplit[1] + '-' + dateSplit[0]).getTime(); 
+        return new Date(dateSplit[2] + '-' + dateSplit[0] + '-' + dateSplit[1]).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
@@ -138,7 +138,7 @@ const ManageAnalysis = () => {
             }
         })
         setExactTotalOrder({
-            labelPaper: 'Total Order',
+            labelPaper: 'Total Orders',
             labelX: 'Date',
             labelY: 'Order',
             total: `${parseLocaleNumber(Number(data.total_order))}` ,
