@@ -122,7 +122,7 @@ const ManageAnalysis = () => {
             }
         })
         setExactTotalProduct({
-            labelPaper: 'Total Products',
+            labelPaper: 'Total Products Sold',
             labelX: 'Date',
             labelY: 'Product',
             total: `${parseLocaleNumber(Number(Number(data.total_products).toFixed(currency === 'USD' ? 2 : 0)))}` ,
