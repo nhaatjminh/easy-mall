@@ -28,7 +28,6 @@ export const BaseNumberField = ({defaultValue, value, length=9, setValue, fullWi
                 name="input-name"
                 placeholder={placeholder}
                 value={value}
-                fullWidth={fullWidth}
                 disabled={disabled}
                 maxLength={length}
                 defaultValue={defaultValue}

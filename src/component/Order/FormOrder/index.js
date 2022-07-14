@@ -27,28 +27,8 @@ import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import { cloneDeep } from "lodash";
 import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 import BaseEmpty from "../../common/BaseEmpty";
+import { WIDTH_ITEM_ORDER } from "..";
 
-const styleModal = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 3,
-};
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 10 + ITEM_PADDING_TOP,
-      width: 300,
-    },
-  },
-};
 const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
@@ -377,8 +357,8 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                 </div>
                                 {
                                     Object.values(listValueProduct || {})?.filter(o => o)?.length || Object.values(listValueVariant || {})?.filter(o => o)?.length ?
-                                    <div style={{ overflowX: 'auto'}}>
-                                        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', padding: 'auto 16px'}}>
+                                    <div style={{ overflowX: 'auto', display: 'flex', flexDirection: 'column'}}>
+                                        <div style={{ width: WIDTH_ITEM_ORDER ,textAlign: 'center', display: 'inline-flex', justifyContent: 'space-between', padding: 'auto 16px'}}>
                                             <div  style={{ width: '40%', minWidth: 225 }}>
                                                 <span className='float-left pl-5'>Products</span>
                                             </div>
@@ -393,18 +373,18 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                             </div>
                                         </div>
                                         
-                                        <Divider />
+                                        <Divider style={{width: WIDTH_ITEM_ORDER}}/>
                                         {listProducts.map((product) => {
                                             if (listValueProduct[product.id]) {
                                                 if (!product.is_variant) {
                                                     return (
-                                                        <Item formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
+                                                        <Item  key={`${product.id}`}  formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} thumbnail={product.thumbnail} selectCurrency={currency} parentName={product.title} product_id={product.id} productCurrency={product.currency} price={product.price}></Item>
                                                     )
                                                 } else {
                                                     return product.variants?.map((variant) => {
                                                         if (listValueVariant[variant.id]) {
                                                             return (
-                                                                <Item  formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
+                                                                <Item key={`${variant.id}`}  formRef={form} listRate={listRate} setSubTotal={(e) => setSubTotal(e)} handleDelete={handleDelete} is_variant={product.is_variant} parentName={product.title} selectCurrency={currency} thumbnail={product.thumbnail} name={variant.name} product_id={product.id} variant_id={variant.id} productCurrency={product.currency} price={variant.price}></Item>
                                                             )
                                                         }
                                                     })
@@ -657,7 +637,6 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                                 
                                                 value={value}
                                                 disabled={!!!selectDistrict}
-                                                fullWidth
                                             />    
                                             {!!error && <FormHelperText className='error-text text-content'>You need enter address to create Order</FormHelperText>}
                                        
