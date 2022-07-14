@@ -71,6 +71,8 @@ const ManageAnalysis = () => {
             let dates = dateRange(new Date(),30)
             let idxOrder = 0;
             dates.every((date) => {
+                let a = new Date(convertNewDateFromLocaleString(date)).getTime();
+                let b = new Date(convertNewDateFromLocaleString(missingDates[idxOrder].day)).getTime();
                 if (new Date(convertNewDateFromLocaleString(date)).getTime() === new Date(convertNewDateFromLocaleString(missingDates[idxOrder].day)).getTime()) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
