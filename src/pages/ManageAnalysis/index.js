@@ -49,7 +49,7 @@ const ManageAnalysis = () => {
     }
     const convertNewDateFromLocaleString = (date) => {
         let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]).getTime(); 
+        return new Date(dateSplit[2] + '-' + dateSplit[1] + '-' + dateSplit[0]).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
