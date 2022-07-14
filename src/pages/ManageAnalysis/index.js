@@ -49,7 +49,7 @@ const ManageAnalysis = () => {
     }
     const convertNewDateFromLocaleString = (date) => {
         let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]); 
+        return new Date(dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0]).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
@@ -71,9 +71,9 @@ const ManageAnalysis = () => {
             let dates = dateRange(new Date(),30)
             let idxOrder = 0;
             dates.every((date) => {
-                let a = new Date(convertNewDateFromLocaleString(date)).getTime();
-                let b = new Date(convertNewDateFromLocaleString(missingDates[idxOrder].day)).getTime();
-                if (new Date(convertNewDateFromLocaleString(date)).getTime() === new Date(convertNewDateFromLocaleString(missingDates[idxOrder].day)).getTime()) {
+                let a = convertNewDateFromLocaleString(date);
+                let b = convertNewDateFromLocaleString(missingDates[idxOrder].day);
+                if (convertNewDateFromLocaleString(date) === convertNewDateFromLocaleString(missingDates[idxOrder].day)) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
                         total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currency === 'USD' ? 2 : 0)),
