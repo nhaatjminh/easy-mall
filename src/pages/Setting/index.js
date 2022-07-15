@@ -9,6 +9,7 @@ import { doGetCurrentStore } from "../../redux/slice/storeSlice";
 import { Domain } from "../../component/Setting/Domain";
 import { DangerZone } from "../../component/Setting/DangerZone";
 import { BackIcon } from "../../assets/icon/svg/BackIcon";
+import { Payment } from './../../component/Setting/Payment/index';
 
 export const Setting = () => {
     const dispatch = useDispatch();
@@ -33,6 +34,7 @@ export const Setting = () => {
                 </div>
                 <Contact store={store} />
                 <Domain store={store} />
+                <Payment store={store} />
                 <DangerZone store={store} />
             </div>
 

@@ -1,4 +1,4 @@
-import { callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
+import { callAPIWithDeleteMethod, callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const StoreApi = {
     getStores: async () => {
@@ -32,6 +32,28 @@ export const StoreApi = {
     },
     updateStoreInfo: async (storeObj) => {
         const result = await callAPIWithPutMethod(`stores`, storeObj,true);
+        return result;
+    },
+    deleteStore: async (storeId) => {
+        const result = await callAPIWithDeleteMethod(`stores/${storeId}`, true);
+        return result;
+    },
+
+    // paypal
+    getPaypalInfo: async (storeId) => {
+        const result = await callAPIWithGetMethod(`stores/${storeId}/paypal`, true);
+        return result;
+    },
+    createPaypal: async (paypalObj) => {
+        const result = await callAPIWithPostMethod(`stores/${paypalObj.id}/paypal`, paypalObj, true);
+        return result;
+    },
+    updatePaypal: async (paypalObj) => {
+        const result = await callAPIWithPutMethod(`stores/${paypalObj.id}/paypal`, paypalObj, true);
+        return result;
+    },
+    deletePaypal: async (storeId) => {
+        const result = await callAPIWithDeleteMethod(`stores/${storeId}/paypal`, true);
         return result;
     },
 }
