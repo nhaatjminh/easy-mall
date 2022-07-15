@@ -249,7 +249,7 @@ const DetailMenu = ({}) => {
       other: otherResult,
       external: externalResult,
     });
-  }, [dbValue]);
+  }, [dbValue, displayPages]);
 
   const getIcon = ({ name, link }) => {
     if (link === "") return null;
