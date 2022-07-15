@@ -175,7 +175,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                                 if (keySelected === Key.Analysis) {
                                     window.location.reload();
                                 } else {
-                                    
+                                    routeChange(`/store-detail/manage-analysis/${params.storeId}`)
                                 }
                             })
                         }}

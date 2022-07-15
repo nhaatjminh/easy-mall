@@ -12,8 +12,8 @@ import './index.scss'
 
 const collumns = [
     {
-        id: 'title',
-        label: 'Title',
+        id: 'code',
+        label: 'Code',
         minWidth: 200,
         align: 'left'
     },
@@ -70,7 +70,7 @@ export const Discount = () => {
             const list = listDiscounts?.map((item) => {
                 return {
                     id: item.id,
-                    title: item.code,
+                    code: item.code,
                     status: getStatus(item.is_end, item.end_at),
                     value: getDiscountValue(item.type, item.amount, item.currency),
                 }
