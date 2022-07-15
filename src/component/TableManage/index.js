@@ -35,10 +35,10 @@ function descendingComparator(a, b, orderBy, typeSort) {
     } else return 0;
   }
   else if (typeSort === 'date') { // for order
-    if (new Date(b['status_date']) < new Date(a['status_date'])) {
+    if (new Date(b['status_date']).getTime() < new Date(a['status_date']).getTime()) {
       return -1;
     }
-    if (new Date(b['status_date']) > new Date(a['status_date'])) {
+    if (new Date(b['status_date']).getTime() > new Date(a['status_date']).getTime()) {
       return 1;
     }
     return 0;

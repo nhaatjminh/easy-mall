@@ -1,6 +1,7 @@
 import React from "react";
 import FollowOrder from "./FollowOrder";
 import FormOrder from "./FormOrder";
+export const WIDTH_ITEM_ORDER = 615;
 const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
     // use redux to manage state
     return (

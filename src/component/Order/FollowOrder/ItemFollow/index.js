@@ -8,6 +8,7 @@ import {
 import Divider from '@mui/material/Divider';
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import { useNavigate, useParams } from "react-router-dom";
+import { WIDTH_ITEM_ORDER } from "../..";
 
 const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
     
@@ -16,7 +17,7 @@ const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, 
     return (
         <ListItem
             key={`${product_id}-${variant_id}-show-product`}
-            style={{ textAlign: 'center', display: 'flex' , justifyContent: 'space-between'}}
+            style={{ textAlign: 'center', display: 'flex' , justifyContent: 'space-between', width: WIDTH_ITEM_ORDER}}
         >
             <div className="w-100" style={{ display: 'inline-flex', minWidth: 225}}>
                 {
