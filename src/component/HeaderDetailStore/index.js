@@ -124,7 +124,7 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
 
             </div>
             <div className="row logo mobile">
-                <div className=" col-1 col-sm-2 col-md-2 col-lg-2 col-xl-2 mt-1 button-header-mobile">
+                <div className=" col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 mt-1 button-header-mobile">
 
                     <Navbar bg="none" expand={false} className="navbar-header-mobile pt-2">
                         <Container fluid className="navbar-header-mobile ">
@@ -147,7 +147,7 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                         </Container>
                     </Navbar>
                 </div>
-                <div className=" col-9 col-sm-8 col-md-8 col-lg-8 col-xl-8 header-store__search">
+                <div className=" col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 header-store__search">
                     {/* <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />   */}
                     <CustomSearchInput
                         placeholder='Search'

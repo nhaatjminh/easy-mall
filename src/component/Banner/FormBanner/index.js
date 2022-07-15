@@ -646,7 +646,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                             </div>
                            
                             <div>
-                                <Divider className="custom-devider" style={{marginTop: 15, marginBottom: 15}} />
+                                <Divider style={{marginTop: 15, marginBottom: 15}} />
                                 <div className="row float-right" >
                                     <button onClick={() => {
                                         setShowAddBanner(false)
@@ -662,7 +662,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                         : <></>
                     }
                 </div>   
-                <div key={'add-banner-image'} className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
+                <div key={'add-banner-image'} className="pt-md offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                       
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <ImageInput formRef={form} oldForm={oldForm} mode={mode} modal={false}></ImageInput>
                     </Paper> 

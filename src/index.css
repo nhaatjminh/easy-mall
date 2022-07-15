@@ -160,7 +160,12 @@ body {
 }
 .text-label-span span{
   font-size: 16px !important;
+  font-weight: 550;
   color: #202223;
+}
+.text-hyper-link span:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 .text-content-span span{
   font-size: 14px !important;
@@ -203,4 +208,19 @@ body {
   height: 64px;
   padding: 10px;
   object-fit: cover;
+}
+.custom-devider {
+  margin-left: 45px !important;
+}
+/* md ~ 768*/
+@media (max-width: 768px) {   
+  .pt-md {
+    padding-top: 2rem !important
+  }
+}
+
+@media (max-width: 1200px) {   
+  .pt-lg {
+    padding-left: 1.25rem !important
+  }
 }

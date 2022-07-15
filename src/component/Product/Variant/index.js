@@ -511,7 +511,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                             <div key={index}>  
                                 <InputLabel className="text-label" name='title'>Option name</InputLabel>
                                 <div className="row">
-                                    <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                    <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-11">
                                         <TextField
                                             aria-describedby={popoverId} 
                                             className={`text-field-input text-content ${errorOption === index ? "error-cell" : ""}`}
@@ -529,7 +529,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                             }}
                                         />
                                     </div>
-                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
+                                    <div className="pt-lg col-2 col-sm-2 col-md-2 col-lg-2 col-xl-1 pl-3">
                                         <IconButton onClick={(e) => handleDeleteOption(index)}>
                                             <DeleteIcon/>
                                         </IconButton>
@@ -549,7 +549,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                         optionValue[index]?.value.map((value, idxValue) => {
                                             return (
                                                 <div className="row" key={idxValue}>
-                                                    <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                                    <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-11">
                                                         
                                                     <TextField
                                                             className={`text-content text-field-input ${errorValue === idxValue && errorIdxOption === index ? "error-cell" : ""}`}
@@ -566,7 +566,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                                             }}
                                                         />
                                                     </div>
-                                                    <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
+                                                    <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-1 pl-3">
                                                         <IconButton onClick={(e) => handleDeleteOptionValue(index, idxValue)}>
                                                             <DeleteIcon/>
                                                         </IconButton>
@@ -576,7 +576,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                         })
                                     }
                                     <div className="row">
-                                        <div className="col-11 col-sm-11 col-md-11 col-lg-11 col-xl-11">
+                                        <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-11">
                                                         
                                             <TextField
                                                 className={`text-content text-field-input ${errorValue === optionValue[index]?.value?.length && errorIdxOption === index  ? "error-cell" : ""}`}
@@ -592,7 +592,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                                 }}
                                             />
                                         </div>
-                                        <div className="col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pl-3">
+                                        <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-1 pl-3">
                                             <IconButton>
                                                 <DeleteIcon/>
                                             </IconButton>

@@ -622,7 +622,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     <Variant key="Variant" currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
                     ></Variant>
                 </div>   
-                <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                <div className="offset-1 pt-md offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Status</InputLabel>
                         <div key={form?.current?.product?.status || "SelectStatus"}>

@@ -338,9 +338,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
         dispatch(doGetActiveDiscount({
             storeId: params.storeId,
             params: {
-                total_price: Number(subTotal),
-                currency: currency,
-                total_products: totalProducts
+                total_price: Number(subTotal) ?? 0,
+                currency: currency ?? 'VND',
+                total_products: totalProducts ?? 0
             }
         })).then((result) => {
             setListDiscount(result.payload)
@@ -378,21 +378,22 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                 {
                                     Object.values(listValueProduct || {})?.filter(o => o)?.length || Object.values(listValueVariant || {})?.filter(o => o)?.length ?
                                     <div style={{ overflowX: 'auto'}}>
-                                        <div className="header-table-list-product" style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between'}}>
-                                            <div className="w-100"  style={{minWidth: 225}}>
+                                        <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', padding: 'auto 16px'}}>
+                                            <div  style={{ width: '40%', minWidth: 225 }}>
                                                 <span className='float-left pl-5'>Products</span>
                                             </div>
-                                            <div  style={{width: 125, minWidth: 125}} className='pr-5'>
+                                            <div  style={{width: '22%', minWidth: 125}} className='pr-5'>
                                                 Quantity
                                             </div>
-                                            <div  style={{minWidth: 175}} className='pr-3'>
+                                            <div  style={{width: '35%', minWidth: 175}} className='pr-3'>
                                                 Total
                                             </div>
                                             
-                                            <div  style={{width: 24}}>
+                                            <div  style={{width: '3%'}}>
                                             </div>
                                         </div>
                                         
+                                        <Divider />
                                         {listProducts.map((product) => {
                                             if (listValueProduct[product.id]) {
                                                 if (!product.is_variant) {
@@ -478,7 +479,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add o
                                 </div>
                             </Paper>
                         </div>   
-                        <div className="offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                        <div className="pt-md offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                             <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
                                 

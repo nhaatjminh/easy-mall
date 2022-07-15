@@ -10,28 +10,32 @@ import Divider from '@mui/material/Divider';
 import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
+    
+    const params = useParams();
+    const routeChange = useNavigate();
     useEffect(() => {
         let total;
         if (selectCurrency === productCurrency) {
-            total = quantity * 1.0 * price ?? 0;
-            setTotalShow(total)
+            total = Number(quantity) * 1.0 * Number(price) ?? 0;
         } else {
             let rate;
             if (productCurrency === 'USD') {
                 rate = listRate?.find(rate => rate.currency === selectCurrency)?.amount ?? 0;
-                total = (Number(quantity * 1.0 * price || 0) * rate);
+                total = (Number(Number(quantity) * 1.0 * Number(price) || 0) * rate);
             } else {
                 rate = listRate?.find(rate => rate.currency === productCurrency)?.amount ?? 0;
-                total = (Number(quantity * 1.0 * price || 0) / rate);
+                total = (Number(Number(quantity) * 1.0 * Number(price) || 0) / rate);
             } 
             if (selectCurrency === 'USD') total = total.toFixed(2);
             else total = total.toFixed(0);
-            setTotalShow(total);
         }
+        if (isNaN(total)) total = 0;
+        setTotalShow(total);
         let newObj = {
             id: product_id,
             quantity: quantity ? Number(quantity) : 0,
@@ -73,7 +77,7 @@ const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurre
             key={`${product_id}-${variant_id}-show-product`}
             style={{ textAlign: 'center', display: 'flex' , justifyContent: 'space-between'}}
         >
-            <div className="w-100" style={{ display: 'inline-flex', minWidth: 225}}>
+            <div style={{ display: 'inline-flex', minWidth: 225,width: '45%'}}>
                 {
                     thumbnail ?
                         <Box style={{width: 80, height: 'auto'}}>
@@ -98,15 +102,15 @@ const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurre
                     />
                 </div>
             </div>
-            <div  style={{width: 125, minWidth: 125}}>
+            <div  style={{width: '15%', minWidth: 100}}>
                 <BaseNumberField length={4} key="Inventory" fullWidth={true} value={quantity} setValue={setQuantity} ></BaseNumberField>
             </div>
-            <div style={{minWidth: 200}}>
+            <div style={{minWidth: 225, width: '40%'}}>
                 <ListItemText
                     primary={`${selectCurrency} ${selectCurrency === 'USD' ? parseLocaleNumber(totalShow,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(totalShow,'vi-VN')}`}
                 />
             </div>
-            <div style={{width: 24}}>
+            <div style={{width: '3%'}}>
                 
                 <IconButton className="p-0" onClick={() => handleDelete(is_variant, variant_id, product_id)}>
                     <Delete/>
