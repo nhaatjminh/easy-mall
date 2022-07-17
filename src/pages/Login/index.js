@@ -69,7 +69,9 @@ const Login = () => {
     const routeChange = (newPath) => {
         navigate(newPath);
     }
-    const onLogin = () => {
+    const onLogin = (e) => {
+        e.preventDefault();
+
         var checkValid = validate();
         if (checkValid > 0) return;
 
@@ -191,15 +193,18 @@ const Login = () => {
                             <Typography component={'span'}><h3>Sign in</h3></Typography>
                         </Grid>
 
-                        <TextField className="login__text-field" variant="outlined" name='email' label='Email' placeholder='Enter email' fullWidth onChange={handleOnchangeUsername} />
-                        <Typography style={errorStyle}>{error.email}</Typography>
+                        <form onSubmit={onLogin}>
+                            <TextField className="login__text-field" variant="outlined" name='email' label='Email' placeholder='Enter email' fullWidth onChange={handleOnchangeUsername} />
+                            <Typography style={errorStyle}>{error.email}</Typography>
 
-                        <TextField className="login__text-field" variant="outlined" name='password' label='Password' placeholder='Enter password' type='password' fullWidth onChange={handleOnchangePassword} />
-                        <Typography style={errorStyle}>{error.password}</Typography>
+                            <TextField className="login__text-field" variant="outlined" name='password' label='Password' placeholder='Enter password' type='password' fullWidth onChange={handleOnchangePassword} />
+                            <Typography style={errorStyle}>{error.password}</Typography>
 
-                        <button className="btnLogin" type='button' variant='contained' onClick={onLogin}>
-                            Sign in
-                        </button>
+                            <button className="btnLogin" type='submit' variant='contained'>
+                                Sign in
+                            </button>
+                        </form>
+
                         <FacebookLogin
                             appId="4563573897043264"
                             fields="name,picture,email"
@@ -217,23 +222,24 @@ const Login = () => {
                             className="btnGoogle"
                             scope="https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.gender.read"
                         />
-                        <Typography 
-                            style={{cursor: 'pointer', 
-                                    textAlign: 'center', 
-                                    marginTop: '1rem', 
-                                    paddingBottom: '1.5rem',
-                                    borderBottom: '1px solid #c0c0c5',
-                                    width: '70%',
-                                    margin: '1rem auto'
-                                }}
-                            onClick={() => navigate('/forgotten-password')}    
+                        <Typography
+                            style={{
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                                marginTop: '1rem',
+                                paddingBottom: '1.5rem',
+                                borderBottom: '1px solid #c0c0c5',
+                                width: '70%',
+                                margin: '1rem auto'
+                            }}
+                            onClick={() => navigate('/forgotten-password')}
                         >
                             Forgot password?
                         </Typography>
-                        <Typography 
-                            style={{marginTop: '1.5rem', textAlign: 'center'}}
+                        <Typography
+                            style={{ marginTop: '1.5rem', textAlign: 'center' }}
                         >
-                            Don't have an account? 
+                            Don't have an account?
                             <Link style={{ fontWeight: 'bold', textDecoration: 'unset' }} to={'/register'}> Sign up</Link>
                         </Typography>
                         <Grid container justifyContent="flex-end">
