@@ -255,7 +255,6 @@ const DetailMenu = ({ }) => {
     if (link === "") return null;
     if (DefaultPage[name]) return DefaultPage[name];
     if (link[0] === "/") {
-      console.log(link.substring(1, 7));
       if (link.substring(1, 7) === "pages/") return <PageIcon />;
       else return <PolocyIcon />;
     } else return <ExternalLinkIcon />;
@@ -275,7 +274,8 @@ const DetailMenu = ({ }) => {
           setIcon(item.type === 1 ? "page" : "external");
         }}
       >
-        <span>{DefaultPage[item.name] ? DefaultPage[item.name] : null}</span>
+        {/* <span>{DefaultPage[item.name] ? DefaultPage[item.name] : null}</span> */}
+        <span>{getIcon({name: item.name, link: item.page_url})}</span>
         <span className=" text-normal-1">{item.name}</span>
       </div>
     );
@@ -723,6 +723,21 @@ const DetailMenu = ({ }) => {
                   </>
                 ) : (
                   <>
+                    {!searchResult.default.length &&
+                    !searchResult.pages.length &&
+                    !searchResult.other.length &&
+                    !searchResult.external.length ?
+                    <div 
+                      style={{
+                        marginTop: '-10px',
+                        marginBottom: '-10px'
+                      }}
+                      className="text-normal-2"
+                    >
+                      No results
+                    </div> 
+                    : null
+                    }
                     {searchResult.default?.map((item) => renderItem(item))}
                     {searchResult.pages.length
                       ? renderGroupItem(searchResult.pages, "Pages")
