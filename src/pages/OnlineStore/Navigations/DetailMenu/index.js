@@ -96,9 +96,9 @@ const DetailMenu = ({}) => {
   const __rowInfo = useRef({});
   window.onbeforeunload = function () {
     if (!_.isEqual(treeData, oldTree)) {
-       return '';
-     }
-   }.bind(this);
+      return "";
+    }
+  }.bind(this);
   useEffect(() => {
     batch(() => {
       dispatch(doGetCurrentMenu(params.id)).then((res) => {
@@ -107,7 +107,7 @@ const DetailMenu = ({}) => {
           listMenuItem = res.payload.listMenuItem;
         }
         setTreeData(listMenuItem);
-        setOldTree(listMenuItem)
+        setOldTree(listMenuItem);
       });
       dispatch(doGetListPages(params.storeId));
     });
@@ -457,7 +457,6 @@ const DetailMenu = ({}) => {
     ).then(() => {
       setOldTree(treeData);
     });
-
   };
 
   const _handleEditMenuItem = (rowInfo) => {
@@ -611,30 +610,29 @@ const DetailMenu = ({}) => {
             </div>
           </CustomCard>
 
-          {!menu.is_default ? (
-            <div className="detail-menu__delete">
+          <div className="detail-menu__delete" style={{display:'flex',justifyContent: !menu.is_default ?"space-between":"flex-end"}}>
+            {!menu.is_default && (
               <Button
                 variant="outline-danger"
                 onClick={() => setOpenDeleteMenuModal(true)}
               >
                 Delete menu
               </Button>
-            </div>
-          ) : null}
-          <CustomButton
-            disabled={_.isEqual(treeData, oldTree)}
-            className="SaveSubMenu-btn"
-            style={{
-              height: "fit-content",
-              marginLeft: "auto",
-              marginTop: "40px",
-              width: "70px",
-              textAlign: "center",
-            }}
-            onClick={updateSubMenu}
-          >
-            Save
-          </CustomButton>
+            )}
+            <CustomButton
+              disabled={_.isEqual(treeData, oldTree)}
+              className="SaveSubMenu-btn"
+              style={{
+                height: "fit-content",
+                width: "70px",
+                textAlign: "center",
+              }}
+              onClick={updateSubMenu}
+            >
+              Save
+            </CustomButton>
+          </div>
+
           {/* <button onClick={updateSubMenu}>Save</button> */}
         </div>
       </div>
