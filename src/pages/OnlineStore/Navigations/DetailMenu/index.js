@@ -56,7 +56,7 @@ const DefaultPage = {
   Payment: <PaymentIcon />,
 };
 
-const DetailMenu = ({}) => {
+const DetailMenu = ({ }) => {
   const menu = useSelector((state) => state.navigation.currentMenu);
   const isLoading = useSelector((state) => state.navigation.isLoading);
   const listPage = useSelector((state) => state.page.listPages);
@@ -96,9 +96,9 @@ const DetailMenu = ({}) => {
   const __rowInfo = useRef({});
   window.onbeforeunload = function () {
     if (!_.isEqual(treeData, oldTree)) {
-       return '';
-     }
-   }.bind(this);
+      return '';
+    }
+  }.bind(this);
   useEffect(() => {
     batch(() => {
       dispatch(doGetCurrentMenu(params.id)).then((res) => {
@@ -611,17 +611,26 @@ const DetailMenu = ({}) => {
             </div>
           </CustomCard>
 
-          {!menu.is_default ? (
-            <div className="detail-menu__delete">
-              <Button
-                variant="outline-danger"
-                onClick={() => setOpenDeleteMenuModal(true)}
-              >
-                Delete menu
-              </Button>
-            </div>
-          ) : null}
-          <CustomButton
+          <div className="detail-menu__group-btn">
+            {!menu.is_default ? (
+                <Button
+                  variant="outline-danger"
+                  onClick={() => setOpenDeleteMenuModal(true)}
+                >
+                  Delete menu
+                </Button>
+            ) : null}
+            <Button
+              variant="success"
+              className="detail-menu__group-btn__save"
+              disabled={_.isEqual(treeData, oldTree)}
+              onClick={updateSubMenu}
+            >
+              Save
+            </Button>
+          </div>
+
+          {/* <CustomButton
             disabled={_.isEqual(treeData, oldTree)}
             className="SaveSubMenu-btn"
             style={{
@@ -634,7 +643,7 @@ const DetailMenu = ({}) => {
             onClick={updateSubMenu}
           >
             Save
-          </CustomButton>
+          </CustomButton> */}
           {/* <button onClick={updateSubMenu}>Save</button> */}
         </div>
       </div>
