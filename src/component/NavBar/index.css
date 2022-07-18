@@ -70,7 +70,7 @@
   color: #2b9361;
   font-weight: bold;
   position: relative;
-
+  width: fit-content;
 }
 .text-nav:hover{
   color: #2b9361;
