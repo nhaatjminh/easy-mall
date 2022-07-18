@@ -13,7 +13,7 @@ const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
                 </button>
             </div>   
             <div className="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9 pt-3 ">                      
-                <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? "Edit" : "Create"} Order</h5>
+                <h5 className="font-weight-bold text-create-store mt-3 pl-2">{mode === "EDIT" ? oldForm?.order?.id ?? '' : "Create Order"}</h5>
             </div>    
         </div>
         {mode === 'ADD'

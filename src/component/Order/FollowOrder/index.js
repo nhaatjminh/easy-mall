@@ -77,18 +77,22 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
+                setIsLoading(true);
                 dispatch(doRemoveStatus({
                     orderId: formToShow.order.id,
                     params: {
                         store_id: formToShow.order.store_id
                     }
-                }))
+                })).then(() => { 
+                    setIsLoading(false);
+                    returnAfterAdd();
+                })
             }
         })
     }
     const renderFormButton = () => {
         let curStatus = formToShow.status?.[0].status;
-        if (curStatus === 'COMPLETED') {
+        if (curStatus === 'COMPLETED' || curStatus === 'PRE-PAID' || curStatus === 'PREPAID & RESTOCK') {
             return (
                 <div className="mt-4 mb-4 row form-group-button">
                     <div className="col-6">
@@ -113,7 +117,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                     <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
                 </div>
                 <div className="col-6">
-                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">{curStatus === 'RESTOCK' ? `Refill` : `Change Status`}</button>
+                    <button type='button' onClick={() => handleCallChangeStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">{curStatus === 'RESTOCK' || curStatus === 'PAID & RESTOCK' ? `Refill` : `Change Status`}</button>
                 </div>
             </div> )
         }

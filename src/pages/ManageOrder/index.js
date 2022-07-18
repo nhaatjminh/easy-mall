@@ -64,7 +64,7 @@ const ManageOrder = () => {
     },{
       id: 'status',
       label: 'Fulfillment status',
-      minWidth: 170,
+      minWidth: 200,
       align: 'center',
       sort: 'string',
       classNameWithData: (data) => {

@@ -71,8 +71,8 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                                 justifyContent="flex-start"
                                 alignItems="center"
                                 spacing={10}
-                                >
-                                <InputLabel name='title' className="text-label" style={{margin: 0, marginRight: '1rem'}}>Price</InputLabel>
+                            >
+                                <InputLabel name='title' className="text-label" style={{margin: 0, marginRight: '1rem', minWidth: 40}}>Price</InputLabel>
                                 <BaseNumberField key="Price" className={`${isVariant && 'disabled-text'}`} disabled={isVariant} currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} value={productPrice} fullWidth={false} setValue={(value) => handleChangeProductPrice(value)}></BaseNumberField>
                             </Stack>
                         </div>
@@ -81,14 +81,17 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                         <InputLabel className="text-label" name='title' style={{margin: 0}}>Cost per item</InputLabel>
                         <Stack
                             direction="row"
-                            justifyContent="flex-start"
+                            justifyContent="space-between"
                             alignItems="center"
-                            spacing={10}
+                            style={{flexWrap: 'wrap'}}
                             >
-                                <BaseNumberField currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
+                                <div style={{display: 'inline-flex'}}>
+                                    <BaseNumberField currency={currency} handleChangeCurrency={handleChangeCurrency} placeholder={currency === 'USD' ? '0.00' : '0'} key="CostPerItem"  value={costPerItem} fullWidth={true} setValue={(value) => handleChangeProductCostPerItem(value)}></BaseNumberField>
+                            
+                                </div>
                             {costPerItem && productPrice ? 
-                            <>
-                                <div>
+                            <div style={{display: 'inline-flex', marginLeft: 20}}>
+                                <div style={{ marginRight: 20}}>
                                     <p style={{margin: 0}}>Margin(%)</p>
                                     <p style={{margin: 0}}>{isNaN((productPrice -costPerItem) / productPrice * 100) ? 0 : ((productPrice -costPerItem) / productPrice * 100).toFixed(2)}</p>
                                 </div>
@@ -96,7 +99,7 @@ const PricingComponent = ({mode, formRef, isVariant, oldForm, currency='VND', ha
                                     <p style={{margin: 0}}>Profit({`${currency}`})</p>
                                     <p style={{margin: 0}}>{(productPrice - costPerItem).toFixed(2).toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
                                 </div>
-                            </>: ""}
+                            </div>: ""}
                         </Stack>
                         <FormHelperText id="filled-weight-helper-text">Customers won’t see this</FormHelperText>
                     </Paper>
