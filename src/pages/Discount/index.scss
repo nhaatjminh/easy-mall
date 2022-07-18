@@ -5,6 +5,10 @@
         display: flex;
         justify-content: space-between;
     }
+    &__search {
+        margin-top: 30px;
+        max-width: 400px;
+    }
     &__active-tag {
         background-color: #aee9d1;
         color: #202223;
