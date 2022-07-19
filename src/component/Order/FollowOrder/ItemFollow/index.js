@@ -8,9 +8,8 @@ import {
 import Divider from '@mui/material/Divider';
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import { useNavigate, useParams } from "react-router-dom";
-import { WIDTH_ITEM_ORDER } from "../..";
 
-const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
+const ItemFollow = ({WIDTH_ITEM_ORDER, existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
     
     const params = useParams();
     const routeChange = useNavigate();

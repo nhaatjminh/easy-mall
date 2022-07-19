@@ -14,9 +14,8 @@ import TimeLine from "./TimeLine";
 import { doChangeStatus, doRemoveStatus, doDeleteStatus, doRestoreStatus, doGetOneOrder } from "../../../redux/slice/orderSlice";
 import BaseModal from "../../common/BaseModal";
 import Swal from "sweetalert2";
-import { WIDTH_ITEM_ORDER } from "..";
 
-const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
+const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> { // mode add or update
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [note, setNote] = useState('');
@@ -151,7 +150,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
                             {
                                 Object.keys(formToShow.products || {}).length ?
-                                <div style={{ overflowX: 'auto'}}>
+                                <div id='paper-resize-item' style={{ overflowX: 'auto'}}>
                                     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', width: WIDTH_ITEM_ORDER}}>
                                         <div className="w-100"  style={{minWidth: 225}}>
                                             <span className='float-left pl-5'>Products</span>
@@ -166,7 +165,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd})=> { // mode add or update
                                     <Divider style={{width: WIDTH_ITEM_ORDER}}/>
                                     {formToShow.products.map((product, index) => 
                                         (
-                                            <ItemFollow key={`${index}-item-follow`} existed={product.existed}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
+                                            <ItemFollow WIDTH_ITEM_ORDER={WIDTH_ITEM_ORDER} key={`${index}-item-follow`} existed={product.existed}  thumbnail={product.thumbnail} name={product?.variant_name ?? ''} quantity={product?.quantity} variant_id={product?.variant_id}  parentName={product.product_name} product_id={product.product_id} productCurrency={product.currency} price={product.price}></ItemFollow>
                                         )
                                     )}
                                 </div>

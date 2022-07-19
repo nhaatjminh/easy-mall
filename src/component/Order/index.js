@@ -1,9 +1,24 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import FollowOrder from "./FollowOrder";
 import FormOrder from "./FormOrder";
-export const WIDTH_ITEM_ORDER = 615;
 const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
     // use redux to manage state
+    let [WIDTH_ITEM_ORDER, setWIDTH_ITEM_ORDER] = useState(610);
+    useEffect(() => {
+        const handleResize = () => {
+            if(document.getElementById('paper-resize-item')?.clientWidth >= 610) {
+                setWIDTH_ITEM_ORDER(document.getElementById('paper-resize-item').clientWidth - 60 ) // minus padding
+            } else {
+                setWIDTH_ITEM_ORDER(610);
+            }
+        }
+        handleResize()
+        window.addEventListener('resize', handleResize)
+      
+        return _ => {
+            window.removeEventListener('resize', handleResize)    
+        }
+    }, [])
     return (
         <>
          <div className="row">  
@@ -17,8 +32,8 @@ const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
             </div>    
         </div>
         {mode === 'ADD'
-        ? <FormOrder setIsEdit={setIsEdit} key={`order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder> 
-        : <FollowOrder  key={`follow-order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FollowOrder> }
+        ? <FormOrder WIDTH_ITEM_ORDER={WIDTH_ITEM_ORDER} setIsEdit={setIsEdit} key={`order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FormOrder> 
+        : <FollowOrder WIDTH_ITEM_ORDER={WIDTH_ITEM_ORDER}  key={`follow-order-manage`} mode={mode} oldForm={oldForm} returnAfterAdd={returnTable}></FollowOrder> }
         </>
     );
 }

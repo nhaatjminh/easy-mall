@@ -45,7 +45,7 @@ const TimeLine = ({listStatus})=> {
                             width: `175px`,
                             fontWeight: `bold`,
                             textAlign: `center`
-                        } : status.status === "RESTOCK" ? {
+                        } : status.status === "RESTOCK" || status.status === "PAID & RESTOCK" ? {
                             backgroundColor: `#d6d149`,
                             color: `#fff`,
                             fontSize: `13px`,

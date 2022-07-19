@@ -11,9 +11,8 @@ import { BaseNumberField } from "../../../common/BaseNumberField";
 import Delete from "@mui/icons-material/Delete";
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import { useNavigate, useParams } from "react-router-dom";
-import { WIDTH_ITEM_ORDER } from "../..";
 
-const Item = ({formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
+const Item = ({WIDTH_ITEM_ORDER,formRef, setSubTotal = () => {},listRate, thumbnail, productCurrency,selectCurrency, name, price, parentName, is_variant, product_id, variant_id, handleDelete=() => {}})=> { // mode add or update
     const [quantity, setQuantity] = useState('');
     const [totalShow, setTotalShow] = useState(0);
     

@@ -68,7 +68,7 @@ const ManageOrder = () => {
       align: 'center',
       sort: 'string',
       classNameWithData: (data) => {
-        if (data === "RESTOCK") return 'restock-order'
+        if (data === "RESTOCK" || data === "PAID & RESTOCK") return 'restock-order'
         else if (data === "COMPLETED") return 'complete-order'
         else if (data === "DELETED") return 'deleted-order'
         else return 'normal-order'
