@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { paypalApi } from '../../helpers/paypalApi';
 import { StoreApi } from '../../service/api';
 import { EmailApi } from '../../service/api/emailApi';
 
@@ -48,6 +49,14 @@ export const doUpdateStoreInfo = createAsyncThunk(
     }
 );
 
+export const doDeleteStore = createAsyncThunk(
+    'store@delete/DeleteStore',
+    async (id) => {
+        const result = await StoreApi.deleteStore(id);
+        return id;
+    }
+);
+
 export const doConfigEmail = createAsyncThunk(
     'store@post/ConfigEmail',
     async (emailObj) => {
@@ -72,6 +81,58 @@ export const doResetEmail = createAsyncThunk(
     }
 );
 
+// export const doAuthorizePaypal = createAsyncThunk(
+//     'store@post/AuthorizePaypal',
+//     async (paypalObj) => {
+//         const result = await StoreApi.createPaypal(paypalObj);
+//         return result;
+//     }
+// );
+
+export const doCreatePaypal = createAsyncThunk(
+    'store@post/CreatePaypal',
+    async (paypalObj) => {
+        const res = await paypalApi.authorize(paypalObj.client_id, paypalObj.secret_key);
+        if (res.access_token) {
+            const result = await StoreApi.createPaypal(paypalObj);
+            return { ...paypalObj };
+        }
+        else {
+            return { error: 'Incorrect Client Id or Client secret' }
+        }
+    }
+);
+
+export const doUpdatePaypal = createAsyncThunk(
+    'store@put/UpdatePaypal',
+    async (paypalObj) => {
+        const res = await paypalApi.authorize(paypalObj.client_id, paypalObj.secret_key);
+        if (res.access_token) {
+            const result = await StoreApi.updatePaypal(paypalObj);
+            return { ...paypalObj };
+        }
+        else {
+            return { error: 'Incorrect Client Id or Client secret' }
+        }
+    }
+);
+
+export const doGetPaypal = createAsyncThunk(
+    'store@get/GetPaypal',
+    async (storeId) => {
+        const result = await StoreApi.getPaypalInfo(storeId);
+        return result.data[0];
+    }
+);
+
+export const doDeletePaypal = createAsyncThunk(
+    'store@delete/DeletePaypal',
+    async (storeId) => {
+        const result = await StoreApi.deletePaypal(storeId);
+        return { ...storeId };
+    }
+);
+
 export const listStoreSlice = createSlice({
     name: 'listStore',
     initialState: {
@@ -80,7 +141,9 @@ export const listStoreSlice = createSlice({
         isCreating: false,
         selectedName: '',
         baseStoreUrl: '',
-        currentStore: {}
+        currentStore: {},
+        paypal: {},
+        error: ''
     },
     reducers: {
         doSwitchListStore(state, action) {
@@ -145,6 +208,20 @@ export const listStoreSlice = createSlice({
             state.isLoading = false;
         });
 
+        // delete store
+        builder.addCase(doDeleteStore.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doDeleteStore.fulfilled, (state, action) => {
+            state.currentStore = {};
+            const index = state.listStore.findIndex((item) => item.id === action.payload)
+            if (index >= 0) state.listStore.splice(index, 1);
+            state.isLoading = false;
+        });
+        builder.addCase(doDeleteStore.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
         // config email
         builder.addCase(doConfigEmail.pending, (state) => {
             state.isLoading = true;
@@ -193,6 +270,59 @@ export const listStoreSlice = createSlice({
             state.isLoading = false;
         });
         builder.addCase(doResetEmail.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        // paypal
+        builder.addCase(doCreatePaypal.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doCreatePaypal.fulfilled, (state, action) => {
+            if (action.payload.error) {
+                state.error = action.payload.error
+            } else {
+                state.paypal = action.payload
+            }
+            state.isLoading = false;
+        });
+        builder.addCase(doCreatePaypal.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        builder.addCase(doUpdatePaypal.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doUpdatePaypal.fulfilled, (state, action) => {
+            if (action.payload.error) {
+                state.error = action.payload.error
+            } else {
+                state.paypal = action.payload
+            }
+            state.isLoading = false;
+        });
+        builder.addCase(doUpdatePaypal.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        builder.addCase(doGetPaypal.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doGetPaypal.fulfilled, (state, action) => {
+            state.paypal = action.payload
+            state.isLoading = false;
+        });
+        builder.addCase(doGetPaypal.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        builder.addCase(doDeletePaypal.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doDeletePaypal.fulfilled, (state, action) => {
+            state.paypal = null
+            state.isLoading = false;
+        });
+        builder.addCase(doDeletePaypal.rejected, (state, action) => {
             state.isLoading = false;
         });
     }

@@ -3,8 +3,8 @@ import { DiscountApi } from './../../service/api/discountApi';
 
 export const doGetDiscounts = createAsyncThunk(
     'discount@get/GetDiscounts',
-    async (storeId) => {
-        const result = await DiscountApi.getDiscounts(storeId);
+    async (discounts) => {
+        const result = await DiscountApi.getDiscounts(discounts);
         return result.data;
     }
 );

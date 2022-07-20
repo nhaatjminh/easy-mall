@@ -386,3 +386,6 @@
 .rst__nodeContent {
   width: 100%;
 }
+.rst__absoluteLineBlock{
+  visibility: hidden;
+}
