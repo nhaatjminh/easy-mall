@@ -359,7 +359,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                         </div>    
                 </div>
                 <Divider className="custom-devider" style={{marginTop: 15}} />
-                <div className="mt-4 mb-4 row form-group-button">
+                <div className="mt-4 mb-4 row form-group-button" style={{overflowX: 'hidden'}}>
                     <div className="col-6">
                         {
                             mode === "EDIT" ?

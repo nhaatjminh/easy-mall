@@ -75,19 +75,19 @@ const Item = ({WIDTH_ITEM_ORDER,formRef, setSubTotal = () => {},listRate, thumbn
     return (
         <ListItem
             key={`${product_id}-${variant_id}-show-product`}
-            style={{ textAlign: 'center', display: 'inline-flex' , justifyContent: 'space-between', width: WIDTH_ITEM_ORDER}}
+            style={{ textAlign: 'center', display: 'inline-flex' , justifyContent: 'space-between', width: WIDTH_ITEM_ORDER, borderColor: 'rgb(0 0 0 / 59%)'}}
         >
             <div style={{ display: 'inline-flex', minWidth: 225,width: '45%'}}>
                 {
                     thumbnail ?
                         <Box style={{width: 80, height: 'auto'}}>
                             <ListItemAvatar className="image-container-item-list m-0">
-                                <img alt="thumbnail" src={thumbnail}/>
+                                <img alt="image" src={thumbnail}/>
                             </ListItemAvatar>
                         </Box>
                         : <Box style={{width: 80, height: 'auto' }}>
                             <ListItemAvatar className="image-container-item-list m-0">
-                                <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                <img alt="image" src='/img/default-image-620x600.jpg'/>
                             </ListItemAvatar>
                         </Box>
                 }

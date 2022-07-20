@@ -6,8 +6,8 @@ const Order = ( {mode, oldForm, returnTable, setIsEdit })=> {
     let [WIDTH_ITEM_ORDER, setWIDTH_ITEM_ORDER] = useState(610);
     useEffect(() => {
         const handleResize = () => {
-            if(document.getElementById('paper-resize-item')?.clientWidth >= 610) {
-                setWIDTH_ITEM_ORDER(document.getElementById('paper-resize-item').clientWidth - 60 ) // minus padding
+            if(document.getElementById('paper-resize-item')?.clientWidth >= 660) {
+                setWIDTH_ITEM_ORDER(document.getElementById('paper-resize-item').clientWidth - 50 ) // minus padding
             } else {
                 setWIDTH_ITEM_ORDER(610);
             }

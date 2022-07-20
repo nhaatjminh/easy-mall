@@ -93,7 +93,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         let curStatus = formToShow.status?.[0].status;
         if (curStatus === 'COMPLETED' || curStatus === 'PRE-PAID' || curStatus === 'PREPAID & RESTOCK') {
             return (
-                <div className="mt-4 mb-4 row form-group-button">
+                <div className="mt-4 mb-4 row form-group-button" >
                     <div className="col-6">
                         <button type='button' onClick={() => handleRemoveStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Remove</button>
                     </div>

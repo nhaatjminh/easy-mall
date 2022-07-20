@@ -45,7 +45,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
                         <img
                           src={images}
                           style={{width: 350, height: 350}}
-                          alt="thumbnail"
+                          alt="image"
                           loading="lazy"
                         />
                       </div>

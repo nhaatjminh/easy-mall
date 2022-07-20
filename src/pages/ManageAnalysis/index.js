@@ -48,6 +48,7 @@ const ManageAnalysis = () => {
         return [...Array(numOfDays).keys()].map(i => new Date(endDateInMs - i * DAY_IN_MS).toLocaleDateString()).reverse()
     }
     const convertNewDateFromLocaleString = (date) => {
+        if (!date) return NaN;
         let dateSplit = date.split("/");
         return new Date(dateSplit[2] + '-' + dateSplit[0] + '-' + dateSplit[1]).getTime(); 
     }
@@ -71,9 +72,9 @@ const ManageAnalysis = () => {
             let dates = dateRange(new Date(),30)
             let idxOrder = 0;
             dates.every((date) => {
-                let a = convertNewDateFromLocaleString(date);
-                let b = convertNewDateFromLocaleString(missingDates[idxOrder].day);
-                if (convertNewDateFromLocaleString(date) === convertNewDateFromLocaleString(missingDates[idxOrder].day)) {
+                let dateConvert = convertNewDateFromLocaleString(date);
+                let dayConvert = convertNewDateFromLocaleString(missingDates[idxOrder]?.day);
+                if (!isNaN(dateConvert) && isNaN(dayConvert) && dateConvert === dayConvert) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
                         total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currency === 'USD' ? 2 : 0)),

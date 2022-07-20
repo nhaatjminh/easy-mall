@@ -38,7 +38,7 @@ const ImageInput = ({formRef, oldForm, mode}) => {
                     <div className="image-container">
                         <img
                           src={images}
-                          alt="thumbnail"
+                          alt="image"
                           loading="lazy"
                         />
                       </div>
