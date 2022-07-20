@@ -50,7 +50,7 @@ const Navigation = () => {
                     {menu.name}
                 </div>
                 <div className="navigation__menus__table--items--content">
-                    {menu?.listMenuItem?.length ? menu.listMenuItem.map((item) => `${item.name}, `) : null}
+                    {menu?.listMenuItem?.length ? menu.listMenuItem.map((item) => `${item.title}, `) : null}
                 </div>
             </div>
         )

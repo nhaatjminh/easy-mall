@@ -30,7 +30,7 @@ const CustomSortableTree = ({
         generateNodeProps={(rowInfo) => {
           let style = {};
           if (rowInfo.parentNode) {
-            if (rowInfo.node.expanded && rowInfo.node.children.length > 0) {
+            if (rowInfo.node.expanded && rowInfo.node.children?.length > 0) {
               style = {
                 borderTop: "none",
                 borderRight: "none",

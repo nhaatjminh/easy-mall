@@ -186,15 +186,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         </p>
                     </Typography>
                     <Typography component={'span'} className={keySelected === Key.Discount ? "nav-element nav-element-selected" : "nav-element "}
-                        onClick={() => {
-                            warningWhenLeave(() => {
-                                if (keySelected === Key.Discount) {
-                                    window.location.reload();
-                                } else {
-                                    routeChange(`/store-detail/manage-discount/${params.storeId}`)
-                                }
-                            })
-                        }}
+                        onClick={() => {routeChange(`/store-detail/manage-discount/${params.storeId}`)}}
                     >
                         <p className="m-0 mb-2 mt-2 ">
                             <i className="fa-tags fa-icon fa-store-detail-nav "></i>
@@ -239,15 +231,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                             (keySelected === Key.Preferences) ||
                             (keySelected === Key.Page) ? false : true} >
                         <Typography component={'span'} className={keySelected === Key.Theme ? "nav-element-selected nav-extend" : "nav-extend"}
-                            onClick={() => {
-                                warningWhenLeave(() => {
-                                    if (keySelected === Key.Theme) {
-                                        window.location.reload();
-                                    } else {
-                                        routeChange(`/store-detail/manage-theme/${params.storeId}`);
-                                    }
-                                })
-                            }}
+                            onClick={() => {routeChange(`/store-detail/manage-theme/${params.storeId}`);}}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
                                 Theme
@@ -278,30 +262,14 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                             </p>
                         </Typography> */}
                         <Typography component={'span'} className={keySelected === Key.Page ? "nav-element-selected nav-extend" : " nav-extend"}
-                            onClick={() => {
-                                warningWhenLeave(() => {
-                                    if (keySelected === Key.Page) {
-                                        window.location.reload();
-                                    } else {
-                                        routeChange(`/store-detail/manage-page/${params.storeId}`);
-                                    }
-                                })
-                            }}
+                            onClick={() => {routeChange(`/store-detail/manage-page/${params.storeId}`);}}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
                                 Pages
                             </p>
                         </Typography>
                         <Typography component={'span'} className={keySelected === Key.Navigation ? "nav-element-selected nav-extend" : " nav-extend"}
-                            onClick={() => {
-                                warningWhenLeave(() => {
-                                    if (keySelected === Key.Navigation) {
-                                        window.location.reload();
-                                    } else {
-                                        routeChange(`/store-detail/manage-navigation/${params.storeId}`);
-                                    }
-                                })
-                            }}
+                            onClick={() => {routeChange(`/store-detail/manage-navigation/${params.storeId}`);}}
                         >
                             <p className="m-0 ml-0-8rem mb-2 mt-2 text-extend font-weight-bold">
                                 Navigation

@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { CustomButton } from "../../component/common/CustomButton/CustomButton";
+import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import TableManage from "../../component/TableManage";
 import { Key } from "../../constants/constForNavbarDetail";
+import { useDebounce } from "../../hooks/useDebounce";
 import { doDeleteSelectedDiscounts, doGetDiscounts } from "../../redux/slice/discountSlice";
 import './index.scss'
 
 const collumns = [
     {
-        id: 'title',
-        label: 'Title',
+        id: 'code',
+        label: 'Code',
         minWidth: 200,
         align: 'left'
     },
@@ -60,9 +62,13 @@ export const Discount = () => {
     const dispatch = useDispatch();
     const listDiscounts = useSelector((state) => state.discount.listDiscounts)
     const [data, setData] = useState([])
+    const [searchValue, setSearchValue] = useState('')
+    const dbValue = useDebounce(searchValue, 300)
 
     useEffect(() => {
-        dispatch(doGetDiscounts(params.storeId))
+        dispatch(doGetDiscounts({
+            storeId: params.storeId
+        }))
     }, [])
 
     useEffect(() => {
@@ -70,7 +76,7 @@ export const Discount = () => {
             const list = listDiscounts?.map((item) => {
                 return {
                     id: item.id,
-                    title: item.code,
+                    code: item.code,
                     status: getStatus(item.is_end, item.end_at),
                     value: getDiscountValue(item.type, item.amount, item.currency),
                 }
@@ -78,6 +84,15 @@ export const Discount = () => {
             setData(list)
         }
     }, [listDiscounts])
+
+    useEffect(() => {
+        dispatch(doGetDiscounts({
+            storeId: params.storeId,
+            params: {
+                code: searchValue
+            }
+        }))
+    }, [dbValue])
 
     const handleEdit = (selected) => {
         navigate(`/store-detail/manage-discount/${params.storeId}/${selected}`)
@@ -125,6 +140,13 @@ export const Discount = () => {
                         <CustomButton onClick={() => navigate(`/store-detail/manage-discount/${params.storeId}/new`)}>
                             Create discount
                         </CustomButton>
+                    </div>
+                    <div className="discount__search">
+                        <CustomSearchInput
+                            placeholder='Search code'
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                        />
                     </div>
                     <div className="discount__list">
                         {/* {listDiscounts?.map((item) =>

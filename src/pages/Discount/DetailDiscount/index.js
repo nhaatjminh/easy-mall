@@ -29,7 +29,7 @@ export const DetailDiscount = () => {
     const params = useParams()
 
     const [code, setCode] = useState('');
-    const [currency, setCurrency] = useState('USD');
+    const [currency, setCurrency] = useState('VND');
     const [preCode, setPreCode] = useState('');
     const [valueType, setValueType] = useState(0);
     const [discountValue, setDiscountValue] = useState(0);

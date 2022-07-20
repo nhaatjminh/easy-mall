@@ -56,7 +56,7 @@ const DefaultPage = {
   Payment: <PaymentIcon />,
 };
 
-const DetailMenu = ({}) => {
+const DetailMenu = ({ }) => {
   const menu = useSelector((state) => state.navigation.currentMenu);
   const isLoading = useSelector((state) => state.navigation.isLoading);
   const listPage = useSelector((state) => state.page.listPages);
@@ -96,9 +96,9 @@ const DetailMenu = ({}) => {
   const __rowInfo = useRef({});
   window.onbeforeunload = function () {
     if (!_.isEqual(treeData, oldTree)) {
-       return '';
-     }
-   }.bind(this);
+      return "";
+    }
+  }.bind(this);
   useEffect(() => {
     batch(() => {
       dispatch(doGetCurrentMenu(params.id)).then((res) => {
@@ -107,7 +107,7 @@ const DetailMenu = ({}) => {
           listMenuItem = res.payload.listMenuItem;
         }
         setTreeData(listMenuItem);
-        setOldTree(listMenuItem)
+        setOldTree(listMenuItem);
       });
       dispatch(doGetListPages(params.storeId));
     });
@@ -249,13 +249,12 @@ const DetailMenu = ({}) => {
       other: otherResult,
       external: externalResult,
     });
-  }, [dbValue]);
+  }, [dbValue, displayPages]);
 
   const getIcon = ({ name, link }) => {
     if (link === "") return null;
     if (DefaultPage[name]) return DefaultPage[name];
     if (link[0] === "/") {
-      console.log(link.substring(1, 7));
       if (link.substring(1, 7) === "pages/") return <PageIcon />;
       else return <PolocyIcon />;
     } else return <ExternalLinkIcon />;
@@ -275,7 +274,8 @@ const DetailMenu = ({}) => {
           setIcon(item.type === 1 ? "page" : "external");
         }}
       >
-        <span>{DefaultPage[item.name] ? DefaultPage[item.name] : null}</span>
+        {/* <span>{DefaultPage[item.name] ? DefaultPage[item.name] : null}</span> */}
+        <span>{getIcon({name: item.name, link: item.page_url})}</span>
         <span className=" text-normal-1">{item.name}</span>
       </div>
     );
@@ -457,7 +457,6 @@ const DetailMenu = ({}) => {
     ).then(() => {
       setOldTree(treeData);
     });
-
   };
 
   const _handleEditMenuItem = (rowInfo) => {
@@ -611,17 +610,26 @@ const DetailMenu = ({}) => {
             </div>
           </CustomCard>
 
-          {!menu.is_default ? (
-            <div className="detail-menu__delete">
-              <Button
-                variant="outline-danger"
-                onClick={() => setOpenDeleteMenuModal(true)}
-              >
-                Delete menu
-              </Button>
-            </div>
-          ) : null}
-          <CustomButton
+          <div className="detail-menu__group-btn">
+            {!menu.is_default ? (
+                <Button
+                  variant="outline-danger"
+                  onClick={() => setOpenDeleteMenuModal(true)}
+                >
+                  Delete menu
+                </Button>
+            ) : null}
+            <Button
+              variant="success"
+              className="detail-menu__group-btn__save"
+              disabled={_.isEqual(treeData, oldTree)}
+              onClick={updateSubMenu}
+            >
+              Save
+            </Button>
+          </div>
+
+          {/* <CustomButton
             disabled={_.isEqual(treeData, oldTree)}
             className="SaveSubMenu-btn"
             style={{
@@ -634,7 +642,7 @@ const DetailMenu = ({}) => {
             onClick={updateSubMenu}
           >
             Save
-          </CustomButton>
+          </CustomButton> */}
           {/* <button onClick={updateSubMenu}>Save</button> */}
         </div>
       </div>
@@ -714,6 +722,21 @@ const DetailMenu = ({}) => {
                   </>
                 ) : (
                   <>
+                    {!searchResult.default.length &&
+                    !searchResult.pages.length &&
+                    !searchResult.other.length &&
+                    !searchResult.external.length ?
+                    <div 
+                      style={{
+                        marginTop: '-10px',
+                        marginBottom: '-10px'
+                      }}
+                      className="text-normal-2"
+                    >
+                      No results
+                    </div> 
+                    : null
+                    }
                     {searchResult.default?.map((item) => renderItem(item))}
                     {searchResult.pages.length
                       ? renderGroupItem(searchResult.pages, "Pages")

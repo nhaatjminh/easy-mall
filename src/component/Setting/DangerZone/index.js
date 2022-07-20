@@ -6,12 +6,14 @@ import { SettingTitle } from "../Title/Title";
 import { useState } from "react";
 import { CustomInput } from "../../common/CustomInput/CustomInput";
 import { useDispatch } from "react-redux";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { StoreIcon } from './../../../assets/icon/svg/StoreIcon';
+import { doDeleteStore } from "../../../redux/slice/storeSlice";
 
 export const DangerZone = ({ store }) => {
     const [showModal, setShowModal] = useState(false);
     const [value, setValue] = useState('');
+    let navigate = useNavigate();
 
     const dispatch = useDispatch();
     const params = useParams();
@@ -22,7 +24,9 @@ export const DangerZone = ({ store }) => {
     }
 
     const handleDeleteStore = () => {
-
+        dispatch(doDeleteStore(params.storeId))
+        .then(() => navigate('/store-login'))
+        handleCloseModal()
     }
 
 

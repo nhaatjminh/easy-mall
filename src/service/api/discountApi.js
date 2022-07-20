@@ -1,8 +1,10 @@
 import { callAPIWithDeleteMethod, callAPIWithGetMethod, callAPIWithPostMethod, callAPIWithPutMethod } from "../../helpers/callAPI"
 
 export const DiscountApi = {
-    getDiscounts: async (storeId) => {
-        const result = await callAPIWithGetMethod(`stores/${storeId}/discounts`, true);
+    getDiscounts: async (discounts) => {
+        const url = `stores/${discounts.storeId}/discounts`
+        const params = `?code=${discounts.params.code}`
+        const result = await callAPIWithGetMethod(url + (discounts.params ? params : ''), true);
         return result;
     },
     getDetailDiscount: async (id) => {
