@@ -50,7 +50,7 @@ const ManageAnalysis = () => {
     const convertNewDateFromLocaleString = (date) => {
         if (!date) return NaN;
         let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '-' + dateSplit[0] + '-' + dateSplit[1]).getTime(); 
+        return new Date(dateSplit[2] + '-' + dateSplit[1] + '-' + dateSplit[0]).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
@@ -71,10 +71,10 @@ const ManageAnalysis = () => {
             let finalAllOrder = [];
             let dates = dateRange(new Date(),30)
             let idxOrder = 0;
-            dates.every((date) => {
+            dates.every((date, idxDates) => {
                 let dateConvert = convertNewDateFromLocaleString(date);
                 let dayConvert = convertNewDateFromLocaleString(missingDates[idxOrder]?.day);
-                if (!isNaN(dateConvert) && isNaN(dayConvert) && dateConvert === dayConvert) {
+                if (!isNaN(dateConvert) && !isNaN(dayConvert) && dateConvert === dayConvert) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
                         total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currency === 'USD' ? 2 : 0)),
@@ -88,7 +88,7 @@ const ManageAnalysis = () => {
                         total_order: 0
                     })
                 }
-                if (idxOrder >= missingDates.length) return false;
+                if (idxOrder >= missingDates.length && idxDates >= dates.length) return false;
                 else return true;
             })
             result.payload.orders = finalAllOrder;
@@ -163,7 +163,7 @@ const ManageAnalysis = () => {
             </div> 
             <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage pt-5">     
                 <div className="row" style={{ marginLeft: 60, marginBottom: 20}}> 
-                    <Select style={{ width: 'auto'}} value={currency} onChange={handleChangeCurrency} className='text-field-input text-content'>
+                    <Select style={{ width: 'auto', height: 28}} value={currency} onChange={handleChangeCurrency}  className='text-field-input text-content'>
                         <MenuItem value='VND'>VND</MenuItem>
                         <MenuItem value='USD'>USD</MenuItem>
                     </Select>
