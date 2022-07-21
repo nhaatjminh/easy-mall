@@ -45,11 +45,11 @@ const ManageAnalysis = () => {
         if (!endDate) return []
 
         const endDateInMs = new Date(endDate).getTime()
-        return [...Array(numOfDays).keys()].map(i => new Date(endDateInMs - i * DAY_IN_MS).toLocaleDateString()).reverse()
+        return [...Array(numOfDays).keys()].map(i => new Date(endDateInMs - i * DAY_IN_MS).toLocaleDateString('en-EN')).reverse()
     }
     const convertNewDateFromLocaleString = (date) => {
-        let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '-' + dateSplit[0] + '-' + dateSplit[1]).getTime(); 
+        if (!date) return NaN;
+        return new Date(date).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
@@ -64,16 +64,16 @@ const ManageAnalysis = () => {
             }).map((order) => {
                 return {
                     ...order,
-                    day: new Date(order.day).toLocaleDateString()
+                    day: new Date(order.day).toLocaleDateString('en-EN')
                 }
             })
             let finalAllOrder = [];
             let dates = dateRange(new Date(),30)
             let idxOrder = 0;
-            dates.every((date) => {
-                let a = convertNewDateFromLocaleString(date);
-                let b = convertNewDateFromLocaleString(missingDates[idxOrder].day);
-                if (convertNewDateFromLocaleString(date) === convertNewDateFromLocaleString(missingDates[idxOrder].day)) {
+            dates.every((date, idxDates) => {
+                let dateConvert = convertNewDateFromLocaleString(date);
+                let dayConvert = convertNewDateFromLocaleString(missingDates[idxOrder]?.day);
+                if (!isNaN(dateConvert) && !isNaN(dayConvert) && dateConvert === dayConvert) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
                         total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currency === 'USD' ? 2 : 0)),
@@ -87,7 +87,7 @@ const ManageAnalysis = () => {
                         total_order: 0
                     })
                 }
-                if (idxOrder >= missingDates.length) return false;
+                if (idxOrder >= missingDates.length && idxDates >= dates.length) return false;
                 else return true;
             })
             result.payload.orders = finalAllOrder;
@@ -162,7 +162,7 @@ const ManageAnalysis = () => {
             </div> 
             <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage pt-5">     
                 <div className="row" style={{ marginLeft: 60, marginBottom: 20}}> 
-                    <Select style={{ width: 'auto'}} value={currency} onChange={handleChangeCurrency} className='text-field-input text-content'>
+                    <Select style={{ width: 'auto', height: 28}} value={currency} onChange={handleChangeCurrency}  className='text-field-input text-content'>
                         <MenuItem value='VND'>VND</MenuItem>
                         <MenuItem value='USD'>USD</MenuItem>
                     </Select>

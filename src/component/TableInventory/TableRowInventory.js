@@ -64,12 +64,12 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                         row.thumbnail ?
                             <Box style={{width: 80, height: 'auto'}}>
                                 <ListItemAvatar className="image-container-item-list m-0">
-                                    <img alt="thumbnail" src={row.thumbnail}/>
+                                    <img alt="image" src={row.thumbnail}/>
                                 </ListItemAvatar>
                             </Box>
                             : <Box style={{width: 80, height: 'auto'}}>
                                 <ListItemAvatar className="image-container-item-list m-0">
-                                    <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                    <img alt="image" src='/img/default-image-620x600.jpg'/>
                                 </ListItemAvatar>
                             </Box>
                     }
@@ -91,7 +91,7 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                 </>}
         </TableCell>
       )})}
-      <TableCell align={'center'}>
+      <TableCell align={'left'}>
         {
           updateSKUState || updateQuantityState ?
           

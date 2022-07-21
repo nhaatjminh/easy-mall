@@ -382,7 +382,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                         if (result) {
                             // payload is array data response from server, first item to link, so get payload[0] in here
                             result = result.payload
-                            result = result.concat(oldResult);
+                            result = oldResult.concat(result);
                             form.current = {
                                 ...form?.current,
                                 product: {

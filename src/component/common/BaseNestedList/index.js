@@ -131,12 +131,12 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                             item.thumbnail ?
                                                 <Box style={{width: 80, height: 'auto'}}>
                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                        <img alt="thumbnail" src={item.thumbnail}/>
+                                                        <img alt="image" src={item.thumbnail}/>
                                                     </ListItemAvatar>
                                                 </Box>
                                             : <Box style={{width: 80, height: 'auto'}}>
                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                        <img alt="image" src='/img/default-image-620x600.jpg'/>
                                                     </ListItemAvatar>
                                                 </Box>
                                         }
@@ -222,12 +222,12 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                                             item.thumbnail ?
                                                 <Box style={{width: 80, height: 'auto'}}>
                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                        <img alt="thumbnail" src={item.thumbnail}/>
+                                                        <img alt="image" src={item.thumbnail}/>
                                                     </ListItemAvatar>
                                                 </Box>
                                             : <Box style={{width: 80, height: 'auto' }}>
                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                        <img alt="image" src='/img/default-image-620x600.jpg'/>
                                                     </ListItemAvatar>
                                                 </Box>
                                         }

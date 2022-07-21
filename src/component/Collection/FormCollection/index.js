@@ -343,11 +343,11 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                     </Paper>
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
                         <div className="row">
-                            <div className="col-3">
+                            <div className="col-9">
                                 
                                 <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Products</InputLabel>
                             </div>
-                            <div className="col-9">  
+                            <div className="col-3">  
                             
                                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={handleOpen}></i>      
                                 <Modal
@@ -383,12 +383,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                                             product.thumbnail ?
                                                                 <Box style={{width: 80, height: 'auto'}}>
                                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                                        <img alt="thumbnail" src={product.thumbnail}/>
+                                                                        <img alt="image" src={product.thumbnail}/>
                                                                     </ListItemAvatar>
                                                                 </Box>
                                                             : <Box style={{width: 80, height: 'auto' }}>
                                                                     <ListItemAvatar className="image-container-item-list m-0">
-                                                                        <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                                        <img alt="image" src='/img/default-image-620x600.jpg'/>
                                                                     </ListItemAvatar>
                                                                 </Box>
                                                         }
@@ -413,12 +413,12 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                                 product.thumbnail ?
                                                     <Box key={`${productId} - box`} style={{width: 80, height: 'auto'}}>
                                                         <ListItemAvatar className="image-container-item-list m-0" key={`${productId} - avatar`}>
-                                                            <img alt="thumbnail" src={product.thumbnail}/>
+                                                            <img alt="image" src={product.thumbnail}/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 :  <Box key={`${productId} - box`} style={{width: 80, height: 'auto' }}>
                                                         <ListItemAvatar className="image-container-item-list m-0" key={`${productId} - avatar`}>
-                                                            <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                            <img alt="image" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 }

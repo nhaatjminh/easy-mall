@@ -30,15 +30,15 @@ const ImageInput = ({formRef, oldForm, mode}) => {
             <ImageList
                 cols={1}
                 rowHeight={"auto"}
-                sx={{ width: 'auto', maxHeight: 400 }}
+                sx={{ width: 'auto', maxHeight: 350 }}
             >
               {
                 images ?
                   <ImageListItem key={`thumbnail-0`}>
-                    <div className="image-container">
+                    <div className="image-container" style={{padding: 0, margin: 0}}>
                         <img
                           src={images}
-                          alt="thumbnail"
+                          alt="image"
                           loading="lazy"
                         />
                       </div>

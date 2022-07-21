@@ -8,9 +8,8 @@ import {
 import Divider from '@mui/material/Divider';
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import { useNavigate, useParams } from "react-router-dom";
-import { WIDTH_ITEM_ORDER } from "../..";
 
-const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
+const ItemFollow = ({WIDTH_ITEM_ORDER, existed, thumbnail, productCurrency, name, price,quantity, parentName, product_id, variant_id})=> { 
     
     const params = useParams();
     const routeChange = useNavigate();
@@ -24,12 +23,12 @@ const ItemFollow = ({existed, thumbnail, productCurrency, name, price,quantity, 
                     thumbnail ?
                         <Box style={{width: 80, height: 'auto'}}>
                             <ListItemAvatar className="image-container-item-list m-0">
-                                <img alt="thumbnail" src={thumbnail}/>
+                                <img alt="image" src={thumbnail}/>
                             </ListItemAvatar>
                         </Box>
                         : <Box style={{width: 80, height: 'auto'}}>
                             <ListItemAvatar className="image-container-item-list m-0">
-                                <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                <img alt="image" src='/img/default-image-620x600.jpg'/>
                             </ListItemAvatar>
                         </Box>
                 }
