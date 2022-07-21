@@ -19,6 +19,7 @@ import { BlankCard } from './../../component/common/BlankCard/BlankCard';
 import { Card } from "react-bootstrap";
 import paymentImg from '../../assets/image/payment.svg'
 import domainImg from '../../assets/image/domain.svg'
+import { BasicButton } from "../../component/common/BasicButton/CustomButton";
 
 const tabContent = {
   'product': {
@@ -70,7 +71,7 @@ const ManageHome = () => {
         <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
           <NavBarDetailStore isDesktop={true} keySelected={Key.Home}></NavBarDetailStore>
         </div>
-        <div className="manage-home col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">
+        <div className="manage-home col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 desktop-table main-content-manage">
           {isLoading ? null :
           <>
             <CustomCard className="manage-home__main">
@@ -126,10 +127,17 @@ const ManageHome = () => {
             <BlankCard>
               <Card.Body className="manage-home__card">
                 <div className="manage-home__card__content">
-
+                  <div className="text-title-2">Add a custom domain</div>
+                  <div className="text-normal-1">Your current domain is development-hehe.myshopify.com but you can add a custom domain to help customers find your online store.</div>
+                  <BasicButton
+                    onClick={() => navigate(`/setting/${params.storeId}`)}
+                  >
+                    Add domain
+                  </BasicButton>
                 </div>
                 <img 
-                
+                  className="manage-home__card__img"
+                  src={domainImg}
                 />
               </Card.Body>
             </BlankCard>

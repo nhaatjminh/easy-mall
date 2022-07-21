@@ -9,10 +9,25 @@
    }
 }
 /*  */
-
-.manage-home__main {
-    margin: 30px auto;
+.manage-home {
+    margin: 60px auto 30px;
     max-width: 850px;
+    &__card {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        &__img {
+            width: auto;
+            max-width: 50%;
+            height: auto;
+            margin-left: 20px;
+        }
+        .text-normal-1 {
+            margin: 20px 0;
+        }
+    }
+}
+.manage-home__main {
     &__title {
         margin: 0 -20px;
         padding: 0 20px;
