@@ -15,6 +15,10 @@ import pageImg from '../../assets/image/page.svg'
 import navigationImg from '../../assets/image/navigation.svg'
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
+import { BlankCard } from './../../component/common/BlankCard/BlankCard';
+import { Card } from "react-bootstrap";
+import paymentImg from '../../assets/image/payment.svg'
+import domainImg from '../../assets/image/domain.svg'
 
 const tabContent = {
   'product': {
@@ -68,6 +72,7 @@ const ManageHome = () => {
         </div>
         <div className="manage-home col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">
           {isLoading ? null :
+          <>
             <CustomCard className="manage-home__main">
               <div className="manage-home__main__title text-title-1">You're off to a great start.</div>
               <div className="manage-home__main__body">
@@ -117,6 +122,19 @@ const ManageHome = () => {
                 </div>
               </div>
             </CustomCard>
+
+            <BlankCard>
+              <Card.Body className="manage-home__card">
+                <div className="manage-home__card__content">
+
+                </div>
+                <img 
+                
+                />
+              </Card.Body>
+            </BlankCard>
+            
+          </>
           }
         </div>
       </div>

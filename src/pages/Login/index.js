@@ -124,7 +124,7 @@ const Login = () => {
             })
             .then(result => {
                 localStorage.setItem("token", result.data.token);
-                localStorage.setItem("userId", result.data.user._id);
+                localStorage.setItem("userId", result.data.user.id);
                 login(result.data.token)
 
             })
@@ -159,7 +159,7 @@ const Login = () => {
             })
             .then(result => {
                 localStorage.setItem("token", result.data.token);
-                localStorage.setItem("userId", result.data.user._id);
+                localStorage.setItem("userId", result.data.user.id);
                 login(result.data.token)
             })
             .catch(error => {
