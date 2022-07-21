@@ -122,6 +122,7 @@ const Page = ({ }) => {
     const handleEitPage = () => {
         dispatch(doUpdatePage({
             id: updatePageId,
+            store_id: params.storeId,
             name: name,
             page_url: '/' + link
         }))
