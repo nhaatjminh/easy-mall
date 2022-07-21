@@ -125,7 +125,6 @@ const Login = () => {
             .then(result => {
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
-                setIsLogin(true);
                 login(result.data.token)
 
             })
@@ -135,7 +134,6 @@ const Login = () => {
     }
 
     const onSuccessGoogle = (response) => {
-        console.log(response);
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -162,7 +160,6 @@ const Login = () => {
             .then(result => {
                 localStorage.setItem("token", result.data.token);
                 localStorage.setItem("userId", result.data.user._id);
-                setIsLogin(true);
                 login(result.data.token)
             })
             .catch(error => {
