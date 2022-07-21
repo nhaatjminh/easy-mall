@@ -52,15 +52,14 @@ const Page = ({ }) => {
                 const result = await PageApi.checkExistName(name, params.storeId);
                 if (result?.data?.length > 0) {
                     setErr('A page with that name already exists')
-                    setIsChecking(false)
                 }
                 else {
                     setErr('')
-                    setIsChecking(false)
                 }
             } else {
                 setErr('Your page name must be at least 4 characters')
-            }
+            }         
+            setIsChecking(false)
         }
     }, [dbValue])
 
@@ -286,7 +285,10 @@ const Page = ({ }) => {
                             placeholder='e.g About us'
                             value={name}
                             warning={err !== ''}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => {
+                                setName(e.target.value)
+                                if (!isChecking) setIsChecking(true)
+                            }}
                         />
                         {err !== '' &&
                             <div style={{ marginTop: '10px' }}>
@@ -325,7 +327,7 @@ const Page = ({ }) => {
                         </Button>
                         <Button
                             className="btn btn-success"
-                            disabled={(err !== '') || (linkErr !== '') || ((mode === 'EDIT') && (name === preName) && (link === preLink))}
+                            disabled={(err !== '') || (linkErr !== '') || ((mode === 'EDIT') && (name === preName) && (link === preLink)) || isChecking}
                             onClick={mode === 'ADD' ? handleAddNewPage : handleEitPage}
                         >
                             {mode === 'ADD' ? 'Add' : 'Save'}
