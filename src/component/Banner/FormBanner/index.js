@@ -63,6 +63,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
     const [openPopup, setOpenPopUp] = useState(false);
     const [isSelectUrl, setIsSelectUrl] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditBanner, setIsEditBanner] = useState(-1)
     const handleChangeCaption = (event) => {
         const value = {...valueToAdd};
         value.caption = event.target.value;
@@ -114,11 +115,17 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             } else {
                 setShowAddBanner(false);
                 const newListBanner = [...listBanner];
-                newListBanner.push(valueNeedPush);
+                if (isEditBanner >= 0) {
+                    newListBanner[isEditBanner] = valueNeedPush;
+                    form.current.banners = newListBanner
+                } else {
+                    newListBanner.push(valueNeedPush);
+                    form.current.banners.push(valueNeedPush);
+                }
                 setListBanner(newListBanner);
-                form.current.banners.push(valueNeedPush);
                 setValueToAdd({});
                 setCustomUrl(null);
+                setIsEditBanner(-1);
             }
         }
     }
@@ -522,18 +529,19 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 setShowAddBanner(true);
                                                 setCustomUrl(banner.link)
                                                 setValueToAdd(banner);
+                                                setIsEditBanner(index);
                                             }} className='row p-0 m-0' key={`${banner.id}-selected`} value={banner.id}>
                                                 <p className="pr-2 m-0" style={{width: 20}}>{index}.</p>
                                                 {
                                                 banner.image ?
                                                     <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
                                                         <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
-                                                            <img alt="thumbnail" src={banner.image}/>
+                                                            <img alt="image" src={banner.image}/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 :  <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
                                                         <ListItemAvatar key={`${banner.id} - avatar`} className="image-container-item-list m-0">
-                                                            <img alt="thumbnail" src='/img/default-image-620x600.jpg'/>
+                                                            <img alt="image" src='/img/default-image-620x600.jpg'/>
                                                         </ListItemAvatar>
                                                     </Box>
                                                 }

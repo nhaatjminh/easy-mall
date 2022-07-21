@@ -37,7 +37,8 @@ const ManageCollection = () => {
       id: 'description',
       label: 'Description',
       minWidth: 170,
-      align: 'left'
+      align: 'left',
+      classNameBody: 'description-table'
     },
   ];
   const editFunction = (selected) => {

@@ -64,11 +64,11 @@ const ManageOrder = () => {
     },{
       id: 'status',
       label: 'Fulfillment status',
-      minWidth: 170,
+      minWidth: 200,
       align: 'center',
       sort: 'string',
       classNameWithData: (data) => {
-        if (data === "RESTOCK") return 'restock-order'
+        if (data === "RESTOCK" || data === "PAID & RESTOCK") return 'restock-order'
         else if (data === "COMPLETED") return 'complete-order'
         else if (data === "DELETED") return 'deleted-order'
         else return 'normal-order'
@@ -179,7 +179,7 @@ const ManageOrder = () => {
               <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     
-              <div className="row ">   
+              <div className="row "  style={{overflowX: 'hidden'}}>   
                 <>
                   {!showAddOrder ?
                     <>

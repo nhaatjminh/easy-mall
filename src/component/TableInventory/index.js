@@ -90,7 +90,7 @@ function EnhancedTableHead(props) {
               </TableCell>
             ))}
             
-            <TableCell>
+            <TableCell style={{paddingLeft: 18}}>
                 Action
             </TableCell>
         </TableRow>

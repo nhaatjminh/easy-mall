@@ -33,7 +33,7 @@ const TimeLine = ({listStatus})=> {
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
-                            width: `100px`,
+                            width: `175px`,
                             fontWeight: `bold`,
                             textAlign: `center`
                         } : status.status === "COMPLETED" ? {
@@ -42,16 +42,16 @@ const TimeLine = ({listStatus})=> {
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
-                            width: `100px`,
+                            width: `175px`,
                             fontWeight: `bold`,
                             textAlign: `center`
-                        } : status.status === "RESTOCK" ? {
+                        } : status.status === "RESTOCK" || status.status === "PAID & RESTOCK" ? {
                             backgroundColor: `#d6d149`,
                             color: `#fff`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
-                            width: `100px`,
+                            width: `175px`,
                             fontWeight: `bold`,
                             textAlign: `center`
                         } : {
@@ -60,13 +60,13 @@ const TimeLine = ({listStatus})=> {
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
-                            width: `100px`,
+                            width: `175px`,
                             fontWeight: `bold`,
                             textAlign: `center`
                         }
                     }
                         
-                        contentStyle={{ boxShadow: 'rgb(0 0 0 / 50%) 0px 1px 3px 0px'}}
+                        contentStyle={{ boxShadow: '0 0 5px rgb(23 24 24 / 5%), 0 1px 2px rgb(0 0 0 / 15%)'}}
                     >
                         {`${status.note ? status.note : ''}`}
                     </TimelineEvent>

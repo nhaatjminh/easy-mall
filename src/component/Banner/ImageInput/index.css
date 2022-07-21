@@ -44,6 +44,10 @@
     display: block;
     opacity: 0;
 }
+ 
+.MuiCheckbox-root.checkbox-image svg {
+    background-color: #ffffff;
+}
 .list-img {
     overflow: auto;
 }

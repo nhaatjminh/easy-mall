@@ -61,7 +61,8 @@ export default function BaseModal({children, showButton=true, boolOpen=false, se
     if (!showButton) setBoolOpen(false);
     onClose();
   };
-  const handleOk = async () => {
+  const handleOk = async (e) => {
+    e.currentTarget.disabled = true;
     await onOK();
     handleClose();
   }
