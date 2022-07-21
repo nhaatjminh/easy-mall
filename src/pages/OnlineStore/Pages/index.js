@@ -66,6 +66,10 @@ const Page = ({ }) => {
 
     useEffect(() => {
         if (showModal) {
+            if (link === '') {
+                setLinkErr('Link cannot be blank!')
+                return
+            }
             const isValid = checkValidURL('/pages/' + link);
             if (isValid) setLinkErr('')
             else setLinkErr('Invalid link!')
