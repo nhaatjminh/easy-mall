@@ -96,7 +96,7 @@ const DetailMenu = ({ }) => {
   const __rowInfo = useRef({});
   window.onbeforeunload = function () {
     if (!_.isEqual(treeData, oldTree)) {
-      return '';
+      return "";
     }
   }.bind(this);
   useEffect(() => {
@@ -107,7 +107,7 @@ const DetailMenu = ({ }) => {
           listMenuItem = res.payload.listMenuItem;
         }
         setTreeData(listMenuItem);
-        setOldTree(listMenuItem)
+        setOldTree(listMenuItem);
       });
       dispatch(doGetListPages(params.storeId));
     });
@@ -457,7 +457,6 @@ const DetailMenu = ({ }) => {
     ).then(() => {
       setOldTree(treeData);
     });
-
   };
 
   const _handleEditMenuItem = (rowInfo) => {
