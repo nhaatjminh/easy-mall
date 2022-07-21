@@ -45,12 +45,11 @@ const ManageAnalysis = () => {
         if (!endDate) return []
 
         const endDateInMs = new Date(endDate).getTime()
-        return [...Array(numOfDays).keys()].map(i => new Date(endDateInMs - i * DAY_IN_MS).toLocaleDateString()).reverse()
+        return [...Array(numOfDays).keys()].map(i => new Date(endDateInMs - i * DAY_IN_MS).toLocaleDateString('en-EN')).reverse()
     }
     const convertNewDateFromLocaleString = (date) => {
         if (!date) return NaN;
-        let dateSplit = date.split("/");
-        return new Date(dateSplit[2] + '-' + dateSplit[1] + '-' + dateSplit[0]).getTime(); 
+        return new Date(date).getTime(); 
     }
     useEffect(() => {
         setLoading(true);
@@ -65,7 +64,7 @@ const ManageAnalysis = () => {
             }).map((order) => {
                 return {
                     ...order,
-                    day: new Date(order.day).toLocaleDateString()
+                    day: new Date(order.day).toLocaleDateString('en-EN')
                 }
             })
             let finalAllOrder = [];
