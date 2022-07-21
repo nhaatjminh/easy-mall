@@ -87,9 +87,9 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                 </div>
                 <div className=" col-md-6 col-lg-7 col-xl-7 header-store__search">
                     {/* <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />   */}
-                    <CustomSearchInput
+                    {/* <CustomSearchInput
                         placeholder='Search'
-                    />
+                    /> */}
                 </div>
                 <div className="col-md-3 col-lg-2 col-xl-2  ">
                     <div>
