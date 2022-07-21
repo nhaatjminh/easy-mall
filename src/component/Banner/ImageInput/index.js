@@ -34,14 +34,13 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
             <ImageList
                 cols={1}
                 rowHeight={"auto"}
-                gap={10}
-                sx={{ width: 'auto', height: 'auto' }}
+                sx={{ width: 'auto', maxHeight: 360 }}
                 style={{overflowX: 'hidden', paddingRight: 5}}
             >
               {
                 images ?
                   <ImageListItem key={`thumbnail-0`}>
-                    <div className="image-container">
+                    <div className="image-container" style={{ padding: 0, margin: 0}}>
                         <img
                           src={images}
                           style={{width: 350, height: 350}}

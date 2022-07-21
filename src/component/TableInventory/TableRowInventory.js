@@ -91,7 +91,7 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                 </>}
         </TableCell>
       )})}
-      <TableCell align={'center'}>
+      <TableCell align={'left'}>
         {
           updateSKUState || updateQuantityState ?
           
