@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { doGetCurrentTemplate, doPublish } from "../../../redux/slice/themeSlice";
 import Swal from "sweetalert2";
 import { ThemeCollection } from "../../../component/Themes/ThemeCollection/ThemeCollection";
+import { doGetCurrentStore } from "../../../redux/slice/storeSlice";
 
 const ManageThems = () => {
     const params = useParams();
@@ -25,6 +26,7 @@ const ManageThems = () => {
     const [showThemeModal, setShowThemeModal] = useState(false);
     const [themeType, setThemeType] = useState(false);
     const currentTemplate = useSelector((state) => state.theme.currentTemplate)
+    const currentStore = useSelector((state) => state.listStore.currentStore)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -35,8 +37,8 @@ const ManageThems = () => {
         setIsLoading(true)
         Promise.all([
             dispatch(doGetCurrentTemplate(params.storeId)),
-            StoreApi.getPagesByStoreId(params.storeId, query)
-
+            StoreApi.getPagesByStoreId(params.storeId, query),
+            dispatch(doGetCurrentStore(params.storeId)),
         ]).then((res) => {
             setHomePageId(res[1]?.data[0]?.id)
             setIsLoading(false)
@@ -50,6 +52,14 @@ const ManageThems = () => {
 
     const goToEditor = () => {
         window.open(process.env.REACT_APP_EDITOR_URL + `/editor/${params.storeId}?pageId=${homePageId}`);
+    }
+
+    const handleViewStore = () => {
+        let url = currentStore.store_link
+        if (!currentStore.store_link.includes('https://') && !currentStore.store_link.includes('http://')) {
+            url = 'http://' + url
+        }
+        window.open(url)
     }
 
     const publish = () => {
@@ -84,7 +94,10 @@ const ManageThems = () => {
                 <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table mamagethemes">
                     <div className="mamagethemes__header">
                         <div className="mamagethemes__header--title">Theme</div>
-                        <div className="mamagethemes__header--btn-to-editor" onClick={() => { }}>
+                        <div
+                            className="mamagethemes__header--btn-to-editor"
+                            onClick={handleViewStore}
+                        >
                             <span style={{ paddingRight: '5px' }}>
                                 <ViewIcon />
                             </span>
