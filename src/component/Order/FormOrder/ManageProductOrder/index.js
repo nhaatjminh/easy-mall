@@ -20,10 +20,10 @@ import { cloneDeep } from "lodash";
 import { parseLocaleNumber } from "../../../../utils/parseLocaleNumber";
 import BaseEmpty from "../../../common/BaseEmpty";
 
-const ManageProductOrder = ({WIDTH_ITEM_ORDER, listDiscount, setListDiscount, discountCode, setDiscountCode})=> { // mode add or update
+const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDiscount, discountCode, setDiscountCode})=> { // mode add or update
     const dispatch = useDispatch();
-    let form = useRef({});
     const [listRate, setListRate] = useState([]);
+    const form=formRef;
     const [currency, setCurrency] = useState('VND');
     const [listProducts, setListProducts] = useState([]);
     
@@ -267,7 +267,7 @@ const ManageProductOrder = ({WIDTH_ITEM_ORDER, listDiscount, setListDiscount, di
                     </div>
                     <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <Select placeholder='Discount'
-                            className="text-field-input text-content"
+                            className="text-field-input text-content select-height"
                             onChange={(e) => handleChangeDiscountSelect(e.target.value)}
                             style={{ width: 200}}
                             height={'30px'}
@@ -298,7 +298,7 @@ const ManageProductOrder = ({WIDTH_ITEM_ORDER, listDiscount, setListDiscount, di
                     <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
                     <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
-                        <Select value={paymentMethod} onChange={handleChangePaymentMethod} className='text-field-input text-content select-currency'>
+                        <Select value={paymentMethod} onChange={handleChangePaymentMethod} className='select-height text-field-input text-content select-currency'>
                             <MenuItem value='0'>COD</MenuItem>
                             <MenuItem value='1'>Paypal</MenuItem>
                         </Select>

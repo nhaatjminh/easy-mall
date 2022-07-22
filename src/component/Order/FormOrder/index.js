@@ -169,7 +169,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
         <>
             <form>
                 <div className="row  text-black">  
-                        <ManageProductOrder key='manage-product-order' WIDTH_ITEM_ORDER={WIDTH_ITEM_ORDER} listDiscount={listDiscount} setListDiscount={setListDiscount} setDiscountCode={setDiscountCode} discountCode={discountCode}></ManageProductOrder> 
+                        <ManageProductOrder key='manage-product-order' formRef={form} WIDTH_ITEM_ORDER={WIDTH_ITEM_ORDER} listDiscount={listDiscount} setListDiscount={setListDiscount} setDiscountCode={setDiscountCode} discountCode={discountCode}></ManageProductOrder> 
                         <div className="pt-md offset-1 offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
                             <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                                 <InputLabel name='title' className="text-header" style={{margin: 0}}>Customer</InputLabel>
@@ -268,7 +268,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                                     render={({ field: { onChange, value }, fieldState: {error} }) => (
                                         <>
                                             <Select
-                                                className="text-field-input text-content"
+                                                className="text-field-input text-content select-height"
                                                 onChange={(e) => {
                                                     onChange(e);
                                                     handleChangeAdressCity(e);
@@ -307,7 +307,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                                                     style: {maxHeight: 300}
                                                 }}
                                                 
-                                                className="text-field-input text-content"
+                                                className="text-field-input text-content select-height"
                                                 onChange={(e) => {
                                                     onChange(e);
                                                     handleChangeAdressDistrict(e);
