@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { doGetCurrentTemplate, doPublish } from "../../../redux/slice/themeSlice";
 import Swal from "sweetalert2";
 import { ThemeCollection } from "../../../component/Themes/ThemeCollection/ThemeCollection";
-import { doGetCurrentStore } from "../../../redux/slice/storeSlice";
 
 const ManageThems = () => {
     const params = useParams();
@@ -37,8 +36,7 @@ const ManageThems = () => {
         setIsLoading(true)
         Promise.all([
             dispatch(doGetCurrentTemplate(params.storeId)),
-            StoreApi.getPagesByStoreId(params.storeId, query),
-            dispatch(doGetCurrentStore(params.storeId)),
+            StoreApi.getPagesByStoreId(params.storeId, query)
         ]).then((res) => {
             setHomePageId(res[1]?.data[0]?.id)
             setIsLoading(false)

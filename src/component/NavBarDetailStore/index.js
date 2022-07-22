@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import React, { useEffect } from "react";
+import { Avatar, Typography } from '@mui/material';
 import { Dropdown } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
+import { doSwitchSelectedStore, doSwitchBaseUrl, doGetCurrentStore } from "../../redux/slice/storeSlice";
 import { Key } from "../../constants/constForNavbarDetail";
 import Swal from "sweetalert2";
 
@@ -17,6 +17,7 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
     const dispatch = useDispatch();
     const nameStore = useSelector((state) => state.listStore.selectedName);
     const listStoreInStore = useSelector((state) => state.listStore.listStore);
+    const currentStore = useSelector((state) => state.listStore.currentStore);
     const warningWhenLeave = (applyFunction) => {
         if (isEdit) {
             Swal.fire({
@@ -36,6 +37,20 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
             applyFunction()
         }
     }
+
+    useEffect(() => {
+        dispatch(doGetCurrentStore(params.storeId))
+    }, [])
+
+    const handleViewStore = (e) => {
+        e.stopPropagation()
+        let url = currentStore.store_link
+        if (!currentStore.store_link.includes('https://') && !currentStore.store_link.includes('http://')) {
+            url = 'http://' + url
+        }
+        window.open(url)
+    }
+
     return (
         <>
             <Stack direction="column" spacing={3} alignItems="stretch" className={`all-nav-detail   ${isDesktop ? "desktop" : "mobile"}`} >
@@ -217,7 +232,10 @@ const NavBarDetailStore = ({ isDesktop, keySelected, isEdit }) => {
                         <p className="m-0 mb-2 ">
                             <i className="fa-university fa-icon fa-store-detail-nav "></i>
                             <span className="font-weight-bold"> Online Store </span>
-                            <button className="btn-icon float-right pt-1">
+                            <button 
+                                className="btn-icon float-right pt-1"
+                                onClick={handleViewStore}
+                            >
                                 <i className="fa fa-eye icon-color-black"></i>
                             </button>
                         </p>
