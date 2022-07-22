@@ -54,6 +54,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
     const [listBanner, setListBanner] = useState([]);
     const [showAddBanner, setShowAddBanner] = useState(false);
     const [customUrl, setCustomUrl] = useState('');
+    const [customUrlShow, setCustomUrlShow] = useState('');
     const [valueToAdd, setValueToAdd] = useState({});
     const [typeLink, setTypeLink] = useState('');
     const [optionCollection, setOptionCollection] = useState([]);
@@ -102,6 +103,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     form.current.banners[idxOfBannerForForm] = valueNeedPush;
                     setValueToAdd({});
                     setCustomUrl(null);
+                    setCustomUrlShow(null);
                 } else {
                     valueNeedPush.update = 'Add';
                     setShowAddBanner(false);
@@ -111,6 +113,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     form.current.banners.push(valueNeedPush);
                     setValueToAdd({});
                     setCustomUrl(null);
+                    setCustomUrlShow(null);
                 }
             } else {
                 setShowAddBanner(false);
@@ -125,6 +128,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 setListBanner(newListBanner);
                 setValueToAdd({});
                 setCustomUrl(null);
+                setCustomUrlShow(null);
                 setIsEditBanner(-1);
             }
         }
@@ -148,6 +152,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 let idxOfBannerForForm = form.current.banners.findIndex((bannerForm) => bannerForm.id === banner.id);
                 setValueToAdd({});
                 setCustomUrl(null);
+                setCustomUrlShow(null);
                 if (banner.id) {
                     form.current.banners[idxOfBannerForForm].update = 'Delete';
                 } else {
@@ -358,7 +363,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 title: `${page.name}`,
                 icon: <PagesIcon />,
                 url: `https://www.${urlStore}${page.page_url}`,
-                onClick: () => setCustomUrl(`https://www.${urlStore}${page.page_url}`)
+                onClick: () => {
+                    
+                    setCustomUrlShow(`${urlStore}${page.page_url}`);
+                    setCustomUrl(`https://www.${urlStore}${page.page_url}`)
+                }
             }))
             let newOptionPage = [{
                 title: 'Back',
@@ -377,7 +386,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 title: `${product.title}`,
                 icon: <ProductIcon />,
                 url: `https://www.${urlStore}/products?id=${product.id}`,
-                onClick: () => setCustomUrl(`https://www.${urlStore}/products?id=${product.id}`)
+                onClick: () =>  {
+                    setCustomUrlShow(`${urlStore}/products?id=${product.id}`);
+                    setCustomUrl(`https://www.${urlStore}/products?id=${product.id}`)
+                }
             }))
             let newOptionProduct = [{
                 title: 'Back',
@@ -396,7 +408,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 title: `${collection.name}`,
                 icon: <CollectionIcon />,
                 url: `https://www.${urlStore}/collection?id=${collection.id}`,
-                onClick: () => setCustomUrl(`https://www.${urlStore}/collection?id=${collection.id}`)
+                onClick: () => {
+                    setCustomUrlShow(`${urlStore}/collection?id=${collection.id}`);
+                    setCustomUrl(`https://www.${urlStore}/collection?id=${collection.id}`)
+                }
             }))
             let newOptionCollection = [{
                 title: 'Back',
@@ -452,7 +467,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             title: `${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`,
             icon: <UrlIcon />,
             url: `${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`,
-            onClick: () => setCustomUrl(`${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`)
+            onClick: () => {
+                
+                setCustomUrlShow(`${customUrl?.replace('https://','').replace('http://','').replace('www.','')}`);
+                setCustomUrl(`${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`)
+            }
         }];
         else return optionCollection;
     }
@@ -474,6 +493,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
         if (groupedOptions.length <= 0 && !isSelectUrl) {
             setOpenPopUp(false);
             setCustomUrl('');
+            setCustomUrlShow('');
             setTypeLink(null);
             setValidateLink(null);
             if (getInputProps().ref.current) getInputProps().ref.current.value = '';
@@ -518,6 +538,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                     setShowAddBanner(true) 
                                     setValueToAdd({});
                                     setCustomUrl(null);
+                                    setCustomUrlShow(null);
                                 }} className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1"></i>
                             }
                             </div>
@@ -528,6 +549,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                             <MenuItem onClick={() => {
                                                 setShowAddBanner(true);
                                                 setCustomUrl(banner.link)
+                                                setCustomUrlShow(banner.link?.replace('https://','').replace('http://','').replace('www.',''));
                                                 setValueToAdd(banner);
                                                 setIsEditBanner(index);
                                             }} className='row p-0 m-0' key={`${banner.id}-selected`} value={banner.id}>
@@ -600,13 +622,15 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                     <div {...getRootProps()}>
                                         
                                         <InputWrapper style={{width: '100%', marginBottom: 15}} ref={setAnchorEl}>
-                                            <input {...getInputProps()} value={customUrl} onChange={(e) => {
+                                            <input {...getInputProps()} value={customUrlShow} onChange={(e) => {
                                                 checkUrl(e.target.value);
                                                 if (e.target.value && !e.target.value.startsWith('https://') && !e.target.value.startsWith('http://')) {
 
+                                                    setCustomUrlShow(e.target.value);
                                                     setCustomUrl(`https://${e.target.value}`);
                                                 } else {
                                                     
+                                                    setCustomUrlShow(e.target.value);
                                                     setCustomUrl(e.target.value);
                                                 }
                                                 setIsSelectUrl(false);
@@ -619,7 +643,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                         </InputWrapper>
                                     </div>
                                     {groupedOptions.length > 0 && openPopup ? (
-                                        <Listbox {...getListboxProps()} style={{ width: 500, maxHeight: 200, overflowX: 'scroll', whiteSpace: 'nowrap'}}>
+                                        <Listbox {...getListboxProps()} style={{ width: 500, maxHeight: 200, overflowX: 'scroll', whiteSpace: 'nowrap', paddingBottom: 0}}>
                                             {groupedOptions.map((option, index) => {
                                                 return (<li style={{paddingTop: 15}} className={`${typeLink === 'Custom' ? 'custom-link-scroll' : ''} ${option?.url && customUrl === option?.url ? 'selected-url' : ''}`} {...getOptionProps({ option, index })} onClick={(e) => {
                                                     
