@@ -361,11 +361,11 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                     key={`box-modal`}>
                                         
                                         <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
-                                        <FormControl sx={{ m: 1, width: 300 }}>
+                                        <FormControl  style={{width: '100%'}}>
                                             <Select
                                             
                                             key={`collection-product`}
-                                            className="text-field-input select-modal text-content"
+                                            className="text-field-input select-modal text-content select-height"
                                             labelId="demo-multiple-checkbox-label"
                                             id="demo-multiple-checkbox"
                                             multiple
