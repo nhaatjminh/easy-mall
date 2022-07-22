@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 
 import { useNavigate } from "react-router-dom";
-import Stack from '@mui/material/Stack';
 import './index.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 import { Dropdown } from 'react-bootstrap';
 import StoreLoginList from "../../component/StoreLoginList";
 
-import { useSelector, useDispatch } from "react-redux";
-import { doCreateStore, doGetListStore, doSwitchListStore, doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
+import { useSelector, useDispatch, batch } from "react-redux";
+import { doCreateStore, doGetListStore, doSwitchSelectedStore, doSwitchBaseUrl } from "../../redux/slice/storeSlice";
 import logo from '../../assets/image/Logo.png'
-import { SearchIcon } from "../../assets/icon/svg/SearchIcon";
 import { CustomInput } from "../../component/common/CustomInput/CustomInput";
 import { BackIcon } from './../../assets/icon/svg/BackIcon';
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
@@ -87,8 +85,12 @@ const StoreLogin = ({ nameAccount }) => {
         const storeObj = {
             name: value
         }
-        dispatch(doCreateStore(storeObj))
-            .then((res) => navigate(`/store-detail/manage-home/${res.payload.id}`))
+        batch(() => {
+            dispatch(doSwitchSelectedStore(storeObj.name))
+            dispatch(doCreateStore(storeObj))
+                .then((res) => navigate(`/store-detail/manage-home/${res.payload.id}`))
+        })
+
     }
 
     useEffect(() => {
@@ -115,7 +117,7 @@ const StoreLogin = ({ nameAccount }) => {
                     <Paper elevation={10} className="paper-style">
                         <div className="row">
                             <div className=" col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                                <img className="store-login__logo" src={logo} onClick={() => navigate('/')}/>
+                                <img className="store-login__logo" src={logo} onClick={() => navigate('/')} />
 
                             </div>
                             <div className="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
@@ -171,9 +173,9 @@ const StoreLogin = ({ nameAccount }) => {
                                             ))
                                             :
                                             !listStoreShow && isLoading ?
-                                            <Loader className='store-login__loader' />
-                                            :
-                                            <></>
+                                                <Loader className='store-login__loader' />
+                                                :
+                                                <></>
                                         }
 
                                     </div>
