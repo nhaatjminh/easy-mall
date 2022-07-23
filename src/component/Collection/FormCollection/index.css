@@ -6,7 +6,7 @@
     border-radius: 5px;
 }
 .poper-item .MuiOutlinedInput-input{
-    padding: 4px 0 5px;
+    padding: 6px 0 6px;
 }
 .poper-item::before, .poper-item::after {
     display: none;

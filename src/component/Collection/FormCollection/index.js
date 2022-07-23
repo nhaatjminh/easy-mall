@@ -348,7 +348,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                         <CustomSearchInput
                                             placeholder='Search'
                                             onChange={handleSearchProduct}
-                                            height={'30px'}
+                                            height={'38px'}
                                             
                                         />
                                         <div className="custom-modal-list">
