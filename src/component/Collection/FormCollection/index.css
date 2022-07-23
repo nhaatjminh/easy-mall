@@ -72,3 +72,15 @@
         display: none;
     }
 }
+.style-modal-list .MuiDialog-container .MuiDialog-paperScrollPaper {
+    max-width: none;
+}
+.style-modal-list .MuiDialogContent-root {
+    overflow-y: hidden;
+}
+
+.style-modal-list .MuiDialogContent-root .custom-modal-list {
+    overflow-y: auto;
+    max-width: none;
+    max-height: 500px;
+}

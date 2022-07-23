@@ -1,69 +1,42 @@
-import React, {useState, useEffect, useCallback, useRef, Fragment } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
-import Stack from '@mui/material/Stack';
+import React, {useState, useEffect, useRef, Fragment } from "react";
+import { useParams } from 'react-router-dom';
 import {
     Paper,
     TextField,
     InputLabel,
     Box,
-    Chip,
     MenuItem,
     FormGroup,
-    FormControlLabel,
-    Select,
     Checkbox,
-    FormHelperText,
-    CircularProgress,
-    Modal,
     FormControl,
     ListItemText,
-    OutlinedInput,
     IconButton,
     ListItemAvatar
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './index.css';
-import { Link } from "react-router-dom";
 import ImageInput from "../ImageInput"
 import ReactQuill from 'react-quill'
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { doUploadImageCollection, doCreateCollection, doDeleteCollection, doUpdateCollection } from "../../../redux/slice/collectionSlice";
 import { doGetListProductsOfStores } from "../../../redux/slice/productSlice";
-import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import BaseEmpty from "../../common/BaseEmpty";
-const styleModal = {
-    position: 'absolute',
-    top: '25%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 3,
-};
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 10 + ITEM_PADDING_TOP,
-      width: 300,
-    },
-  },
-};
+import BaseModal from '../../common/BaseModal';
+import {CustomSearchInput} from '../../common/CustomSearchInput/CustomSearchInput';
+
 const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add or update
     const dispatch = useDispatch();
     let form = useRef({});
     const params = useParams();
     const [errorTitle, setErrorTitle] = useState(null);
-    const [modalShow, setModalShow] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const [listProducts, setListProducts] = useState([]);
     const [listProductOfCollection, setListProductOfCollection] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [listFilterProduct, setListFilterProduct] = useState([]);
     const handleChangeCollectionName = (event) => {
         if (errorTitle) {
             setErrorTitle(null);
@@ -173,12 +146,13 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                 window.scrollTo(0, 0);
         }
     }
-    const handleOpen = () => setModalShow(true);
-    const handleClose = () => setModalShow(false);
-    const handleChangeProductForCollection = (event) => {
-        let {target: { value }} = event;
+    const handleChangeProductForCollection = (productId) => {
+        let value = [...listProductOfCollection];
+        let checkExist = value.some((listProductId) => listProductId === productId);
+        if (checkExist) {
+            value = value.filter((listProductId) => listProductId !== productId)
+        } else value.push(productId)
         if (mode === "EDIT") { 
-            typeof value === 'string' ? value = value.split(',') : value = value
             let haveProduct = value;
             form?.current?.products?.forEach((product) => {
                 if (!value.includes(product.id)) { 
@@ -210,9 +184,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                         newProduct,
                     ]
             })
-            setListProductOfCollection(typeof value === 'string' ? value.split(',') : value);
+            setListProductOfCollection(value);
         } else {     
-            setListProductOfCollection(typeof value === 'string' ? value.split(',') : value);
+            setListProductOfCollection(value);
         }
     };
     const handleDeleteProducts = (index) => {
@@ -283,7 +257,10 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
         dispatch(doGetListProductsOfStores({
             id: params.storeId,
             params: {}
-        })).then((result) => setListProducts(result.payload)); 
+        })).then((result) => {
+            setListProducts(result.payload);
+            setListFilterProduct(result.payload);
+        }); 
     },[])
     useEffect(() => {  
         if (mode !== "EDIT") {
@@ -312,6 +289,14 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
             }
         }
     }, [oldForm, mode, params.storeId])
+    
+    const handleSearchProduct = (event) => {
+        if (!event.target.value) setListFilterProduct(listProducts);
+        else {
+            const newFilterList = listProducts.filter((product) => product.title?.toLowerCase().includes(event.target.value?.toLowerCase()))
+            setListFilterProduct(newFilterList);
+        }
+    }
     return (
         <>
         <FormGroup>
@@ -347,60 +332,50 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                 
                                 <InputLabel name='title' className="text-header p-1" style={{margin: 0}}>Products</InputLabel>
                             </div>
-                            <div className="col-3">  
+                            <div className="col-3 ">  
                             
-                                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={handleOpen}></i>      
-                                <Modal
-                                    key={`modal`}
-                                    open={modalShow}
-                                    onClose={handleClose}
-                                    aria-labelledby="modal-modal-title"
-                                    aria-describedby="modal-modal-description"
-                                >
-                                    <Box sx={styleModal} 
-                                    key={`box-modal`}>
-                                        
-                                        <InputLabel name='title' className="text-header" style={{margin: 0, marginBottom: 10}} >Product</InputLabel>
-                                        <FormControl  style={{width: '100%'}}>
-                                            <Select
+                                <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1" onClick={() => setOpenModal(true)}></i>      
+                                <BaseModal
+                                    title="Select Product"
+                                    titleButton=""
+                                    onOK={() => {}}
+                                    onClose={() => setListFilterProduct(listProducts)}
+                                    classNameModal='style-modal-list'
+                                    boolOpen={openModal}
+                                    setBoolOpen={(bool) => setOpenModal(bool)}
+                                    showButton={false}>
+                                    <FormControl style={{width: 900}}>
+                                        <CustomSearchInput
+                                            placeholder='Search'
+                                            onChange={handleSearchProduct}
+                                            height={'30px'}
                                             
-                                            key={`collection-product`}
-                                            className="text-field-input select-modal text-content select-height"
-                                            labelId="demo-multiple-checkbox-label"
-                                            id="demo-multiple-checkbox"
-                                            multiple
-                                            value={listProductOfCollection}
-                                            renderValue={() => (
-                                                <></>
-                                            )}
-                                            onChange={handleChangeProductForCollection}
-                                            MenuProps={MenuProps}
-                                            >
-                                                { listProducts?.length > 0 ? listProducts.map((product) => (
-                                                    <MenuItem key={`${product.id} select-modal`} value={product.id}>
-                                                        <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
-                                                        {
-                                                            product.thumbnail ?
-                                                                <Box style={{width: 80, height: 'auto'}}>
-                                                                    <ListItemAvatar className="image-container-item-list m-0">
-                                                                        <img alt="image" src={product.thumbnail}/>
-                                                                    </ListItemAvatar>
-                                                                </Box>
-                                                            : <Box style={{width: 80, height: 'auto' }}>
-                                                                    <ListItemAvatar className="image-container-item-list m-0">
-                                                                        <img alt="image" src='/img/default-image-620x600.jpg'/>
-                                                                    </ListItemAvatar>
-                                                                </Box>
-                                                        }
-                                                        
-                                                        <ListItemText primary={product.title}/>
-                                                    </MenuItem>
-                                                )) : <BaseEmpty></BaseEmpty>}
-                                            </Select>
-                                        </FormControl>
-                                        <Button className="float-right p-0 m-0 text-black mt-2 btn-close-modal" onClick={handleClose}><p className="p-0 m-0">Close</p></Button>
-                                    </Box>
-                                </Modal>
+                                        />
+                                        <div className="custom-modal-list">
+                                            { listFilterProduct?.length > 0 ? listFilterProduct.map((product) => (
+                                                <MenuItem key={`${product.id} select-modal`} value={product.id} onClick={() => handleChangeProductForCollection(product.id)}>
+                                                    <Checkbox checked={listProductOfCollection.indexOf(product.id) > -1} />
+                                                    {
+                                                        product.thumbnail ?
+                                                            <Box style={{width: 80, height: 'auto'}}>
+                                                                <ListItemAvatar className="image-container-item-list m-0">
+                                                                    <img alt="image" src={product.thumbnail}/>
+                                                                </ListItemAvatar>
+                                                            </Box>
+                                                        : <Box style={{width: 80, height: 'auto' }}>
+                                                                <ListItemAvatar className="image-container-item-list m-0">
+                                                                    <img alt="image" src='/img/default-image-620x600.jpg'/>
+                                                                </ListItemAvatar>
+                                                            </Box>
+                                                    }
+                                                    
+                                                    <ListItemText primary={product.title}/>
+                                                </MenuItem>
+                                            )) : <BaseEmpty></BaseEmpty>}
+                                        </div>
+                                       
+                                    </FormControl>
+                                </BaseModal>
                             </div>
                             <Box style={{overflow: "auto", maxHeight: 400}}>
                                 {listProducts.length && listProductOfCollection.map((productId, index) => {
@@ -408,7 +383,7 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                                     return (
                                         <div key={productId + "item-select"}>
                                             <MenuItem key={`${productId}-selected`} value={product.id}>
-                                                <p className="pr-2 m-0">{index}.</p>
+                                                <p className="pr-2 m-0">{index + 1}.</p>
                                                 {
                                                 product.thumbnail ?
                                                     <Box key={`${productId} - box`} style={{width: 80, height: 'auto'}}>
