@@ -156,7 +156,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                 form.current = {
                     order: {
                         store_id: params.storeId,
-                        currency: 'USD',
+                        currency: 'VND',
                         shipping_method: 0,
                         payment_method: 0
                     }
