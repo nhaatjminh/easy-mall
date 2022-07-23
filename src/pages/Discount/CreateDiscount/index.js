@@ -103,7 +103,7 @@ export const CreateDiscount = () => {
             end_at: isEnd ? getDateTime(endDate, endTime) : undefined
         }))
             .then((res) => {
-                navigate(`/store-detail/manage-discount/${params.storeId}/${res.payload.id}`)
+                navigate(-1)
             })
     }
 
