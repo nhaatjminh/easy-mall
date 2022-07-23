@@ -100,7 +100,7 @@ const ManageAnalysis = () => {
         let dataForTotalSales = data.orders.map((order) => {
             return {
                 date: order.day,
-                Sale: order.total_sale
+                Sales: order.total_sale
             }
         })
         setExactTotalSale({
@@ -118,7 +118,7 @@ const ManageAnalysis = () => {
         let dataForTotalProducts = data.orders.map((order) => {
             return {
                 date: order.day,
-                Product: order.total_products
+                Products: order.total_products
             }
         })
         setExactTotalProduct({
@@ -134,7 +134,7 @@ const ManageAnalysis = () => {
         let dataForTotalOrder = data.orders.map((order) => {
             return {
                 date: order.day,
-                Product: order.total_order
+                Orders: order.total_order
             }
         })
         setExactTotalOrder({
