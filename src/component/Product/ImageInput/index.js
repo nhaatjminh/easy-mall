@@ -55,7 +55,7 @@ const EnhancedTableToolbar = (props) => {
             ) : ""}
             
             {numSelected === 1 ? (
-              <button className="btn btn-login btn-manager ml-2 pl-0 pr-0"> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
+              <button className="btn btn-login btn-manager ml-2 pl-0 pr-0" onClick={onSelectThumbnail}> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
             ) : ""}
           </Toolbar>
         : <Toolbar 
@@ -69,7 +69,7 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.number.isRequired,
   };
 
-const ImageInput = ({mode, formRef, oldForm}) => {
+const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail}) => {
     const form = formRef;
     const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
@@ -187,8 +187,10 @@ const ImageInput = ({mode, formRef, oldForm}) => {
           }
       }
     }
-    const handleSelectThumbnail = (selected) => {
-
+    const handleSelectThumbnail = () => {
+      const selectedIndex = form.current.product.images.indexOf(selected[0]);
+      setIdxThumbnail(selectedIndex);
+      setSelected([]);
     }
     return (
         <>
