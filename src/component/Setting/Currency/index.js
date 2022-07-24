@@ -62,7 +62,7 @@ export const Currency = ({ storeCurrency }) => {
                                     {storeCurrency}
                                 </div>
                                 <div className="text-normal-2">
-                                    Your store currency
+                                    Select your store currency here
                                 </div>
                             </div>
                         </Col>
@@ -82,7 +82,7 @@ export const Currency = ({ storeCurrency }) => {
                 onHide={handleCloseEditModal}
             >
                 <Modal.Header closeButton>
-                    <div className="text-title-1">Contact information</div>
+                    <div className="text-title-1">Store currency</div>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="create-discount__code-card__currency">
