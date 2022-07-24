@@ -17,6 +17,7 @@ import { alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { doDeleteImageProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
 import { useSelector, useDispatch } from "react-redux";
+import Swal from "sweetalert2";
 
 const EnhancedTableToolbar = (props) => {
     const { numSelected, onDeleteSelected, onDelete, onSelectThumbnail } = props;
@@ -191,6 +192,11 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail}) => {
       const selectedIndex = form.current.product.images.indexOf(selected[0]);
       setIdxThumbnail(selectedIndex);
       setSelected([]);
+      Swal.fire({
+        title: 'Success',
+        text: 'Select thumbnail success!',
+        icon: 'success'
+    })
     }
     return (
         <>
