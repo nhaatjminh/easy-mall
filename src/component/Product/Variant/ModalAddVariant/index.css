@@ -3,4 +3,7 @@
 }
 .swal2-container {
     z-index: 1500 !important;
-  }
+}
+.input-height-20 input {
+    height: 20px;
+}

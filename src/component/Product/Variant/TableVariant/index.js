@@ -155,6 +155,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
 
     }
     const handleChangeQuantity = (index, valueQuantity) => {
+        if (isNaN(valueQuantity)) valueQuantity = 0;
         let newVariant = [...form?.current?.variant];
         if (mode === "EDIT") {
           if (newVariant[index].id) {
@@ -635,7 +636,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                           </TableCell>
                           <TableCell align="center">
                             
-                            <BaseNumberField length={8} className={`${row.delete && 'disabled-text'}`} key="Inventory" disabled={row.delete}  value={row.quantity} fullWidth={true} setValue={(value) => handleChangeQuantity(index, value)}></BaseNumberField>
+                            <BaseNumberField length={8} className={`${row.delete && 'disabled-text'}`} key="Inventory" disabled={row.delete}  value={row.quantity} fullWidth={true} placeholder={'0'} setValue={(value) => handleChangeQuantity(index, value)}></BaseNumberField>
                           </TableCell>
                           <TableCell align="center">
                             <button onClick={row.delete ? () => handleNotDeleteVariant(row) : () => handleDeleteOneVariant(row)} style={{width: 'auto'}} className={`float-right btn btn-form-product ${row.delete ? `btn-primary` : `btn-success`}`}>{row.delete ? `Create` : `Delete`}</button>

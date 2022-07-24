@@ -9,7 +9,7 @@ import {
     FormControl
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doGetListProductsOfStoresScopeFull } from "../../../../redux/slice/productSlice";
 import {  doGetRate } from '../../../../redux/slice/dataSlice'
 import { doGetActiveDiscount } from "../../../../redux/slice/orderSlice";
@@ -38,6 +38,10 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
     const [shippingMethod, setShippingMethod] = useState(0);
     const params = useParams();
 
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
+    useEffect(() => {
+        if (currencyStore) setCurrency(currencyStore)
+    }, [currencyStore])
     const handleChangeCurrency = (event) => {
         setCurrency(event.target.value);
         form.current = {
@@ -253,7 +257,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
                     <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         
                         <InputLabel name='title' className="text-label" style={{margin: 0}}>Currency</InputLabel>
-                        <Select value={currency} onChange={handleChangeCurrency} className='text-field-input text-content select-currency'>
+                        <Select disabled={true} value={currency} onChange={handleChangeCurrency} className='text-field-input text-content select-currency'>
                             <MenuItem value='VND'>VND</MenuItem>
                             <MenuItem value='USD'>USD</MenuItem>
                         </Select>

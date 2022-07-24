@@ -183,7 +183,6 @@ body {
 .text-field-input {
   margin: 0.5rem 0 !important;
   border-radius: 5px;
-  height: 35px;
 }
 
 .text-field-input .MuiAutocomplete-inputRoot input {
