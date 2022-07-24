@@ -76,8 +76,9 @@ const FormCollection = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode 
                         resolve();
                     } else {
                         //need delete image if u change image
-                        dispatch(doUploadImageCollection({
+                        dispatch(doUploadImageCollection({ 
                             data: {
+                                path: `storeImages/${params.storeId}/collections`,
                                 data: [data]
                             }
                         })).then((result) => {

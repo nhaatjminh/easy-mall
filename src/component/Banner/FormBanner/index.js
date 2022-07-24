@@ -220,6 +220,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                         //need delete image if u change image
                         dispatch(doUploadImageBanner({
                             data: {
+                                path: `storeImages/${params.storeId}/banners`,
                                 data: [data]
                             }
                         })).then((result) => {
@@ -253,8 +254,9 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                             //need delete image if u change image
                             listPromiseForListData.push(
                                 new Promise((resolveForListData) => {
-                                    dispatch(doUploadImageBanner({
+                                    dispatch(doUploadImageBanner({  
                                         data: {
+                                            path: `storeImages/${params.storeId}/banners`,
                                             data: [data]
                                         }
                                     })).then((result) => {

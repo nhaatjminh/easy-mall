@@ -17,7 +17,7 @@ export const doGetOneBanner = createAsyncThunk(
 );
 export const doUploadImageBanner = createAsyncThunk(
     'banner@post/doUploadImageBanner',
-    async ({data}) => {
+    async (data) => {
       const result = await bannerApi.uploadImageBannerCollection(data);
       return result.data
     }

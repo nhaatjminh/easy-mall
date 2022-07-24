@@ -19,7 +19,7 @@ import { doDeleteImageProduct, doDeleteProduct } from "../../../redux/slice/prod
 import { useSelector, useDispatch } from "react-redux";
 
 const EnhancedTableToolbar = (props) => {
-    const { numSelected, onDeleteSelected, onDelete } = props;
+    const { numSelected, onDeleteSelected, onDelete, onSelectThumbnail } = props;
     return (
       <>
         {numSelected > 0 ?
@@ -46,11 +46,16 @@ const EnhancedTableToolbar = (props) => {
                 {numSelected} Selected
               </Typography>
             ) : ""}
+            
             {numSelected > 0 ? (
               <button className="btn btn-login btn-manager ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
             ) : ""}
             {numSelected > 0 ? (
               <button className="btn btn-login btn-delete-item btn-manager ml-2" onClick={onDelete}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete </p></button>
+            ) : ""}
+            
+            {numSelected === 1 ? (
+              <button className="btn btn-login btn-manager ml-2 pl-0 pr-0"> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
             ) : ""}
           </Toolbar>
         : <Toolbar 
@@ -182,17 +187,19 @@ const ImageInput = ({mode, formRef, oldForm}) => {
           }
       }
     }
-    useEffect(() => {
+    const handleSelectThumbnail = (selected) => {
 
-    }, [images])
+    }
     return (
         <>
             <div className="row">
-              <div className="col-3">
+              <div className="col-11" style={{display: 'inline-flex'}}>
                 
-                <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
+                  <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
+                  <InputLabel name='title' className="p-1 pt-2" style={{margin: 0, fontSize: 12}}> {`(You can choose one image to select thumbnail)`}</InputLabel>
+
               </div>
-              <div className="col-9">
+              <div className="col-1">
                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1 pt-2" onClick={() => browseclick()}></i>
                 <input type="file" multiple accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
               </div>
@@ -200,7 +207,7 @@ const ImageInput = ({mode, formRef, oldForm}) => {
             
 
   
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} onDelete={handleDelete}/>
+            <EnhancedTableToolbar numSelected={selected.length} onSelectThumbnail={handleSelectThumbnail} onDeleteSelected={onDeleteSelected} onDelete={handleDelete}/>
             {ImagesGallery(images)}
         </>
     );

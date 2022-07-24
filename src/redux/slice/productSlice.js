@@ -27,7 +27,7 @@ export const doCreateProduct = createAsyncThunk(
 );
 export const doUploadImageProduct = createAsyncThunk(
     'store@post/UploadImageProduct',
-    async ({data}) => {
+    async (data) => {
       const result = await ProductApi.uploadImageProduct(data);
       return result.data
     }

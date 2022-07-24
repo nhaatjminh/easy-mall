@@ -373,6 +373,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     new Promise((resolveForUpload) => {
                         dispatch(doUploadImageProduct({
                             data: {
+                                path: `storeImages/${params.storeId}/products`,
                                 data: listImage
                             }
                         })).then((result) => {
