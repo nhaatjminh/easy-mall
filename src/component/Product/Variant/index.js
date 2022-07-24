@@ -495,6 +495,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
             })
         }
     },[mode])
+    useEffect(() => {
+        setIsVariant(showOpt)
+    }, [showOpt])
     return (
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>

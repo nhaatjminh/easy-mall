@@ -126,60 +126,58 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
     const [firstReload, setFirstReload] = useState(true);
     
     const handleChangePriceVariant = (index, valuePrice) => {
-      let newVariant = [...form?.current?.variant];
+      let newVariant = [...variant];
       
       if (mode === "EDIT") {
         if (newVariant[index].id) {
           newVariant[index] = {
-            ...form?.current?.variant[index],
+            ...variant[index],
             price: valuePrice,
             update: "Change"
           }
         } else {
           newVariant[index] = {
-            ...form?.current?.variant[index],
+            ...variant[index],
             price: valuePrice
           }
         }
       } else {
         newVariant[index] = {
-          ...form?.current?.variant[index],
+          ...variant[index],
           price: valuePrice
         }
       }
-      form.current = {
-          ...form?.current,
-          variant: newVariant
-      }
+      
+      let idxInForm = form.current.variant.findIndex((vari) => vari.name === newVariant[index].name)
+      if (idxInForm >= 0) form.current.variant[idxInForm] = newVariant[index];
       setVariant(newVariant);
 
     }
     const handleChangeQuantity = (index, valueQuantity) => {
         if (isNaN(valueQuantity)) valueQuantity = 0;
-        let newVariant = [...form?.current?.variant];
+        let newVariant = [...variant];
         if (mode === "EDIT") {
           if (newVariant[index].id) {
             newVariant[index] = {
-              ...form?.current?.variant[index],
+              ...variant[index],
               quantity: Number(valueQuantity),
               update: "Change"
             }
           } else {
             newVariant[index] = {
-              ...form?.current?.variant[index],
+              ...variant[index],
               quantity: Number(valueQuantity)
             }
           }
         } else {
           newVariant[index] = {
-            ...form?.current?.variant[index],
+            ...variant[index],
             quantity: Number(valueQuantity)
           }
         }
-        form.current = {
-            ...form?.current,
-            variant: newVariant
-        }
+        
+        let idxInForm = form.current.variant.findIndex((vari) => vari.name === newVariant[index].name)
+        if (idxInForm >= 0) form.current.variant[idxInForm] = newVariant[index];
         setVariant(newVariant);
     }
     const handleChangePage = (event, newPage) => {
@@ -325,9 +323,9 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
               optionRef.current[indexOfOptionRef].update = 'Change'
             } else optionRef.current[indexOfOptionRef].update = 'Delete'
           }
-          let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef].value.filter((value) => value.update !== "Delete")
-          arrayOptionRefLikeOptionValue.map((value, indexValue) => {
-            if (value.value === OptionValueDelete[index]) {
+          let arrayOptionRefLikeOptionValue = optionRef.current[indexOfOptionRef]?.value?.filter((value) => value.update !== "Delete")
+          arrayOptionRefLikeOptionValue?.map((value, indexValue) => {
+            if (value?.value === OptionValueDelete[index]) {
               arrayOptionRefLikeOptionValue[indexValue].update = "Delete"
             }
           })
@@ -453,9 +451,9 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                   }
                 }
                 const oldFormVariant = oldForm.variant?.find(oldvariant => oldvariant?.name && oldvariant?.name === oldKeyVariant)
-                let oldVariant = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
-                if (!oldVariant && mode === "EDIT") {
-                  oldVariant = addValueVariant.find(variantAdd => variantAdd.name === variant)
+                let oldVariantCheck = form.current.variant.find(oldVariant => oldVariant?.id && oldVariant?.id === oldFormVariant?.id);
+                if (!oldVariantCheck && mode === "EDIT") {
+                  oldVariantCheck = addValueVariant.find(variantAdd => variantAdd.name === variant)
                 }
                 let listOptionOfVariant = variant.split("/");
                 let newVariant = {};
@@ -475,29 +473,31 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                         name: idxOption[idxOpt],
                         value: opt
                     }
-                    if (oldVariant) {
-                      if (oldVariant.id) {
+                    if (oldVariantCheck) {
+                      if (oldVariantCheck.id) {
                         newVariant = {
                           ...newVariant,
-                          id: oldVariant?.id,
+                          id: oldVariantCheck?.id,
                         }
                       }
                       newVariant = {
                         ...newVariant,
-                        price: oldVariant?.price,
-                        quantity: Number(oldVariant?.quantity)
+                        price: oldVariantCheck?.price,
+                        quantity: Number(oldVariantCheck?.quantity)
                       }
-                      if (mode === "EDIT" && oldVariant.update) {
+                      if (mode === "EDIT" && oldVariantCheck.update) {
                         newVariant = {
                           ...newVariant,
-                          update: oldVariant.update
+                          update: oldVariantCheck.update
                         }
                       }
                     } else {
                       if (mode === "EDIT") {
                         newVariant = {
                           ...newVariant,
-                          update: "Add"
+                          update: "Add",
+                          price: 0,
+                          quantity: 0
                         }
                       }
                     }
@@ -543,7 +543,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
       let oldList = oldForm?.variant?.map((variant) => variant.name)
       let deleteList = []
       listVariant.map((variant) => {
-        if (!oldList.includes(variant)) {
+        if (oldList && !oldList?.includes(variant)) {
           deleteList.push(variant);
         }
       })
