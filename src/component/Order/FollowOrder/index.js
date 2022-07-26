@@ -27,8 +27,8 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         setOpenModal(true);
         setCallFunction('ChangeStatus');
     }
-    const handleChangeStatus = () => {
-        dispatch(doChangeStatus({
+    const handleChangeStatus = async () => {
+        await dispatch(doChangeStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
@@ -41,8 +41,8 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         setOpenModal(true);
         setCallFunction('DeleteStatus');
     }
-    const handleDeleteStatus = () => {
-        dispatch(doDeleteStatus({
+    const handleDeleteStatus = async () => {
+        await dispatch(doDeleteStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
@@ -55,8 +55,8 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         setOpenModal(true);
         setCallFunction('RestoreStatus');
     }
-    const handleRestoreStatus = () => {
-        dispatch(doRestoreStatus({
+    const handleRestoreStatus = async () => {
+        await dispatch(doRestoreStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
