@@ -373,7 +373,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                         }
                     </div>
                     <div className="col-6">
-                        <button onClick={handleSubmit(saveOrder)}  style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                        <button onClick={handleSubmit(saveOrder)} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
                 
                     </div>
                 </div>  
