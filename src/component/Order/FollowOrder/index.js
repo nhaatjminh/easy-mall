@@ -263,7 +263,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
                             <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
-                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.payment_method === 0 ? `COD` : `PayPal`}</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.payment_method === 0 ? `Cash On Delivery (COD)` : `PayPal`}</InputLabel>
                                     
                             </div>
                             <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>

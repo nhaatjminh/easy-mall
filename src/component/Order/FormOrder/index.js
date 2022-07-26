@@ -20,6 +20,7 @@ import { doCreateOrder } from "../../../redux/slice/orderSlice";
 import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import ManageProductOrder from "./ManageProductOrder";
+import { cloneDeep } from "lodash";
 
 const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})=> { // mode add or update
     const dispatch = useDispatch();
@@ -104,7 +105,10 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
         if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
+        let cloneFormProduct = [];
         if (form.current.products) {
+            
+            cloneFormProduct = cloneDeep(form.current.products)
             form.current.products?.map((product) => {
                 delete product.total_to_show;
                 return product
@@ -133,8 +137,9 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Can not create this order. Please check again!',
+                    text: 'Can not create this order. Maybe out of stock',
                 }).then((result) => {
+                    form.current.products = cloneFormProduct;
                 })
             }
         });

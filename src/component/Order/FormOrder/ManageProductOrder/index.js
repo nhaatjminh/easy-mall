@@ -177,7 +177,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
         dispatch(doGetActiveDiscount({
             storeId: params.storeId,
             params: {
-                total_price: Number(subTotal) ?? 0,
+                total_price: !isNaN(Number(subTotal)) ? Number(subTotal) : 0,
                 currency: currency ?? 'VND',
                 total_products: totalProducts ?? 0
             }
@@ -303,7 +303,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
                     <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
                         <Select value={paymentMethod} onChange={handleChangePaymentMethod} className='select-height text-field-input text-content select-currency'>
-                            <MenuItem value='0'>COD</MenuItem>
+                            <MenuItem value='0'>Cash On Delivery (COD)</MenuItem>
                             <MenuItem value='1'>Paypal</MenuItem>
                         </Select>
                     </div>
