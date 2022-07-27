@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { styled } from '@mui/material/styles';
 import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import validator from 'validator';
 import logo from '../../assets/image/Logo.png'
-import { useNavigate } from "react-router-dom";
 import { login } from "../../helpers/login";
 import { readCookie } from "../../helpers/cookie";
 import { AuthApi } from "../../service/api/authApi";
@@ -25,6 +23,7 @@ const Login = () => {
     const [error, setError] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     let navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     //=======================STYLES===========================
     const paperStyle = {
@@ -43,6 +42,14 @@ const Login = () => {
         isLogin && navigate('/store-login', { replace: true })
     }, [isLogin])
 
+    useEffect(() => {
+        const emailQuery = searchParams.get("email")
+        console.log('emailquery', emailQuery)
+        if (emailQuery) {
+            setUsername(emailQuery)
+        }
+    }, [])
+    console.log('username', username)
     //=======================FUNCTION=========================
     const handleOnchangeUsername = (e) => {
         setUsername(e.target.value);
@@ -190,11 +197,34 @@ const Login = () => {
                             <Typography component={'span'}><h3>Sign in</h3></Typography>
                         </Grid>
 
-                        <form onSubmit={onLogin}>
-                            <TextField className="login__text-field" variant="outlined" name='email' label='Email' placeholder='Enter email' fullWidth onChange={handleOnchangeUsername} />
+                        <form autoComplete="abc" onSubmit={onLogin}>
+                            <TextField 
+                                className="login__text-field" 
+                                variant="outlined" 
+                                name='email' 
+                                label='Email' 
+                                placeholder='Enter email' 
+                                fullWidth
+                                inputProps={{
+                                    autoComplete: 'abc'
+                                }}
+                                onChange={handleOnchangeUsername} 
+                            />
                             <Typography style={errorStyle}>{error.email}</Typography>
 
-                            <TextField className="login__text-field" variant="outlined" name='password' label='Password' placeholder='Enter password' type='password' fullWidth onChange={handleOnchangePassword} />
+                            <TextField 
+                                className="login__text-field" 
+                                variant="outlined" 
+                                name='password' 
+                                label='Password' 
+                                placeholder='Enter password' 
+                                type='password' 
+                                fullWidth 
+                                inputProps={{
+                                    autoComplete: 'new-password'
+                                }}
+                                onChange={handleOnchangePassword} 
+                            />
                             <Typography style={errorStyle}>{error.password}</Typography>
 
                             <button className="btnLogin" type='submit' variant='contained'>
