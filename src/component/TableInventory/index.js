@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, forwardRef, useRef} from "react";
 import { Paper } from '@mui/material';
 import './index.css';
 import {Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, TableSortLabel, Box, Toolbar   } from '@mui/material';
@@ -98,7 +98,7 @@ function EnhancedTableHead(props) {
     );
 }
 
-const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
+const TableInventory = ({saveForRef, changeRef, data, columnsOfData, editItem, setIsEdit}) => {
     const columns = columnsOfData;
     const rows = data;
     const [order, setOrder] = useState('asc');
@@ -136,9 +136,9 @@ const TableInventory = ({data, columnsOfData, editItem, setIsEdit}) => {
                   .map((row,index) => {
                     if (row.is_variant) {
                         return row.variants?.map((variant) => {
-                            return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} variantId={variant.id} variant={variant} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
+                            return <TableRowInventory changeRef={changeRef}  saveForRef={saveForRef} setIsEdit={setIsEdit} editItem={editItem} variantId={variant.id} variant={variant} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
                         })
-                    } else return <TableRowInventory setIsEdit={setIsEdit} editItem={editItem} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
+                    } else return <TableRowInventory changeRef={changeRef} saveForRef={saveForRef} setIsEdit={setIsEdit} editItem={editItem} productId={row.id} is_variant={row.is_variant} columnsOfData={columnsOfData} row={row} index={index}></TableRowInventory>
                   }) : <TableRow>
                   <TableCell colSpan={columnsOfData?.length + 2 ?? 2}>
 

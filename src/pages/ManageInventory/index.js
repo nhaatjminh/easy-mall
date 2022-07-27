@@ -40,6 +40,7 @@ const ManageInventory = () => {
     }
   ];
   const [filterSeach, setFilterSearch] = useState();
+  const saveForRef = useRef({});
   const dbValue = useDebounce(filterSeach, 300);
   
   useEffect(() => {
@@ -96,6 +97,15 @@ const ManageInventory = () => {
       setIsEdit(false);
     });
   }
+  
+  const changeRef = ({id, key, value, clean}) => {
+    if (clean) {
+      saveForRef.current[id] = {}
+      return;
+    }
+    if (!saveForRef.current[id]) saveForRef.current[id] = {}
+    saveForRef.current[id][`${key}`] = value
+  }
   return (
     <>
       <HeaderDetailStore isEdit={isEdit} keySelected={Key.Inventory}></HeaderDetailStore>
@@ -133,7 +143,7 @@ const ManageInventory = () => {
                       </>)
                       : (
                       <>
-                        <TableInventory  setIsEdit={(bool) => setIsEdit(bool)} editItem={editItem} data={rows} columnsOfData={columns}></TableInventory>
+                        <TableInventory  changeRef={changeRef}  saveForRef={saveForRef}    setIsEdit={(bool) => setIsEdit(bool)} editItem={editItem} data={rows} columnsOfData={columns}></TableInventory>
                       </>
                       )}
                     </div>

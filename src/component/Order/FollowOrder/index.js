@@ -35,7 +35,15 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                 store_id: formToShow.order.store_id,
                 note: note
             }
-          }))
+        })).then((result) => {
+            if (!result.payload) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Not enough quantity in stock. Please refill before change status.',
+                    icon: 'error'
+                })
+            }
+        })
     }
     const handleCallDeleteStatus = () => {
         setOpenModal(true);
