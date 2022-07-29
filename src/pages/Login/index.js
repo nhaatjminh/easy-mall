@@ -96,6 +96,9 @@ const Login = () => {
                     login(res.data.token);
                 }
                 else {
+                    if (res.message === `Email hasn't been verified yet. Check your inbox.`) {
+                        navigate('/check-verify', {state: {email: username}})
+                    }
                     setError({ password: '* ' + res.message })
                     setIsLoading(false)
                 }
