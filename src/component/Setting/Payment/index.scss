@@ -5,7 +5,7 @@
         justify-content: space-between;
     }
     .card-body {
-        border-bottom: 1px solid #EAEAEC;
+        border-bottom: 1px solid #eaeaec;
         &:last-child {
             border-bottom: none;
         }
@@ -54,13 +54,13 @@
             overflow: auto;
         }
         &__img {
-            width: auto;
-            height: auto;
+            margin: 15px auto;
             max-width: 100%;
-            margin-top: 10px;
+            width: auto;
+            display: block;
         }
         .b-green {
-            color: #5FAD2F;
+            color: #5fad2f;
         }
         .text-title-2 {
             margin: 30px 0;
@@ -68,5 +68,5 @@
         .text-normal-1 {
             margin-top: 20px;
         }
-    } 
+    }
 }
