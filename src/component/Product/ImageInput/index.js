@@ -70,7 +70,7 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.number.isRequired,
   };
 
-const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail}) => {
+const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbnail}) => {
     const form = formRef;
     const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
@@ -189,8 +189,9 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail}) => {
       }
     }
     const handleSelectThumbnail = () => {
-      const selectedIndex = form.current.product.images.indexOf(selected[0]);
+      const selectedIndex = images.indexOf(selected[0]);
       setIdxThumbnail(selectedIndex);
+      setIsSelectThumbnail(true);
       setSelected([]);
       Swal.fire({
         title: 'Success',

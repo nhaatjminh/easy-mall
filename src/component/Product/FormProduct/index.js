@@ -44,6 +44,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
     const [optionVendor, setOptionVendor] = useState([nameStore]);
     const [trickRerender, setTrickRerender] = useState(0);
     const [idxThumbnail, setIdxThumbnail] = useState(0);
+    const [isSelectThumbnail, setIsSelectThumbnail] = useState(false);
     const [selectCurrency, setSelectCurrency] = useState(oldForm?.product?.currency ? oldForm?.product?.currency : 'VND');
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
@@ -390,7 +391,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                                 ...form?.current,
                                 product: {
                                     ...form?.current?.product,
-                                    thumbnail: result[idxThumbnail],
+                                    thumbnail: !isSelectThumbnail && form.current?.product?.thumbnail ? form.current.product.thumbnail : result[idxThumbnail],
                                     images: result
                                 }
                             }
@@ -587,7 +588,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                         />
                     </Paper> 
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <ImageInput setIdxThumbnail={setIdxThumbnail} mode={mode} formRef={form} oldForm={oldForm}></ImageInput>
+                        <ImageInput setIsSelectThumbnail={setIsSelectThumbnail} setIdxThumbnail={setIdxThumbnail} mode={mode} formRef={form} oldForm={oldForm}></ImageInput>
                     </Paper> 
                     
                    <PricingComponent currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} mode={mode} key="PricingComponent" formRef={form} isVariant={isVariant} oldForm={oldForm}></PricingComponent>
