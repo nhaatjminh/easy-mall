@@ -297,7 +297,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                     <TextareaAutosize
                         aria-label="empty textarea"
                         minRows={3}
-                        maxLength={255}
+                        maxLength={150}
                         maxRows={3}
                         draggable={false}
                         style={{width: '500px', resize: 'none'}}

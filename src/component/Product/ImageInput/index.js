@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import { doDeleteImageProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Swal from "sweetalert2";
+import { CheckIcon } from '../../../assets/icon/svg/CheckIcon';
 
 const EnhancedTableToolbar = (props) => {
     const { numSelected, onDeleteSelected, onDelete, onSelectThumbnail } = props;
@@ -75,7 +76,7 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbna
     const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
     const dispatch = useDispatch();
-
+    const [urlThumbnail, setUrlThumbnail] = useState(oldForm?.product?.thumbnail ?? '');
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -132,7 +133,11 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbna
                                 className={`checkbox-image ${isItemSelected ? "checkbox-image-selected" : ""}`}
                                 checked={isItemSelected}
                                 onClick={(event) => handleClick(event, url)}
-                                ></Checkbox>
+                            ></Checkbox>
+                            {url === urlThumbnail && 
+                            <div className={`check-thumbnail`}>
+                              <CheckIcon />
+                            </div>}
                         </div>
                     </ImageListItem>
                     
@@ -191,6 +196,7 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbna
     const handleSelectThumbnail = () => {
       const selectedIndex = images.indexOf(selected[0]);
       setIdxThumbnail(selectedIndex);
+      setUrlThumbnail(selected[0]);
       setIsSelectThumbnail(true);
       setSelected([]);
       Swal.fire({

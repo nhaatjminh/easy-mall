@@ -50,6 +50,14 @@
     display: block;
     opacity: 0;
 }
+.check-thumbnail {
+    opacity: 1;
+    display: block;
+    position: absolute;
+    background: transparent;
+    left: 5px !important;
+    top: 5px;
+}
 .list-img {
     overflow: auto;
 }

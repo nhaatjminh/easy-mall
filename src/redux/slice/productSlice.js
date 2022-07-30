@@ -42,8 +42,8 @@ export const doDeleteImageProduct = createAsyncThunk(
 );
 export const doGetOneProductOfStores = createAsyncThunk(
     'collection@get/GetOneProduct',
-    async (productId) => {
-      const result = await ProductApi.getOneProduct(productId);
+    async ({productId, storeId}) => {
+      const result = await ProductApi.getOneProduct(productId, storeId);
       return result.data;
     }
 );

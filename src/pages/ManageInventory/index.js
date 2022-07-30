@@ -2,17 +2,14 @@ import React, {useState, useEffect, useRef} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress'
-import TableManage from "../../component/TableManage";
 
 import NavBarDetailStore from "../../component/NavBarDetailStore";
 import HeaderDetailStore from "../../component/HeaderDetailStore";
 import { useDispatch } from "react-redux";
-import { doDeleteProduct, doGetListProductsOfStores, doGetOneProductOfStores, doGetListProductsOfStoresScopeFull, doUpdateInventory } from "../../redux/slice/productSlice";
+import { doGetListProductsOfStoresScopeFull, doUpdateInventory } from "../../redux/slice/productSlice";
 import { Key } from "../../constants/constForNavbarDetail";
-import Swal from "sweetalert2";
 import { CustomSearchInput } from "../../component/common/CustomSearchInput/CustomSearchInput";
 import { useDebounce } from './../../hooks/useDebounce';
-import { ProductApi } from "../../service/api";
 import TableInventory from "../../component/TableInventory";
 
 const ManageInventory = () => {
