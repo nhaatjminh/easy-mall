@@ -37,7 +37,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
     const [paymentMethod, setPaymentMethod] = useState(0);
     const [shippingMethod, setShippingMethod] = useState(0);
     const params = useParams();
-
+    const havePaypal = useSelector((state) => state.listStore?.currentStore?.have_paypal)
     const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
     useEffect(() => {
         if (currencyStore) setCurrency(currencyStore)
@@ -126,8 +126,8 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
             delete newListValueProduct[product_id]
         }
         setListValueProduct(newListValueProduct);
-        if (is_variant) form.current.products = form.current.products.filter(product => product.variant_id !== variant_id)
-        else form.current.products = form.current.products.filter(product => product.id !== product_id)
+        if (is_variant) form.current.products = form.current.products?.filter(product => product.variant_id !== variant_id)
+        else form.current.products = form.current.products?.filter(product => product.id !== product_id)
 
         if (!form.current.products) setSubTotal(0)
         else {
@@ -304,7 +304,8 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
                         <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
                         <Select value={paymentMethod} onChange={handleChangePaymentMethod} className='select-height text-field-input text-content select-currency'>
                             <MenuItem value='0'>Cash On Delivery (COD)</MenuItem>
-                            <MenuItem value='1'>Paypal</MenuItem>
+                            {havePaypal ? 
+                            <MenuItem value='1'>Paypal</MenuItem> : <></>}
                         </Select>
                     </div>
                     <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>

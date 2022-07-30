@@ -101,48 +101,62 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
         }
     }
     const saveOrder = () => {
-        setIsLoading(true);
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
         if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
         let cloneFormProduct = [];
-        if (form.current.products) {
+        if (form.current.products && form.current.products.length) {
             
+            form.current.products = form.current.products?.filter(product => product.quantity > 0);
+            if (!form.current.products.length) {     
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Can not create order. Need add at least 1 product with quantity > 0',
+                })
+                return;
+            }
+            setIsLoading(true);
             cloneFormProduct = cloneDeep(form.current.products)
             form.current.products?.map((product) => {
                 delete product.total_to_show;
                 return product
             })
-            form.current.products = form.current.products?.filter(product => product.quantity > 0);
-        } else {
-            form.current.products = [];
-        }
-        const createObj = {
-            storeId: params.storeId,
-            orderObj: form.current
-        }
-        dispatch(doCreateOrder(createObj))
-        .then((res) => {
-            setIsLoading(false);
-            if (res.payload.id) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Create successful Order!',
-                }).then((result) => {
-                    setIsEdit(false);
-                    returnAfterAdd();
-                })
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Can not create this order. Maybe out of stock',
-                }).then((result) => {
-                    form.current.products = cloneFormProduct;
-                })
+            
+            const createObj = {
+                storeId: params.storeId,
+                orderObj: form.current
             }
-        });
+            dispatch(doCreateOrder(createObj))
+            .then((res) => {
+                setIsLoading(false);
+                if (res.payload.id) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Create successful Order!',
+                    }).then((result) => {
+                        setIsEdit(false);
+                        returnAfterAdd();
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Can not create this order. Maybe out of stock',
+                    }).then((result) => {
+                        form.current.products = cloneFormProduct;
+                    })
+                }
+            });
+        } else {
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Can not create order. Need add at least 1 product',
+            })
+        }
         
     };
     useEffect(() => {
