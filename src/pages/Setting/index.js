@@ -11,6 +11,7 @@ import { DangerZone } from "../../component/Setting/DangerZone";
 import { BackIcon } from "../../assets/icon/svg/BackIcon";
 import { Payment } from './../../component/Setting/Payment/index';
 import { Currency } from "../../component/Setting/Currency";
+import { Logo } from "../../component/Setting/Logo";
 
 export const Setting = () => {
     const dispatch = useDispatch();
@@ -33,6 +34,7 @@ export const Setting = () => {
                     </span>
                     Setting
                 </div>
+                <Logo storeLogo={store.logo_url} />
                 <Contact store={store} />
                 <Domain store={store} />
                 <Currency storeCurrency={store?.currency} />

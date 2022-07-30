@@ -56,4 +56,8 @@ export const StoreApi = {
         const result = await callAPIWithPostMethod(`stores/${obj.id}`, obj, true);
         return result;
     },
+    updateLogo: async (obj) => {
+        const result = await callAPIWithPutMethod(`stores/upload-logo`, obj, true);
+        return result;
+    },
 }

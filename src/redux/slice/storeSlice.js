@@ -57,6 +57,14 @@ export const doUpdateStoreCurrency = createAsyncThunk(
     }
 );
 
+export const doUploadLogo = createAsyncThunk(
+    'store@put/UploadLogo',
+    async (obj) => {
+        const result = await StoreApi.updateLogo(obj);
+        return result.data.logo_url;
+    }
+);
+
 export const doDeleteStore = createAsyncThunk(
     'store@delete/DeleteStore',
     async (id) => {
@@ -343,6 +351,18 @@ export const listStoreSlice = createSlice({
             state.isLoading = false;
         });
         builder.addCase(doUpdateStoreCurrency.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        // update logo
+        builder.addCase(doUploadLogo.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doUploadLogo.fulfilled, (state, action) => {
+            state.currentStore.logo_url = action.payload
+            state.isLoading = false;
+        });
+        builder.addCase(doUploadLogo.rejected, (state, action) => {
             state.isLoading = false;
         });
     }
