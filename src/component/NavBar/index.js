@@ -40,7 +40,7 @@ const NavBar = () => {
                 </div>
                 <div className="col-6 col-sm-6 col-md-5 col-lg-4 col-xl-4 offset-md-3 offset-lg-5 offset-xl-5 p-0" style={{display:'flex',justifyContent:'flex-end',alignItems:'center'}}>
                     <Stack direction="row" spacing={3} className="navigation-menu ">
-                        <button className="btn btn-success btn-login" onClick={() => routeChange("/login")}> <p className="text-btn-login"> Login </p></button>
+                        {/* <button className="btn btn-success btn-login" onClick={() => routeChange("/login")}> <p className="text-btn-login"> Login </p></button> */}
                         <Dropdown>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
                                 <i className="fa fa-icon fa-bars"></i>
@@ -49,6 +49,7 @@ const NavBar = () => {
                             <Dropdown.Menu>
                                 <Dropdown.Item href="/pricing-scene"> <p className="text-nav">Pricing</p></Dropdown.Item>
                                 <Dropdown.Item href="/manage-guide"><p className="text-nav">Learn more</p></Dropdown.Item>
+                                <Dropdown.Item href="/login"><p className="text-nav">Login</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Stack>
