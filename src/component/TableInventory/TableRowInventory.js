@@ -40,7 +40,7 @@ const TableRowInventory = ({changeRef, saveForRef, setIsEdit, columnsOfData, ind
       setValueSku(saveForRef.current[!is_variant ? productId : variantId].valueSku ?? row?.sku)
       setIsEdit(true)
       setUpdateQuantityState(saveForRef.current[!is_variant ? productId : variantId].updateQuantityState ?? false)
-      setValueQuantity(saveForRef.current[!is_variant ? productId : variantId].valueQuantity ?? !is_variant ? row?.inventory : variant?.quantity)
+      setValueQuantity(saveForRef.current[!is_variant ? productId : variantId]?.valueQuantity ? saveForRef.current[!is_variant ? productId : variantId]?.valueQuantity : !is_variant ? row?.inventory : variant?.quantity)
     }
   },[])
   const routeChange = useNavigate();
@@ -75,7 +75,10 @@ const TableRowInventory = ({changeRef, saveForRef, setIsEdit, columnsOfData, ind
                   })
 
                 }} 
-                 type='number' value={valueQuantity} className="text-field-input  text-content" inputProps={{ maxLength: 12}} /> 
+                 type='number' value={valueQuantity} className="text-field-input  text-content" 
+                 onInput = {(e) =>{
+                   e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,8)
+                 }} /> 
                 : headCell.id === 'sku'
                 ? <TextField onChange={(e) => {
                   setUpdateSKUState(true);
@@ -91,7 +94,8 @@ const TableRowInventory = ({changeRef, saveForRef, setIsEdit, columnsOfData, ind
                     value: e.target.value,
                     id: !is_variant ? productId : variantId
                   })
-                }} value={valueSku} className="text-field-input  text-content"/>
+                }} 
+                value={valueSku} className="text-field-input  text-content"/>
                 : 
                 <>
                   <div className="w-100" style={{ display: 'inline-flex', minWidth: 225, alignItems: 'center'}}>

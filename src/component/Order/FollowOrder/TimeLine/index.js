@@ -58,7 +58,7 @@ const TimeLine = ({listStatus})=> {
                         }
                     }
                         
-                        contentStyle={{ boxShadow: '0 0 5px rgb(23 24 24 / 5%), 0 1px 2px rgb(0 0 0 / 15%)'}}
+                        contentStyle={{ boxShadow: '0 0 5px rgb(23 24 24 / 5%), 0 1px 2px rgb(0 0 0 / 15%)', wordBreak: 'break-all'}}
                     >
                         {`${status.note ? status.note : ''}`}
                     </TimelineEvent>

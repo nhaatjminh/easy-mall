@@ -43,7 +43,7 @@ const ImageInput = ({boldTitle = true, formRef, oldForm, mode, modal, valueToAdd
                     <div className="image-container" style={{ padding: 0, margin: 0}}>
                         <img
                           src={images}
-                          style={{maxWidth: 340, maxHeight: 340}}
+                          style={{maxWidth: 340, maxHeight: 340, width: 'auto', height: 'auto'}}
                           alt="image"
                           loading="lazy"
                         />
