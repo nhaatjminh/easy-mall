@@ -48,12 +48,12 @@ export const StoreApi = {
         const result = await callAPIWithPostMethod(`stores/${paypalObj.id}/paypal`, paypalObj, true);
         return result;
     },
-    updatePaypal: async (paypalObj) => {
-        const result = await callAPIWithPutMethod(`stores/${paypalObj.id}/paypal`, paypalObj, true);
-        return result;
-    },
     deletePaypal: async (storeId) => {
         const result = await callAPIWithDeleteMethod(`stores/${storeId}/paypal`, true);
+        return result;
+    },
+    updateCurrency: async (obj) => {
+        const result = await callAPIWithPostMethod(`stores/${obj.id}`, obj, true);
         return result;
     },
 }

@@ -9,11 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router-dom';
 import { doCreatePaypal, doDeletePaypal, doGetPaypal, doUpdatePaypal } from "../../../redux/slice/storeSlice";
 import { BasicButton } from './../../common/BasicButton/CustomButton';
-import cloudflare1 from '../../../assets/image/cloudflare1.png';
-import cloudflare2 from '../../../assets/image/cloudflare2.png';
-import cloudflare3 from '../../../assets/image/cloudflare3.png';
-import cloudflare4 from '../../../assets/image/cloudflare4.png';
-import cloudflare5 from '../../../assets/image/cloudflare5.png';
+import paypal1 from '../../../assets/image/paypal1.png';
+import paypal2 from '../../../assets/image/paypal2.png';
+import paypal3 from '../../../assets/image/paypal3.png';
+import paypal4 from '../../../assets/image/paypal4.png';
 import { PaymentIcon } from './../../../assets/icon/svg/PaymentIcon';
 import Swal from "sweetalert2";
 
@@ -235,69 +234,58 @@ export const Payment = ({ store }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="text-title-2">
-                        Setting up CloudFlare account
+                        Create Paypal account
                     </div>
                     <div className="text-normal-1">
-                        Create your CloudFlare Account via the link below:
+                        Create your Paypal Account via the link below:
                     </div>
-                    <a href="https://www.cloudflare.com/" className="text-link" target="_blank">
-                        https://www.cloudflare.com/
+                    <a href="https://www.paypal.com/" className="text-link" target="_blank">
+                        https://www.paypal.com/
                     </a>
 
                     <div className="text-title-2">
                         Setting up your payment
                     </div>
-                    <img
-                        className="setting__payment__setup__img"
-                        src={cloudflare1}
-                    />
-
                     <div className="text-normal-1">
-                        1. Create your new site in CloudFlare and and your custom payment's name. Eg Example.com, after that, just hit Next to move to Step 2 in cloudFlare Configuration.
-                    </div>
-
-                    <div className="text-normal-1">
-                        2. Go to your hosting server website like NameCheap or Godaddy. Go to DNS setting and change Name Server to the provided Name Server from CloudFlare.
-                    </div>
-
-                    <img
-                        className="setting__payment__setup__img"
-                        src={cloudflare2}
-                    />
-
-                    <div className="text-normal-1">
-                        3. Finish it and wait for around 10 to 20 minutes for your site to successfully registered.
-                        You can check it by clicking <b>“Review Setting”</b> Button or untils A popup shows up.
+                        1. Go to <a href="https://developer.paypal.com/" className="text-link" target="_blank">https://developer.paypal.com/</a> and login to Dashboard
                     </div>
                     <img
                         className="setting__payment__setup__img"
-                        src={cloudflare3}
+                        src={paypal1}
                     />
 
                     <div className="text-normal-1">
-                        4. Go to CloudFlare DNS setting, which is located on the left side menu
+                        2. Click <b>Create App</b> to create your new app
+                    </div>
+
+                    <img
+                        className="setting__payment__setup__img"
+                        src={paypal2}
+                    />
+
+                    <div className="text-normal-1">
+                        3. After creating, your app information almost there.
+                    </div>
+
+                    <img
+                        className="setting__payment__setup__img"
+                        src={paypal3}
+                    />
+
+                    <div className="text-normal-1">
+                        4. Click <b>Show</b> to show your Client secret.
                     </div>
                     <img
                         className="setting__payment__setup__img"
-                        src={cloudflare4}
+                        src={paypal4}
                     />
 
                     <div className="text-normal-1">
-                        5. Create 2 news Records which contain these following information
+                        5. Get your Client ID and Secret.
                     </div>
-                    <div className="text-normal-1">
-                        A Type, Set <b>Name</b> for your <b className="b-green">payment name</b> and content is <b className="b-green">104.21.9.169</b>, which is EasyMall IP number configuration
-                    </div>
-                    <div className="text-normal-1">
-                        CNAME type, Set <b>Name</b> your <b className="b-green">www</b>,  content is your shop's easymall URL. which is <b className="b-green">“Your-Shop.myeasymall.site”</b>, also, set <b>proxy status</b> to <b className="b-green">DNS only</b>
-                    </div>
-                    <img
-                        className="setting__payment__setup__img"
-                        src={cloudflare5}
-                    />
 
                     <div className="text-normal-1">
-                        It can take up to 24 hours for this progress to complete. But usually it takes around 10 minutes. After that, go to your website URL and check whether it complete or not.
+                        Then go back to <b>Easy Mall</b> and set up payment with your Paypal information
                     </div>
 
                     <div className="text-normal-1">

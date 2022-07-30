@@ -49,6 +49,14 @@ export const doUpdateStoreInfo = createAsyncThunk(
     }
 );
 
+export const doUpdateStoreCurrency = createAsyncThunk(
+    'store@post/UpdateStoreCurrency',
+    async (obj) => {
+        const result = await StoreApi.updateStoreInfo(obj);
+        return obj.currency;
+    }
+);
+
 export const doDeleteStore = createAsyncThunk(
     'store@delete/DeleteStore',
     async (id) => {
@@ -323,6 +331,18 @@ export const listStoreSlice = createSlice({
             state.isLoading = false;
         });
         builder.addCase(doDeletePaypal.rejected, (state, action) => {
+            state.isLoading = false;
+        });
+
+        // update currency
+        builder.addCase(doUpdateStoreCurrency.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(doUpdateStoreCurrency.fulfilled, (state, action) => {
+            state.currentStore.currency = action.payload
+            state.isLoading = false;
+        });
+        builder.addCase(doUpdateStoreCurrency.rejected, (state, action) => {
             state.isLoading = false;
         });
     }

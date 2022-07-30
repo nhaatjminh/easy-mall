@@ -29,6 +29,7 @@ import { Discount } from "./pages/Discount";
 import { CreateDiscount } from "./pages/Discount/CreateDiscount";
 import { DetailDiscount } from "./pages/Discount/DetailDiscount";
 import ManageAnalysis from "./pages/ManageAnalysis";
+import ResendVerify from "./pages/ResendVerify";
 
 const App = () => {
   return(
@@ -61,6 +62,7 @@ const App = () => {
           <Route path='/store-detail/manage-discount/:storeId/new' element={<CreateDiscount/>}/>
           <Route path='/store-detail/manage-discount/:storeId/:discountId' element={<DetailDiscount/>}/>
           <Route path='/login' element={<Login/>}/>
+          <Route path='/check-verify' element={<ResendVerify/>}/>
           <Route path='/notify/:type/:email' element={<Notify/>}/>
           <Route path='/notify/:type' element={<Notify/>}/>
           <Route path='/register' element={<Register/>}/>
