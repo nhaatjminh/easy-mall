@@ -16,5 +16,9 @@ export const EmailApi = {
     reset: async (emailObj) => {
         const result = await callAPIWithPostMethod(`mail/reset-email`, emailObj, true);
         return result;
+    },
+    resendVerifyEmail: async (email) => {
+        const result = await callAPIWithPostMethod('mail/resend-verify-email', {email: email}, false);
+        return result;
     }
 }

@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDateTime, removeSpace } from './../../../helpers/common';
 import { doGetDetailDiscount, doUpdateDiscount, doDeleteDiscount } from "../../../redux/slice/discountSlice";
 import { LoadingModal } from './../../../component/common/LoadingModal/LoadingModal';
+import { CustomCurrencyInput } from "../../../component/common/CustomCurrencyInput/CustomCurrencyInput";
 
 export const DetailDiscount = () => {
     let navigate = useNavigate()
@@ -59,7 +60,7 @@ export const DetailDiscount = () => {
             .then((res) => {
                 const item = res.payload;
                 console.log('==============', item.start_at)
-                console.log(new Date(new Date(item.start_at) - 7*3600000))
+                console.log(new Date(new Date(item.start_at) - 7 * 3600000))
                 const __startDate = new Date(item.start_at)
                 setCode(item.code)
                 setPreCode(item.code)
@@ -165,7 +166,7 @@ export const DetailDiscount = () => {
         }))
             .then(() => {
                 if (code !== preCode)
-                setPreCode(code)
+                    setPreCode(code)
             })
     }
 
@@ -308,11 +309,12 @@ export const DetailDiscount = () => {
                                         </Col>
                                         <Col md={6} sm={12}>
                                             {valueType ?
-                                                <CustomInput
+                                                <CustomCurrencyInput
                                                     value={discountValue}
-                                                    onChange={(e) => setDiscountValue(e.target.value)}
+                                                    onChange={(value) => setDiscountValue(value)}
                                                     icon={currency === 'USD' ? '$' : null}
                                                     unit={currency !== 'USD' ? 'VND' : null}
+                                                    currency={currency}
                                                 /> :
                                                 <CustomInput
                                                     value={discountPercent}

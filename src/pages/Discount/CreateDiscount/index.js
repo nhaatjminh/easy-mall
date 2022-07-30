@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDateTime, removeSpace } from './../../../helpers/common';
 import { doCreateDiscount } from "../../../redux/slice/discountSlice";
 import { LoadingModal } from './../../../component/common/LoadingModal/LoadingModal';
+import { CustomCurrencyInput } from "../../../component/common/CustomCurrencyInput/CustomCurrencyInput";
 
 export const CreateDiscount = () => {
     let navigate = useNavigate()
@@ -103,7 +104,7 @@ export const CreateDiscount = () => {
             end_at: isEnd ? getDateTime(endDate, endTime) : undefined
         }))
             .then((res) => {
-                navigate(`/store-detail/manage-discount/${params.storeId}/${res.payload.id}`)
+                navigate(-1)
             })
     }
 
@@ -200,12 +201,14 @@ export const CreateDiscount = () => {
                                         </Col>
                                         <Col md={6} sm={12}>
                                             {valueType ?
-                                                <CustomInput
+                                                <CustomCurrencyInput
                                                     value={discountValue}
-                                                    onChange={(e) => setDiscountValue(e.target.value)}
+                                                    onChange={(value) => setDiscountValue(value)}
                                                     icon={currency === 'USD' ? '$' : null}
                                                     unit={currency !== 'USD' ? 'VND' : null}
-                                                /> :
+                                                    currency={currency}
+                                                />
+                                                :
                                                 <CustomInput
                                                     value={discountPercent}
                                                     onChange={(e) => setDiscountPercent(e.target.value)}
