@@ -10,6 +10,7 @@ import TableManage from "../../component/TableManage";
 import { Key } from "../../constants/constForNavbarDetail";
 import { useDebounce } from "../../hooks/useDebounce";
 import { doDeleteSelectedDiscounts, doGetDiscounts } from "../../redux/slice/discountSlice";
+import { parseLocaleNumber } from "../../utils/parseLocaleNumber";
 import './index.scss'
 
 const collumns = [
@@ -48,6 +49,7 @@ const getStatus = (isEnd, endDate) => {
 
 const getDiscountValue = (type, amount, currency) => {
     if (type === 1) {
+        amount = currency === 'USD' ? parseLocaleNumber(amount,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(amount,'vi-VN')
         return `${currency === 'USD' ? '$' : ''}${amount}${currency === 'VND' ? 'VND' : ''} of all products`
     }
     else {
