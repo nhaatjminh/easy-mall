@@ -6,7 +6,7 @@
     border-radius: 5px;
 }
 .poper-item .MuiOutlinedInput-input{
-    padding: 4px 0 5px;
+    padding: 6px 0 6px;
 }
 .poper-item::before, .poper-item::after {
     display: none;
@@ -43,7 +43,7 @@
     border: 1px solid #666666;
 }
 .btn-collection {
-    width: 80px;
+    width: 90px;
     height: 40px;
     border-radius: 30px;
 }
@@ -71,4 +71,16 @@
     .save-button-form-product-desktop {
         display: none;
     }
+}
+.style-modal-list .MuiDialog-container .MuiDialog-paperScrollPaper {
+    max-width: none;
+}
+.style-modal-list .MuiDialogContent-root {
+    overflow-y: hidden;
+}
+
+.style-modal-list .MuiDialogContent-root .custom-modal-list {
+    overflow-y: auto;
+    max-width: none;
+    max-height: 500px;
 }

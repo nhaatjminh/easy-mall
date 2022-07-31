@@ -43,6 +43,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
     const [vendorValue, setVendorValue] = useState('');
     const [optionVendor, setOptionVendor] = useState([nameStore]);
     const [trickRerender, setTrickRerender] = useState(0);
+    const [idxThumbnail, setIdxThumbnail] = useState(0);
+    const [isSelectThumbnail, setIsSelectThumbnail] = useState(false);
     const [selectCurrency, setSelectCurrency] = useState(oldForm?.product?.currency ? oldForm?.product?.currency : 'VND');
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
@@ -373,6 +375,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     new Promise((resolveForUpload) => {
                         dispatch(doUploadImageProduct({
                             data: {
+                                path: `storeImages/${params.storeId}/products`,
                                 data: listImage
                             }
                         })).then((result) => {
@@ -383,11 +386,12 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                             // payload is array data response from server, first item to link, so get payload[0] in here
                             result = result.payload
                             result = oldResult.concat(result);
+                            
                             form.current = {
                                 ...form?.current,
                                 product: {
                                     ...form?.current?.product,
-                                    thumbnail: result[0],
+                                    thumbnail: !isSelectThumbnail && form.current?.product?.thumbnail ? form.current.product.thumbnail : result[idxThumbnail],
                                     images: result
                                 }
                             }
@@ -584,7 +588,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                         />
                     </Paper> 
                     <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>
-                        <ImageInput mode={mode} formRef={form} oldForm={oldForm}></ImageInput>
+                        <ImageInput setIsSelectThumbnail={setIsSelectThumbnail} setIdxThumbnail={setIdxThumbnail} mode={mode} formRef={form} oldForm={oldForm}></ImageInput>
                     </Paper> 
                     
                    <PricingComponent currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} mode={mode} key="PricingComponent" formRef={form} isVariant={isVariant} oldForm={oldForm}></PricingComponent>

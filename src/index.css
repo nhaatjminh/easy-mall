@@ -184,11 +184,15 @@ body {
   margin: 0.5rem 0 !important;
   border-radius: 5px;
 }
+
+.text-field-input .MuiAutocomplete-inputRoot input {
+  height: 24px;
+}
 .text-field-input fieldset legend, .poper-item fieldset legend  {
     width: unset;
 }
 .text-field-input input {
-    padding: 4px 0 5px 5px;
+    padding: 8px 0 8px 8px;
 }
 .image-container-item-list {
   text-align: center;
@@ -235,5 +239,5 @@ hr {
   padding: 0
 }
 .select-height {
-  height: 28px !important
+  height: 35px !important
 }

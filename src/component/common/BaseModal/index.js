@@ -9,6 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
+import './index.css'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -89,7 +90,7 @@ export default function BaseModal({children, showButton=true, boolOpen=false, se
         </DialogContent>
         {showAction ?
             <DialogActions>
-              <Button autoFocus onClick={handleOk}>
+              <Button autoFocus onClick={handleOk} className='button-save-modal'>
                   Save
               </Button>
             </DialogActions> : ""

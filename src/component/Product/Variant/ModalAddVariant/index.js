@@ -6,11 +6,14 @@ import {
 } from '@mui/material';
 import Swal from "sweetalert2";
 import { v4 as uuid } from 'uuid';
+import { BaseNumberField } from "../../../common/BaseNumberField";
+import { useSelector } from "react-redux";
 
 const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant, setAddValueVariant, combineArrays, form, optionValue, optionRef, deleteList, setOptionValue, optionValueRef}) => {
     const [newVariantName, setNewVariantName] = useState([]);
     const [price, setPrice] = useState(0);
     const [quantity, setQuantity] = useState(0);
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
     const handleOk = () => {
         if (!newVariantName.length) {
             Swal.fire({
@@ -114,11 +117,11 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
                 optionRef.current.map((option, index) => {
                     return (
                         <div key={`modal-add-${index}`} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                            <p style={{margin: 0}}>{option.name}: </p>
+                            <p style={{margin: 0, width: 100}}>{option.name}: </p>
                             <TextField
-                                style={{width: 'auto'}}
+                                style={{width: '100%', height: 35}}
                                 onChange={(e) => handleChangeOptionValue(index, e.target.value)}
-                                className={`text-field-input`}
+                                className={`text-field-input input-height-20`}
                                 name='title'
                                 fullWidth
                                 required />
@@ -129,26 +132,21 @@ const ModalAddVariant = ({ styleButton, variant, setDeleteList, addValueVariant,
                 {optionRef.current ? 
                 <>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <p style={{margin: 0}}>Price: </p>
-                        <TextField
-                            style={{width: 'auto'}}
-                            className="text-field-input"
-                            name='title'
-                            fullWidth
-                            required
-                            onChange={(e) => setPrice(e.target.value)}
-                        />
+                        <p style={{margin: 0, width: 100}}>Price: </p>
+                        <div style={{width: '100%'}}>
+                            <BaseNumberField currency={currencyStore} length={8} key="Price-add-variant" value={price} placeholder={'0'} setValue={(e) => setPrice(e)}></BaseNumberField>
+                    
+                        </div>
+                        
+            
                     </div>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <p style={{margin: 0}}>Quantity: </p>
-                        <TextField
-                            style={{width: 'auto'}}
-                            className="text-field-input"
-                            name='title'
-                            fullWidth
-                            required
-                            onChange={(e) => setQuantity(e.target.value)}
-                        />
+                        <p style={{margin: 0, width: 100}}>Quantity: </p>
+                        <div  style={{width: '100%'}}>
+                            <BaseNumberField length={8} key="Inventory-add-variant" fullWidth={true} value={quantity} placeholder={'0'} setValue={(e) => setQuantity(e)}></BaseNumberField>
+                        
+                        </div>
+                          
                     </div>
                 </>
                 : <></>}

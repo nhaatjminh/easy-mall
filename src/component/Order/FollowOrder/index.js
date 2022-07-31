@@ -27,22 +27,30 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         setOpenModal(true);
         setCallFunction('ChangeStatus');
     }
-    const handleChangeStatus = () => {
-        dispatch(doChangeStatus({
+    const handleChangeStatus = async () => {
+        await dispatch(doChangeStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
                 store_id: formToShow.order.store_id,
                 note: note
             }
-          }))
+        })).then((result) => {
+            if (!result.payload) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Not enough quantity in stock. Please refill before change status.',
+                    icon: 'error'
+                })
+            }
+        })
     }
     const handleCallDeleteStatus = () => {
         setOpenModal(true);
         setCallFunction('DeleteStatus');
     }
-    const handleDeleteStatus = () => {
-        dispatch(doDeleteStatus({
+    const handleDeleteStatus = async () => {
+        await dispatch(doDeleteStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
@@ -55,8 +63,8 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         setOpenModal(true);
         setCallFunction('RestoreStatus');
     }
-    const handleRestoreStatus = () => {
-        dispatch(doRestoreStatus({
+    const handleRestoreStatus = async () => {
+        await dispatch(doRestoreStatus({
             orderId: formToShow.order.id,
             params: {
                 status: formToShow.status?.[0].status,
@@ -90,7 +98,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
         })
     }
     const renderFormButton = () => {
-        let curStatus = formToShow.status?.[0].status;
+        let curStatus = formToShow?.status?.[0]?.status;
         if (curStatus === 'COMPLETED' || curStatus === 'PRE-PAID' || curStatus === 'PREPAID & RESTOCK') {
             return (
                 <div className="mt-4 mb-4 row form-group-button" >
@@ -110,7 +118,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                         <button type='button' onClick={() => handleCallRestoreStatus()} style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Restore</button>
                     </div>
                 </div> )
-        } else {
+        } else if (curStatus) {
             return (<div className="mt-4 mb-4 row form-group-button">
                 <div className="col-6">
                     <button type='button' onClick={() => handleCallDeleteStatus()}  style={{width: 'auto'}} className="float-left btn btn-collection btn-light btn-form-product btn-delete-product">Delete</button>
@@ -149,7 +157,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                         <Paper elevation={5} style={{padding: '1rem 2rem', minHeight: 150}}>
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Products</InputLabel>
                             {
-                                Object.keys(formToShow.products || {}).length ?
+                                Object.keys(formToShow?.products || {}).length ?
                                 <div id='paper-resize-item' style={{ overflowX: 'auto'}}>
                                     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'space-between', width: WIDTH_ITEM_ORDER}}>
                                         <div className="w-100"  style={{minWidth: 225}}>
@@ -175,7 +183,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                         <Paper elevation={5} style={{padding: '1rem 1rem 1rem 2rem', marginTop: '2rem'}}>
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Timeline</InputLabel>
                             <div style={{overflowY: 'auto',  maxHeight: 500, padding: 0, margin: 0}}>
-                                <TimeLine listStatus={formToShow.status}></TimeLine>
+                                <TimeLine listStatus={formToShow?.status}></TimeLine>
                             </div>
                         </Paper>
                     </div>   
@@ -263,12 +271,12 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                             <InputLabel name='title' className="text-header" style={{margin: 0}}>Method</InputLabel>
                             <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <InputLabel name='title' className="text-label" style={{margin: 0}}>Payment</InputLabel>
-                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow.order.payment_method === 0 ? `COD` : `PayPal`}</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.payment_method === 0 ? `Cash On Delivery (COD)` : `PayPal`}</InputLabel>
                                     
                             </div>
                             <div className="pt-3" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <InputLabel name='title' className="text-label" style={{margin: 0}}>Shipping</InputLabel>
-                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow.order.shipping_method === 0 ? `Take it at store` : `Standard shipping`}</InputLabel>
+                                <InputLabel name='title' className="text-label" style={{margin: 0}}>{formToShow?.order?.shipping_method === 0 ? `Take it at store` : `Standard shipping`}</InputLabel>
                                 
                             </div>
                         </Paper>
@@ -289,7 +297,7 @@ const FollowOrder = ({mode, oldForm, returnAfterAdd, WIDTH_ITEM_ORDER = 615})=> 
                     <TextareaAutosize
                         aria-label="empty textarea"
                         minRows={3}
-                        maxLength={255}
+                        maxLength={150}
                         maxRows={3}
                         draggable={false}
                         style={{width: '500px', resize: 'none'}}

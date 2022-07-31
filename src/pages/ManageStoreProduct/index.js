@@ -69,7 +69,10 @@ const ManageStoreProduct = () => {
   const dbValue = useDebounce(filterSeach, 300);
   const editFunction = (selected) => {
     Swal.showLoading();
-    dispatch((doGetOneProductOfStores(selected)))
+    dispatch((doGetOneProductOfStores({
+      productId: selected,
+      storeId: params.storeId
+    })))
     .then((result) => {    
       // info of product receive from server is array. get first element. into form, need this is object not array
       if (Array.isArray(result.payload.product)) result.payload.product = result.payload.product[0]; 

@@ -75,8 +75,8 @@ export const ProductApi = {
      * @param {string} productId: 
      * @returns {object} data 
      */
-    getOneProduct: async (productId) => {
-        const result = await callAPIWithGetMethod(`products/${productId}`, true);
+    getOneProduct: async (productId, storeId) => {
+        const result = await callAPIWithGetMethod(`products/${productId}?store_id=${storeId}`, true);
         return result; 
     },
     /**

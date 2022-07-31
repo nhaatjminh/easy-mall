@@ -38,6 +38,10 @@ const ManageAnalysis = () => {
         labelPaper: 'Total',
         total: 0
     })
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
+    useEffect(() => {
+        if (currencyStore) setCurrency(currencyStore)
+    }, [currencyStore])
     const handleChangeCurrency = (e) => {
         setCurrency(e.target.value)
     }
@@ -100,7 +104,7 @@ const ManageAnalysis = () => {
         let dataForTotalSales = data.orders.map((order) => {
             return {
                 date: order.day,
-                Sale: order.total_sale
+                Sales: order.total_sale
             }
         })
         setExactTotalSale({
@@ -118,7 +122,7 @@ const ManageAnalysis = () => {
         let dataForTotalProducts = data.orders.map((order) => {
             return {
                 date: order.day,
-                Product: order.total_products
+                Products: order.total_products
             }
         })
         setExactTotalProduct({
@@ -134,7 +138,7 @@ const ManageAnalysis = () => {
         let dataForTotalOrder = data.orders.map((order) => {
             return {
                 date: order.day,
-                Product: order.total_order
+                Orders: order.total_order
             }
         })
         setExactTotalOrder({
@@ -162,7 +166,7 @@ const ManageAnalysis = () => {
             </div> 
             <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage pt-5">     
                 <div className="row" style={{ marginLeft: 60, marginBottom: 20}}> 
-                    <Select style={{ width: 'auto', height: 28}} value={currency} onChange={handleChangeCurrency}  className='text-field-input text-content'>
+                    <Select disabled={true} style={{ width: 'auto', height: 35}} value={currency} onChange={handleChangeCurrency}  className='text-field-input text-content'>
                         <MenuItem value='VND'>VND</MenuItem>
                         <MenuItem value='USD'>USD</MenuItem>
                     </Select>

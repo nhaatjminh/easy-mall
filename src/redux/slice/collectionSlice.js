@@ -17,7 +17,7 @@ export const doGetOneCollections = createAsyncThunk(
 );
 export const doUploadImageCollection = createAsyncThunk(
     'collection@post/UploadImageCollection',
-    async ({data}) => {
+    async (data) => {
       const result = await collectionApi.uploadImageCollection(data);
       return result.data
     }

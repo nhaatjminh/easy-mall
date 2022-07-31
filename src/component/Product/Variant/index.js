@@ -204,7 +204,7 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                     const key = Object.keys(optionValueRef.current)
                     if (key.length) {
                         const lengthOptionOfFirstVariant = optionValueRef.current[key[0]].split("/");
-                        if (lengthOptionOfFirstVariant !== optionRef?.current?.length) {
+                        if (lengthOptionOfFirstVariant?.length !== optionRef?.current?.length) {
                            
                             optionValueRef.current = null; //clear this to create new Variant
                         }
@@ -495,6 +495,9 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
             })
         }
     },[mode])
+    useEffect(() => {
+        setIsVariant(showOpt)
+    }, [showOpt])
     return (
       <>
         <Paper elevation={5} style={{padding: '1rem 2rem', marginTop: '2rem'}}>

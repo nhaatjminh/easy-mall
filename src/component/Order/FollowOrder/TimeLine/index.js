@@ -28,45 +28,37 @@ const TimeLine = ({listStatus})=> {
                         style={{ paddingBottom: 20 }}
                         icon={status.status === "DELETED" ? <CompleteDelete></CompleteDelete> :<CheckIcon></CheckIcon>}
                         titleStyle={ status.status === "DELETED" ? {
-                            backgroundColor: `#f7454d`,
-                            color: `#fff`,
+                            backgroundColor: `#e99fa3`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
                             width: `175px`,
-                            fontWeight: `bold`,
                             textAlign: `center`
                         } : status.status === "COMPLETED" ? {
-                            backgroundColor: `#42e034`,
-                            color: `#fff`,
+                            backgroundColor: `#a5dfa0`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
                             width: `175px`,
-                            fontWeight: `bold`,
                             textAlign: `center`
                         } : status.status === "RESTOCK" || status.status === "PAID & RESTOCK" ? {
-                            backgroundColor: `#d6d149`,
-                            color: `#fff`,
+                            backgroundColor: `#dddb8d`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
                             width: `175px`,
-                            fontWeight: `bold`,
                             textAlign: `center`
                         } : {
-                            backgroundColor: `rgb(32,183,246)`,
-                            color: `#fff`,
+                            backgroundColor: `#aee9d1`,
                             fontSize: `13px`,
                             borderRadius: `50px`,
                             height: `fit-content`,
                             width: `175px`,
-                            fontWeight: `bold`,
                             textAlign: `center`
                         }
                     }
                         
-                        contentStyle={{ boxShadow: '0 0 5px rgb(23 24 24 / 5%), 0 1px 2px rgb(0 0 0 / 15%)'}}
+                        contentStyle={{ boxShadow: '0 0 5px rgb(23 24 24 / 5%), 0 1px 2px rgb(0 0 0 / 15%)', wordBreak: 'break-all'}}
                     >
                         {`${status.note ? status.note : ''}`}
                     </TimelineEvent>

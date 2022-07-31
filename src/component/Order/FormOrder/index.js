@@ -20,6 +20,7 @@ import { doCreateOrder } from "../../../redux/slice/orderSlice";
 import validator from "validator";
 import { LoadingModal } from "../../common/LoadingModal/LoadingModal";
 import ManageProductOrder from "./ManageProductOrder";
+import { cloneDeep } from "lodash";
 
 const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})=> { // mode add or update
     const dispatch = useDispatch();
@@ -100,44 +101,62 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
         }
     }
     const saveOrder = () => {
-        setIsLoading(true);
         
         const selectDiscount = listDiscount.find(discount => discount.code === discountCode);
         if (selectDiscount) form.current.order.discount_id = selectDiscount.id;
-        if (form.current.products) {
+        let cloneFormProduct = [];
+        if (form.current.products && form.current.products.length) {
+            
+            form.current.products = form.current.products?.filter(product => product.quantity > 0);
+            if (!form.current.products.length) {     
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Can not create order. Need add at least 1 product with quantity > 0',
+                })
+                return;
+            }
+            setIsLoading(true);
+            cloneFormProduct = cloneDeep(form.current.products)
             form.current.products?.map((product) => {
                 delete product.total_to_show;
                 return product
             })
-            form.current.products = form.current.products?.filter(product => product.quantity > 0);
-        } else {
-            form.current.products = [];
-        }
-        const createObj = {
-            storeId: params.storeId,
-            orderObj: form.current
-        }
-        dispatch(doCreateOrder(createObj))
-        .then((res) => {
-            setIsLoading(false);
-            if (res.payload.id) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Create successful Order!',
-                }).then((result) => {
-                    setIsEdit(false);
-                    returnAfterAdd();
-                })
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Can not create this order. Please check again!',
-                }).then((result) => {
-                })
+            
+            const createObj = {
+                storeId: params.storeId,
+                orderObj: form.current
             }
-        });
+            dispatch(doCreateOrder(createObj))
+            .then((res) => {
+                setIsLoading(false);
+                if (res.payload.id) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Create successful Order!',
+                    }).then((result) => {
+                        setIsEdit(false);
+                        returnAfterAdd();
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Can not create this order. Maybe out of stock',
+                    }).then((result) => {
+                        form.current.products = cloneFormProduct;
+                    })
+                }
+            });
+        } else {
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Can not create order. Need add at least 1 product',
+            })
+        }
         
     };
     useEffect(() => {
@@ -156,7 +175,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                 form.current = {
                     order: {
                         store_id: params.storeId,
-                        currency: 'USD',
+                        currency: 'VND',
                         shipping_method: 0,
                         payment_method: 0
                     }
@@ -368,7 +387,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                         }
                     </div>
                     <div className="col-6">
-                        <button onClick={handleSubmit(saveOrder)}  style={{width: 'auto'}} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
+                        <button onClick={handleSubmit(saveOrder)} className="float-right btn btn-collection btn-success btn-form-product">Save</button>
                 
                     </div>
                 </div>  
