@@ -140,7 +140,7 @@ const FooterHomePage = () => {
         
         <div className="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-0 end-footer-right-parent" style={{ alignSelf: 'flex-end'}}>
           <div>
-            <p className="text-footer-1 mr-1rem" style={{ textAlign: 'center'}}>Version {process.env.VERSION}</p>
+            <p className="text-footer-1 mr-1rem" style={{ textAlign: 'center'}}>Version {process.env.REACT_APP_VERSION}</p>
             <p className="text-footer-1 mr-1rem" style={{ textAlign: 'center'}}>Copyright &copy; 2022 by HCMUS Team</p>
             
           </div>
