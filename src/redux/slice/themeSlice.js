@@ -155,7 +155,7 @@ export const themeSlice = createSlice({
 
             const index2 = state.freeTemplates.findIndex((item) => item.id === action.payload.id);
             if (index2 >= 0) {
-                state.freeTemplates[index].owned = true;
+                state.freeTemplates[index2].owned = true;
             }
 
             state.storeTemplates.push(action.payload)

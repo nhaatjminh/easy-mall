@@ -132,9 +132,9 @@ const StoreLogin = ({ nameAccount }) => {
                                         <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                <div className="circle  float-right">
+                                {/* <div className="circle  float-right">
                                     <p className="pt-1">{nameAccount}</p>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         {!isCreateStore ?
