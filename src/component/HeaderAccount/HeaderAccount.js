@@ -17,9 +17,9 @@ export const HeaderAccount = ({ name }) => {
                 />
             </div>
             <div className="header-account__info">
-                <span className="circle">
+                {/* <span className="circle">
                     <p className="pt-1">{name}</p>
-                </span>
+                </span> */}
                 <span>
                 <Dropdown className="n">
                     <Dropdown.Toggle id="dropdown-basic">
