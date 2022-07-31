@@ -276,6 +276,7 @@ export const DetailDiscount = () => {
                                             className="text-normal-1"
                                             value={currency}
                                             onChange={(e) => setCurrency(e.target.value)}
+                                            disabled={true}
                                         >
                                             <option className="text-normal-1" value='USD'>USD</option>
                                             <option className="text-normal-1" value='VND'>VND</option>

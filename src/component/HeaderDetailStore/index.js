@@ -116,9 +116,9 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                                 }}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        <div className="circle  float-right">
+                        {/* <div className="circle  float-right">
                             <p className="pt-1">{nameAccount}</p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
