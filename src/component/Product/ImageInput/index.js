@@ -17,9 +17,11 @@ import { alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { doDeleteImageProduct, doDeleteProduct } from "../../../redux/slice/productSlice";
 import { useSelector, useDispatch } from "react-redux";
+import Swal from "sweetalert2";
+import { CheckIcon } from '../../../assets/icon/svg/CheckIcon';
 
 const EnhancedTableToolbar = (props) => {
-    const { numSelected, onDeleteSelected, onDelete } = props;
+    const { numSelected, onDeleteSelected, onDelete, onSelectThumbnail } = props;
     return (
       <>
         {numSelected > 0 ?
@@ -46,11 +48,16 @@ const EnhancedTableToolbar = (props) => {
                 {numSelected} Selected
               </Typography>
             ) : ""}
+            
             {numSelected > 0 ? (
               <button className="btn btn-login btn-manager ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
             ) : ""}
             {numSelected > 0 ? (
               <button className="btn btn-login btn-delete-item btn-manager ml-2" onClick={onDelete}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete </p></button>
+            ) : ""}
+            
+            {numSelected === 1 ? (
+              <button className="btn btn-login btn-manager ml-2 pl-0 pr-0" onClick={onSelectThumbnail}> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
             ) : ""}
           </Toolbar>
         : <Toolbar 
@@ -64,12 +71,12 @@ const EnhancedTableToolbar = (props) => {
     numSelected: PropTypes.number.isRequired,
   };
 
-const ImageInput = ({mode, formRef, oldForm}) => {
+const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbnail}) => {
     const form = formRef;
     const [images, setImages] = useState(oldForm?.product?.images && mode === "EDIT" ? [...oldForm?.product?.images] : []);
     const [selected, setSelected] = useState([]);
     const dispatch = useDispatch();
-
+    const [urlThumbnail, setUrlThumbnail] = useState(oldForm?.product?.thumbnail ?? '');
     const getBase64 = (file, cb) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -126,7 +133,11 @@ const ImageInput = ({mode, formRef, oldForm}) => {
                                 className={`checkbox-image ${isItemSelected ? "checkbox-image-selected" : ""}`}
                                 checked={isItemSelected}
                                 onClick={(event) => handleClick(event, url)}
-                                ></Checkbox>
+                            ></Checkbox>
+                            {url === urlThumbnail && 
+                            <div className={`check-thumbnail`}>
+                              <CheckIcon />
+                            </div>}
                         </div>
                     </ImageListItem>
                     
@@ -182,17 +193,28 @@ const ImageInput = ({mode, formRef, oldForm}) => {
           }
       }
     }
-    useEffect(() => {
-
-    }, [images])
+    const handleSelectThumbnail = () => {
+      const selectedIndex = images.indexOf(selected[0]);
+      setIdxThumbnail(selectedIndex);
+      setUrlThumbnail(selected[0]);
+      setIsSelectThumbnail(true);
+      setSelected([]);
+      Swal.fire({
+        title: 'Success',
+        text: 'Select thumbnail success!',
+        icon: 'success'
+    })
+    }
     return (
         <>
             <div className="row">
-              <div className="col-3">
+              <div className="col-11" style={{display: 'inline-flex'}}>
                 
-                <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
+                  <InputLabel name='title' className="text-header p-1 font-weight-bold" style={{margin: 0}}>Media</InputLabel>
+                  <InputLabel name='title' className="p-1 pt-2" style={{margin: 0, fontSize: 12}}> {`(You can choose one image to select thumbnail)`}</InputLabel>
+
               </div>
-              <div className="col-9">
+              <div className="col-1">
                 <i className="fa fa-plus-circle icon-color-black media-select-button float-right  btn btn-form-product p-1 pt-2" onClick={() => browseclick()}></i>
                 <input type="file" multiple accept="image/*" id="browse" name="fileupload" style={{display: "none"}} onChange={() => handleMultipleImages()}/>
               </div>
@@ -200,7 +222,7 @@ const ImageInput = ({mode, formRef, oldForm}) => {
             
 
   
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} onDelete={handleDelete}/>
+            <EnhancedTableToolbar numSelected={selected.length} onSelectThumbnail={handleSelectThumbnail} onDeleteSelected={onDeleteSelected} onDelete={handleDelete}/>
             {ImagesGallery(images)}
         </>
     );

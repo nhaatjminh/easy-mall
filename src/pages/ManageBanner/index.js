@@ -33,13 +33,7 @@ const ManageBanner = () => {
   const [isEdit, setIsEdit] = useState(false);
   const columns = [
     { id: 'name', label: 'Title', minWidth: 300, align: 'left', sort: 'string', haveImage: true },
-    {
-      id: 'description',
-      label: 'Description',
-      minWidth: 170,
-      align: 'left',
-      classNameBody: 'description-table'
-    },
+
   ];
   const editFunction = (selected) => {
     Swal.showLoading();

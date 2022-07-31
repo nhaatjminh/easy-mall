@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
     TableCell,
     TextField,
@@ -11,7 +11,7 @@ from '@mui/material';
 import './index.css';
 import { useNavigate, useParams } from "react-router-dom";
 
-const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, variantId, is_variant, variant, editItem}) => {
+const TableRowInventory = ({changeRef, saveForRef, setIsEdit, columnsOfData, index, row, productId, variantId, is_variant, variant, editItem}) => {
     
   const params = useParams();
   const [updateSKUState, setUpdateSKUState] = useState(false);
@@ -28,7 +28,21 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
     if (updateSKUState) object.sku = valueSku;
     if (updateQuantityState) object.quantity = valueQuantity;
     editItem(object);
+    changeRef({
+      clean: true,
+      id: !is_variant ? productId : variantId
+    })
   }
+  useEffect(() => {
+    let lengthOfRef = Object.keys(saveForRef.current[!is_variant ? productId : variantId] ?? {})?.length;
+    if (lengthOfRef) {
+      setUpdateSKUState(saveForRef.current[!is_variant ? productId : variantId].updateSKUState ?? false)
+      setValueSku(saveForRef.current[!is_variant ? productId : variantId].valueSku ?? row?.sku)
+      setIsEdit(true)
+      setUpdateQuantityState(saveForRef.current[!is_variant ? productId : variantId].updateQuantityState ?? false)
+      setValueQuantity(saveForRef.current[!is_variant ? productId : variantId]?.valueQuantity ? saveForRef.current[!is_variant ? productId : variantId]?.valueQuantity : !is_variant ? row?.inventory : variant?.quantity)
+    }
+  },[])
   const routeChange = useNavigate();
   return (
     <TableRow
@@ -49,14 +63,39 @@ const TableRowInventory = ({setIsEdit, columnsOfData, index, row, productId, var
                   setUpdateQuantityState(true);
                   setValueQuantity(e.target.value);
                   setIsEdit(true);
+                  changeRef({
+                    key: 'updateQuantityState',
+                    value: true,
+                    id: !is_variant ? productId : variantId
+                  })
+                  changeRef({
+                    key: 'valueQuantity',
+                    value: e.target.value,
+                    id: !is_variant ? productId : variantId
+                  })
+
                 }} 
-                 type='number' value={valueQuantity} className="text-field-input  text-content" inputProps={{ maxLength: 12}} /> 
+                 type='number' value={valueQuantity} className="text-field-input  text-content" 
+                 onInput = {(e) =>{
+                   e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,8)
+                 }} /> 
                 : headCell.id === 'sku'
                 ? <TextField onChange={(e) => {
                   setUpdateSKUState(true);
                   setValueSku(e.target.value);                  
                   setIsEdit(true);
-                }} value={valueSku} className="text-field-input  text-content"/>
+                  changeRef({
+                    key: 'updateSKUState',
+                    value: true,
+                    id: !is_variant ? productId : variantId
+                  })
+                  changeRef({
+                    key: 'valueSku',
+                    value: e.target.value,
+                    id: !is_variant ? productId : variantId
+                  })
+                }} 
+                value={valueSku} className="text-field-input  text-content"/>
                 : 
                 <>
                   <div className="w-100" style={{ display: 'inline-flex', minWidth: 225, alignItems: 'center'}}>

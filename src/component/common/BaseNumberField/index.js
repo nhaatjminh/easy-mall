@@ -5,14 +5,18 @@ import {
     MenuItem
 } from '@mui/material';
 import CurrencyInput from 'react-currency-input-field';
+import { useSelector } from 'react-redux';
 
 
 export const BaseNumberField = ({defaultValue, value, length=9, setValue, fullWidth, disabled = false, className = '', placeholder='', currency='', handleChangeCurrency= () => {} }) => {
+    
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
+    
     return (
         <>
             {currency ?
             <>
-                <Select disabled={disabled} value={currency} onChange={handleChangeCurrency} className='text-field-input text-content select-currency'>
+                <Select disabled={true} value={currencyStore} onChange={handleChangeCurrency} className='text-field-input text-content select-currency'>
                     <MenuItem value='VND'>VND</MenuItem>
                     <MenuItem value='USD'>USD</MenuItem>
                 </Select>
@@ -24,7 +28,7 @@ export const BaseNumberField = ({defaultValue, value, length=9, setValue, fullWi
             <CurrencyInput
                 id="input-example"
                 decimalSeparator="." groupSeparator=","
-                style={{height: 28}}
+                style={{height: 35}}
                 className={`m-0 p-0 style-input text-min-width text-field-input text-content ${className} ${fullWidth ? 'full-width' : ''}`}
                 name="input-name"
                 placeholder={placeholder}

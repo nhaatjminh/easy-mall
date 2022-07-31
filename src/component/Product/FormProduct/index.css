@@ -6,7 +6,7 @@
     border-radius: 5px;
 }
 .poper-item .MuiOutlinedInput-input{
-    padding: 4px 0 5px;
+    padding: 6px 0 6px;
 }
 .poper-item::before, .poper-item::after {
     display: none;
@@ -51,7 +51,7 @@
     color: red;
 }
 .btn-product {
-    width: 80px;
+    width: 90px;
     height: 40px;
     border-radius: 30px;
 }

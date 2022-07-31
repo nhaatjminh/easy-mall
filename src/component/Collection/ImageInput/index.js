@@ -38,6 +38,7 @@ const ImageInput = ({formRef, oldForm, mode}) => {
                     <div className="image-container" style={{padding: 0, margin: 0}}>
                         <img
                           src={images}
+                          style={{maxWidth: 340, maxHeight: 340}}
                           alt="image"
                           loading="lazy"
                         />
