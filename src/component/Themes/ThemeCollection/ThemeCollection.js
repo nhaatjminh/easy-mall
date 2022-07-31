@@ -121,6 +121,7 @@ export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
             <Button
                 className="btn btn-success"
                 onClick={handleUseTheme}
+                disabled={isLoading}
             >
                 {isLoading ? <Loader className="theme-collection__loader" /> : null}
                 Use theme
@@ -197,14 +198,16 @@ export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
             centered
             size="xl"
             show={show}
-            onHide={setShow}
+            onHide={() => {
+                if (!isLoading) setShow(false)
+            }}
         >
             <Modal.Header closeButton>
                 {themeDetail ?
                     <div className="">
                         <span
                             style={{ cursor: 'pointer', marginRight: '15px' }}
-                            onClick={() => setThemeDetail(null)}
+                            onClick={() => {if (!isLoading) setThemeDetail(null)}}
                         >
                             <BackIcon />
                         </span>
@@ -235,6 +238,7 @@ export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
                             <Button
                                 className="btn btn-secondary"
                                 onClick={() => setThemeDetail(null)}
+                                disabled={isLoading}
                             >
                                 Back
                             </Button>
@@ -247,6 +251,7 @@ export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
                     <Button
                         className="btn btn-secondary"
                         onClick={() => setShow(false)}
+                        disabled={isLoading}
                     >
                         Cancel
                     </Button>

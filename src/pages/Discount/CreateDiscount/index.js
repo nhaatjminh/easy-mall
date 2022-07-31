@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import HeaderDetailStore from "../../../component/HeaderDetailStore";
 import NavBarDetailStore from "../../../component/NavBarDetailStore";
@@ -49,6 +49,7 @@ export const CreateDiscount = () => {
 
     const dispatch = useDispatch();
     const isLoading = useSelector((state) => state.discount.isLoading)
+    const { currency: storeCurrency } = useSelector((state) => state.listStore.currentStore)
     const dbValue = useDebounce(code, 300);
 
     useDidMountEffect(() => {
@@ -65,6 +66,12 @@ export const CreateDiscount = () => {
                 }
             })
     }, [dbValue])
+
+    useEffect(() => {
+        if (storeCurrency) {
+            setCurrency(storeCurrency)
+        }
+    }, [storeCurrency])
 
     const hanldeGeneratecode = () => {
         setIsGenerating(true)
@@ -168,6 +175,7 @@ export const CreateDiscount = () => {
                                             className="text-normal-1"
                                             value={currency}
                                             onChange={(e) => setCurrency(e.target.value)}
+                                            disabled={true}
                                         >
                                             <option className="text-normal-1" value='USD'>USD</option>
                                             <option className="text-normal-1" value='VND'>VND</option>
