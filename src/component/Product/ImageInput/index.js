@@ -35,30 +35,36 @@ const EnhancedTableToolbar = (props) => {
                   alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
               }),
             }}
-            className="selected-image"
+            className="selected-image row"
           >
-            {numSelected > 0 ? (
-              <Typography
-                sx={{ flex: '1 1 80%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-                className=""
-              >
-                {numSelected} Selected
-              </Typography>
-            ) : ""}
+            <div className='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'>
+              {numSelected > 0 ? (
+                <Typography
+                  sx={{ flex: '1 1 80%' }}
+                  color="inherit"
+                  variant="subtitle1"
+                  component="div"
+                  className=""
+                >
+                  {numSelected} Selected
+                </Typography>
+              ) : ""}
             
-            {numSelected > 0 ? (
-              <button className="btn btn-login btn-manager ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
-            ) : ""}
-            {numSelected > 0 ? (
-              <button className="btn btn-login btn-delete-item btn-manager ml-2" onClick={onDelete}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete </p></button>
-            ) : ""}
+            </div>
+            <div className='col-9 col-sm-9 col-md-9 col-lg-9 col-xl-9'>
+              
+              {numSelected > 0 ? (
+                <button className="btn btn-login btn-manager ml-2 float-right mt-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
+              ) : ""}
+              {numSelected > 0 ? (
+                <button className="btn btn-login btn-delete-item btn-manager ml-2  float-right  mt-2" onClick={onDelete}> <p className="text-btn-login font-size-0-85-rem-max500"> Delete </p></button>
+              ) : ""}
+              
+              {numSelected === 1 ? (
+                <button className="btn btn-login btn-manager ml-2 pl-1 pr-1  float-right  mt-2" onClick={onSelectThumbnail}> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
+              ) : ""}
             
-            {numSelected === 1 ? (
-              <button className="btn btn-login btn-manager ml-2 pl-0 pr-0" onClick={onSelectThumbnail}> <p className="text-btn-login font-size-0-85-rem-max500"> Thumbnail </p></button>
-            ) : ""}
+            </div>
           </Toolbar>
         : <Toolbar 
         style={{marginTop: '1rem', minHeight: 20}}></Toolbar>}
