@@ -23,7 +23,7 @@ const HomePage = () => {
                     </div>
                     <div className=" col-12 Description">
                         <div style={{ fontSize: '96px', fontWeight: '500', textAlign: 'center', maxWidth: '1000px' }}>
-                            <div className="Home-title">
+                            <div className="Home-title ">
                                 Create a website
                             </div>
                             <div className="Home-title" style={{ fontSize: '80px', fontWeight: '500', textAlign: 'center' }}>

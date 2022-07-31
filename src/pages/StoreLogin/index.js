@@ -192,9 +192,9 @@ const StoreLogin = ({ nameAccount }) => {
                                     <h5 className="font-weight-bold text-create-store">Create a store</h5>
 
                                 </div>
-                                <div className="row create-store-connect">
+                                {/* <div className="row create-store-connect">
                                     <p className="text-create-store-2">This store will be connected to {emailAccount}, and is free for 14 days.</p>
-                                </div>
+                                </div> */}
                                 <div className="row create-store-connect font-weight-bold">
                                     <p className="text-create-store-3">Store name</p>
                                 </div>
