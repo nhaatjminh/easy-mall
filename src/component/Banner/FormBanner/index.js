@@ -105,12 +105,17 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     setCustomUrl(null);
                     setCustomUrlShow(null);
                 } else {
+                    const newListBanner = [...listBanner];
+                    if (isEditBanner >= 0) {
+                        newListBanner[isEditBanner] = valueNeedPush;
+                        form.current.banners = newListBanner
+                    } else {
+                        newListBanner.push(valueNeedPush);
+                        form.current.banners.push(valueNeedPush);
+                    }
                     valueNeedPush.update = 'Add';
                     setShowAddBanner(false);
-                    const newListBanner = [...listBanner];
-                    newListBanner.push(valueNeedPush);
                     setListBanner(newListBanner);
-                    form.current.banners.push(valueNeedPush);
                     setValueToAdd({});
                     setCustomUrl(null);
                     setCustomUrlShow(null);
@@ -364,11 +369,11 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             let exactUrlPage = result.payload.map((page) => ({
                 title: `${page.name}`,
                 icon: <PagesIcon />,
-                url: `https://www.${urlStore}${page.page_url}`,
+                url: `https://${urlStore}${page.page_url}`,
                 onClick: () => {
                     
                     setCustomUrlShow(`${urlStore}${page.page_url}`);
-                    setCustomUrl(`https://www.${urlStore}${page.page_url}`)
+                    setCustomUrl(`https://${urlStore}${page.page_url}`)
                 }
             }))
             let newOptionPage = [{
@@ -387,10 +392,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             let exactUrlProduct = result.payload.map((product) => ({
                 title: `${product.title}`,
                 icon: <ProductIcon />,
-                url: `https://www.${urlStore}/products?id=${product.id}`,
+                url: `https://${urlStore}/products?id=${product.id}`,
                 onClick: () =>  {
                     setCustomUrlShow(`${urlStore}/products?id=${product.id}`);
-                    setCustomUrl(`https://www.${urlStore}/products?id=${product.id}`)
+                    setCustomUrl(`https://${urlStore}/products?id=${product.id}`)
                 }
             }))
             let newOptionProduct = [{
@@ -409,10 +414,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             let exactUrlCollection = result.payload.map((collection) => ({
                 title: `${collection.name}`,
                 icon: <CollectionIcon />,
-                url: `https://www.${urlStore}/collection?id=${collection.id}`,
+                url: `https://${urlStore}/collection?id=${collection.id}`,
                 onClick: () => {
                     setCustomUrlShow(`${urlStore}/collection?id=${collection.id}`);
-                    setCustomUrl(`https://www.${urlStore}/collection?id=${collection.id}`)
+                    setCustomUrl(`https://${urlStore}/collection?id=${collection.id}`)
                 }
             }))
             let newOptionCollection = [{
@@ -471,7 +476,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             url: `${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`,
             onClick: () => {
                 
-                setCustomUrlShow(`${customUrl?.replace('https://','').replace('http://','').replace('www.','')}`);
+                setCustomUrlShow(`${customUrl?.replace('https://','').replace('http://','')}`);
                 setCustomUrl(`${ !customUrl.startsWith('https://') && !customUrl.startsWith('http://') ? `https://${customUrl}` : `${customUrl}`}`)
             }
         }];
@@ -551,7 +556,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                             <MenuItem onClick={() => {
                                                 setShowAddBanner(true);
                                                 setCustomUrl(banner.link)
-                                                setCustomUrlShow(banner.link?.replace('https://','').replace('http://','').replace('www.',''));
+                                                setCustomUrlShow(banner.link?.replace('https://','').replace('http://',''));
                                                 setValueToAdd(banner);
                                                 setIsEditBanner(index);
                                             }} className='row p-0 m-0' key={`${banner.id}-selected`} value={banner.id}>
