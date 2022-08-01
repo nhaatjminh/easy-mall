@@ -1,33 +1,19 @@
 import React, {useEffect, useState, useRef} from "react";
-import { Paper, Typography } from '@mui/material';
+import { Paper } from '@mui/material';
 
 import PropTypes from 'prop-types';
-import {Checkbox, IconButton,MenuItem, Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination, Toolbar, TextField   } from '@mui/material';
+import { Table , TableBody , TableCell, TableContainer , TableHead , TableRow,TablePagination } from '@mui/material';
 import './index.css'
-import { alpha } from '@mui/material/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ModalAddVariant from '../ModalAddVariant';
-import { Dropdown } from 'react-bootstrap';
 
 import { BaseNumberField } from '../../../common/BaseNumberField';
 
 function EnhancedTableHead(props) {
-    const { onSelectAllClick, numSelected, rowCount, headCells } =
+    const { headCells } =
       props;
     return (
       <TableHead>
         <TableRow>
-            <TableCell padding="checkbox">
-                <Checkbox
-                  color="primary"
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={rowCount > 0 && numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                  inputProps={{
-                    'aria-label': 'select all desserts',
-                  }}
-                />
-            </TableCell>
             {headCells.map((headCell, index) => (
               <TableCell
                 className="text-center"
@@ -49,67 +35,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-const EnhancedTableToolbar = (props) => {
-  const { numSelected, onDeleteSelected } = props;
-  return (
-    <>
-      {numSelected > 0 ?
-        <Toolbar
-          sx={{
-            pl: { sm: 2 },
-            pr: { xs: 1, sm: 1 },
-            ...(numSelected > 0 && {
-              bgcolor: (theme) =>
-                alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-            }),
-          }}
-          style={{justifyContent: 'space-between'}}
-        >
-          {numSelected > 0 ? (
-            <Typography
-              sx={{ flex: '1 1 100%' }}
-              color="inherit"
-              variant="subtitle1"
-              component="div"
-            >
-              {numSelected} Selected
-            </Typography>
-            
-          ) : ""}
-
-          <div className="float-right" style={{display: 'inherit'}}>
-          
-            {numSelected > 0 ? (
-              <Dropdown className="float-right dropdown-variant-action p-0">
-                <Dropdown.Toggle id="dropdown-basic" className='p-0 m-0'>       
-                  <button className="btn  btn-login btn-product" > <p className="text-btn-login font-size-0-85-rem-max500"> Edit </p></button>
-                </Dropdown.Toggle>
-                <Dropdown.Menu style={{display: 'flex', flexDirection: 'column' }}>
-                  <MenuItem className="item">Edit Price All</MenuItem>
-                  <MenuItem  className="item">Edit Quantity All</MenuItem>
-                  <MenuItem  className="item">Create All</MenuItem>
-                  <MenuItem  className="item">Delete All</MenuItem>
-                </Dropdown.Menu>
-            </Dropdown>
-              
-            ) : ""}
-            
-            {numSelected > 0 ? (
-              <div className='ml-2'>
-                <button className="btn btn-login btn-product ml-2" onClick={onDeleteSelected}> <p className="text-btn-login font-size-0-85-rem-max500"> Cancel </p></button>
-              </div>
-            ) : ""}
-          </div>
-        </Toolbar>
-      :""}
-      
-    </>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
 
 const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, optionValue, columnsOfData , oldForm, formRef, setOptionValue, setOptionTag, setShowOpt,currency='VND', handleChangeCurrency= () => {}}) => {
     const form = formRef;
@@ -124,7 +49,24 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
     const [trickRerender, setTrickRerender] = useState(0);
     const [addValueVariant, setAddValueVariant] = useState([]);
     const [firstReload, setFirstReload] = useState(true);
+    const [MAXWIDTH, setMAXWIDTH] = useState('none');
     
+    useEffect(() => {
+      const handleResize = () => {
+          if(window.screen.width >= 576) {
+            setMAXWIDTH('none')
+          } else {
+            setMAXWIDTH(`${window.screen.width - 10}px`);
+          }
+      }
+      handleResize()
+      window.addEventListener('resize', handleResize)
+    
+      return _ => {
+          window.removeEventListener('resize', handleResize)    
+      }
+  }, [])
+
     const handleChangePriceVariant = (index, valuePrice) => {
       let newVariant = [...variant];
       
@@ -197,30 +139,9 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
         }
         setSelected([]);
     };
-    const handleClick = (event, nameProduct) => {
-        const selectedIndex = selected.indexOf(nameProduct);
-        let newSelected = [];
-    
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, nameProduct);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
-          );
-        }
-    
-        setSelected(newSelected);
-    };
       
     const isSelected = (nameProduct) => selected.indexOf(nameProduct) !== -1;
-    const onDeleteSelected = () => {
-      setSelected([]);
-    }
+
     const handleNotDeleteVariant =(row) => {
       const newList = variant.map((element) => {
         
@@ -554,7 +475,7 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
       <>
       
       {variant.length && showOpt?
-        <Paper elevation={5} style={{ width: '100%', overflow: 'hidden', marginTop:'2rem'}}>
+        <Paper id='table-variant-responsive' elevation={5} style={{marginTop:'2rem', maxWidth: MAXWIDTH}}>
             <div style={{justifyContent: 'space-between', alignItems: 'center', display: 'flex', padding: '5px 15px 0 15px'}}>
               <p className="font-weight-bold text-normal m-0" style={{width: 'auto'}}>Variant</p>
               {
@@ -586,7 +507,6 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
               : ""
               }
             </div>
-            <EnhancedTableToolbar numSelected={selected.length} onDeleteSelected={onDeleteSelected} />
             <TableContainer sx={{ maxHeight: 440 }}>
                 
                 <Table stickyHeader aria-label="sticky table" className="p-0">
@@ -610,17 +530,6 @@ const TableVariant = ({optionRef, optionValueRef, mode, showOpt, optionTag, opti
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         selected={isItemSelected}>
-                          <TableCell padding="checkbox" 
-                            align="left">
-                                <Checkbox
-                                    color="primary"
-                                    checked={isItemSelected}
-                                    inputProps={{
-                                        'aria-labelledby': labelId,
-                                    }}
-                                    onClick={(event) => handleClick(event, row.name)}
-                                />
-                          </TableCell>
                           <TableCell
                               component="th"
                               id={labelId}
