@@ -46,6 +46,16 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
     const [idxThumbnail, setIdxThumbnail] = useState(0);
     const [isSelectThumbnail, setIsSelectThumbnail] = useState(false);
     const [selectCurrency, setSelectCurrency] = useState(oldForm?.product?.currency ? oldForm?.product?.currency : 'VND');
+    
+    
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
+    useEffect(() => {
+        if (currencyStore && mode !== "EDIT") {
+            setSelectCurrency(currencyStore)
+            if (!form.current.product) form.current.product={}
+            form.current.product.currency = currencyStore;
+        }
+    }, [currencyStore])
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
         return ref.option;
@@ -509,7 +519,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                store_id: params.storeId
+                store_id: params.storeId,
+                currency: currencyStore
             }
         }
         if (mode === "ADD") {
@@ -545,7 +556,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     product: {
                         store_id: params.storeId,
                         status: 'Draft',
-                        vendor: nameStore
+                        vendor: nameStore,
+                        currency: currencyStore
                     }
                 }
             }
