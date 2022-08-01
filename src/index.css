@@ -241,3 +241,8 @@ hr {
 .select-height {
   height: 35px !important
 }
+@media screen and (max-width: 1065px) {  
+  .navbar-detail {
+      display: none;
+  }
+}

@@ -119,6 +119,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                     setValueToAdd({});
                     setCustomUrl(null);
                     setCustomUrlShow(null);
+                    setIsEditBanner(-1);
                 }
             } else {
                 setShowAddBanner(false);
