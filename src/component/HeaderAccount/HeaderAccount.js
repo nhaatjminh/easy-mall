@@ -4,6 +4,7 @@ import logo from '../../assets/image/Logo.png'
 import { Dropdown } from "react-bootstrap";
 import { logout } from "../../helpers/login";
 import { useNavigate } from "react-router-dom";
+import { getDisplayName } from "../../helpers/common";
 
 export const HeaderAccount = ({ name }) => {
     let navigate = useNavigate()
@@ -17,9 +18,9 @@ export const HeaderAccount = ({ name }) => {
                 />
             </div>
             <div className="header-account__info">
-                {/* <span className="circle">
-                    <p className="pt-1">{name}</p>
-                </span> */}
+                <span className="circle floating-name">
+                    <p className="pt-1">{getDisplayName(name)}</p>
+                </span>
                 <span>
                 <Dropdown className="n">
                     <Dropdown.Toggle id="dropdown-basic">

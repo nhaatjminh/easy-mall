@@ -13,6 +13,9 @@ import { doSwitchSelectedStore, doGetListStore, doSwitchBaseUrl } from "../../re
 import { CustomSearchInput } from "../common/CustomSearchInput/CustomSearchInput";
 import { logout } from "../../helpers/login";
 import Swal from "sweetalert2";
+import { doGetUserInfo } from "../../redux/slice/userSlice";
+import { getDisplayName } from "../../helpers/common";
+
 const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
     //use redux to manage state
     const dispatch = useDispatch();
@@ -20,6 +23,7 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
     const nameStore = useSelector((state) => state.listStore.selectedName);
     nameAccount = "TP";
     const listStoreInStore = useSelector((state) => state.listStore.listStore);
+    const { fullname } = useSelector((state) => state.user.info);
     const params = useParams();
     useEffect(() => {
         if (!nameStore) {
@@ -32,6 +36,7 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                 })
             })
         }
+        dispatch(doGetUserInfo())
     }, [])
     const warningWhenLeave = (applyFunction) => {
         if (isEdit) {
@@ -116,9 +121,9 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                                 }}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        {/* <div className="circle  float-right">
-                            <p className="pt-1">{nameAccount}</p>
-                        </div> */}
+                        <div className="circle  float-right floating-name">
+                            <p className="pt-1">{getDisplayName(fullname)}</p>
+                        </div>
                     </div>
                 </div>
 
@@ -149,9 +154,9 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                 </div>
                 <div className=" col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 header-store__search">
                     {/* <TextField name='findstore' className="find-store" placeholder='&#xf002; Tìm Kiếm' fullWidth />   */}
-                    <CustomSearchInput
+                    {/* <CustomSearchInput
                         placeholder='Search'
-                    />
+                    /> */}
                 </div>
                 <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2  button-header-mobile">
                     <div>
@@ -179,8 +184,8 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                                 }}><p className="text-nav">Log out</p></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        <div className="circle  float-right">
-                            <p className="pt-1">{nameAccount}</p>
+                        <div className="circle  float-right floating-name">
+                            <p className="pt-1">{getDisplayName(fullname)}</p>
                         </div>
                     </div>
                 </div>

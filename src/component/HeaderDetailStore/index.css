@@ -19,3 +19,15 @@
 .menu_switch i {
     cursor: pointer;
 }
+
+.floating-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.floating-name p {
+    font-size: 14px;
+    margin: 0;
+    padding: 0 !important;
+}

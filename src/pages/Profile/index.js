@@ -104,7 +104,7 @@ export const Profile = () => {
 
     return (
         <div className="blank-layout">
-            <HeaderAccount name={'TP'} />
+            <HeaderAccount name={firstname + ' ' + lastname} />
 
             <div className="profile">
                 <div className="profile__title text-title-1">

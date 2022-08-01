@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Grid, Paper, TextField, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
@@ -44,12 +44,11 @@ const Login = () => {
 
     useEffect(() => {
         const emailQuery = searchParams.get("email")
-        console.log('emailquery', emailQuery)
         if (emailQuery) {
             setUsername(emailQuery)
         }
     }, [])
-    console.log('username', username)
+
     //=======================FUNCTION=========================
     const handleOnchangeUsername = (e) => {
         setUsername(e.target.value);

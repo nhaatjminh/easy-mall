@@ -26,3 +26,8 @@ export const getBase64 = (file) => {
         };
     });
 };
+
+export const getDisplayName = (name) => {
+    name = name.split(' ');
+    return name[0][0] + name[name.length - 1][0]
+}
