@@ -16,6 +16,7 @@ import { DangerIcon } from "../../assets/icon/svg/DangerIcon";
 import { UserApi } from "../../service/api/userApi";
 import { BackIcon } from "../../assets/icon/svg/BackIcon";
 import { useNavigate } from "react-router-dom";
+import userIcon from "../../assets/image/user.png"
 
 export const Profile = () => {
     const dispatch = useDispatch();
@@ -118,7 +119,7 @@ export const Profile = () => {
 
                     <BlankCard className='profile__detail__card'>
                         <div className="profile__detail__card--avatar">
-                            <img className="profile__detail__card--avatar__img" src="https://png.pngtree.com/png-vector/20190525/ourlarge/pngtree-man-avatar-icon-professional-man-character-png-image_1055448.jpg" />
+                            <img className="profile__detail__card--avatar__img" src={userIcon} />
                             {/* <Button className="btn-success">+</Button>
                             <Button className="btn-danger">-</Button> */}
                             <Button
