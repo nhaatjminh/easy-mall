@@ -10,7 +10,7 @@ export const EBreakPoint = {
   ipad: 768,
 }
 
-export const useResposive = () => {
+export const useResponsive = () => {
   const isAfter376 = useMediaQuery({ maxWidth: EBreakPoint.xs });
   const isFrom376To576 = useMediaQuery({ minWidth: EBreakPoint.xs, maxWidth: EBreakPoint.sm });
 
