@@ -122,6 +122,7 @@ const Login = () => {
             body: raw
         };
 
+        setIsLoading(true)
         fetch(process.env.REACT_APP_API_URL + "auth/facebook-sign-in", requestOptions)
             .then(response => {
                 console.log(response)
@@ -139,6 +140,7 @@ const Login = () => {
             })
             .catch(error => {
                 console.log('error', error)
+                setIsLoading(false)
             });
     }
 
@@ -157,13 +159,13 @@ const Login = () => {
             body: raw
         };
 
+        setIsLoading(true)
         fetch(process.env.REACT_APP_API_URL + "auth/google-sign-in", requestOptions)
             .then(response => {
                 console.log(response)
                 if (response.ok) {
                     return response.json();
                 }
-
                 throw response.status;
             })
             .then(result => {
@@ -173,6 +175,7 @@ const Login = () => {
             })
             .catch(error => {
                 console.log('error', error)
+                setIsLoading(false)
             });
     }
     const onLogoutSuccess = () => {
