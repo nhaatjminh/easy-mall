@@ -175,7 +175,7 @@ const ManageOrder = () => {
     <>
       <HeaderDetailStore isEdit={isEdit} keySelected={Key.Order}></HeaderDetailStore>
       <div className="row callpage" >
-          <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
+          <div className="col-sm-12 col-md-12 col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
               <NavBarDetailStore isEdit={isEdit}  isDesktop={true} keySelected={Key.Order}></NavBarDetailStore>
           </div> 
           <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage">     

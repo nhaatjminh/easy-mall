@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import './index.css'
 import Divider from '@mui/material/Divider';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { useForm, Controller } from "react-hook-form";
 import { doGetCity, doGetDistrict } from '../../../redux/slice/dataSlice'
@@ -36,6 +36,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
     const [listDiscount, setListDiscount] = useState([]);
     const params = useParams();
 
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
     const handleChangeUserName = (event) => {
         form.current = {
             ...form.current,
@@ -175,7 +176,7 @@ const FormOrder = ({mode, oldForm, returnAfterAdd, setIsEdit, WIDTH_ITEM_ORDER})
                 form.current = {
                     order: {
                         store_id: params.storeId,
-                        currency: 'VND',
+                        currency: currencyStore ?? 'VND',
                         shipping_method: 0,
                         payment_method: 0
                     }

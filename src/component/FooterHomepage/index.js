@@ -128,20 +128,31 @@ const FooterHomePage = () => {
       </div>
 
       <div className="line"></div>
-      <div className="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3 end-footer">
-        <div>
-          <i className="fab fa-linkedin-square fa-icon ml-0 fa-footer"></i>
-          <i className="fa-envelope-o fa-icon fa-footer"></i>
-          <i className="fa-facebook-square fa-icon fa-footer"></i>
+      <div className='row'>
+
+        <div className="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 end-footer">
+          <div>
+            <i className="fab fa-linkedin-square fa-icon ml-0 fa-footer"></i>
+            <i className="fa-envelope-o fa-icon fa-footer"></i>
+            <i className="fa-facebook-square fa-icon fa-footer"></i>
+          </div>
         </div>
-      </div>
-      <div className="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4  offset-md-2 offset-lg-4 offset-xl-5 p-0 end-footer-right-parent">
-        <div className="end-footer-right">
-          <Link to={"#"} className="text-footer-1 mr-1rem">
-            {" "}
-            Terms of Service
-          </Link>
-          
+        
+        <div className="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-0 end-footer-right-parent" style={{ alignSelf: 'flex-end'}}>
+          <div>
+            <p className="text-footer-1 mr-1rem" style={{ textAlign: 'center'}}>Version {process.env.REACT_APP_VERSION}</p>
+            <p className="text-footer-1 mr-1rem" style={{ textAlign: 'center'}}>Copyright &copy; 2022 by Easy Mall team</p>
+            
+          </div>
+        </div>
+        <div className="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-0 end-footer-right-parent">
+          <div className="end-footer-right">
+            <Link to={"#"} className="text-footer-1 mr-1rem">
+              {" "}
+              Terms of Service
+            </Link>
+            
+          </div>
         </div>
       </div>
     </div>

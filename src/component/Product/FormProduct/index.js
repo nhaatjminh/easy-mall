@@ -46,6 +46,16 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
     const [idxThumbnail, setIdxThumbnail] = useState(0);
     const [isSelectThumbnail, setIsSelectThumbnail] = useState(false);
     const [selectCurrency, setSelectCurrency] = useState(oldForm?.product?.currency ? oldForm?.product?.currency : 'VND');
+    
+    
+    const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
+    useEffect(() => {
+        if (currencyStore && mode !== "EDIT") {
+            setSelectCurrency(currencyStore)
+            if (!form.current.product) form.current.product={}
+            form.current.product.currency = currencyStore;
+        }
+    }, [currencyStore])
     const initOptionRef = () => {
         const ref = JSON.parse(JSON.stringify(oldForm));
         return ref.option;
@@ -509,7 +519,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
             ...form?.current,
             product: {
                 ...form?.current?.product,
-                store_id: params.storeId
+                store_id: params.storeId,
+                currency: currencyStore
             }
         }
         if (mode === "ADD") {
@@ -545,7 +556,8 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     product: {
                         store_id: params.storeId,
                         status: 'Draft',
-                        vendor: nameStore
+                        vendor: nameStore,
+                        currency: currencyStore
                     }
                 }
             }
@@ -562,7 +574,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
         <>
         <FormGroup key={mode === 'EDIT' ? '1' : '2'}>
             <div className="row  text-black">  
-                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6">   
+                <div className="offset-1 offset-sm-1 col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6 col-product">   
                     <Paper elevation={5} style={{padding: '1rem 2rem'}}>
                         <InputLabel name='title' className="text-header" style={{margin: 0}}>Title</InputLabel>
                         <TextField
@@ -626,7 +638,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     <Variant key="Variant" currency={selectCurrency} handleChangeCurrency={handleChangeCurrency} optionRef={optionRef} mode={mode}  formRef={form} setIsVariant={setIsVariant} oldForm={oldForm}
                     ></Variant>
                 </div>   
-                <div className="offset-1 pt-md offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4">                      
+                <div className="offset-1 pt-md offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1 col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4 col-product">                      
                     <Paper elevation={5}  style={{padding: '1rem 2rem'}}>
                         <InputLabel style={{marginBottom: '1rem'}} className="text-header" name='title'>Status</InputLabel>
                         <div key={form?.current?.product?.status || "SelectStatus"}>

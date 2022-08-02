@@ -611,8 +611,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                 }
                             </div>
                         ) : (
-                            <div className="row" key={index}>
-                                <div className="col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
+                            <div className="row w-100" style={{padding: '0px 12px'}} key={index}>
+                                <div className="col-9 col-sm-9 col-md-9 col-lg-9 col-xl-10">
                                     <h5>{optionValue[index].name}</h5>
                                     <div className="row">
                                         {optionValue[index]?.value?.map((element, index) => {
@@ -620,8 +620,8 @@ const Variant = ({optionRef, mode, formRef, setIsVariant, oldForm, currency='VND
                                         })}
                                     </div>
                                 </div>
-                                <div className="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
-                                    <button className="btn-option button-done text-content" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
+                                <div className="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-2 pl-3">
+                                    <button className="btn-option button-done text-content  float-right" type='button' variant='contained' onClick={() => doneOrEditOption(index)}>Edit</button>
                                 </div>
                                 {index !== 2 ?    
                                     <Divider className="divider-custom"/>

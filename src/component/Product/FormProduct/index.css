@@ -108,3 +108,10 @@
         display: none;
     }
 }
+
+@media (max-width: 450px) {       
+    .col-product {
+        width: 80%;
+    }
+
+}
