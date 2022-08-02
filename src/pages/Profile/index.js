@@ -6,7 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import { CustomInput } from './../../component/common/CustomInput/CustomInput';
 import TextField from '@mui/material/TextField';
 import { CustomButton } from './../../component/common/CustomButton/CustomButton';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doGetUserInfo, doUpdateUserInfo } from './../../redux/slice/userSlice';
 import Swal from "sweetalert2";
 import { LoadingModal } from './../../component/common/LoadingModal/LoadingModal';
@@ -17,6 +17,7 @@ import { UserApi } from "../../service/api/userApi";
 import { BackIcon } from "../../assets/icon/svg/BackIcon";
 import { useNavigate } from "react-router-dom";
 import userIcon from "../../assets/image/user.png"
+import { TextError } from './../../component/common/TextError/TextError';
 
 export const Profile = () => {
     const dispatch = useDispatch();
@@ -30,6 +31,8 @@ export const Profile = () => {
     const [confirmNewPw, setConfirmNewPw] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const { fullname } = useSelector((state) => state.user.info);
 
     let navigate = useNavigate();
 
@@ -60,10 +63,15 @@ export const Profile = () => {
     }
 
     const handleUpdateInfo = () => {
+        if (!firstname || !lastname) {
+            setNameError('Name is required')
+            return
+        }
+        setNameError('')
         setIsLoading(true)
         dispatch(doUpdateUserInfo({
             fullname: removeSpace(firstname) + ' ' + removeSpace(lastname),
-            phone: removeSpace(phone)
+            phone: phone ? removeSpace(phone) : ''
         }))
             .then(() => {
                 setIsLoading(false);
@@ -88,29 +96,29 @@ export const Profile = () => {
             return
         }
         UserApi.changePassword({ currentPassword: currentPw, newPassword: newPw })
-        .then((res) => {
-            if (res.statusCode === 200) {
-                handleCloseModal()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Change password successfully!',
-                })
-            }
-            else {
-                setError(res.message)
-            }
-        })
+            .then((res) => {
+                if (res.statusCode === 200) {
+                    handleCloseModal()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Change password successfully!',
+                    })
+                }
+                else {
+                    setError(res.message)
+                }
+            })
     }
 
     return (
         <div className="blank-layout">
-            <HeaderAccount name={firstname + ' ' + lastname} />
+            <HeaderAccount name={fullname} />
 
             <div className="profile">
                 <div className="profile__title text-title-1">
                     <span className="profile__title__back-btn" onClick={() => navigate(-1)}>
-                        <BackIcon/>
+                        <BackIcon />
                     </span>
                     Profile
                 </div>
@@ -144,8 +152,9 @@ export const Profile = () => {
                                     onChange={(e) => setLastname(e.target.value)}
                                 />
                             </div>
-
                         </div>
+                        {nameError &&
+                            <TextError>{nameError}</TextError>}
                         <div className="profile__detail__card--info">
                             <div className="profile__detail__card--info__item">
                                 <div className="text-normal-1">Email</div>
