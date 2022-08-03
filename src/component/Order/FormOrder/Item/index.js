@@ -107,7 +107,7 @@ const Item = ({WIDTH_ITEM_ORDER,formRef, setSubTotal = () => {},listRate, thumbn
             </div>
             <div style={{minWidth: 225, width: '40%'}}>
                 <ListItemText
-                    primary={`${selectCurrency} ${selectCurrency === 'USD' ? parseLocaleNumber(totalShow,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(totalShow,'vi-VN')}`}
+                    primary={`${selectCurrency === 'USD' ? parseLocaleNumber(totalShow,'en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2})  : parseLocaleNumber(totalShow,'vi-VN')} ${selectCurrency} `}
                 />
             </div>
             <div style={{width: '3%'}}>
