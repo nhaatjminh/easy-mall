@@ -48,6 +48,9 @@
         border-right: 1px solid #dfdfdf;
         background-color: #FAFBFB;
         width: 220px;
+        @media screen and (max-width: 768px) {  
+            width: 68px;
+        }
         &--icon {
             margin-right: 20px;
         }

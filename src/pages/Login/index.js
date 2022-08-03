@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Grid, Paper, TextField, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import './index.css';
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
@@ -44,12 +44,11 @@ const Login = () => {
 
     useEffect(() => {
         const emailQuery = searchParams.get("email")
-        console.log('emailquery', emailQuery)
         if (emailQuery) {
             setUsername(emailQuery)
         }
     }, [])
-    console.log('username', username)
+
     //=======================FUNCTION=========================
     const handleOnchangeUsername = (e) => {
         setUsername(e.target.value);
@@ -123,6 +122,7 @@ const Login = () => {
             body: raw
         };
 
+        setIsLoading(true)
         fetch(process.env.REACT_APP_API_URL + "auth/facebook-sign-in", requestOptions)
             .then(response => {
                 console.log(response)
@@ -140,6 +140,7 @@ const Login = () => {
             })
             .catch(error => {
                 console.log('error', error)
+                setIsLoading(false)
             });
     }
 
@@ -158,13 +159,13 @@ const Login = () => {
             body: raw
         };
 
+        setIsLoading(true)
         fetch(process.env.REACT_APP_API_URL + "auth/google-sign-in", requestOptions)
             .then(response => {
                 console.log(response)
                 if (response.ok) {
                     return response.json();
                 }
-
                 throw response.status;
             })
             .then(result => {
@@ -174,6 +175,7 @@ const Login = () => {
             })
             .catch(error => {
                 console.log('error', error)
+                setIsLoading(false)
             });
     }
     const onLogoutSuccess = () => {

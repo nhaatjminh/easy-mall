@@ -89,7 +89,7 @@ const ManageThems = () => {
                 <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4">
                     <NavBarDetailStore isDesktop={true} keySelected={Key.Theme}></NavBarDetailStore>
                 </div>
-                <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-5 pt-4 desktop-table mamagethemes">
+                <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 desktop-table mamagethemes">
                     <div className="mamagethemes__header">
                         <div className="mamagethemes__header--title">Theme</div>
                         <div

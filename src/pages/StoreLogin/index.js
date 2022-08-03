@@ -20,6 +20,8 @@ import { NotAllowIcon } from './../../assets/icon/svg/NotAllowIcon';
 import { logout } from "../../helpers/login";
 import { Loader } from "../../component/common/Loader/Loader";
 import { LoadingModal } from "../../component/common/LoadingModal/LoadingModal";
+import { getDisplayName } from "../../helpers/common";
+import { doGetUserInfo } from "../../redux/slice/userSlice";
 
 const StoreLogin = ({ nameAccount }) => {
 
@@ -41,6 +43,7 @@ const StoreLogin = ({ nameAccount }) => {
     // const [isValid, setIsValid] = useState(false);
     const dbValue = useDebounce(newStoreName, 300);
     const isProcessing = useSelector((state) => state.listStore.isCreating);
+    const { fullname } = useSelector((state) => state.user.info);
 
     const mounted = useRef();
 
@@ -95,6 +98,7 @@ const StoreLogin = ({ nameAccount }) => {
 
     useEffect(() => {
         setIsLoading(true)
+        dispatch(doGetUserInfo())
         dispatch(doGetListStore())
             .then((res) => {
                 setListStoreShow(res.payload)
@@ -132,9 +136,9 @@ const StoreLogin = ({ nameAccount }) => {
                                         <Dropdown.Item href="#" onClick={logout}><p className="text-nav">Log out</p></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                                {/* <div className="circle  float-right">
-                                    <p className="pt-1">{nameAccount}</p>
-                                </div> */}
+                                <div className="circle  float-right floating-name">
+                                    <p className="pt-1">{getDisplayName(fullname)}</p>
+                                </div>
                             </div>
                         </div>
                         {!isCreateStore ?
