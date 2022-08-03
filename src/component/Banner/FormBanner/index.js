@@ -577,8 +577,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 }
                                                 <div className="responsive-text" style={{ display: `flex`, flexDirection: 'column'}}>
 
-                                                    <ListItemText key={`${banner.id}-caption-title`} className='item-text-banner' primary={banner.caption}/>
-                                                    <ListItemText key={`${banner.id}-link-title`} className='item-text-banner' primary={banner.link}/>
+                                                    <ListItemText key={`${banner.id}-caption-title`} className='item-text-banner-caption' primary={banner.caption}/>
+                                                    <ListItemText key={`${banner.id}-link-title`} className='item-text-banner-link' primary={banner.link}/>
                                                 </div>
                                                 <div style={{width: 35, height: 'auto'}}>
                                                     <IconButton className="float-right text-extra-large" onClick={(e) => {

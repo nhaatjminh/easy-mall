@@ -396,12 +396,22 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                             // payload is array data response from server, first item to link, so get payload[0] in here
                             result = result.payload
                             result = oldResult.concat(result);
-                            
                             form.current = {
                                 ...form?.current,
                                 product: {
                                     ...form?.current?.product,
-                                    thumbnail: !isSelectThumbnail && form.current?.product?.thumbnail ? form.current.product.thumbnail : result[idxThumbnail],
+                                    thumbnail: !isSelectThumbnail && form.current?.product?.thumbnail ? form.current.product.thumbnail : result[idxThumbnail]
+                                }
+                            }
+                            if (isSelectThumbnail) {
+                                let temp = result[0];
+                                result[0] = result[idxThumbnail];
+                                result[idxThumbnail] = temp;
+                            }
+                            form.current = {
+                                ...form?.current,
+                                product: {
+                                    ...form?.current?.product,
                                     images: result
                                 }
                             }
