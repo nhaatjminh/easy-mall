@@ -38,7 +38,11 @@ export const doUseTemplate = createAsyncThunk(
     'theme@post/UseTemplate',
     async (templateObj) => {
         const result = await TemplateApi.useTemplate(templateObj.template.id, templateObj.user_id, templateObj.store_id);
-        return result.statusCode === 200 ? { ...templateObj.template } : { message: result.message }
+        return result.statusCode === 200 ? 
+        { 
+            ...templateObj.template, 
+            home_page_id: result.data.id 
+        } : { message: result.message }
     }
 );
 
