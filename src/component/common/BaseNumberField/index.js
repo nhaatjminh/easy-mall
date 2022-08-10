@@ -40,6 +40,11 @@ export const BaseNumberField = ({defaultValue, value, length=9, setValue, fullWi
                 allowDecimals={currency === 'USD' ? true : false}
                 allowNegativeValue={false}
                 onValueChange={(value) => setValue(value)}
+                onInput = {(e) => {
+                    if (currency !== 'USD') {
+                        e.target.value = e.target.value.replaceAll('.', '')
+                    }
+                }}
             />
         </>
     );

@@ -1,13 +1,25 @@
 .text-black .text-error {
     color: red !important;
 }
-.item-text-banner span {
+.item-text-banner-caption span {
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box !important;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     white-space: normal;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.item-text-banner-link span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    font-size: 13px;
 }
 .responsive-text {
     /* minus padding, margin and width of another element */

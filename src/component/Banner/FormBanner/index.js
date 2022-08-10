@@ -373,8 +373,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 url: `https://${urlStore}${page.page_url}`,
                 onClick: () => {
                     
-                    setCustomUrlShow(`${urlStore}${page.page_url}`);
-                    setCustomUrl(`https://${urlStore}${page.page_url}`)
+                    setCustomUrlShow(`${page.page_url}`);
+                    setCustomUrl(`${page.page_url}`)
                 }
             }))
             let newOptionPage = [{
@@ -395,8 +395,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 icon: <ProductIcon />,
                 url: `https://${urlStore}/products?id=${product.id}`,
                 onClick: () =>  {
-                    setCustomUrlShow(`${urlStore}/products?id=${product.id}`);
-                    setCustomUrl(`https://${urlStore}/products?id=${product.id}`)
+                    setCustomUrlShow(`/products?id=${product.id}`);
+                    setCustomUrl(`/products?id=${product.id}`)
                 }
             }))
             let newOptionProduct = [{
@@ -417,8 +417,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                 icon: <CollectionIcon />,
                 url: `https://${urlStore}/collection?id=${collection.id}`,
                 onClick: () => {
-                    setCustomUrlShow(`${urlStore}/collection?id=${collection.id}`);
-                    setCustomUrl(`https://${urlStore}/collection?id=${collection.id}`)
+                    setCustomUrlShow(`/collection?id=${collection.id}`);
+                    setCustomUrl(`/collection?id=${collection.id}`)
                 }
             }))
             let newOptionCollection = [{
@@ -561,7 +561,7 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 setValueToAdd(banner);
                                                 setIsEditBanner(index);
                                             }} className='row p-0 m-0' key={`${banner.id}-selected`} value={banner.id}>
-                                                <p className="pr-2 m-0" style={{width: 20}}>{index}.</p>
+                                                <p className="pr-2 m-0" style={{width: 20}}>{index + 1}.</p>
                                                 {
                                                 banner.image ?
                                                     <Box key={`${banner.id} - box`} style={{width: 80, height: 'auto'}}>
@@ -577,8 +577,8 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
                                                 }
                                                 <div className="responsive-text" style={{ display: `flex`, flexDirection: 'column'}}>
 
-                                                    <ListItemText key={`${banner.id}-caption-title`} className='item-text-banner' primary={banner.caption}/>
-                                                    <ListItemText key={`${banner.id}-link-title`} className='item-text-banner' primary={banner.link}/>
+                                                    <ListItemText key={`${banner.id}-caption-title`} className='item-text-banner-caption' primary={banner.caption}/>
+                                                    <ListItemText key={`${banner.id}-link-title`} className='item-text-banner-link' primary={banner.link}/>
                                                 </div>
                                                 <div style={{width: 35, height: 'auto'}}>
                                                     <IconButton className="float-right text-extra-large" onClick={(e) => {
