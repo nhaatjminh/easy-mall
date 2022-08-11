@@ -208,7 +208,7 @@ export const Domain = ({ store }) => {
                         5. Create 2 news Records which contain these following information
                     </div>
                     <div className="text-normal-1">
-                        A Type, Set <b>Name</b> for your <b className="b-green">Domain name</b> and content is <b className="b-green">104.21.9.169</b>, which is EasyMall IP number configuration
+                        A Type, Set <b>Name</b> for your <b className="b-green">Domain name</b> and content is <b className="b-green">139.180.154.208</b>, which is EasyMall IP number configuration
                     </div>
                     <div className="text-normal-1">
                         CNAME type, Set <b>Name</b> your <b className="b-green">www</b>,  content is your shop's easymall URL. which is <b className="b-green">“Your-Shop.myeasymall.site”</b>, also, set <b>proxy status</b> to <b className="b-green">DNS only</b>
