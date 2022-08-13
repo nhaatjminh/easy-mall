@@ -12,21 +12,24 @@ import { BackIcon } from "../../assets/icon/svg/BackIcon";
 import { Payment } from './../../component/Setting/Payment/index';
 import { Currency } from "../../component/Setting/Currency";
 import { Logo } from "../../component/Setting/Logo";
+import { doGetUserInfo } from "../../redux/slice/userSlice";
 
 export const Setting = () => {
     const dispatch = useDispatch();
     const params = useParams();
     const store = useSelector((state) => state.listStore.currentStore);
     const isLoading = useSelector((state) => state.listStore.isLoading);
+    const { fullname } = useSelector((state) => state.user.info);
     let navigate = useNavigate();
 
     useEffect(() => {
         dispatch(doGetCurrentStore(params.storeId))
+        dispatch(doGetUserInfo())
     }, [])
 
     return (
         <div className="blank-layout">
-            <HeaderAccount name={'TP'} />
+            <HeaderAccount name={fullname} />
             <div className="setting">
                 <div className="setting__header text-title-1">
                     <span className="setting__header__back-btn" onClick={() => navigate(-1)}>
