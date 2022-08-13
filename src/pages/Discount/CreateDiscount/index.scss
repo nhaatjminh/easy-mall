@@ -1,4 +1,9 @@
 .create-discount {
+    @media (max-width: 768px) {
+        .col-sm-12:not(:last-child) {
+            margin-bottom: 15px;
+        }
+    }
     max-width: 1200px;
     margin: 30px auto;
     &__header {

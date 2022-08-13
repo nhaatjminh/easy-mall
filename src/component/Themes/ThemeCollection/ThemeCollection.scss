@@ -43,6 +43,8 @@
             }
             &__img {
                 transition: transform .2s;
+                aspect-ratio: 10/5.5;
+                object-fit: cover;
                 &:hover {
                     transform: scale(1.3);
                 }
