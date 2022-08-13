@@ -192,6 +192,7 @@ const ManageThems = () => {
                 title="Your store's themes"
                 storeId={params.storeId}
                 type={themeType}
+                setHomePageId={setHomePageId}
             />
             <LoadingModal show={isLoading} />
         </div>
