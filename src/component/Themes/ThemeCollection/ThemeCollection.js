@@ -9,7 +9,7 @@ import { ListTheme } from './ListTheme';
 import Swal from "sweetalert2";
 import { Loader } from "../../common/Loader/Loader";
 
-export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
+export const ThemeCollection = ({ show, setShow, title, storeId, type, setHomePageId }) => {
 
     const listStoreTheme = useSelector((state) => state.theme.storeTemplates)
     const listFreeTheme = useSelector((state) => state.theme.freeTemplates)
@@ -63,6 +63,7 @@ export const ThemeCollection = ({ show, setShow, title, storeId, type }) => {
                                 text: 'Use theme successfully!',
                             })
                             setShow(false)
+                            setHomePageId(res.payload.home_page_id)
                         }
                         else {
                             Swal.fire({
