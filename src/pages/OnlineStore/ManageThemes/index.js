@@ -24,6 +24,7 @@ const ManageThems = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showThemeModal, setShowThemeModal] = useState(false);
     const [themeType, setThemeType] = useState(false);
+    const [collectionName, setCollectionName] = useState('');
     const currentTemplate = useSelector((state) => state.theme.currentTemplate)
     const currentStore = useSelector((state) => state.listStore.currentStore)
     const dispatch = useDispatch()
@@ -131,6 +132,7 @@ const ManageThems = () => {
                                 onClick={() => {
                                     setShowThemeModal(true)
                                     setThemeType("STORE")
+                                    setCollectionName("Your store's themes")
                                 }}
                             >
                                 View your store themes
@@ -152,6 +154,7 @@ const ManageThems = () => {
                                             onClick={() => {
                                                 setShowThemeModal(true)
                                                 setThemeType("FREE")
+                                                setCollectionName("Free themes")
                                             }}
                                         >
                                             Explore free themes
@@ -174,6 +177,7 @@ const ManageThems = () => {
                                             onClick={() => {
                                                 setShowThemeModal(true)
                                                 setThemeType("PAID")
+                                                setCollectionName("Theme store")
                                             }}
                                         >
                                             Visit theme store
@@ -189,7 +193,7 @@ const ManageThems = () => {
             <ThemeCollection
                 show={showThemeModal}
                 setShow={setShowThemeModal}
-                title="Your store's themes"
+                title={collectionName}
                 storeId={params.storeId}
                 type={themeType}
                 setHomePageId={setHomePageId}
