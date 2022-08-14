@@ -21,6 +21,30 @@
     white-space: normal;
     font-size: 13px;
 }
+
+@media screen and (min-width: 1200px) {  
+    .item-text-banner-link span {
+        max-width: calc(100vw - 500px);
+    }
+  }
+
+@media screen and (min-width: 768px) {  
+.item-text-banner-link span {
+    max-width: calc(100vw - 700px);
+}
+}
+
+  
+@media screen and (max-width: 767px) {  
+    .item-text-banner-link span {
+        max-width: calc(100vw - 300px);
+    }
+}
+@media screen and (max-width: 576px) {  
+    .item-text-banner-link span {
+        max-width: calc(100vw - 120px);
+    }
+}
 .responsive-text {
     /* minus padding, margin and width of another element */
     width: calc(100% - 35px - 35px - 45px - 25px );

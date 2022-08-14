@@ -67,7 +67,11 @@ const HeaderDetailStore = ({nameAccount, keySelected, isEdit}) => {
                             src={process.env.PUBLIC_URL + '/img/Logo.png'}
                             style={{ height: '4rem', width: '4rem' }}
                         />
-                        <Typography component={'span'} ><p className="mt-3 font-weight-bold mr-0-3rem">{nameStore}</p></Typography>
+                        <Typography className="pointer-change"  onClick={() => {
+                                warningWhenLeave(() => {
+                                    routeChange(`/store-detail/manage-home/${params.storeId}`);
+                                })
+                            }}  component={'span'} ><p className="mt-3 font-weight-bold mr-0-3rem">{nameStore}</p></Typography>
                         <Dropdown className="float-right dropdown-store-detail p-0">
                             <Dropdown.Toggle id="dropdown-basic">
                                 <i className="fa-angle-down fa-icon  float-right fa-store-detail"></i>
