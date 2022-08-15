@@ -64,10 +64,10 @@ const ManageHome = () => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1000)
-  }, [])
+  }, [params.storeId])
 
   return (
-    <>
+    <div key={params.storeId}>
       <HeaderDetailStore keySelected={Key.Home}></HeaderDetailStore>
       <div className="row callpage" >
         <div className="col-lg-2 col-xl-2 p-0 m-0 pt-4 navbar-detail">
@@ -151,7 +151,7 @@ const ManageHome = () => {
       </div>
 
       <LoadingModal show={isLoading} />
-    </>
+    </div>
   );
 }
 
