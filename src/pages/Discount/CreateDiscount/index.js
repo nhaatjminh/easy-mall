@@ -34,6 +34,7 @@ export const CreateDiscount = () => {
     const [valueType, setValueType] = useState(0);
     const [discountValue, setDiscountValue] = useState(0);
     const [discountPercent, setDiscountPercent] = useState(0);
+    const [percentErr, setPercentErr] = useState('');
     const [requireValue, setRequireValue] = useState(0);
     const [limitValue, setLimitValue] = useState(0);
     const [selected, setSelected] = useState(0);
@@ -46,6 +47,7 @@ export const CreateDiscount = () => {
     const [codeErr, setCodeErr] = useState('');
     const [isGerenating, setIsGenerating] = useState(false);
     const codeRef = useRef();
+    const discountRef = useRef();
 
     const dispatch = useDispatch();
     const isLoading = useSelector((state) => state.discount.isLoading)
@@ -73,6 +75,14 @@ export const CreateDiscount = () => {
         }
     }, [storeCurrency])
 
+    useDidMountEffect(() => {
+        if (discountPercent > 100 || discountPercent < 0) {
+            setPercentErr('Percentage must be between 0 and 100')
+        } else {
+            setPercentErr('')
+        }
+    }, [discountPercent])
+
     const hanldeGeneratecode = () => {
         setIsGenerating(true)
         DiscountApi.generateCode({ store_id: params.storeId })
@@ -94,6 +104,10 @@ export const CreateDiscount = () => {
         }
         if (codeErr) {
             codeRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
+            return;
+        }
+        if (valueType === 0 && percentErr) {
+            discountRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
             return;
         }
 
@@ -186,7 +200,7 @@ export const CreateDiscount = () => {
                             </BlankCard>
 
                             <BlankCard className='create-discount__value-card'>
-                                <Card.Body>
+                                <Card.Body ref={discountRef}>
                                     <div className="text-title-2">
                                         Value
                                     </div>
@@ -217,11 +231,16 @@ export const CreateDiscount = () => {
                                                     currency={currency}
                                                 />
                                                 :
+                                                <>
                                                 <CustomInput
                                                     value={discountPercent}
                                                     onChange={(e) => setDiscountPercent(e.target.value)}
                                                     unit='%'
+                                                    type='number'
+                                                    warning={percentErr}
                                                 />
+                                                {percentErr && <TextError>{percentErr}</TextError>}
+                                                </>
                                             }
                                         </Col>
                                     </Row>

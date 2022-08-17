@@ -14,7 +14,6 @@ const ManageAnalysis = () => {
     const DAY_IN_MS = 24 * 60 * 60 * 1000
     const dispatch = useDispatch();
     const params = useParams();
-    const [currency, setCurrency] = useState('VND');
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
     const [exactTotalSale, setExactTotalSale] = useState({
@@ -39,11 +38,7 @@ const ManageAnalysis = () => {
         total: 0
     })
     const currencyStore = useSelector((state) => state.listStore?.currentStore?.currency || 'USD');
-    useEffect(() => {
-        if (currencyStore) setCurrency(currencyStore)
-    }, [currencyStore])
     const handleChangeCurrency = (e) => {
-        setCurrency(e.target.value)
     }
     const dateRange = (endDate, numOfDays) => {
         if (!endDate) return []
@@ -60,7 +55,7 @@ const ManageAnalysis = () => {
         dispatch(doGetAnalysis({
             id: params.storeId,
             params: {
-                currency: currency
+                currency: currencyStore
             }
         })).then((result) => {
             const missingDates = result?.payload?.orders?.sort((a,b) => {
@@ -80,7 +75,7 @@ const ManageAnalysis = () => {
                 if (!isNaN(dateConvert) && !isNaN(dayConvert) && dateConvert === dayConvert) {
                     finalAllOrder.push({
                         ...missingDates[idxOrder],
-                        total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currency === 'USD' ? 2 : 0)),
+                        total_sale: Number(Number(missingDates[idxOrder]?.total_sale).toFixed(currencyStore === 'USD' ? 2 : 0)),
                     })
                     idxOrder += 1;
                 } else {
@@ -99,7 +94,7 @@ const ManageAnalysis = () => {
             
             setLoading(false);
         });
-    }, [currency])
+    }, [currencyStore])
     const getExactTotalSales = () => {
         let dataForTotalSales = data.orders.map((order) => {
             return {
@@ -111,9 +106,9 @@ const ManageAnalysis = () => {
             labelPaper: 'Total Sales',
             labelX: 'Date',
             labelY: 'Sale',
-            total: `${parseLocaleNumber(Number(Number(data.total_sales).toFixed(currency === 'USD' ? 2 : 0)))} ${currency}` ,
+            total: `${parseLocaleNumber(Number(Number(data.total_sales).toFixed(currencyStore === 'USD' ? 2 : 0)))} ${currencyStore}` ,
             data: dataForTotalSales,
-            currency: currency,
+            currency: currencyStore,
             format: true
         })
     }
@@ -129,9 +124,9 @@ const ManageAnalysis = () => {
             labelPaper: 'Total Products Sold',
             labelX: 'Date',
             labelY: 'Product',
-            total: `${parseLocaleNumber(Number(Number(data.total_products).toFixed(currency === 'USD' ? 2 : 0)))}` ,
+            total: `${parseLocaleNumber(Number(Number(data.total_products).toFixed(currencyStore === 'USD' ? 2 : 0)))}` ,
             data: dataForTotalProducts,
-            currency: currency
+            currency: currencyStore
         })
     }
     const getExactTotalOrder = () => {
@@ -147,7 +142,7 @@ const ManageAnalysis = () => {
             labelY: 'Order',
             total: `${parseLocaleNumber(Number(data.total_order))}` ,
             data: dataForTotalOrder,
-            currency: currency
+            currency: currencyStore
         })
     }
     useEffect(() => {
@@ -166,7 +161,7 @@ const ManageAnalysis = () => {
             </div> 
             <div className="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 m-0 pt-4 desktop-table main-content-manage pt-5">     
                 <div className="row" style={{ marginLeft: 60, marginBottom: 20}}> 
-                    <Select disabled={true} style={{ width: 'auto', height: 35}} value={currency} onChange={handleChangeCurrency}  className='text-field-input text-content'>
+                    <Select disabled={true} style={{ width: 'auto', height: 35}} value={currencyStore} onChange={handleChangeCurrency}  className='text-field-input text-content'>
                         <MenuItem value='VND'>VND</MenuItem>
                         <MenuItem value='USD'>USD</MenuItem>
                     </Select>

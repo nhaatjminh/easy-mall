@@ -78,7 +78,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
             setDiscountCode(code);
             let totalAccept = 0;
             if (selectDiscount.type === 0) {
-                totalAccept = selectDiscount.amount * subTotal;
+                totalAccept = selectDiscount.amount / 100 * subTotal;
             } else {
                 if (currency === selectDiscount.currency) {
                     totalAccept = selectDiscount.amount;    

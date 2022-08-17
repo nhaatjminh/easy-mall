@@ -35,6 +35,7 @@ export const DetailDiscount = () => {
     const [valueType, setValueType] = useState(0);
     const [discountValue, setDiscountValue] = useState(0);
     const [discountPercent, setDiscountPercent] = useState(0);
+    const [percentErr, setPercentErr] = useState('');
     const [requireValue, setRequireValue] = useState(0);
     const [limitValue, setLimitValue] = useState(0);
     const [selected, setSelected] = useState(0);
@@ -48,11 +49,20 @@ export const DetailDiscount = () => {
     const [isGerenating, setIsGenerating] = useState(false);
     const [mode, setMode] = useState('');
     const codeRef = useRef();
+    const discountRef = useRef();
     const active = (!isEnd || new Date(Date.now()) < new Date(getDateTime(endDate, endTime)))
 
     const dispatch = useDispatch();
     const isLoading = useSelector((state) => state.discount.isLoading)
     // const currentDiscount = useSelector((state) => state.discount.currentDiscount)
+
+    useDidMountEffect(() => {
+        if (discountPercent > 100 || discountPercent < 0) {
+            setPercentErr('Percentage must be between 0 and 100')
+        } else {
+            setPercentErr('')
+        }
+    }, [discountPercent])
 
     const dbValue = useDebounce(code, 300);
     useEffect(() => {
@@ -147,6 +157,10 @@ export const DetailDiscount = () => {
         }
         if (codeErr) {
             codeRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
+            return;
+        }
+        if (valueType === 0 && percentErr) {
+            discountRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
             return;
         }
 
@@ -287,7 +301,7 @@ export const DetailDiscount = () => {
                             </BlankCard>
 
                             <BlankCard className='detail-discount__value-card'>
-                                <Card.Body>
+                                <Card.Body ref={discountRef}>
                                     <div className="text-title-2">
                                         Value
                                     </div>
@@ -317,11 +331,15 @@ export const DetailDiscount = () => {
                                                     unit={currency !== 'USD' ? 'VND' : null}
                                                     currency={currency}
                                                 /> :
+                                                <>
                                                 <CustomInput
                                                     value={discountPercent}
                                                     onChange={(e) => setDiscountPercent(e.target.value)}
                                                     unit='%'
+                                                    warning={percentErr}
                                                 />
+                                                {percentErr && <TextError>{percentErr}</TextError>}
+                                                </>
                                             }
                                         </Col>
                                     </Row>
