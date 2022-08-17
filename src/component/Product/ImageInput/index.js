@@ -175,9 +175,9 @@ const ImageInput = ({mode, formRef, oldForm, setIdxThumbnail, setIsSelectThumbna
       fileinput.click(); 
     }
     const handleDelete = () => {
-      const newList = images.filter((image) => !selected.includes(image))
-      selected.forEach((image) => {
-        if (!(image.startsWith('blob:'))) {
+      const newList = images?.filter((image) => !selected?.includes(image))
+      selected?.forEach((image) => {
+        if (!(image?.startsWith('blob:'))) {
           const listPromise = [];   
           listPromise.push(
               new Promise(() => {

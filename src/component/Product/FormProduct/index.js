@@ -374,7 +374,7 @@ const FormProduct = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add
                     const oldResult = [];
                     const listImage = [];
                     for (let item of data) {
-                        const base64result = item.substr(item.indexOf(',') + 1);
+                        const base64result = item?.substr(item?.indexOf(',') + 1);
                         if (isBase64(base64result)) {
                             listImage.push(item);
                         } else {
