@@ -416,10 +416,10 @@ const FormBanner = ({mode, oldForm, returnAfterAdd, setIsEdit})=> { // mode add 
             let exactUrlCollection = result.payload.map((collection) => ({
                 title: `${collection.name}`,
                 icon: <CollectionIcon />,
-                url: `https://${urlStore}/collection?id=${collection.id}`,
+                url: `https://${urlStore}/collections?id=${collection.id}`,
                 onClick: () => {
-                    setCustomUrlShow(`/collection?id=${collection.id}`);
-                    setCustomUrl(`/collection?id=${collection.id}`)
+                    setCustomUrlShow(`/collections?id=${collection.id}`);
+                    setCustomUrl(`/collections?id=${collection.id}`)
                 }
             }))
             let newOptionCollection = [{
