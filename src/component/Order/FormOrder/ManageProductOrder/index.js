@@ -171,7 +171,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
         })
         const newListValueVariant = cloneDeep(listValueVariant);
         Object.keys(listValueVariant ?? {}).forEach((id) => {
-            if (newListValueVariant[id] === false) delete newListValueProduct[id]
+            if (newListValueVariant[id] === false) delete newListValueVariant[id]
         })
         const totalProducts = Object.keys(newListValueProduct ?? {}).length + Object.keys(newListValueVariant  ?? {}).length;
         dispatch(doGetActiveDiscount({
@@ -206,7 +206,7 @@ const ManageProductOrder = ({formRef, WIDTH_ITEM_ORDER, listDiscount, setListDis
                                         height={'30px'}
                                         
                                     />
-                                    <BaseNestedList items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
+                                    <BaseNestedList form={form} setSubTotal={setSubTotal} items={listFilterProducts} valueProduct={listValueProduct} setValueProduct={setListValueProduct}
                                     valueVariant={listValueVariant}
                                     setValueVariant={setListValueVariant}></BaseNestedList>
                                 </FormControl>

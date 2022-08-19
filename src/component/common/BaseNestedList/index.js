@@ -4,7 +4,7 @@ import { parseLocaleNumber } from "../../../utils/parseLocaleNumber";
 import BaseEmpty from "../BaseEmpty";
 import { useNavigate, useParams } from "react-router-dom";
 
-export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], setValueProduct = (e) => {} ,valueVariant = [], setValueVariant = (e) => {}}) => {
+export const NestedList = ({form, setSubTotal, items, alwayShowExpand = true, valueProduct = [], setValueProduct = (e) => {} ,valueVariant = [], setValueVariant = (e) => {}}) => {
 
     const [click, setClick] = useState({});
     const [clickVariant, setClickVariant] = useState({});
@@ -36,6 +36,18 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
             [`${product_id}`]: !checkEvery && checkSome
         }
         setClickIterminate(newClickIterminate);
+        if (!newClickVariant?.[product_id]) {
+            form.current.products = form.current.products?.filter(product => product.id !== product_id)
+    
+            if (!form.current.products) setSubTotal(0)
+            else {
+                let totalPlus = 0;
+                form.current.products.map((product) => {
+                    totalPlus += Number(product.total_to_show);
+                })
+                setSubTotal(totalPlus)
+            }
+        }
     };
     const handleClickVariant = (variant_id, product_id, variants) => {
         let newClickVariant = JSON.parse(JSON.stringify(clickVariant));
@@ -82,6 +94,19 @@ export const NestedList = ({items, alwayShowExpand = true, valueProduct = [], se
                 [`${product_id}`]: checkSome
             }
             setClickIterminate(newClickIterminate);
+        }
+
+        if (!newClickVariant?.[variant_id]) {
+            form.current.products = form.current.products?.filter(product => product.variant_id !== variant_id)
+
+            if (!form.current.products) setSubTotal(0)
+            else {
+                let totalPlus = 0;
+                form.current.products.map((product) => {
+                    totalPlus += Number(product.total_to_show);
+                })
+                setSubTotal(totalPlus)
+            }
         }
     };
     useEffect(() => {
