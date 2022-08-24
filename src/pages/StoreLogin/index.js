@@ -137,7 +137,7 @@ const StoreLogin = ({ nameAccount }) => {
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 <div className="circle  float-right floating-name">
-                                    <p className="pt-1">{getDisplayName(fullname)}</p>
+                                    <p className="pt-1">{fullname ? getDisplayName(fullname) : ''}</p>
                                 </div>
                             </div>
                         </div>

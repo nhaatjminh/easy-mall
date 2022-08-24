@@ -19,7 +19,7 @@ export const HeaderAccount = ({ name }) => {
             </div>
             <div className="header-account__info">
                 <span className="circle floating-name">
-                    <p className="pt-1">{getDisplayName(name)}</p>
+                    <p className="pt-1">{name ? getDisplayName(name) : ''}</p>
                 </span>
                 <span>
                 <Dropdown className="n">

@@ -1,11 +1,13 @@
 import React from "react";
 import './index.css';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from "../../component/NavBar";
 import FooterHomePage from "../../component/FooterHomepage";
 const SellGuide = () => {
+
+    let navigate = useNavigate()
 
     return (
         <>
@@ -129,7 +131,7 @@ const SellGuide = () => {
                     <h5 className="text-end-slide-2">
                     Try EasyMall for free, discover all the tools and services to start, run and grow your own business..
                     </h5>
-                    <button className="btn btn-success btn-end-slide mt-5" > <p className="text-btn-end-slide"> Start your free trial </p></button>
+                    <button onClick={() => navigate('/store-login')} className="btn btn-success btn-end-slide mt-5" > <p className="text-btn-end-slide"> Start your free trial </p></button>
                 </div>
             </div>
 
