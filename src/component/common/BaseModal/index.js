@@ -80,7 +80,7 @@ export default function BaseModal({children, showButton=true, boolOpen=false, se
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        
+        style={{zIndex: 1001}}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
           {title}

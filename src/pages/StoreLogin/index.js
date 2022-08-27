@@ -43,7 +43,7 @@ const StoreLogin = ({ nameAccount }) => {
     // const [isValid, setIsValid] = useState(false);
     const dbValue = useDebounce(newStoreName, 300);
     const isProcessing = useSelector((state) => state.listStore.isCreating);
-    const { fullname } = useSelector((state) => state.user.info);
+    const { fullname } = useSelector((state) => state?.user?.info);
 
     const mounted = useRef();
 
